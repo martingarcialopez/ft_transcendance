@@ -1,0 +1,45 @@
+version: "3"
+services:
+
+# ####################### React #########################
+  ft_react:
+    depends_on:
+      - ft_nestjs
+    build:
+      context: ./front-end
+    container_name: "container-front-end"
+    image: img-front-end
+    env_file:
+      - "./.env"
+    ports:
+      - "8080:3000"
+    # volumes:
+    #   - /home/mkayumba/data/database:/var/lib/mysql
+    restart: always
+
+# ####################### NestJS #########################
+
+  ft_nestjs:
+    depends_on:
+      - ft_postgres
+    build:
+      context: ./back-end
+    image: img-nestjs
+    container_name: "container-nestjs"
+    env_file:
+      - "./.env"
+    ports:
+      - "3000:3000"
+    # volumes:
+    #   - /home/lenox/Transcendence/srcs/nestjs/my-app :/my-app
+    restart: always
+
+# ####################### postgres #########################
+  ft_postgres:
+    image: postgres
+    container_name: "container-postgress"
+    env_file:
+      - "./.env"
+    # volumes:
+    #   - /home/lenox/Transcendence/srcs/nestjs/data :/data
+    restart: always
