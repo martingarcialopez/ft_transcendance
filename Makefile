@@ -3,15 +3,15 @@ NAME = ft_transcendance
 all: prune reload
 
 stop:
-	@ docker-compose -f srcs/docker-compose.yml down
+	@ docker-compose -f docker-compose.yml down
 
 clean:
-	@ docker-compose -f srcs/docker-compose.yml down --volumes --rmi all
+	@ docker-compose -f docker-compose.yml down --volumes --rmi all
 
 prune: clean
 	@ docker system prune -f
 
 reload: 
-	@ docker-compose -f srcs/docker-compose.yml up --build
+	@ docker-compose up --build -V
 
 .PHONY: linux stop clean prune reload all
