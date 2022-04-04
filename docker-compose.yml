@@ -3,22 +3,22 @@ version: "3.7"
 services:
 
 # ####################### React #########################
-  # ft_react:
-  #   depends_on:
-  #     - ft_nestjs
-  #   build:
-  #     context: ./front-end
-  #   container_name: "container-front-end"
-  #   image: img-front-end
-  #   env_file:
-  #     - "./.env"
-  #   ports:
-  #     - "8080:3000"
-  #   networks:
-  #     - webnet
-  #   # volumes:
-  #   #   - /home/mkayumba/data/database:/var/lib/mysql
-  #   restart: always
+  ft_react:
+    depends_on:
+      - ft_nestjs
+    build:
+      context: ./front-end
+    container_name: "container-front-end"
+    image: img-front-end
+    env_file:
+      - "./.env"
+    ports:
+      - "8080:3000"
+    networks:
+      - webnet
+    # volumes:
+    #   - /home/mkayumba/data/database:/var/lib/mysql
+    restart: always
 
 # ####################### NestJS #########################
 
