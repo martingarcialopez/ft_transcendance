@@ -8,16 +8,18 @@ services:
       - ft_nestjs
     build:
       context: ./front-end
+      dockerfile: ./Dockerfile
     container_name: "container-front-end"
-    image: img-front-end
     env_file:
       - "./.env"
     ports:
       - "8080:3000"
     networks:
       - webnet
-    # volumes:
-    #   - /home/mkayumba/data/database:/var/lib/mysql
+    volumes:
+      - ./front-end:/usr/src/app
+      - /usr/src/app/node_modules
+       
     restart: always
 
 # ####################### NestJS #########################
