@@ -4,6 +4,7 @@ import { User } from './models/user.entity'
 import { UserModule } from './modules/user.module';
 import { Message } from './models/message.entity';
 import { MessageModule } from './modules/message.module';
+import { AppGateway } from './app.gateway';
 
 @Module({
 
@@ -21,7 +22,7 @@ import { MessageModule } from './modules/message.module';
     UserModule, MessageModule
   ],
   controllers: [],
-  providers: [],
+  providers: [AppGateway],
 
 })
 export class AppModule {}

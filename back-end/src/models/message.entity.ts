@@ -11,7 +11,7 @@ export class Message {
   @Column()
   created_on: string;
 
-  @Column()
+  @Column("text")
   content: string;
 
 }

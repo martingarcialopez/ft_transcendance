@@ -2,6 +2,7 @@ NAME = ft_transcendance
 
 all: prune reload
 
+up: reload
 stop:
 	@ docker-compose -f docker-compose.yml down
 
@@ -11,7 +12,7 @@ clean:
 prune: clean
 	@ docker system prune -f
 
-reload: 
+reload:
 	@ docker-compose up --build -V
 
 .PHONY: linux stop clean prune reload all
