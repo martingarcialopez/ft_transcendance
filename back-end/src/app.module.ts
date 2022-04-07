@@ -5,6 +5,10 @@ import { UserModule } from './modules/user.module';
 import { Message } from './models/message.entity';
 import { MessageModule } from './modules/message.module';
 import { AppGateway } from './app.gateway';
+import {MessageService} from './services/message.service';
+import {MessageController} from './controllers/message.controller';
+import { ChatModule } from './modules/chat.module';
+import { Chat } from './models/chat.entity'
 
 @Module({
 
@@ -16,13 +20,11 @@ import { AppGateway } from './app.gateway';
       username: 'root',
       password: 'root',
       database: 'db',
-     entities: [User, Message],
+     entities: [User, Message, Chat],
       synchronize: true,
     }),
-   UserModule, MessageModule
+   UserModule, MessageModule, ChatModule
   ],
-  controllers: [],
   providers: [AppGateway],
-
 })
 export class AppModule {}

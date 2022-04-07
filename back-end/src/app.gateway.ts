@@ -6,6 +6,8 @@ import {
  OnGatewayConnection,
  OnGatewayDisconnect,
 } from '@nestjs/websockets';
+
+import {ChatService} from './services/chat.service';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 
@@ -20,13 +22,20 @@ import { Socket, Server } from 'socket.io';
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
 /*gives us access to the websockets server instance*/
- @WebSocketServer() server: Server;
+@WebSocketServer() server: Server;
+
+constructor(
+    private readonly chatService: ChatService
+  ) {
+  }
+
  private logger: Logger = new Logger('AppGateway');
 
 /*this Decorator is used to listen to incoming messages*/
 @SubscribeMessage('msgToServer')
 /*send data to all clients connected to the server*/
- handleMessage(client: Socket, payload: string): void {
+	handleMessage(client: Socket, payload: string): void {
+	 this.chatService.getChat();
 	 this.server.emit('msgToClient', payload);
 	 this.logger.log(payload);
  }

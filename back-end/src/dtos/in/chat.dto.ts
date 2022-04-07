@@ -1,5 +1,5 @@
 export class ChatDto {
-    user_id: number;
-	nama: string;
+    id: number;
+	name: string;
     content: string;
 }

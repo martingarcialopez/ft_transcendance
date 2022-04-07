@@ -3,7 +3,7 @@ const app = new Vue({
  data: {
   title: 'Nestjs Websockets Chat',
   name: '',
-  text: '',
+  content: '',
   messages: [],
   socket: null
  },
@@ -12,17 +12,17 @@ const app = new Vue({
    if(this.validateInput()) {
     const message = {
     name: this.name,
-    text: this.text
+	content: this.content
    }
    this.socket.emit('msgToServer', message)
-   this.text = ''
+   this.content = ''
   }
  },
  receivedMessage(message) {
   this.messages.push(message)
  },
  validateInput() {
-  return this.name.length > 0 && this.text.length > 0
+  return this.name.length > 0 && this.content.length > 0
  }
  },
 	/*will be exe when front is created*/

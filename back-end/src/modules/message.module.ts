@@ -8,7 +8,8 @@ import { MessageService } from '../services/message.service';
 
     imports: [TypeOrmModule.forFeature([Message])],
     controllers: [MessageController],
-    providers: [MessageService]
+    providers: [MessageService],
+	exports: [MessageService ],
 
 })
 export class MessageModule {}
