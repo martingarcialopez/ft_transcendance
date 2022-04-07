@@ -16,10 +16,10 @@ import { AppGateway } from './app.gateway';
       username: 'root',
       password: 'root',
       database: 'db',
-      entities: [User, Message],
+     entities: [User, Message],
       synchronize: true,
     }),
-    UserModule, MessageModule
+   UserModule, MessageModule
   ],
   controllers: [],
   providers: [AppGateway],
