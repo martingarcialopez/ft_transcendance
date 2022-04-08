@@ -1,15 +1,20 @@
 import {
+	ConnectedSocket,
  SubscribeMessage,
  WebSocketGateway,
  OnGatewayInit,
  WebSocketServer,
  OnGatewayConnection,
- OnGatewayDisconnect,
+	OnGatewayDisconnect,
+	MessageBody,
 } from '@nestjs/websockets';
-
+import { Chat } from './models/chat.entity';
+import { NestGateway } from '@nestjs/websockets/interfaces/nest-gateway.interface';
+import { Bind, UseInterceptors } from '@nestjs/common';
 import {ChatService} from './services/chat.service';
-import { Logger } from '@nestjs/common';
+import { Logger, Body } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
+import { ChatDto } from './dtos/in/chat.dto'
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
@@ -31,14 +36,20 @@ constructor(
 
  private logger: Logger = new Logger('AppGateway');
 
-/*this Decorator is used to listen to incoming messages*/
-@SubscribeMessage('msgToServer')
-/*send data to all clients connected to the server*/
-	handleMessage(client: Socket, payload: string): void {
-	 this.chatService.getChat();
-	 this.server.emit('msgToClient', payload);
-	 this.logger.log(payload);
- }
+@Bind(MessageBody(), ConnectedSocket())
+  @SubscribeMessage('msgToServer')
+  async handleNewMessage(chat: Chat) {
+    console.log('New Chat 888', chat.content);
+      const value = await this.chatService.saveChat(chat);
+      this.server.emit('msgToClient', value);
+  }
+
+
+async handleConnection(server: Server){
+  	this.logger.log('ONLINE!!!!!!!!!!!!!!!');
+	const message =  await this.chatService.getChat();
+	this.server.emit('msgToClient', message);
+}
 
  afterInit(server: Server) {
   this.logger.log('Init');
@@ -46,9 +57,5 @@ constructor(
 
  handleDisconnect(client: Socket) {
   this.logger.log(`Client disconnected: ${client.id}`);
- }
-
-	handleConnection(client: Socket, ...args: any[]) {
-  this.logger.log(`Client connected: ${client.id}`);
  }
 }

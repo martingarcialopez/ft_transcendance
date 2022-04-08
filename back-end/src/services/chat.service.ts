@@ -13,21 +13,17 @@ export class ChatService {
     ) {}
 
 
-    saveChat(chatDto: ChatDto): Promise<Chat> {
-
-        const chat = new Chat();
-
-		chat.id = chatDto.id;
+	async saveChat(chatDto: ChatDto): Promise<Chat> {
+		const chat = new Chat();
 		chat.name = chatDto.name;
 		chat.content = chatDto.content;
-
-        return this.chatRepository.save(chat);
-    }
+	    return this.chatRepository.save(chat);
+  }
 
 	//show all the chat
-	getChat(): Promise<Chat[]>
+	async getChat(): Promise<Chat[]>
 		{
-			return this.chatRepository.find();
+			return await this.chatRepository.find();
 		}
 	findOne(id:string): Promise<Chat>
 		{

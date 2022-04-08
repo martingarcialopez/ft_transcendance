@@ -6,7 +6,7 @@ import { ChatService } from '../services/chat.service';
 @Module({
 
     imports: [TypeOrmModule.forFeature([Chat])],
-    providers: [ChatService],
+	providers: [ChatService],
 	exports: [ChatService ],
 
 })
