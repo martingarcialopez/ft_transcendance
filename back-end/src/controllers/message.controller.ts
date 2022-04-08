@@ -31,4 +31,4 @@ export class MessageController {
     deleteMessage( @Param('id') id: string): Promise <void> {
         return this.messageService.deleteMessage(id);
     }
-	}
+}

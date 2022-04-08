@@ -18,17 +18,17 @@ export class ChatService {
 		chat.name = chatDto.name;
 		chat.content = chatDto.content;
 	    return this.chatRepository.save(chat);
-  }
+	}
 
 	//show all the chat
 	async getChat(): Promise<Chat[]>
-		{
-			return await this.chatRepository.find();
-		}
+	{
+		return await this.chatRepository.find();
+	}
 	findOne(id:string): Promise<Chat>
-		{
-			return this.chatRepository.findOne(id);
-		}
+	{
+		return this.chatRepository.findOne(id);
+	}
     async deleteChat(id: string): Promise<void> {
         await this.chatRepository.delete(id);
     }

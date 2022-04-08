@@ -25,13 +25,13 @@ export class MessageService {
 
 	//show all the message
 	getMessage(): Promise<Message[]>
-		{
-			return this.messageRepository.find();
-		}
+	{
+		return this.messageRepository.find();
+	}
 	findOne(id:string): Promise<Message>
-		{
-			return this.messageRepository.findOne(id);
-		}
+	{
+		return this.messageRepository.findOne(id);
+	}
     async deleteMessage(id: string): Promise<void> {
         await this.messageRepository.delete(id);
     }

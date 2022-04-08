@@ -12,19 +12,19 @@ import { Chat } from './models/chat.entity'
 
 @Module({
 
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'container-postgres',
-      port: 5432,
-      username: 'root',
-      password: 'root',
-      database: 'db',
-     entities: [User, Message, Chat],
-      synchronize: true,
-    }),
-   UserModule, MessageModule, ChatModule
-  ],
-  providers: [AppGateway],
+	imports: [
+		TypeOrmModule.forRoot({
+			type: 'postgres',
+			host: 'container-postgres',
+			port: 5432,
+			username: 'root',
+			password: 'root',
+			database: 'db',
+			entities: [User, Message, Chat],
+			synchronize: true,
+		}),
+		UserModule, MessageModule, ChatModule
+	],
+	providers: [AppGateway],
 })
 export class AppModule {}

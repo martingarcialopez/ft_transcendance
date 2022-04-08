@@ -2,16 +2,16 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Message {
-  @PrimaryGeneratedColumn()
-  id: number;
+	@PrimaryGeneratedColumn()
+	id: number;
 
-  @Column()
-  user_id: number;
+	@Column()
+	user_id: number;
 
-  @Column()
-  created_on: string;
+	@Column()
+	created_on: string;
 
-  @Column("text")
-  content: string;
+	@Column("text")
+	content: string;
 
 }
