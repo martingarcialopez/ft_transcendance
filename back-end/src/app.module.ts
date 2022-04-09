@@ -2,13 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './models/user.entity'
 import { UserModule } from './modules/user.module';
-import { Message } from './models/message.entity';
-import { MessageModule } from './modules/message.module';
-import { AppGateway } from './app.gateway';
+import { MessageGateway } from './message.gateway';
 import {MessageService} from './services/message.service';
-import {MessageController} from './controllers/message.controller';
-import { ChatModule } from './modules/chat.module';
-import { Chat } from './models/chat.entity'
+import { MessageModule } from './modules/message.module';
+import { Message } from './models/message.entity'
 
 @Module({
 
@@ -20,11 +17,11 @@ import { Chat } from './models/chat.entity'
 			username: 'root',
 			password: 'root',
 			database: 'db',
-			entities: [User, Message, Chat],
+			entities: [User, Message],
 			synchronize: true,
 		}),
-		UserModule, MessageModule, ChatModule
+		UserModule, MessageModule
 	],
-	providers: [AppGateway],
+	providers: [MessageGateway],
 })
 export class AppModule {}

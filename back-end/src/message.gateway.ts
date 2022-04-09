@@ -8,13 +8,13 @@ import {
 	OnGatewayDisconnect,
 	MessageBody,
 } from '@nestjs/websockets';
-import { Chat } from './models/chat.entity';
+import { Message } from './models/message.entity';
 import { NestGateway } from '@nestjs/websockets/interfaces/nest-gateway.interface';
 import { Bind, UseInterceptors } from '@nestjs/common';
-import {ChatService} from './services/chat.service';
+import {MessageService} from './services/message.service';
 import { Logger, Body } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
-import { ChatDto } from './dtos/in/chat.dto'
+import { MessageDto } from './dtos/in/message.dto'
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
@@ -24,13 +24,13 @@ import { ChatDto } from './dtos/in/chat.dto'
 })
 
 //implement 3 interface to log key status
-export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
 	/*gives us access to the websockets server instance*/
 	@WebSocketServer() server: Server;
 
 	constructor(
-		private readonly chatService: ChatService
+		private readonly messageService: MessageService
 	) {
 	}
 
@@ -38,17 +38,17 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
 	@Bind(MessageBody(), ConnectedSocket())
 	@SubscribeMessage('msgToServer')
-	async handleNewMessage(chat: Chat) {
-		console.log('New Chat 888', chat.content);
-		const value = await this.chatService.saveChat(chat);
+	async handleNewMessage(message: Message) {
+		console.log('New Message 888', message.content);
+		const value = await this.messageService.saveMessage(message);
 		this.server.emit('msgToClient', value);
 	}
 
 
 	async handleConnection(server: Server){
   		this.logger.log('ONLINE!!!!!!!!!!!!!!!');
-		const message =  await this.chatService.getChat();
-		this.server.emit('msgToClient', message);
+		const all_message =  await this.messageService.getMessage();
+		this.server.emit('msgToClient', all_message);
 	}
 
 	afterInit(server: Server) {

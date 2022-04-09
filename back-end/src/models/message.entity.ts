@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { User } from './user.entity';
+
 
 @Entity()
 export class Message {
@@ -6,12 +8,12 @@ export class Message {
 	id: number;
 
 	@Column()
-	user_id: number;
-
-	@Column()
-	created_on: string;
+	name: string;
 
 	@Column("text")
 	content: string;
 
+    @OneToOne(() => User)
+	@JoinColumn()
+    user: User;
 }

@@ -1,5 +1,5 @@
-export class CreateMessageDto {
-    user_id: number;
-	created_on: string;
+export class MessageDto {
+    id: number;
+	name: string;
     content: string;
 }

@@ -1,0 +1,48 @@
+//ENTER in psql
+sudo -u postgres psql
+or
+psql 'postgresql://myuser:mypass@localhost:5432/my_cats'
+
+//LIST db
+\list
+
+CREATE TABLE cats_info (
+	user_id serial PRIMARY KEY,
+	username VARCHAR ( 50 ) UNIQUE NOT NULL,
+	url VARCHAR ( 255 ) UNIQUE NOT NULL,
+	created_on TIMESTAMP NOT NULL
+);
+
+//enter to the db: my_cats
+\c my_cats;
+
+//create table:
+CREATE TABLE cats (
+    user_id serial PRIMARY KEY,
+    username VARCHAR ( 50 ) UNIQUE NOT NULL,
+    url VARCHAR ( 255 ) UNIQUE NOT NULL,
+    created_on TIMESTAMP NOT NULL
+);
+
+
+ADD info
+INSERT INTO table_name(column1, column2, …)
+VALUES (value1, value2, …)
+RETURNING *;
+
+INSERT INTO cats_info
+VALUES (default, 'maobe', 'https://pixabay.com/fr/photos/cat-chaton-animal-de-compagnie-6706393/', NOW());
+
+(about time : NOW())
+//show tables in my_cats:
+\dt(show tables ) or select * from cats_info; or TABLE table_name;
+
+
+
+CREATE TABLE user (
+    id serial PRIMARY KEY,
+    username VARCHAR,
+    lastname VARCHAR,
+    firstname VARCHAR,
+    password VARCHAR
+);
