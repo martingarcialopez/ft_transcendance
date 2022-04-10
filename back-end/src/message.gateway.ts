@@ -44,7 +44,6 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 		this.server.emit('msgToClient', value);
 	}
 
-
 	async handleConnection(server: Server){
   		this.logger.log('ONLINE!!!!!!!!!!!!!!!');
 		const all_message =  await this.messageService.getMessage();

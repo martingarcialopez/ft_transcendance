@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn,OneToMany } from 'typeorm';
 import { Message } from './message.entity';
+import { Participant } from './participant.entity';
+
 @Entity()
 export class User {
 	@PrimaryGeneratedColumn()
@@ -23,4 +25,7 @@ export class User {
 /* note: we will create user property in the Message entity */
 	@OneToMany((type) => Message, (message) => message.user)
     messages: Message[];
+
+	@OneToMany((type) => Participant, (participant) => participant.user)
+    participant: Participant[];
 }

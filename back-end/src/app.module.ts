@@ -6,6 +6,8 @@ import { MessageGateway } from './message.gateway';
 import {MessageService} from './services/message.service';
 import { MessageModule } from './modules/message.module';
 import { Message } from './models/message.entity';
+import { Room } from './models/room.entity';
+import { Participant } from './models/participant.entity';
 
 @Module({
 
@@ -17,7 +19,7 @@ import { Message } from './models/message.entity';
 			username: 'root',
 			password: 'root',
 			database: 'db',
-			entities: [User, Message],
+			entities: [User, Message, Room, Participant],
 			synchronize: true,
 		}),
 
