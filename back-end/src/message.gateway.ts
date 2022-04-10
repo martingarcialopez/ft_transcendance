@@ -39,7 +39,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	@Bind(MessageBody(), ConnectedSocket())
 	@SubscribeMessage('msgToServer')
 	async handleNewMessage(message: Message) {
-		console.log('New Message 888', message.content);
+		console.log('New Message 888', message.name,message.content);
 		const value = await this.messageService.saveMessage(message);
 		this.server.emit('msgToClient', value);
 	}

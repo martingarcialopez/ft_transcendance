@@ -10,7 +10,7 @@ export class MessageService {
     constructor(
         @InjectRepository(Message)
         private readonly messageRepository: Repository<Message>,
-    ) {}
+	){}
 
 
 	async saveMessage(messageDto: MessageDto): Promise<Message> {

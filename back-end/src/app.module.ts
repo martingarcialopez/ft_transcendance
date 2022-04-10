@@ -5,7 +5,7 @@ import { UserModule } from './modules/user.module';
 import { MessageGateway } from './message.gateway';
 import {MessageService} from './services/message.service';
 import { MessageModule } from './modules/message.module';
-import { Message } from './models/message.entity'
+import { Message } from './models/message.entity';
 
 @Module({
 
@@ -20,6 +20,7 @@ import { Message } from './models/message.entity'
 			entities: [User, Message],
 			synchronize: true,
 		}),
+
 		UserModule, MessageModule
 	],
 	providers: [MessageGateway],
