@@ -10,7 +10,7 @@ const LoginButton = () => {
     const response_type = "code";
 
     const response = await fetch(
-      `https://${domain}/authorize?` + 
+      `https://${domain}?` + 
       `client_id=${client_id}&` + 
       `redirect_uri=${redirect_uri}&` +
       `response_type=${response_type}` +
