@@ -12,6 +12,7 @@ import { Profile } from './components/Profile'
 import { RequireAuth } from './components/RequireAuth'
 import { Chat } from './components/Chat'
 import { Pong } from './components/Pong'
+import { Challenges } from './components/Challenges'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/chat' element={<Chat />} />
+        <Route path="/challenges" element={<Challenges />} />
         <Route
           path='/profile'
           element={

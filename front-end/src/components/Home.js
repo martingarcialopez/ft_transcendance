@@ -1,3 +1,5 @@
+import LoginButton from "../auth/LoginButton";
+import LogoutButton from "../auth/LogoutButton";
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from './auth'
 
@@ -8,11 +10,13 @@ export const Home = () => {
   return (
     <>
       <div>Home Page</div>
+      <div className="App-body">
       {!auth.user ?
-        <button onClick={() => navigate('login')}>Login</button>
+          <LoginButton />
         :
-        <button onClick={() => navigate('order-summary')}>Place order</button>
+          <LogoutButton />
       }
+      </div>
     </>
   )
 }
