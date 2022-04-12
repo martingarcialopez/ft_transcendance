@@ -9,12 +9,18 @@ import {
 	MessageBody,
 } from '@nestjs/websockets';
 import { Message } from './models/message.entity';
+import { Room } from './models/room.entity';
+import { Participant } from './models/participant.entity';
 import { NestGateway } from '@nestjs/websockets/interfaces/nest-gateway.interface';
 import { Bind, UseInterceptors } from '@nestjs/common';
 import {MessageService} from './services/message.service';
+import {ParticipantService} from './services/participant.service';
+import {RoomService} from './services/room.service';
 import { Logger, Body } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
-import { MessageDto } from './dtos/in/message.dto'
+import { MessageDto } from './dtos/in/message.dto';
+import { RoomDto } from './dtos/in/room.dto';
+import { ParticipantDto } from './dtos/in/participant.dto'
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
@@ -23,6 +29,8 @@ import { MessageDto } from './dtos/in/message.dto'
 	},
 })
 
+@WebSocketGateway()
+
 //implement 3 interface to log key status
 export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
@@ -30,20 +38,17 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	@WebSocketServer() server: Server;
 
 	constructor(
-		private readonly messageService: MessageService
-	) {
-	}
+		private readonly messageService: MessageService,
+		private readonly roomService: RoomService,
+		private readonly participantService: ParticipantService
+	) {}
 
 	private logger: Logger = new Logger('AppGateway');
 
-	@Bind(MessageBody(), ConnectedSocket())
-	@SubscribeMessage('msgToServer')
-	async handleNewMessage(message: Message) {
-		console.log('New Message 888', message.name,message.content);
-		const value = await this.messageService.saveMessage(message);
-		this.server.emit('msgToClient', value);
-	}
 
+	/*
+	      CONNECTIONS
+	 */
 	async handleConnection(server: Server){
   		this.logger.log('ONLINE!!!!!!!!!!!!!!!');
 		const all_message =  await this.messageService.getMessage();
@@ -57,4 +62,71 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	handleDisconnect(client: Socket) {
 		this.logger.log(`Client disconnected: ${client.id}`);
 	}
+
+
+	/*
+	      MESSAGES
+	 */
+	@Bind(MessageBody(), ConnectedSocket())  // useful?
+	@SubscribeMessage('createMessage')
+	async createMessage(message: Message) {
+		console.log('New Message 888', message.name,message.content);
+		const value = await this.messageService.createMessage(message);
+		this.server.emit('msgToClient', value);
+	}
+
+
+	@SubscribeMessage('getMessage')
+	async getMessage(message: Message) {
+		const all_message =  await this.messageService.getMessage();
+		this.server.emit('msgToClient', all_message);
+	}
+
+	@SubscribeMessage('deleteMessage')
+	async deleteMessage(id: number) {
+		await this.messageService.deleteMessage(id);
+	}
+
+
+	/*
+	      ROOMS
+	 */
+	@SubscribeMessage('createRoom')
+	async createRoom(room: Room) {
+		const value = await this.roomService.createRoom(room);
+	}
+
+
+	@SubscribeMessage('getRoom')
+	async getRoom(room: Room) {
+		const all_room =  await this.roomService.getRoom();
+	}
+
+	@SubscribeMessage('deleteRoom')
+	async deleteRoom(id: number) {
+		await this.roomService.deleteRoom(id);
+	}
+
+	/*
+	      PARTICIPANTS
+	 */
+	@SubscribeMessage('createParticipant')
+	async createParticipant(participant: ParticipantDto) {
+		const value = await this.participantService.createParticipant(participant);
+	}
+
+
+	@SubscribeMessage('getParticipant')
+	async getParticipant(room_id: number) {
+		const all_participant =  await this.participantService.getParticipant(room_id);
+	}
+
+	@SubscribeMessage('deleteParticipant')
+	async deleteParticipant(id: number) {
+		await this.participantService.deleteParticipant(id);
+	}
+
+
+
+
 }

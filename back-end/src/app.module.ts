@@ -7,8 +7,11 @@ import {MessageService} from './services/message.service';
 import { MessageModule } from './modules/message.module';
 import { Message } from './models/message.entity';
 import { Room } from './models/room.entity';
+import { RoomModule } from './modules/room.module';
+import { RoomService} from './services/room.service';
 import { Participant } from './models/participant.entity';
-
+import { ParticipantModule } from './modules/participant.module';
+import { ParticipantService} from './services/participant.service';
 @Module({
 
 	imports: [
@@ -23,7 +26,7 @@ import { Participant } from './models/participant.entity';
 			synchronize: true,
 		}),
 
-		UserModule, MessageModule
+		UserModule, MessageModule, RoomModule, ParticipantModule
 	],
 	providers: [MessageGateway],
 })

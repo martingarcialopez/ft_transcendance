@@ -27,5 +27,5 @@ export class User {
     messages: Message[];
 
 	@OneToMany((type) => Participant, (participant) => participant.user)
-    participant: Participant[];
+    participants: Participant[];
 }

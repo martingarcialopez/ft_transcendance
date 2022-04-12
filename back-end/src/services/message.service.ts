@@ -13,7 +13,7 @@ export class MessageService {
 	){}
 
 
-	async saveMessage(messageDto: MessageDto): Promise<Message> {
+	async createMessage(messageDto: MessageDto): Promise<Message> {
 		const message = new Message();
 		message.name = messageDto.name;
 		message.content = messageDto.content;
@@ -29,7 +29,7 @@ export class MessageService {
 	{
 		return this.messageRepository.findOne(id);
 	}
-    async deleteMessage(id: string): Promise<void> {
+    async deleteMessage(id: number): Promise<void> {
         await this.messageRepository.delete(id);
     }
 

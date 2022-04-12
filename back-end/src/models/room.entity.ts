@@ -9,15 +9,22 @@ export class Room {
 	id: number;
 
 	@Column()
-    name: string;
+    chat_name: string;
 
 	@Column()
+    owner: string;
+
+	@Column()
+    password: string;
+
+	//public or private? false means private
+	@Column({ default: false })
 	type: boolean;
 
 	@OneToMany((type) => Message, (message) => message.room)
     messages: Message[];
 
 	@OneToMany((type) => Participant, (participant) => participant.room)
-    participant: Participant[];
+    participants: Participant[];
 
 }
