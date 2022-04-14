@@ -8,13 +8,11 @@ export class Participant {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
-	roomID:number;
-
 	@ManyToOne((type) => User, (user) => user.participants)
     user: User;
 
 	@ManyToOne((type) => Room, (room) => room.participants)
+	@JoinColumn({ name: "roomId"})
     room: Room;
 
 }

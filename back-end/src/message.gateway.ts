@@ -98,8 +98,8 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
 
 	@SubscribeMessage('getRoom')
-	async getRoom(room: Room) {
-		const all_room =  await this.roomService.getRoom();
+	async getRoom() {
+		const all_room =  await this.roomService.getRoom(2);
 	}
 
 	@SubscribeMessage('deleteRoom')
