@@ -97,6 +97,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	}
 
 
+	/*get all user in the given id room*/
 	@SubscribeMessage('getRoom')
 	async getRoom() {
 		const all_room =  await this.roomService.getRoom(2);

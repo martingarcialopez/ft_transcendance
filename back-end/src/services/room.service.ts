@@ -12,8 +12,6 @@ export class RoomService {
 	constructor(
         @InjectRepository(Room)
         private readonly roomRepository: Repository<Room>,
-		@InjectRepository(Participant)
-		private readonly participantRepository: Repository<Participant>,
     ){}
 
 
@@ -26,23 +24,17 @@ export class RoomService {
     }
 
 
-	// async getRoom(): Promise<Room[]>
-    // {
-    //     return await this.roomRepository.find();
-    // }
-
+	/*get all user in the given id room*/
 	async getRoom(room_Id: number): Promise<Room>
 	{
 		const room = await this.roomRepository.findOne(room_Id);
 		console.log(room.room_name, room.type, 'room here\n', room);
 		const p = await this.roomRepository.createQueryBuilder("room")
-			.leftJoinAndSelect("room.participants", "participant")
+			 .leftJoinAndSelect("room.participants", "participant")
             .leftJoinAndSelect("participant.user", "user")
 			.where("room.id = :room_Id", { room_Id: room_Id })
 			.getMany();
-		console.log(p[0].participants[0]);
 		return room;
-//		return await this.roomRepository.findOne(room_Id);
 	}
 
 	async deleteRoom(id: number): Promise<void> {

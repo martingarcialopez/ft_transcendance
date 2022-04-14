@@ -12,7 +12,6 @@ export class Participant {
     user: User;
 
 	@ManyToOne((type) => Room, (room) => room.participants)
-	@JoinColumn({ name: "roomId"})
     room: Room;
 
 }
