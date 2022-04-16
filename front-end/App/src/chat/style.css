@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@1,600&display=swap');
+*{
+	margin:0;
+	padding:0;
+}
+
+html 
+{
+  font-size: 16px;
+}
+
+.container 
+{
+	display: flex;
+	flex-flow: row wrap;
+	background-color: rgb(255, 255, 255);
+	/* justify-content:space-evenly; */
+	align-items: flex-end;
+	height: 100vh;
+
+}
+
+.item
+{
+	background-color: #f1f1f1;
+	width: 25vw;
+	height: 80vh;
+	margin: 10px;
+	text-align: center;
+	font-size: 30px;
+	background-color: rgb(211, 207, 207);
+	overflow: auto;
+
+
+ }
+
+.items-2
+{
+	flex-grow: 2;
+	background-color: rgb(255, 255, 255);
+	position: relative;
+	/* top: 50% */
+
+}
+
+.field-chat
+{
+	position: relative;
+	top: 85%;
+	display: block;
+}
+
+.field-chat textarea {
+	width: 60%;
+	border-color: rgb(105, 163, 202);
+	background: #f1f1f1;
+	resize: none;
+	min-height: 10vh;
+
+  }
+
+button  {
+margin-left: 1%;
+border-style: hidden;
+background: #ffffff;
+cursor: pointer;
+
+}
+
+.user-icone
+{
+	width: 3vw;
+	/* border: 3px blue dashed; */
+	/* border-radius: 10px; */
+	cursor: pointer;
+
+
+}
+
+.user-name
+{
+	font-family: 'Titillium Web', sans-serif;
+	color: rgb(59, 163, 76);
+	font-size:medium;
+	cursor: pointer;
+
+}
+
+.setting-chanel, .icon-chanel{
+	cursor: pointer;
+
+}
