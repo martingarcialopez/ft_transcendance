@@ -1,14 +1,15 @@
-FROM debian
-LABEL maintainer="mkayumba@student.42.fr"
+FROM node:lts
 
-RUN apt-get -y update \
-&& apt-get -y upgrade \
-&& apt install build-essential -y \
-&& apt install -y zsh \
-&& apt-get install -y tree \
-&&  apt-get install -y curl
-
-COPY  ./entrypoint.sh /usr/local/bin
 WORKDIR /App
 
-ENTRYPOINT [ "entrypoint.sh" ]
+COPY ./App/package*.json ./
+
+RUN npm install && \
+	mkdir node_modules/.cache && \
+	chmod -R 777 node_modules/.cache
+
+EXPOSE 8080
+
+COPY ./App /App
+
+CMD ["npm", "start"]
