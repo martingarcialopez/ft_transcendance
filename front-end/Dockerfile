@@ -9,6 +9,6 @@ RUN apt-get -y update \
 &&  apt-get install -y curl
 
 COPY  ./entrypoint.sh /usr/local/bin
-
+WORKDIR /App
 
 ENTRYPOINT [ "entrypoint.sh" ]

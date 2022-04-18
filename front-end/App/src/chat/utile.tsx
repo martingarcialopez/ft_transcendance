@@ -4,7 +4,7 @@ import { BsPeopleFill } from "react-icons/bs";
 import { IoIosPeople } from "react-icons/io";
 import { AiOutlineSetting } from "react-icons/ai";
 import { AddNewChanel } from "./settingChanel";
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 import { MyGlobalContext } from "./index";
 import { e_actionType, t_chanel } from "./type";
 import { TextField } from "./conversation";
@@ -57,32 +57,48 @@ function ButtonChanel() {
   );
 }
 
+/* this fuction take a chanel name then return back the index of that chanel  */
+function getIndexChanel(tab: t_chanel[], name_chanel: string): number {
+  let index: number = -1;
+  let tmp = document.getElementById(name_chanel);
+  console.log(" name_chanel :", name_chanel);
+  if (tmp) {
+    index = tab.findIndex((element: t_chanel) => element.name === name_chanel);
+  }
+  return index;
+}
+
 function PrintChanel() {
   const { chanel } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
-  const { ActionCreatorRecipient, ActionCreatorMsgSetMembers } =
-    bindActionCreators(actionCreators, dispatch);
-  const { message } = useSelector((state: RootState) => state);
-  console.log("message : ", message);
-  const refInput = useRef(null);
+  const { ActionCreatorRecipient, ActionCreatorMsgChanel } = bindActionCreators(
+    actionCreators,
+    dispatch
+  );
+  /* const { message } = useSelector((state: RootState) => state); */
+
+  /* const refInput = useRef(null); */
+  /* console.log("message:", message); */
   return (
     <>
       <ButtonChanel /> <br></br>
       {chanel.map((item: t_chanel, index: number) => (
         <div
+          id={item.name}
           onClick={(e) => {
-            //console.log('hello')
-            //  ActionCreatorRecipient(e.target.id)
-            // let index:number = chanel.findIndex((element:t_chanel) => element.name === e.target.id)
-            // ActionCreatorMsgSetMembers([...chanel[index].members])
+            let index = getIndexChanel(chanel, item.name);
+            {
+              /* console.log("index :", index); */
+            }
+            ActionCreatorMsgChanel({ ...chanel[index] });
+            {
+              /* console.log("chanel :", chanel[index]); */
+            }
           }}
           className="user-name chanel-name"
-          id={item.name}
           key={index}
-          ref={refInput}
         >
-          {" "}
-          {item.name}{" "}
+          {item.name}
         </div>
       ))}
       <ButtonSettingChanel />
