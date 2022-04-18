@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import socketio from "socket.io-client";
 
-const ENDPOINT = "http://172.18.0.4:3000";
+const ENDPOINT = "http://localhost:3000";
 
 const socket = socketio(ENDPOINT);
 
