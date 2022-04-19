@@ -36,11 +36,10 @@ function initChanel(): t_chanel {
 
 function initStateMsg(): t_stateMsg {
   return {
-    content: [],
-    from: "",
-    to: "",
-    members: [],
-    chanel: initChanel(),
+    contentReceived: [],
+    from: "it going to be the information about about who is send data",
+    destChannel: initChanel(),
+    contentToSend: [],
   };
 }
 
@@ -55,18 +54,16 @@ export function msgReducer(
   action: t_ActionMsg
 ) {
   switch (action.type) {
-    case e_actionType.NEW_MSG: {
-      return { ...state, content: action.payload };
-    }
-    case e_actionType.RECIPIENT: {
-      return { ...state, to: action.payload };
-    }
-    case e_actionType.MEMBERS: {
-      return { ...state, members: action.payload };
+    case e_actionType.MSG_RECEIVED: {
+      return { ...state, contentReceived: action.payload };
     }
     case e_actionType.CHANEL_RECIPIENT: {
-      return { ...state, chanel: action.payload };
+      return { ...state, destChannel: action.payload };
     }
+    case e_actionType.MSG_TO_SEND: {
+      return { ...state, contentToSend: action.payload };
+    }
+
     default:
       return state;
   }

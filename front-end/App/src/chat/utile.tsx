@@ -14,11 +14,9 @@ import { bindActionCreators } from "redux";
 import * as actionCreators from "./redux/actionCreator";
 
 /**
- * display list of chanel
- * @param props array of chanel
- * @returns jsx
+ * lead the page of setting chanel
+ * that page is loading when user cick up on aht button
  */
-
 function ButtonSettingChanel() {
   const user = useContext(MyGlobalContext);
 
@@ -57,7 +55,10 @@ function ButtonChanel() {
   );
 }
 
-/* this fuction take a chanel name then return back the index of that chanel  */
+/**
+ * this fuction take a chanel name then return back the index of that chanel
+ *
+ */
 function getIndexChanel(tab: t_chanel[], name_chanel: string): number {
   let index: number = -1;
   let tmp = document.getElementById(name_chanel);
@@ -71,14 +72,11 @@ function getIndexChanel(tab: t_chanel[], name_chanel: string): number {
 function PrintChanel() {
   const { chanel } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
-  const { ActionCreatorRecipient, ActionCreatorMsgChanel } = bindActionCreators(
+  const { ActionCreatorMsgChanel } = bindActionCreators(
     actionCreators,
     dispatch
   );
-  /* const { message } = useSelector((state: RootState) => state); */
-
-  /* const refInput = useRef(null); */
-  /* console.log("message:", message); */
+  const { message } = useSelector((state: RootState) => state);
   return (
     <>
       <ButtonChanel /> <br></br>
@@ -87,13 +85,7 @@ function PrintChanel() {
           id={item.name}
           onClick={(e) => {
             let index = getIndexChanel(chanel, item.name);
-            {
-              /* console.log("index :", index); */
-            }
             ActionCreatorMsgChanel({ ...chanel[index] });
-            {
-              /* console.log("chanel :", chanel[index]); */
-            }
           }}
           className="user-name chanel-name"
           key={index}

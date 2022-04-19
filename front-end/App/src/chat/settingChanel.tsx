@@ -21,12 +21,20 @@ function updateArrayChanel(data: any): t_chanel {
 /*
  * display all chanel with option to join it or leave it
  */
-/* function ListofChanel() {
- *   const { chanel } = useSelector((state: RootState) => state);
- *   return ()<>
- *
- * 	</>);
- * } */
+function JoinOrLeave() {
+  const { chanel } = useSelector((state: RootState) => state);
+  return (
+    <>
+      <br />
+      {chanel.map((item: t_chanel, index: number) => (
+        <div key={index}>
+          {item.name}
+          <input type="submit" value="Join or Leave" />
+        </div>
+      ))}
+    </>
+  );
+}
 
 /**
  * this function avoid dupliction of chanel name
@@ -66,10 +74,10 @@ export function AddNewChanel() {
             ActionCreatorChanelAdd(newChanel);
           console.log("new chanel:", newChanel);
           /*
-					   request server to	create this chanel "data.name"
-					   socket.emit('create room', data.name)
-	
-				   */
+								 request server to	create this chanel "data.name"
+								 socket.emit('create room', data.name)
+		  	
+							 */
         })}
       >
         <input
@@ -95,6 +103,7 @@ export function AddNewChanel() {
         <br />
         <input type="submit" value="New Chanel" />
       </form>
+      <JoinOrLeave />
     </>
   );
 }

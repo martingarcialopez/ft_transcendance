@@ -8,7 +8,6 @@ services:
       - ft_nestjs
     build:
       context: ./front-end
-      # dockerfile: ./Dockerfile
     container_name: "container-front-end"
     env_file:
       - "./.env"
@@ -18,8 +17,6 @@ services:
       - webnet
     volumes:
       - ./front-end/App:/App
-      # - /usr/src/app/node_modules
-
     restart: always
 
 # ####################### NestJS #########################
