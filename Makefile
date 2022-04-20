@@ -1,6 +1,6 @@
 NAME = ft_transcendance
 
-all: prune reload
+all: reload
 
 up: reload
 stop:

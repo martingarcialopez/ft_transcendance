@@ -1,6 +1,6 @@
 export class RoomDto {
     id: number;
-	chat_name: string;
+	room_name: string;
     owner: string;
 	password: string;
 }
