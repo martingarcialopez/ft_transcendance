@@ -21,6 +21,15 @@ npm install -g create-react-app
 
 # cd awesome-project
 # cd /my-pp
+
+echo "\n*****install dig, nslookup, host commands in Debian based server*******\n"
+sleep 5
+apt  -y update
+apt-get install dnsutils -y
+sleep 5
+export FT_NESTJS=`host ft_nestjs | cut -b 23-`
+echo `host ft_nestjs | cut -b 23- `  "ft_nestjs" >> /etc/hostname
+
 npm install
 npm install react-icons --save
 npm start
