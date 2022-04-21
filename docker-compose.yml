@@ -17,12 +17,12 @@ services:
     networks:
       - webnet
     volumes:
-      - ./front-end/App:/App
+      - ./front-end/App/src:/App/src
       # - /usr/src/app/node_modules
 
     restart: always
 
-# ####################### NestJS #########################
+    # ####################### NestJS #########################
 
   ft_nestjs:
     depends_on:

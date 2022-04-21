@@ -51,8 +51,10 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	 */
 	async handleConnection(server: Server){
   		this.logger.log('ONLINE!!!!!!!!!!!!!!!');
-		const all_message =  await this.messageService.getMessage();
-		this.server.emit('msgToClient', all_message);
+		//		const all_message =  await this.messageService.getRoomMessage(1);
+		const users = await this.roomService.getRoom(1);
+
+		this.server.emit('msgToClient', users);
 	}
 
 	afterInit(server: Server) {
@@ -75,10 +77,10 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 		this.server.emit('msgToClient', value);
 	}
 
-
+/*get all messages from a room*/
 	@SubscribeMessage('getMessage')
-	async getMessage(message: Message) {
-		const all_message =  await this.messageService.getMessage();
+	async getMessage(room_id:number) {
+		const all_message =  await this.messageService.getRoomMessage(room_id);
 		this.server.emit('msgToClient', all_message);
 	}
 
@@ -100,7 +102,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	/*get all user in the given id room*/
 	@SubscribeMessage('getRoom')
 	async getRoom() {
-		const all_room =  await this.roomService.getRoom(2);
+		const all_room =  await this.roomService.getRoom(1);
 	}
 
 	@SubscribeMessage('deleteRoom')

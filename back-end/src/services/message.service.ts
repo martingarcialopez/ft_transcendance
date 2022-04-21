@@ -20,11 +20,23 @@ export class MessageService {
 	    return this.messageRepository.save(message);
 	}
 
-	//show all the message
+	/*show all the message*/
 	async getMessage(): Promise<Message[]>
 	{
 		return await this.messageRepository.find();
 	}
+
+	async getRoomMessage(room_id:number): Promise<Message[]>
+	{
+		//	return await this.messageRepository.find();
+		const messages_in_room = await this.messageRepository
+			.createQueryBuilder("message")
+			.where("message.roomId = :id", { id: room_id })
+            .getMany();
+		console.log(messages_in_room);
+		return messages_in_room;
+	}
+
 	findOne(id:string): Promise<Message>
 	{
 		return this.messageRepository.findOne(id);
