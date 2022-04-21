@@ -1,12 +1,12 @@
 import React from "react";
 import "./style.css";
 import { useReducer } from "react";
-import { PrintList } from "./utile";
-import { listChanel, userList } from "./data";
+import { PrintChannels } from "./leftMenu";
 import { e_actionType } from "./type";
 import { TextField } from "./conversation";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
+import { PrintUserList } from "./rightMenu";
 
 type Action = {
   type: string;
@@ -18,13 +18,20 @@ type t_state = {
   theState: any;
 };
 
+function initialState(): t_state {
+  return {
+    theDispatch: TextField,
+    theState: e_actionType.TEXT_FIELD,
+  };
+}
+
 /**
  * this reducer let to handle the changing page
  * @param state handle all clic on the patern
  * @param action
  * @returns
  */
-function handleClickReducer(state: t_state, action: Action) {
+function handleClickReducer(state: t_state, action: Action): t_state {
   switch (action.type) {
     case e_actionType.SET_CHANEL:
       return { ...state, theDispatch: action.payload };
@@ -35,12 +42,12 @@ function handleClickReducer(state: t_state, action: Action) {
   }
 }
 
-function initialState(): t_state {
-  return {
-    theDispatch: TextField,
-    theState: e_actionType.TEXT_FIELD,
-  };
-}
+/* function initialState(): t_state {
+ *   return {
+ *     theDispatch: TextField,
+ *     theState: e_actionType.TEXT_FIELD,
+ *   };
+ * } */
 
 export const MyGlobalContext = React.createContext<t_state | undefined>(
   undefined
@@ -57,10 +64,13 @@ function LayoutChat(): JSX.Element {
     <div className="container">
       <Provider store={store}>
         <MyGlobalContext.Provider
-          value={{ theState: state, theDispatch: dispatch }}
+          value={{
+            theState: state,
+            theDispatch: dispatch,
+          }}
         >
           <div className="items-1 item list">
-            <PrintList list={listChanel} type="chanel" />{" "}
+            <PrintChannels />
           </div>
 
           <div id="items-2" className="items-2 item">
@@ -69,7 +79,7 @@ function LayoutChat(): JSX.Element {
           </div>
 
           <div className="items-3 item list">
-            <PrintList list={userList} type="user" />{" "}
+            <PrintUserList />
           </div>
         </MyGlobalContext.Provider>
       </Provider>

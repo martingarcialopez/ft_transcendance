@@ -19,15 +19,6 @@ export const ActionCreatorMsgReceived = (newMsg: string[]) => {
   };
 };
 
-/* export const ActionCreatorMsgSetMembers = (name: string[]) => {
- *   return (dispatch: Dispatch<t_ActionMsg>) => {
- *     dispatch({
- *       type: e_actionType.MEMBERS,
- *       payload: name,
- *     });
- *   };
- * }; */
-
 export const ActionCreatorMsgChanel = (name: t_chanel) => {
   return (dispatch: Dispatch<t_ActionMsg>) => {
     dispatch({
@@ -41,6 +32,15 @@ export const ActionCreatorMsgToSend = (name: string[]) => {
   return (dispatch: Dispatch<t_ActionMsg>) => {
     dispatch({
       type: e_actionType.MSG_TO_SEND,
+      payload: name,
+    });
+  };
+};
+
+export const ActionCreatorInfo = (name: string) => {
+  return (dispatch: Dispatch<t_ActionMsg>) => {
+    dispatch({
+      type: e_actionType.NAME_OF_CURRENT_CHANNEL,
       payload: name,
     });
   };

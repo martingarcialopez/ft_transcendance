@@ -9,8 +9,6 @@ export type t_chanel = {
 export type t_stateMsg = {
   contentReceived: string[];
   from: string;
-  /* to: string;
-   * members: []; */
   destChannel: t_chanel;
   contentToSend: string[];
 };
@@ -24,6 +22,7 @@ export enum e_actionType {
   MEMBERS = "set the members of chanel",
   CHANEL_RECIPIENT = "define the chanel recipient for the message",
   MSG_TO_SEND = "message to send to a chanel room",
+  NAME_OF_CURRENT_CHANNEL = "the name of current chanel",
 }
 
 export type t_ActionChanel = {
@@ -34,4 +33,13 @@ export type t_ActionChanel = {
 export type t_ActionMsg = {
   type: string;
   payload: any;
+};
+
+export type t_ActionInfo = {
+  type: string;
+  payload: string;
+};
+
+export type t_info = {
+  titleOfPage: string;
 };

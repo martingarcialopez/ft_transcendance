@@ -1,4 +1,3 @@
-import React from "react";
 import { bindActionCreators } from "redux";
 import { BsFillArrowUpCircleFill } from "react-icons/bs";
 import { useForm } from "react-hook-form";
@@ -6,13 +5,16 @@ import * as actionCreators from "./redux/actionCreator";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import socketio from "socket.io-client";
+import { TitlePage } from "./utilsComponent";
 
 /**
+ * this the page you see when you chat with someone
  *this file content all handler about send and received message
  *
  */
 const ENDPOINT = "http://localhost:3000";
-export const socket = socketio(ENDPOINT);
+
+export const socket = socketio(ENDPOINT); //connection to the server nestJs
 
 /**
  * print the title of chat and below the title all message are display
@@ -20,7 +22,7 @@ export const socket = socketio(ENDPOINT);
 function PrintChatMsg(contentMsg: string[]) {
   return (
     <>
-      <h3>Chat</h3> <br></br>
+      <TitlePage /> <br></br>
       {contentMsg.map((item: string, index: number) => (
         <div key={index}> {JSON.stringify(item)} </div>
       ))}
@@ -30,24 +32,33 @@ function PrintChatMsg(contentMsg: string[]) {
 
 /**
  *to send message, it need to store the content , fill the object message
- *
+ *  all @content is store into a array
+ *@content is the text in the textaera
+ *@state is the store of redux
+ *MsgReceived : is the ActionCreator for the message
  */
 function sendMsg(MsgReceived: Function, state: any, content: string) {
-  //to send message it must to selected a chanel first
-  // if the none chanel was selected nothing will happened
+  /*to send message it must to selected a chanel first
+	  if the none chanel was selected nothing will happened
+	  */
   if (state.message.destChannel.name.length > 0) {
     /*
-				 if the user selected a channel it can now send  message
-			*/
+				if the user selected a channel it can now send  message
+				add the new contnent into the array
+		*/
     let newMsg = [...state.message.contentToSend, content];
     MsgReceived(newMsg);
-    socket.emit("msgToServer", content);
+    //if uncomment the line bellow it going to broacast content
+    /* socket.emit("msgToServer", content); */
+    let objMsg = state.message;
+    let channelName: string = state.message.destChannel.name;
+    socket.emit("createMessage", objMsg, channelName);
   }
 }
 
 /**
  * take the message of the field text then stock into the store redux
- * add the new message in the
+ * add the new message in the...
  * @returns chat text form
  */
 export function TextField() {
