@@ -4,8 +4,8 @@ services:
 
 # ####################### React #########################
   ft_react:
-    # depends_on:
-    #   - ft_nestjs
+    depends_on:
+      - ft_nestjs
     build:
       context: ./front-end
     container_name: "container-front-end"
