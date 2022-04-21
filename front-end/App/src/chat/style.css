@@ -86,6 +86,10 @@ cursor: pointer;
 
 }
 
+.user-name:focus {
+	border-color: rgb(105, 163, 202);
+}
+
 .setting-chanel, .icon-chanel{
 	cursor: pointer;
 

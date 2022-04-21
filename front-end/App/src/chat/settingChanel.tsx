@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import { t_chanel } from "./type";
-import React from "react";
 import "./style.css";
 import * as actionCreators from "./redux/actionCreator";
-
+import { TitlePage } from "./utilsComponent";
+import { socket } from "./conversation";
 function updateArrayChanel(data: any): t_chanel {
   let newChanel: t_chanel = {
     name: data.name,
@@ -21,12 +21,20 @@ function updateArrayChanel(data: any): t_chanel {
 /*
  * display all chanel with option to join it or leave it
  */
-/* function ListofChanel() {
- *   const { chanel } = useSelector((state: RootState) => state);
- *   return ()<>
- *
- * 	</>);
- * } */
+function JoinOrLeave() {
+  const { chanel } = useSelector((state: RootState) => state);
+  return (
+    <>
+      <br />
+      {chanel.map((item: t_chanel, index: number) => (
+        <div key={index}>
+          {item.name}
+          <input type="submit" value="Join or Leave" />
+        </div>
+      ))}
+    </>
+  );
+}
 
 /**
  * this function avoid dupliction of chanel name
@@ -50,26 +58,22 @@ function isDoublon(listOfChanel: t_chanel[], newChanel: t_chanel): boolean {
 export function AddNewChanel() {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
-  const { ActionCreatorChanelAdd } = bindActionCreators(
+  const { ActionCreatorChanelAdd, ActionCreatorInfo } = bindActionCreators(
     actionCreators,
     dispatch
   );
   const state = useSelector((state: RootState) => state);
   return (
     <>
-      <p>setting chanel</p>
+      <TitlePage />
       <form
         className="theForm"
         onSubmit={handleSubmit((data) => {
           let newChanel = updateArrayChanel(data);
           if (isDoublon(state.chanel, newChanel) === false)
             ActionCreatorChanelAdd(newChanel);
-          console.log("new chanel:", newChanel);
-          /*
-					   request server to	create this chanel "data.name"
-					   socket.emit('create room', data.name)
-	
-				   */
+          console.log("send request to create new chanel:", newChanel);
+          socket.emit("createRoom", newChanel);
         })}
       >
         <input
@@ -95,6 +99,7 @@ export function AddNewChanel() {
         <br />
         <input type="submit" value="New Chanel" />
       </form>
+      <JoinOrLeave />
     </>
   );
 }

@@ -2,14 +2,12 @@ FROM node:lts
 
 WORKDIR /App
 
-COPY ./App/package*.json ./
+COPY ./App/* ./
 
-RUN npm install && \
-	mkdir node_modules/.cache && \
-	chmod -R 777 node_modules/.cache
 
-EXPOSE 8080
 
-COPY ./App /App
+RUN npm install -g npm@latest && \
+npm install -g create-react-app 
 
-CMD ["npm", "start"]
+ENTRYPOINT npm install && npm  start
+

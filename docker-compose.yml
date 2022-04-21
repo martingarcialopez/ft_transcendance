@@ -8,7 +8,6 @@ services:
       - ft_nestjs
     build:
       context: ./front-end
-      # dockerfile: ./Dockerfile
     container_name: "container-front-end"
     env_file:
       - "./.env"
@@ -20,7 +19,7 @@ services:
       - ./front-end/App/src:/App/src
       # - /usr/src/app/node_modules
 
-    restart: always
+      restart: always
 
     # ####################### NestJS #########################
 
@@ -44,7 +43,7 @@ services:
     command: npm run start:dev
     restart: always
 
-# ####################### postgres #########################
+# # ####################### postgres #########################
   ft_postgres:
     image: postgres:alpine
     container_name: "container-postgres"
@@ -64,7 +63,7 @@ services:
       - webnet
     restart: always
 
-# ####################### pgadmin #########################
+# # ####################### pgadmin #########################
   pgadmin:
     container_name: "container-pgadmin4"
     image: dpage/pgadmin4
