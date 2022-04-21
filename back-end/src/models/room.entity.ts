@@ -9,7 +9,7 @@ export class Room {
 	id: number;
 
 	@Column()
-    chat_name: string;
+    room_name: string;
 
 	@Column()
     owner: string;

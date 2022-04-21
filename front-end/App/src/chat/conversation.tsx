@@ -12,6 +12,7 @@ import { TitlePage } from "./utilsComponent";
  *this file content all handler about send and received message
  *
  */
+
 const ENDPOINT = "http://localhost:3000";
 
 export const socket = socketio(ENDPOINT); //connection to the server nestJs

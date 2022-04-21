@@ -1,0 +1,13 @@
+| SIGNAL's name   | sender / data owner  | request data                                                         | response data                                    |
+
+|createMessage    | Lenox                | {"room_id": NUMBER, "message_content": Message,"sender": STRING}     | {"message_id": NUMBER}                           |
+|getMessage       | Sesame's mam         | {"room_id": NUMBER}                                                  |{"message_contentS": Message[]}                   |
+|deleteMessage    | Lenox                | {"room_id": NUMBER}                                                  | {"success": BOOLEAN}                           |
+
+|createRoom       | Lenox                | {"room_name": STRING, "type": STRING, "password": STRING, "owner": STRING, "members":NUMBER[]    | {"room_id": NUMBER}  |
+|getRoom          | Sesame's mam         | {"room_id": NUMBER}                                                  | {"name": STRING, "participant": PARTICIPANT[]    |
+|deleteRoom       | Lenox                | {"room_id": NUMBER                                                   | {"success": BOOLEAN}                               |
+
+|createParticipant| Lenox                | {"user_id":NUMBER, "room_id":  NUMBER}                               | {"participant_id": NUMBER}                       |
+|getParticipant   | Sesame's mam         | {"room_id":NUMBER}                                                   | {"all_participants: PARTICIPANT[]"}              |
+|deleteParticipant| Lenox                | {"participant": NUMBER}                                              | {"user_id":NUMBER, "room_id":  NUMBER}           |

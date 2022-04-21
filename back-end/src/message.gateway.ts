@@ -49,9 +49,8 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	/*
 	      CONNECTIONS
 	 */
-	async handleConnection(client: Socket,server: Server){
+	async handleConnection(server: Server){
   		this.logger.log('ONLINE!!!!!!!!!!!!!!!');
-		console.log("client id : ", client.id)
 		const all_message =  await this.messageService.getMessage();
 		this.server.emit('msgToClient', all_message);
 	}
@@ -80,7 +79,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	@SubscribeMessage('getMessage')
 	async getMessage(message: Message) {
 		const all_message =  await this.messageService.getMessage();
-		this.server.emit('msgToClient', message);
+		this.server.emit('msgToClient', all_message);
 	}
 
 	@SubscribeMessage('deleteMessage')
@@ -97,9 +96,11 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 		const value = await this.roomService.createRoom(room);
 	}
 
+
+	/*get all user in the given id room*/
 	@SubscribeMessage('getRoom')
-	async getRoom(room: Room) {
-		const all_room =  await this.roomService.getRoom();
+	async getRoom() {
+		const all_room =  await this.roomService.getRoom(2);
 	}
 
 	@SubscribeMessage('deleteRoom')
@@ -126,9 +127,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 		await this.participantService.deleteParticipant(id);
 	}
 
-	@SubscribeMessage('msgToServer')
-	handleMessage(client: Socket, payload: string): void {
-		console.log("id client == ", Socket)
-	 this.server.emit('msgToClient',  payload);
-	}
+
+
+
 }
