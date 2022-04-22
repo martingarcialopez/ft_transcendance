@@ -19,7 +19,7 @@ services:
       - ./front-end/App/src:/App/src
       # - /usr/src/app/node_modules
 
-      restart: always
+    restart: always
 
     # ####################### NestJS #########################
 
