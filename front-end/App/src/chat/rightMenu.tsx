@@ -1,12 +1,9 @@
-//import React from "react";
-/* import "./style/index.css"; */
 import { AiOutlineSetting } from "react-icons/ai";
 import { useContext } from "react";
 import { MyGlobalContext } from "./index";
 import { e_actionType, t_chanel } from "./type";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import "./style/style.css";
 import { BsPeopleFill } from "react-icons/bs";
 import { userList } from "./data";
 import { SettingUser } from "./settingUser";
