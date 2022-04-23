@@ -21,6 +21,7 @@ import { Socket, Server } from 'socket.io';
 import { MessageDto } from './dtos/in/message.dto';
 import { RoomDto } from './dtos/in/room.dto';
 import { ParticipantDto } from './dtos/in/participant.dto'
+import { RoomSnippetDto } from './dtos/in/RoomSnippetDto.dto';
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
@@ -52,7 +53,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	async handleConnection(server: Server){
   		this.logger.log('ONLINE!!!!!!!!!!!!!!!');
 		//		const all_message =  await this.messageService.getRoomMessage(1);
-		const users = await this.roomService.getRoom(1);
+		const users = await this.roomService.getRoom(8);
 
 		this.server.emit('msgToClient', users);
 	}
@@ -94,15 +95,18 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	      ROOMS
 	 */
 	@SubscribeMessage('createRoom')
-	async createRoom(room: Room) {
-		const value = await this.roomService.createRoom(room);
+	async createRoom(@Body() body:RoomDto):Promise<RoomSnippetDto>{
+		const value = await this.roomService.createRoom(body);
+		console.log('return value is ', value);
+		return value;
 	}
 
 
 	/*get all user in the given id room*/
 	@SubscribeMessage('getRoom')
 	async getRoom() {
-		const all_room =  await this.roomService.getRoom(1);
+		console.log('in getRoom');
+//		const all_room =  await this.roomService.getRoom(8);
 	}
 
 	@SubscribeMessage('deleteRoom')
