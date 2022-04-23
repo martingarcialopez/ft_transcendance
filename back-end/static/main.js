@@ -14,7 +14,7 @@ const app = new Vue({
     name: this.name,
 	content: this.content
    }
-   this.socket.emit('getRoom', message)
+   this.socket.emit('getMessage', message)
    this.content = ''
   }
  },

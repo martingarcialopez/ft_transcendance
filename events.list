@@ -5,7 +5,7 @@
 |deleteMessage    | Lenox                | {"room_id": NUMBER}                                                  | {"success": BOOLEAN}                           |
 
 |createRoom       | Lenox                | {"room_name": STRING, "type": STRING, "password": STRING, "owner": STRING, "members":NUMBER[]    | {"room_id": NUMBER}  |
-|getRoom          | Sesame's mam         | {"room_id": NUMBER}                                                  | {"name": STRING, "participant": PARTICIPANT[]    |
+|getRoom          | Sesame's mam         | {"room_id": NUMBER}                                                  | {"room_id": number, "room_name": STRING, "participant": PARTICIPANT[]    |
 |deleteRoom       | Lenox                | {"room_id": NUMBER                                                   | {"success": BOOLEAN}                               |
 
 |createParticipant| Lenox                | {"user_id":NUMBER, "room_id":  NUMBER}                               | {"participant_id": NUMBER}                       |

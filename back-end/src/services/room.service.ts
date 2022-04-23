@@ -25,16 +25,18 @@ export class RoomService {
 
 
 	/*get all user in the given id room*/
-	async getRoom(room_Id: number): Promise<Room>
+	async getRoom(room_Id: number): Promise<object>
 	{
 		const room = await this.roomRepository.findOne(room_Id);
 		console.log(room.room_name, room.type, 'room here\n', room);
 		const p = await this.roomRepository.createQueryBuilder("room")
-			 .leftJoinAndSelect("room.participants", "participant")
+			.select(["room.id", "room.room_name"])
+			.leftJoinAndSelect("room.participants", "participant")
             .leftJoinAndSelect("participant.user", "user")
 			.where("room.id = :room_Id", { room_Id: room_Id })
-			.getMany();
-		return room;
+			.getOne();
+		console.log('here', p);
+		return p;
 	}
 
 	async deleteRoom(id: number): Promise<void> {
