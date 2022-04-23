@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import socketio from "socket.io-client";
 import { TitlePage } from "./utilsComponent";
+import "./style/conversation.css";
 
 /**
  * this the page you see when you chat with someone
@@ -91,12 +92,8 @@ export function TextField() {
           {...register("name")}
           autoComplete="on"
         ></textarea>
-        <button className="send-msg">
-          <BsFillArrowUpCircleFill
-            className="send-msg"
-            size={60}
-            color="Aquamarine"
-          />{" "}
+        <button className="btn-send-msg">
+          <BsFillArrowUpCircleFill />{" "}
         </button>
       </form>
     </>

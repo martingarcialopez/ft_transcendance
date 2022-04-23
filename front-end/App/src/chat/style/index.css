@@ -1,3 +1,6 @@
+
+/****************Designe of home ************************/
+
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@1,600&display=swap');
 *{
 	margin:0;
@@ -40,32 +43,22 @@ html
 	background-color: rgb(255, 255, 255);
 	position: relative;
 	/* top: 50% */
-
 }
 
-.field-chat
-{
-	position: relative;
-	top: 85%;
-	display: block;
+/*********all buton in the site************/
+button, .icon-channel  {
+ cursor: pointer;
 }
 
-.field-chat textarea {
-	width: 60%;
-	border-color: rgb(105, 163, 202);
-	background: #f1f1f1;
-	resize: none;
-	min-height: 10vh;
-
-  }
-
-button  {
-margin-left: 1%;
-border-style: hidden;
-background: #ffffff;
-cursor: pointer;
-
+/************************left menu-right menu ******************************/
+.btn-setting-channel, .btn-setting-user{
+		cursor: pointer;
+		font-size: 5vw;
+    color:rgb(93, 173, 226 )
 }
+
+
+
 
 .user-icone
 {
@@ -77,20 +70,23 @@ cursor: pointer;
 
 }
 
-.user-name
+.list-of-my-channels, .list-of-friendships
 {
 	font-family: 'Titillium Web', sans-serif;
 	color: rgb(59, 163, 76);
-	font-size:medium;
+	font-size:x-large;
 	cursor: pointer;
 
 }
 
-.user-name:focus {
-	border-color: rgb(105, 163, 202);
+.title-page
+{
+	font-family: 'Titillium Web', sans-serif;		
 }
 
-.setting-chanel, .icon-chanel{
-	cursor: pointer;
 
+/******************leftMenu and rightmenu******************/
+.list-of-my-channels:hover, .list-of-friendships:hover
+{
+  background: #ddd;
 }

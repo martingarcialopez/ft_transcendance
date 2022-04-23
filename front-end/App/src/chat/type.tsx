@@ -23,6 +23,7 @@ export enum e_actionType {
   CHANEL_RECIPIENT = "define the chanel recipient for the message",
   MSG_TO_SEND = "message to send to a chanel room",
   NAME_OF_CURRENT_CHANNEL = "the name of current chanel",
+  USER_SETTING_PAGE = "led user setting page",
 }
 
 export type t_ActionChanel = {

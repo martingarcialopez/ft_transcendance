@@ -8,7 +8,7 @@ export function TitlePage() {
   const { info } = useSelector((state: RootState) => state);
   return (
     <>
-      <h3>{info.titleOfPage}</h3>
+      <h3 className="title-page">{info.titleOfPage}</h3>
     </>
   );
 }

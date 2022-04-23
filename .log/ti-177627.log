@@ -1,0 +1,35 @@
+[14:41:18.296] Global cache location '/home/lenox/.cache/typescript/4.6', safe file path '/home/lenox/.nvm/versions/node/v17.4.0/lib/node_modules/typescript/lib/typingSafeList.json', types map path /home/lenox/.nvm/versions/node/v17.4.0/lib/node_modules/typescript/lib/typesMap.json
+[14:41:18.297] Processing cache location '/home/lenox/.cache/typescript/4.6'
+[14:41:18.297] Trying to find '/home/lenox/.cache/typescript/4.6/package.json'...
+[14:41:18.306] Loaded content of '/home/lenox/.cache/typescript/4.6/package.json': {"private":true,"dependencies":{"types-registry":"^0.1.588"},"devDependencies":{"@types/core-js":"^2.5.5","@types/eslint":"^8.4.1","@types/javascript-time-ago":"^2.0.3","@types/nodemon":"^1.19.1","@types/object-assign":"^4.0.30","@types/p5":"^1.4.2","@types/react":"^17.0.43","@types/react-bootstrap":"^0.32.29","@types/react-dom":"^17.0.14","@types/react-redux":"^7.1.23","@types/remote-redux-devtools":"^0.5.5","@types/sass":"^1.43.1","@types/testing-library__jest-dom":"^5.14.3"}}
+[14:41:18.306] Loaded content of '/home/lenox/.cache/typescript/4.6/package-lock.json'
+[14:41:18.329] Adding entry into typings cache: 'core-js' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/core-js/index.d.ts'
+[14:41:18.334] Adding entry into typings cache: 'eslint' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/eslint/index.d.ts'
+[14:41:18.339] Adding entry into typings cache: 'javascript-time-ago' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/javascript-time-ago/index.d.ts'
+[14:41:18.346] Adding entry into typings cache: 'nodemon' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/nodemon/index.d.ts'
+[14:41:18.350] Adding entry into typings cache: 'object-assign' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/object-assign/index.d.ts'
+[14:41:18.354] Adding entry into typings cache: 'p5' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/p5/index.d.ts'
+[14:41:18.367] Adding entry into typings cache: 'react' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react/index.d.ts'
+[14:41:18.378] Adding entry into typings cache: 'react-bootstrap' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react-bootstrap/index.d.ts'
+[14:41:18.384] Adding entry into typings cache: 'react-dom' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react-dom/index.d.ts'
+[14:41:18.400] Adding entry into typings cache: 'react-redux' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react-redux/index.d.ts'
+[14:41:18.403] Adding entry into typings cache: 'remote-redux-devtools' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/remote-redux-devtools/index.d.ts'
+[14:41:18.405] Adding entry into typings cache: 'sass' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/sass/index.d.ts'
+[14:41:18.408] Adding entry into typings cache: 'testing-library__jest-dom' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/testing-library__jest-dom/index.d.ts'
+[14:41:18.408] Finished processing cache location '/home/lenox/.cache/typescript/4.6'
+[14:41:18.408] Process id: 177656
+[14:41:18.409] NPM location: /home/lenox/.nvm/versions/node/v17.4.0/bin/npm (explicit '--npmLocation' not  provided)
+[14:41:18.409] validateDefaultNpmLocation: false
+[14:41:18.409] Npm config file: /home/lenox/.cache/typescript/4.6/package.json
+[14:41:18.409] Updating types-registry npm package...
+[14:41:18.409] Exec: /home/lenox/.nvm/versions/node/v17.4.0/bin/npm install --ignore-scripts types-registry@latest
+[14:41:35.604]     Succeeded. stdout:
+    
+    changed 1 package, and audited 42 packages in 17s
+
+3 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+[14:41:35.604] Updated types-registry npm package

@@ -1,0 +1,30 @@
+[13:31:55.932] Global cache location '/home/lenox/.cache/typescript/4.6', safe file path '/home/lenox/.nvm/versions/node/v17.4.0/lib/node_modules/typescript/lib/typingSafeList.json', types map path /home/lenox/.nvm/versions/node/v17.4.0/lib/node_modules/typescript/lib/typesMap.json
+[13:31:55.932] Processing cache location '/home/lenox/.cache/typescript/4.6'
+[13:31:55.933] Trying to find '/home/lenox/.cache/typescript/4.6/package.json'...
+[13:31:55.942] Loaded content of '/home/lenox/.cache/typescript/4.6/package.json': {"private":true,"dependencies":{"types-registry":"^0.1.588"},"devDependencies":{"@types/nodemon":"^1.19.1","@types/object-assign":"^4.0.30","@types/react":"^17.0.43","@types/react-bootstrap":"^0.32.29","@types/react-dom":"^17.0.14","@types/react-redux":"^7.1.23","@types/remote-redux-devtools":"^0.5.5","@types/testing-library__jest-dom":"^5.14.3"}}
+[13:31:55.942] Loaded content of '/home/lenox/.cache/typescript/4.6/package-lock.json'
+[13:31:55.957] Adding entry into typings cache: 'nodemon' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/nodemon/index.d.ts'
+[13:31:55.962] Adding entry into typings cache: 'object-assign' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/object-assign/index.d.ts'
+[13:31:55.966] Adding entry into typings cache: 'react' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react/index.d.ts'
+[13:31:55.971] Adding entry into typings cache: 'react-bootstrap' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react-bootstrap/index.d.ts'
+[13:31:55.975] Adding entry into typings cache: 'react-dom' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react-dom/index.d.ts'
+[13:31:55.981] Adding entry into typings cache: 'react-redux' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react-redux/index.d.ts'
+[13:31:55.983] Adding entry into typings cache: 'remote-redux-devtools' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/remote-redux-devtools/index.d.ts'
+[13:31:55.986] Adding entry into typings cache: 'testing-library__jest-dom' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/testing-library__jest-dom/index.d.ts'
+[13:31:55.986] Finished processing cache location '/home/lenox/.cache/typescript/4.6'
+[13:31:55.986] Process id: 9059
+[13:31:55.986] NPM location: /home/lenox/.nvm/versions/node/v17.4.0/bin/npm (explicit '--npmLocation' not  provided)
+[13:31:55.986] validateDefaultNpmLocation: false
+[13:31:55.986] Npm config file: /home/lenox/.cache/typescript/4.6/package.json
+[13:31:55.987] Updating types-registry npm package...
+[13:31:55.987] Exec: /home/lenox/.nvm/versions/node/v17.4.0/bin/npm install --ignore-scripts types-registry@latest
+[13:31:57.567]     Succeeded. stdout:
+    
+    up to date, audited 35 packages in 1s
+
+3 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+[13:31:57.567] Updated types-registry npm package

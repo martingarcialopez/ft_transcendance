@@ -1,13 +1,17 @@
 import React from "react";
-import "./style.css";
+import "./style/index.css";
 import { useReducer } from "react";
-import { PrintChannels } from "./leftMenu";
+import { LeftMenu } from "./leftMenu";
 import { e_actionType } from "./type";
 import { TextField } from "./conversation";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
-import { PrintUserList } from "./rightMenu";
+import { RightMenu } from "./rightMenu";
 
+/**
+ * this page is the layout of chat page , like a home page of chat
+ *
+ */
 type Action = {
   type: string;
   payload: Function;
@@ -37,6 +41,9 @@ function handleClickReducer(state: t_state, action: Action): t_state {
       return { ...state, theDispatch: action.payload };
     case e_actionType.TEXT_FIELD:
       return { ...state, theDispatch: action.payload };
+    case e_actionType.USER_SETTING_PAGE:
+      return { ...state, theDispatch: action.payload };
+
     default:
       return state;
   }
@@ -70,7 +77,7 @@ function LayoutChat(): JSX.Element {
           }}
         >
           <div className="items-1 item list">
-            <PrintChannels />
+            <LeftMenu />
           </div>
 
           <div id="items-2" className="items-2 item">
@@ -79,7 +86,7 @@ function LayoutChat(): JSX.Element {
           </div>
 
           <div className="items-3 item list">
-            <PrintUserList />
+            <RightMenu />
           </div>
         </MyGlobalContext.Provider>
       </Provider>

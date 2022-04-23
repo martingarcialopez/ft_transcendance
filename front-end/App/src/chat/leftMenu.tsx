@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style/index.css";
 import { IoIosPeople } from "react-icons/io";
 import { AiOutlineSetting } from "react-icons/ai";
 import { AddNewChanel } from "./settingChanel";
@@ -18,24 +18,24 @@ import * as actionCreators from "./redux/actionCreator";
  * @returns jsx
  */
 function ButtonSettingChanel() {
-  const user = useContext(MyGlobalContext);
+  const page = useContext(MyGlobalContext);
   const dispatch = useDispatch();
   const { ActionCreatorInfo } = bindActionCreators(actionCreators, dispatch);
   return (
-    <span
-      className="setting-chanel"
-      onClick={() => {
-        if (user) {
-          user.theDispatch({
-            type: e_actionType.SET_CHANEL,
-            payload: AddNewChanel,
-          });
-          ActionCreatorInfo("Setting chanel"); //to set the name of page
-        }
-      }}
-    >
-      <AiOutlineSetting size={60} color="rgb(93, 173, 226 )" />
-    </span>
+    <>
+      <AiOutlineSetting
+        className="btn-setting-channel"
+        onClick={() => {
+          if (page) {
+            page.theDispatch({
+              type: e_actionType.SET_CHANEL,
+              payload: AddNewChanel,
+            });
+            ActionCreatorInfo("Create Chanel"); //to set the name of page
+          }
+        }}
+      />
+    </>
   );
 }
 
@@ -48,7 +48,7 @@ function ButtonChanel() {
 
   return (
     <span
-      className="icon-chanel"
+      className="icon-channel"
       onClick={() => {
         if (user)
           user.theDispatch({
@@ -68,28 +68,47 @@ function ButtonChanel() {
  */
 function getIndexChanel(tab: t_chanel[], name_chanel: string): number {
   let index: number = -1;
-  /* let tmp = document.getElementById(name_chanel);
-   * console.log(" name_chanel :", name_chanel);
-   * if (tmp) {
-   *   index = tab.findIndex((element: t_chanel) => element.name === name_chanel);
-   * } */
   index = tab.findIndex((element: t_chanel) => element.name === name_chanel);
   return index;
 }
 
 /**
- * print the liste of change in the left side
- * handle the click on each item
+ * when there are a selecting a channel, it required to update the object message to setup the destinator
+ * when there are a selecting a channel it need to update :
+ *           -the object message to setup the destinator
+ *           -title  of page
+ * led the conversation page to write message
  */
-export function PrintChannels() {
+function SelectChannel(
+  ActionCreatorMsgChanel: Function,
+  ActionCreatorInfo: Function,
+  chanel: t_chanel[],
+  name: string,
+  page: any
+) {
+  let index = getIndexChanel(chanel, name);
+  console.log("index == ", index);
+  ActionCreatorMsgChanel({ ...chanel[index] });
+  ActionCreatorInfo(name); //update title  of page
+  if (page)
+    page.theDispatch({
+      type: e_actionType.TEXT_FIELD,
+      payload: TextField, //loading the page of conversation
+    });
+}
+
+/**
+ *display everything in the left side of page chat
+ *
+ */
+export function LeftMenu() {
   const { chanel } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
   const { ActionCreatorMsgChanel, ActionCreatorInfo } = bindActionCreators(
     actionCreators,
     dispatch
   );
-  const user = useContext(MyGlobalContext);
-  /* const user = useContext(MyGlobalContext); */
+  const page = useContext(MyGlobalContext);
   /* const { message } = useSelector((state: RootState) => state); */
   return (
     <>
@@ -97,17 +116,15 @@ export function PrintChannels() {
       {chanel.map((item: t_chanel, index: number) => (
         <div
           onClick={() => {
-            let index = getIndexChanel(chanel, item.name);
-            console.log("index == ", index);
-            ActionCreatorMsgChanel({ ...chanel[index] });
-            ActionCreatorInfo(item.name);
-            if (user)
-              user.theDispatch({
-                type: e_actionType.TEXT_FIELD,
-                payload: TextField, //loading the page of conversation
-              });
+            SelectChannel(
+              ActionCreatorMsgChanel,
+              ActionCreatorInfo,
+              chanel,
+              item.name,
+              page
+            );
           }}
-          className="user-name chanel-name"
+          className="list-of-my-channels"
           key={index}
         >
           {item.name}

@@ -1,0 +1,51 @@
+[21:28:07.062] Global cache location '/home/lenox/.cache/typescript/4.6', safe file path '/home/lenox/.nvm/versions/node/v17.4.0/lib/node_modules/typescript/lib/typingSafeList.json', types map path /home/lenox/.nvm/versions/node/v17.4.0/lib/node_modules/typescript/lib/typesMap.json
+[21:28:07.102] Processing cache location '/home/lenox/.cache/typescript/4.6'
+[21:28:07.103] Trying to find '/home/lenox/.cache/typescript/4.6/package.json'...
+[21:28:07.142] Loaded content of '/home/lenox/.cache/typescript/4.6/package.json': {"private":true,"dependencies":{"types-registry":"^0.1.589"},"devDependencies":{"@types/core-js":"^2.5.5","@types/eslint":"^8.4.1","@types/javascript-time-ago":"^2.0.3","@types/nodemon":"^1.19.1","@types/object-assign":"^4.0.30","@types/p5":"^1.4.2","@types/react":"^17.0.43","@types/react-bootstrap":"^0.32.29","@types/react-dom":"^17.0.14","@types/react-redux":"^7.1.23","@types/remote-redux-devtools":"^0.5.5","@types/sass":"^1.43.1","@types/testing-library__jest-dom":"^5.14.3"}}
+[21:28:07.143] Loaded content of '/home/lenox/.cache/typescript/4.6/package-lock.json'
+[21:28:07.305] Adding entry into typings cache: 'core-js' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/core-js/index.d.ts'
+[21:28:07.405] Adding entry into typings cache: 'eslint' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/eslint/index.d.ts'
+[21:28:07.441] Adding entry into typings cache: 'javascript-time-ago' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/javascript-time-ago/index.d.ts'
+[21:28:07.464] Adding entry into typings cache: 'nodemon' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/nodemon/index.d.ts'
+[21:28:07.504] Adding entry into typings cache: 'object-assign' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/object-assign/index.d.ts'
+[21:28:07.533] Adding entry into typings cache: 'p5' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/p5/index.d.ts'
+[21:28:07.592] Adding entry into typings cache: 'react' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react/index.d.ts'
+[21:28:07.643] Adding entry into typings cache: 'react-bootstrap' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react-bootstrap/index.d.ts'
+[21:28:07.669] Adding entry into typings cache: 'react-dom' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react-dom/index.d.ts'
+[21:28:07.786] Adding entry into typings cache: 'react-redux' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/react-redux/index.d.ts'
+[21:28:07.836] Adding entry into typings cache: 'remote-redux-devtools' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/remote-redux-devtools/index.d.ts'
+[21:28:07.870] Adding entry into typings cache: 'sass' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/sass/index.d.ts'
+[21:28:07.904] Adding entry into typings cache: 'testing-library__jest-dom' => '/home/lenox/.cache/typescript/4.6/node_modules/@types/testing-library__jest-dom/index.d.ts'
+[21:28:07.904] Finished processing cache location '/home/lenox/.cache/typescript/4.6'
+[21:28:07.906] Process id: 21744
+[21:28:07.907] NPM location: /home/lenox/.nvm/versions/node/v17.4.0/bin/npm (explicit '--npmLocation' not  provided)
+[21:28:07.907] validateDefaultNpmLocation: false
+[21:28:07.909] Npm config file: /home/lenox/.cache/typescript/4.6/package.json
+[21:28:07.909] Updating types-registry npm package...
+[21:28:07.911] Exec: /home/lenox/.nvm/versions/node/v17.4.0/bin/npm install --ignore-scripts types-registry@latest
+[21:28:16.565]     Succeeded. stdout:
+    
+    up to date, audited 42 packages in 6s
+
+3 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+[21:28:16.567] Updated types-registry npm package
+[22:13:28.445] Got install request {"projectName":"/dev/null/inferredProject1*","fileNames":[],"compilerOptions":{"module":1,"target":3,"jsx":1,"allowJs":true,"allowSyntheticDefaultImports":true,"allowNonTsExtensions":true,"noEmitForJsFiles":true},"typeAcquisition":{"enable":true,"include":[],"exclude":[]},"unresolvedImports":[],"projectRootPath":"/home/lenox/ft_transcendance/front-end/App/src/chat","kind":"discover"}
+[22:13:28.488] Loaded safelist from types map file '/home/lenox/.nvm/versions/node/v17.4.0/lib/node_modules/typescript/lib/typesMap.json'
+[22:13:28.489] Explicitly included types: []
+[22:13:28.489] Inferred typings from unresolved imports: []
+[22:13:28.490] Result: {"cachedTypingPaths":[],"newTypingNames":[],"filesToWatch":["/home/lenox/ft_transcendance/front-end/App/src/chat/bower_components","/home/lenox/ft_transcendance/front-end/App/src/chat/node_modules"]}
+[22:13:28.490] Finished typings discovery: {"cachedTypingPaths":[],"newTypingNames":[],"filesToWatch":["/home/lenox/ft_transcendance/front-end/App/src/chat/bower_components","/home/lenox/ft_transcendance/front-end/App/src/chat/node_modules"]}
+[22:13:28.491] DirectoryWatcher:: Added:: WatchInfo: /home/lenox/ft_transcendance/front-end/App/src/chat/bower_components
+[22:13:28.492] DirectoryWatcher:: Added:: WatchInfo: /home/lenox/ft_transcendance/front-end/App/src/chat/bower_components 1 undefined Project: /dev/null/inferredProject1* watcher already invoked: false
+[22:13:28.493] Elapsed:: 1.6935699991881847ms DirectoryWatcher:: Added:: WatchInfo: /home/lenox/ft_transcendance/front-end/App/src/chat/bower_components 1 undefined Project: /dev/null/inferredProject1* watcher already invoked: false
+[22:13:28.493] DirectoryWatcher:: Added:: WatchInfo: /home/lenox/ft_transcendance/front-end/App/src/chat/node_modules
+[22:13:28.494] DirectoryWatcher:: Added:: WatchInfo: /home/lenox/ft_transcendance/front-end/App/src/chat/node_modules 1 undefined Project: /dev/null/inferredProject1* watcher already invoked: false
+[22:13:28.494] Elapsed:: 0.14578699693083763ms DirectoryWatcher:: Added:: WatchInfo: /home/lenox/ft_transcendance/front-end/App/src/chat/node_modules 1 undefined Project: /dev/null/inferredProject1* watcher already invoked: false
+[22:13:28.494] Sending response:
+    {"projectName":"/dev/null/inferredProject1*","typeAcquisition":{"enable":true,"include":[],"exclude":[]},"compilerOptions":{"module":1,"target":3,"jsx":1,"allowJs":true,"allowSyntheticDefaultImports":true,"allowNonTsExtensions":true,"noEmitForJsFiles":true},"typings":[],"unresolvedImports":[],"kind":"action::set"}
+[22:13:28.494] Response has been sent.
+[22:13:28.494] No new typings were requested as a result of typings discovery
