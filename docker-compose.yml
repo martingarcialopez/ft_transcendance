@@ -17,6 +17,7 @@ services:
       - webnet
     volumes:
       - ./front-end/App/src:/App/src
+      - ./front-end/App/public:/App/public
       # - /usr/src/app/node_modules
 
     restart: always

@@ -4,7 +4,7 @@
 |getMessage       | Sesame's mam         | {"room_id": NUMBER}                                                  |{"message_contentS": Message[]}                   |
 |deleteMessage    | Lenox                | {"room_id": NUMBER}                                                  | {"success": BOOLEAN}                           |
 
-|createRoom       | Lenox                | {"room_name": STRING, "type": STRING, "password": STRING, "owner": STRING, "members":NUMBER[]    | {"room_id": NUMBER}  |
+|createRoom       | Lenox                | {"room_name": STRING, "type": STRING, "password": STRING, "owner": STRING, "members":NUMBER[]    | {"room_id": NUMBER, "room_name": STRING}  |
 |getRoom          | Sesame's mam         | {"room_id": NUMBER}                                                  | {"room_id": number, "room_name": STRING, "participant": PARTICIPANT[]    |
 |deleteRoom       | Lenox                | {"room_id": NUMBER                                                   | {"success": BOOLEAN}                               |
 
