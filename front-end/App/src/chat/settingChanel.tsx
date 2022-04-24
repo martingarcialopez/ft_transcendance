@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import { t_chanel } from "./type";
-import "./style.css";
+import "./style/settingChannel.css";
 import * as actionCreators from "./redux/actionCreator";
 import { TitlePage } from "./utilsComponent";
 import { socket } from "./conversation";
+import { BsPlusSquareFill } from "react-icons/bs";
+
 function updateArrayChanel(data: any): t_chanel {
   let newChanel: t_chanel = {
     name: data.name,
@@ -25,13 +27,16 @@ function JoinOrLeave() {
   const { chanel } = useSelector((state: RootState) => state);
   return (
     <>
-      <br />
-      {chanel.map((item: t_chanel, index: number) => (
-        <div key={index}>
-          {item.name}
-          <input type="submit" value="Join or Leave" />
-        </div>
-      ))}
+      <ul>
+        {chanel.map((item: t_chanel, index: number) => (
+          <li key={index}>
+            {item.name}
+            <button className="btn-join-channel btn-leave-channel">
+              <BsPlusSquareFill />
+            </button>
+          </li>
+        ))}
+      </ul>
     </>
   );
 }
@@ -78,7 +83,7 @@ export function AddNewChanel() {
       >
         <input
           type="text"
-          placeholder="Add new chanel"
+          placeholder="Name of new channel"
           required
           {...register("name")}
           autoComplete="on"
