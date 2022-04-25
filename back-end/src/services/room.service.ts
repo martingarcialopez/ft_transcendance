@@ -22,7 +22,7 @@ export class RoomService {
 	async createRoom(roomDto: RoomDto): Promise<RoomSnippetDto>
 	{
         const new_room = new Room();
-		new_room.room_name = roomDto.name;
+		new_room.name = roomDto.name;
 		new_room.type = roomDto.type;
 		new_room.password = roomDto.password;
 		new_room.owner = roomDto.owner;
@@ -39,7 +39,7 @@ export class RoomService {
 	{
 		const room = await this.roomRepository.findOne(room_Id);
 		const p = await this.roomRepository.createQueryBuilder("room")
-			.select(["room.id", "room.room_name"])
+			.select(["room.id", "room.name"])
 			.leftJoinAndSelect("room.participants", "participant")
             .leftJoinAndSelect("participant.user", "user")
 			.where("room.id = :room_Id", { room_Id: room_Id })

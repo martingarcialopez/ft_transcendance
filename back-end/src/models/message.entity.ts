@@ -8,12 +8,11 @@ export class Message {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
-    name: string;
-
-
 	@Column("text")
 	content: string;
+
+	@Column()
+    name: string;
 
 	@ManyToOne((type) => User, (user) => user.messages)
     user: User;

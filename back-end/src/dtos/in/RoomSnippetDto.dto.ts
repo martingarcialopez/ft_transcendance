@@ -1,7 +1,3 @@
-// export class room_id_name_DTO {
-// 	id: number;
-// 	name : string;
-// }
 import { Exclude, Expose } from 'class-transformer';
 import { IsString, IsNumber, IsBoolean } from 'class-validator';
 

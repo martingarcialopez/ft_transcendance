@@ -9,7 +9,7 @@ export class Room {
 	id: number;
 
 	@Column()
-	room_name: string;
+	name: string;
 
 	//public or private? false means private
 	@Column()

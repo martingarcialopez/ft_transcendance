@@ -52,10 +52,10 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	 */
 	async handleConnection(server: Server){
   		this.logger.log('ONLINE!!!!!!!!!!!!!!!');
-		//		const all_message =  await this.messageService.getRoomMessage(1);
-		const users = await this.roomService.getRoom(8);
 
-		this.server.emit('msgToClient', users);
+		const roomIds = await this.participantService.getUseridRooms(2);
+		console.log(roomIds);
+		// this.server.emit('msgToClient', users);
 	}
 
 	afterInit(server: Server) {
@@ -72,10 +72,11 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	 */
 	@Bind(MessageBody(), ConnectedSocket())  // useful?
 	@SubscribeMessage('createMessage')
-	async createMessage(message: Message) {
-		console.log('New Message 888', message.name,message.content);
-		const value = await this.messageService.createMessage(message);
-		this.server.emit('msgToClient', value);
+	async createMessage(@Body() body:any) {
+		// console.log('New Message 888', message.name,message.content);
+		// const value = await this.messageService.createMessage(message);
+		// this.server.emit('msgToClient', value);
+		console.log(body);
 	}
 
 /*get all messages from a room*/
@@ -126,6 +127,13 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	@SubscribeMessage('getParticipant')
 	async getParticipant(room_id: number) {
 		const all_participant =  await this.participantService.getParticipant(room_id);
+	}
+
+	@SubscribeMessage('getUseridRooms')
+	async getUseridRooms(userId: any) {
+		console.log('catched?');
+		const rooms = await this.participantService.getUseridRooms(userId);
+		console.log('i am here', rooms);
 	}
 
 	@SubscribeMessage('deleteParticipant')
