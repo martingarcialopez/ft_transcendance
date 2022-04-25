@@ -2,12 +2,11 @@ FROM node:lts
 
 WORKDIR /App
 
-COPY ./App/* ./
+COPY ./* ./
 
 
 
-RUN npm install -g npm@latest && \
-npm install -g create-react-app 
+RUN npm install -g npm@latest
 
-ENTRYPOINT npm install && npm  start
+ENTRYPOINT npm install && npm start
 

@@ -7,6 +7,7 @@ import { RootState } from "./redux/store";
 import socketio from "socket.io-client";
 import { TitlePage } from "./utilsComponent";
 import "./style/conversation.css";
+import { useState } from "react";
 
 /**
  * this the page you see when you chat with someone
@@ -69,7 +70,9 @@ export function TextField() {
   const { ActionCreatorMsgReceived, ActionCreatorMsgToSend } =
     bindActionCreators(actionCreators, dispatch);
   const state = useSelector((state: RootState) => state);
-
+  const [inputValue, setinputValue] = useState((): string => {
+    return "";
+  });
   /* console.log(state); */
   socket.on("msgToClient", (receive: any) => {
     let newArray = [...state.message.contentReceived, receive];
@@ -84,6 +87,7 @@ export function TextField() {
         className="field-chat"
         onSubmit={handleSubmit((data) => {
           sendMsg(ActionCreatorMsgToSend, state, data.name);
+          setinputValue(""); //remove input value after submit text msg
         })}
       >
         <textarea
@@ -91,6 +95,8 @@ export function TextField() {
           required
           {...register("name")}
           autoComplete="on"
+          value={inputValue}
+          onChange={(e) => setinputValue(e.target.value)}
         ></textarea>
         <button className="btn-send-msg">
           <BsFillArrowUpCircleFill />{" "}
