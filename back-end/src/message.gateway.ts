@@ -21,6 +21,7 @@ import { Socket, Server } from 'socket.io';
 import { MessageDto } from './dtos/in/message.dto';
 import { RoomDto } from './dtos/in/room.dto';
 import { ParticipantDto } from './dtos/in/participant.dto'
+import { RoomSnippetDto } from './dtos/in/RoomSnippetDto.dto';
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
@@ -51,10 +52,10 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	 */
 	async handleConnection(server: Server){
   		this.logger.log('ONLINE!!!!!!!!!!!!!!!');
-		//		const all_message =  await this.messageService.getRoomMessage(1);
-		const users = await this.roomService.getRoom(1);
 
-		this.server.emit('msgToClient', users);
+		const roomIds = await this.participantService.getUseridRooms(2);
+		console.log(roomIds);
+		// this.server.emit('msgToClient', users);
 	}
 
 	afterInit(server: Server) {
@@ -71,10 +72,11 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	 */
 	@Bind(MessageBody(), ConnectedSocket())  // useful?
 	@SubscribeMessage('createMessage')
-	async createMessage(message: Message) {
-		console.log('New Message 888', message.name,message.content);
-		const value = await this.messageService.createMessage(message);
-		this.server.emit('msgToClient', value);
+	async createMessage(@Body() body:any) {
+		// console.log('New Message 888', message.name,message.content);
+		// const value = await this.messageService.createMessage(message);
+		// this.server.emit('msgToClient', value);
+		console.log(body);
 	}
 
 /*get all messages from a room*/
@@ -94,15 +96,18 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	      ROOMS
 	 */
 	@SubscribeMessage('createRoom')
-	async createRoom(room: Room) {
-		const value = await this.roomService.createRoom(room);
+	async createRoom(@Body() body:RoomDto):Promise<RoomSnippetDto>{
+		const value = await this.roomService.createRoom(body);
+		console.log('return value is ', value);
+		return value;
 	}
 
 
 	/*get all user in the given id room*/
 	@SubscribeMessage('getRoom')
 	async getRoom() {
-		const all_room =  await this.roomService.getRoom(1);
+		console.log('in getRoom');
+//		const all_room =  await this.roomService.getRoom(8);
 	}
 
 	@SubscribeMessage('deleteRoom')
@@ -122,6 +127,13 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	@SubscribeMessage('getParticipant')
 	async getParticipant(room_id: number) {
 		const all_participant =  await this.participantService.getParticipant(room_id);
+	}
+
+	@SubscribeMessage('getUseridRooms')
+	async getUseridRooms(userId: any) {
+		console.log('catched?');
+		const rooms = await this.participantService.getUseridRooms(userId);
+		console.log('i am here', rooms);
 	}
 
 	@SubscribeMessage('deleteParticipant')
