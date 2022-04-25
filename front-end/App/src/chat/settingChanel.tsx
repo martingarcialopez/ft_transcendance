@@ -55,7 +55,19 @@ function isDoublon(listOfChanel: t_chanel[], newChanel: t_chanel): boolean {
   return hasExisting;
 }
 
+function GetIdChannel() {
+  socket.onAny((eventName, ...args) => {
+    // ...
+    console.log("catch any event");
+  });
+
+  socket.on("createRoom", (receive: {}) => {
+    console.log("reponse back  = ", receive);
+  });
+}
+
 /**
+ *  the form to add  a new chanel
  * this component print the form and send the input to the server
  * add new chanel into the store
  * @returns rend the form
@@ -68,6 +80,7 @@ export function AddNewChanel() {
     dispatch
   );
   const state = useSelector((state: RootState) => state);
+  GetIdChannel();
   return (
     <>
       <TitlePage />
