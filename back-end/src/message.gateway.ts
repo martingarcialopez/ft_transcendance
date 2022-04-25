@@ -99,6 +99,7 @@ export class MessageGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 	async createRoom(@Body() body:RoomDto):Promise<RoomSnippetDto>{
 		const value = await this.roomService.createRoom(body);
 		console.log('return value is ', value);
+		this.server.emit('IdRoom', value);
 		return value;
 	}
 
