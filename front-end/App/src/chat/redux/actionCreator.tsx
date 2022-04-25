@@ -28,7 +28,7 @@ export const ActionCreatorMsgChanel = (name: t_chanel) => {
   };
 };
 
-export const ActionCreatorMsgToSend = (name: string[]) => {
+export const ActionCreatorMsgToSend = (name: string) => {
   return (dispatch: Dispatch<t_ActionMsg>) => {
     dispatch({
       type: e_actionType.MSG_TO_SEND,

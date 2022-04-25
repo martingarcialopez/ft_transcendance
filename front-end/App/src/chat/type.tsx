@@ -10,7 +10,7 @@ export type t_stateMsg = {
   contentReceived: string[];
   from: string;
   destChannel: t_chanel;
-  contentToSend: string[];
+  contentToSend: string;
 };
 
 export enum e_actionType {

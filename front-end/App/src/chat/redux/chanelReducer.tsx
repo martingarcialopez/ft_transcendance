@@ -41,7 +41,7 @@ function initStateMsg(): t_stateMsg {
     contentReceived: [],
     from: "it going to be the information about about who is send data",
     destChannel: initChanel(),
-    contentToSend: [],
+    contentToSend: "",
   };
 }
 

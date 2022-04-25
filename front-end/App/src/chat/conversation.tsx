@@ -20,13 +20,26 @@ const ENDPOINT = "http://localhost:3000";
 export const socket = socketio(ENDPOINT); //connection to the server nestJs
 
 /**
- * print the title of chat and below the title all message are display
+ * liste event and print the message received
+ *
  */
-function PrintChatMsg(contentMsg: string[]) {
+function PrintReceivedMsg() {
+  const state = useSelector((state: RootState) => state);
+  let receivedMsg: string[] = [];
+  const dispatch = useDispatch();
+  const { ActionCreatorMsgReceived } = bindActionCreators(
+    actionCreators,
+    dispatch
+  );
+  socket.on("msgToClient", (receive: any) => {
+    receivedMsg = [...state.message.contentReceived, receive];
+    ActionCreatorMsgReceived(receivedMsg); //add content of message in area
+  });
+
   return (
     <>
       <TitlePage /> <br></br>
-      {contentMsg.map((item: string, index: number) => (
+      {state.message.contentReceived.map((item: string, index: number) => (
         <div key={index}> {JSON.stringify(item)} </div>
       ))}
     </>
@@ -40,21 +53,29 @@ function PrintChatMsg(contentMsg: string[]) {
  *@state is the store of redux
  *MsgReceived : is the ActionCreator for the message
  */
-function sendMsg(MsgReceived: Function, state: any, content: string) {
+function sendMsg(MsgToSend: Function, state: any, content: string) {
   /*to send message it must to selected a chanel first
-	  if the none chanel was selected nothing will happened
-	  */
+		if the none chanel was selected nothing will happened
+	 */
+
   if (state.message.destChannel.name.length > 0) {
     /*
 				if the user selected a channel it can now send  message
 				add the new contnent into the array
 		*/
-    let newMsg = [...state.message.contentToSend, content];
-    MsgReceived(newMsg);
+    /* let newMsg = [...state.message.contentToSend, content]; */
+
+    MsgToSend(content);
     //if uncomment the line bellow it going to broacast content
     /* socket.emit("msgToServer", content); */
     let objMsg = state.message;
+
     let channelName: string = state.message.destChannel.name;
+
+    objMsg.contentToSend = content;
+
+    console.log("obj send to server :", objMsg);
+
     socket.emit("createMessage", objMsg, channelName);
   }
 }
@@ -67,22 +88,23 @@ function sendMsg(MsgReceived: Function, state: any, content: string) {
 export function TextField() {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
-  const { ActionCreatorMsgReceived, ActionCreatorMsgToSend } =
-    bindActionCreators(actionCreators, dispatch);
+  const { ActionCreatorMsgToSend } = bindActionCreators(
+    actionCreators,
+    dispatch
+  );
   const state = useSelector((state: RootState) => state);
   const [inputValue, setinputValue] = useState((): string => {
     return "";
   });
-  /* console.log(state); */
-  socket.on("msgToClient", (receive: any) => {
-    let newArray = [...state.message.contentReceived, receive];
-    ActionCreatorMsgReceived(newArray); //add content of message in area
-  });
+  /* socket.on("msgToClient", (receive: any) => {
+   *   let newArray = [...state.message.contentReceived, receive];
+   *   ActionCreatorMsgReceived(newArray); //add content of message in area
+   * }); */
 
   return (
     <>
-      {PrintChatMsg(state.message.contentReceived)}
-      {console.log("message conversation:", state.message)}
+      <PrintReceivedMsg />
+      {/* {console.log("message conversation:", state.message)} */}
       <form
         className="field-chat"
         onSubmit={handleSubmit((data) => {
