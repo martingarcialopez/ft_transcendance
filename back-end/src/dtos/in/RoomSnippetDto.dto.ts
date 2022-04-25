@@ -10,6 +10,6 @@ export class RoomSnippetDto {
 
     @Expose()
     @IsString()
-    readonly room_name: string;
+    readonly name: string;
 
 }
