@@ -56,12 +56,7 @@ function isDoublon(listOfChanel: t_chanel[], newChanel: t_chanel): boolean {
 }
 
 function GetIdChannel() {
-  socket.onAny((eventName, ...args) => {
-    // ...
-    console.log("catch any event");
-  });
-
-  socket.on("createRoom", (receive: {}) => {
+  socket.on("idRoom", (receive: {}) => {
     console.log("reponse back  = ", receive);
   });
 }
@@ -80,7 +75,7 @@ export function AddNewChanel() {
     dispatch
   );
   const state = useSelector((state: RootState) => state);
-  GetIdChannel();
+
   return (
     <>
       <TitlePage />
@@ -92,6 +87,7 @@ export function AddNewChanel() {
             ActionCreatorChanelAdd(newChanel);
           console.log("send request to create new chanel:", newChanel);
           socket.emit("createRoom", newChanel);
+          GetIdChannel();
         })}
       >
         <input
