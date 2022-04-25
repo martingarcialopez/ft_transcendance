@@ -1,5 +1,6 @@
 export type t_chanel = {
   name: string;
+  id: number;
   type: string;
   password: string;
   owner: string;
@@ -7,10 +8,10 @@ export type t_chanel = {
 };
 
 export type t_stateMsg = {
-  contentReceived: string[];
   from: string;
-  destChannel: t_chanel;
   contentToSend: string;
+  channelIdDst: number;
+  channelName: string;
 };
 
 export enum e_actionType {
@@ -24,6 +25,8 @@ export enum e_actionType {
   MSG_TO_SEND = "message to send to a chanel room",
   NAME_OF_CURRENT_CHANNEL = "the name of current chanel",
   USER_SETTING_PAGE = "led user setting page",
+  SET_ID_CHANNEL = "define the id channel",
+  SET_NAME_CHANNEL = "define the name of channel",
 }
 
 export type t_ActionChanel = {

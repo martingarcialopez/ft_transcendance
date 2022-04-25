@@ -12,6 +12,7 @@ import { BsPlusSquareFill } from "react-icons/bs";
 function updateArrayChanel(data: any): t_chanel {
   let newChanel: t_chanel = {
     name: data.name,
+    id: 0,
     type: data.type,
     password: data.password,
     owner: "string",
@@ -48,17 +49,28 @@ function JoinOrLeave() {
  * @param newChanel
  * @returns
  */
-function isDoublon(listOfChanel: t_chanel[], newChanel: t_chanel): boolean {
-  let hasExisting: boolean = listOfChanel.some(
-    (item) => item.name === newChanel.name
-  );
-  return hasExisting;
-}
+/* function isDoublon(listOfChanel: t_chanel[], newChanel: t_chanel): boolean {
+ *   let hasExisting: boolean = listOfChanel.some(
+ *     (item) => item.name === newChanel.name
+ *   );
+ *   return hasExisting;
+ * }
+ *  */
 
-function GetIdChannel() {
-  socket.on("idRoom", (receive: {}) => {
-    console.log("reponse back  = ", receive);
+/**
+ *@newChannel  have to be a id, this going to setup the id of this channel
+ * the id come from the nestJs container
+ *return the id of channel to coming to create
+ *
+ */
+function GetIdChannel(newChannel: t_chanel): number {
+  let id: number = -1;
+  socket.on("idRoom", (receive: { id: number; name: string }) => {
+    /* console.log("reponse after creation channel  = ", receive); */
+    newChannel.id = receive.id;
+    id = receive.id;
   });
+  return id;
 }
 
 /**
@@ -70,11 +82,11 @@ function GetIdChannel() {
 export function AddNewChanel() {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
-  const { ActionCreatorChanelAdd, ActionCreatorInfo } = bindActionCreators(
+  const { ActionCreatorChanelAdd } = bindActionCreators(
     actionCreators,
     dispatch
   );
-  const state = useSelector((state: RootState) => state);
+  /* const state = useSelector((state: RootState) => state); */
 
   return (
     <>
@@ -83,11 +95,12 @@ export function AddNewChanel() {
         className="theForm"
         onSubmit={handleSubmit((data) => {
           let newChanel = updateArrayChanel(data);
-          if (isDoublon(state.chanel, newChanel) === false)
-            ActionCreatorChanelAdd(newChanel);
-          console.log("send request to create new chanel:", newChanel);
+          /* if (isDoublon(state.chanel, newChanel) === false) */
+          /* newChanel.id */
           socket.emit("createRoom", newChanel);
-          GetIdChannel();
+          GetIdChannel(newChanel);
+          console.log("chanel created :", newChanel);
+          ActionCreatorChanelAdd(newChanel);
         })}
       >
         <input

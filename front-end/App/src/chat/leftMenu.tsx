@@ -80,21 +80,25 @@ function getIndexChanel(tab: t_chanel[], name_chanel: string): number {
  * led the conversation page to write message
  */
 function SelectChannel(
-  ActionCreatorMsgChanel: Function,
+  ActionCreatorMsgIdchannelDsl: Function,
+  ActionCreatorNameChannel: Function,
   ActionCreatorInfo: Function,
-  chanel: t_chanel[],
-  name: string,
+  arrayChannel: t_chanel[],
+  channelSected: t_chanel,
   page: any
 ) {
-  let index = getIndexChanel(chanel, name);
-  console.log("index == ", index);
-  ActionCreatorMsgChanel({ ...chanel[index] });
-  ActionCreatorInfo(name); //update title  of page
+  let index = getIndexChanel(arrayChannel, channelSected.name);
+  console.log("channel index == ", index);
+  console.log("selected :", channelSected);
+  /* ActionCreatorMsgChanel({ ...arrayChannel[index] }); */
+  ActionCreatorInfo(channelSected.name); //update title  of page
   if (page)
     page.theDispatch({
       type: e_actionType.TEXT_FIELD,
       payload: TextField, //loading the page of conversation
     });
+  ActionCreatorMsgIdchannelDsl(channelSected.id);
+  ActionCreatorNameChannel(channelSected.name);
 }
 
 /**
@@ -104,10 +108,11 @@ function SelectChannel(
 export function LeftMenu() {
   const { chanel } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
-  const { ActionCreatorMsgChanel, ActionCreatorInfo } = bindActionCreators(
-    actionCreators,
-    dispatch
-  );
+  const {
+    ActionCreatorMsgIdchannelDsl,
+    ActionCreatorInfo,
+    ActionCreatorNameChannel,
+  } = bindActionCreators(actionCreators, dispatch);
   const page = useContext(MyGlobalContext);
   /* const { message } = useSelector((state: RootState) => state); */
   return (
@@ -117,10 +122,11 @@ export function LeftMenu() {
         <div
           onClick={() => {
             SelectChannel(
-              ActionCreatorMsgChanel,
+              ActionCreatorMsgIdchannelDsl,
+              ActionCreatorNameChannel,
               ActionCreatorInfo,
               chanel,
-              item.name,
+              item,
               page
             );
           }}
