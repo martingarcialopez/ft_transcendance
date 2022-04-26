@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        /* width: 100%; */
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Table events with Socketio</h2>
+
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Sender</th>
+        <th>Request data</th>
+        <th>Response data</th>
+      </tr>
+      <tr>
+        <td>createMessage</td>
+        <td>Lenox</td>
+        <td>
+          {"room_id": NUMBER, "message_content": Message,"sender": STRING}
+        </td>
+        <td>{"message_id": NUMBER}</td>
+      </tr>
+      <tr>
+        <td>getMessage</td>
+        <td>Sesame's mam</td>
+        <td>{"room_id": NUMBER}</td>
+        <td>{"message_contentS": Message[] }</td>
+      </tr>
+      <tr>
+        <td>deleteMessage</td>
+        <td>Lenox</td>
+        <td>{"room_id": NUMBER}</td>
+        <td>{"success": BOOLEAN}</td>
+      </tr>
+      <tr>
+        <td>createRoom</td>
+        <td>Lenox</td>
+        <td>
+          {"room_name": STRING, "type": STRING, "password": STRING, "owner":
+          STRING}
+        </td>
+        <td>{"room_id": NUMBER, "room_name": STRING}</td>
+      </tr>
+      <tr>
+        <td>getRoom</td>
+        <td>Sesame's mam</td>
+        <td>{"room_id": NUMBER}</td>
+        <td>
+          {"room_id": number, "room_name": STRING, "participant": PARTICIPANT[]}
+        </td>
+      </tr>
+      <tr>
+        <td>deleteRoom</td>
+        <td>Lenox</td>
+        <td>{"room_id": NUMBER}</td>
+        <td>{"success": BOOLEAN}</td>
+      </tr>
+
+      <tr>
+        <td>createParticipant</td>
+        <td>Lenox</td>
+        <td>{"user_id":NUMBER, "room_id": NUMBER}</td>
+        <td>{"participant_id": NUMBER}</td>
+      </tr>
+
+      <tr>
+        <td>getParticipant</td>
+        <td>Sesame's mam</td>
+        <td>{"room_id":NUMBER}</td>
+        <td>{"all_participants: PARTICIPANT[]"}</td>
+      </tr>
+
+      <tr>
+        <td>deleteParticipant</td>
+        <td>Lenox</td>
+        <td>{"participant": NUMBER}</td>
+        <td>{"user_id":NUMBER, "room_id" : NUMBER}</td>
+      </tr>
+    </table>
+  </body>
+</html>
