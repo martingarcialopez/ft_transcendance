@@ -42,7 +42,7 @@ function SelectChannel(
   name: string,
   page: any
 ) {
-  ActionCreatorMsgChanel({ ...chanel[1] });
+  /* ActionCreatorMsgChanel({ ...chanel[1] }); */
   ActionCreatorInfo(name); //update title  of page
   if (page)
     page.theDispatch({
