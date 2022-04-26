@@ -1,5 +1,20 @@
+import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+
 export class MessageDto {
-    id: number;
-	name: string;
-    content: string;
+	@IsString()
+    @IsNotEmpty()
+    public from: string;
+
+	@IsString()
+    @IsNotEmpty()
+    public contentToSend: string;
+
+
+	@IsNumber()
+	@IsNotEmpty()
+	public channelIdDst: number;
+
+	@IsString()
+    @IsNotEmpty()
+	public channelName: string;
 }

@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MessageDto } from '../dtos/in/message.dto';
 import { Message } from '../models/message.entity';
+import { classToPlain, Exclude } from 'class-transformer';
+import { MessageSnippetDto } from '../dtos/in/MessageSnippetDto.dto';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class MessageService {
@@ -13,11 +16,18 @@ export class MessageService {
 	){}
 
 
-	async createMessage(messageDto: MessageDto): Promise<Message> {
-		const message = new Message();
-		message.name = messageDto.name;
-		message.content = messageDto.content;
-	    return this.messageRepository.save(message);
+	async createMessage(messageDto: MessageDto): Promise<MessageSnippetDto>
+	{
+		const new_message = new Message();
+		/*mettre en dur le userId*/
+		new_message.userId = 2;
+		new_message.roomId = messageDto.channelIdDst ;
+		new_message.sender = messageDto.from;
+		new_message.content = messageDto.contentToSend;
+		new_message.room_name = messageDto.channelName;
+		await this.messageRepository.save(new_message);
+		const dto = plainToClass(MessageSnippetDto, new_message);
+		return dto;
 	}
 
 	/*show all the message*/

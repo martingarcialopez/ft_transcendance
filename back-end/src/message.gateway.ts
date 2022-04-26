@@ -70,11 +70,10 @@ export class MessageGateway
 	 */
   @Bind(MessageBody(), ConnectedSocket()) // useful?
   @SubscribeMessage('createMessage')
-  async createMessage(@Body() body: any) {
-    // console.log('New Message 888', message.name,message.content);
-    // const value = await this.messageService.createMessage(message);
-    // this.server.emit('msgToClient', value);
-    console.log(body);
+	async createMessage(@Body() message: MessageDto): Promise<void> {
+		var value = await this.messageService.createMessage(message[0]);
+		console.log('message id is ', value);
+		this.server.emit('SendMsg', value);
   }
 
   /*get all messages from a room*/
@@ -93,12 +92,10 @@ export class MessageGateway
 	      ROOMS
 	 */
   @SubscribeMessage('createRoom')
-  async createRoom(@Body() body: RoomDto): Promise<RoomSnippetDto> {
+  async createRoom(@Body() body: RoomDto): Promise<void> {
     const value = await this.roomService.createRoom(body);
     console.log('return value is ', value);
     this.server.emit('idRoom', value);
-
-    return value;
   }
 
   /*get all user in the given id room*/

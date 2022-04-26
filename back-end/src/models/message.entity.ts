@@ -4,20 +4,32 @@ import { Room } from './room.entity';
 
 
 @Entity()
-export class Message {
+export class Message{
 	@PrimaryGeneratedColumn()
 	id: number;
+
+	@Column()
+    sender: string;
 
 	@Column("text")
 	content: string;
 
 	@Column()
-    name: string;
+    room_name: string;
+
 
 	@ManyToOne((type) => User, (user) => user.messages)
+	@JoinColumn({ name: 'userId' })
     user: User;
 
+    @Column()
+    public userId: number;
+
 	@ManyToOne((type) => Room, (room) => room.messages)
-    room: Room;
+	@JoinColumn({ name: 'roomId' })
+	room: Room;
+
+	@Column()
+	public roomId: number;
 
 }
