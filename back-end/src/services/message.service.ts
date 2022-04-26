@@ -20,7 +20,7 @@ export class MessageService {
 	{
 		const new_message = new Message();
 		/*mettre en dur le userId*/
-		new_message.userId = 2;
+	//	new_message.userId = 2;
 		new_message.roomId = messageDto.channelIdDst ;
 		new_message.sender = messageDto.from;
 		new_message.content = messageDto.contentToSend;
