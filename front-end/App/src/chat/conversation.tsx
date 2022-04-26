@@ -75,6 +75,7 @@ export function TextField() {
   });
   return (
     <>
+      <TitlePage />
       {/* <PrintReceivedMsg /> */}
       {/* {console.log("message :", state.message)} */}
       <form
