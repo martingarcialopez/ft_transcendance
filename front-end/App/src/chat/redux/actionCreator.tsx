@@ -19,16 +19,16 @@ export const ActionCreatorMsgReceived = (newMsg: string[]) => {
   };
 };
 
-export const ActionCreatorMsgChanel = (name: t_chanel) => {
+export const ActionCreatorMsgIdchannelDsl = (name: number) => {
   return (dispatch: Dispatch<t_ActionMsg>) => {
     dispatch({
-      type: e_actionType.CHANEL_RECIPIENT,
+      type: e_actionType.SET_ID_CHANNEL,
       payload: name,
     });
   };
 };
 
-export const ActionCreatorMsgToSend = (name: string) => {
+export const ActionCreatorMsgContent = (name: string) => {
   return (dispatch: Dispatch<t_ActionMsg>) => {
     dispatch({
       type: e_actionType.MSG_TO_SEND,
@@ -41,6 +41,24 @@ export const ActionCreatorInfo = (name: string) => {
   return (dispatch: Dispatch<t_ActionMsg>) => {
     dispatch({
       type: e_actionType.NAME_OF_CURRENT_CHANNEL,
+      payload: name,
+    });
+  };
+};
+
+export const ActionCreatorIdChannel = (id: number) => {
+  return (dispatch: Dispatch<t_ActionMsg>) => {
+    dispatch({
+      type: e_actionType.SET_ID_CHANNEL,
+      payload: id,
+    });
+  };
+};
+
+export const ActionCreatorNameChannel = (name: string) => {
+  return (dispatch: Dispatch<t_ActionMsg>) => {
+    dispatch({
+      type: e_actionType.SET_NAME_CHANNEL,
       payload: name,
     });
   };

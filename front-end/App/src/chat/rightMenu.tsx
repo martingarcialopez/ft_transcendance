@@ -59,10 +59,8 @@ function SelectChannel(
 export function RightMenu() {
   const { chanel } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
-  const { ActionCreatorMsgChanel, ActionCreatorInfo } = bindActionCreators(
-    actionCreators,
-    dispatch
-  );
+  const { ActionCreatorMsgIdchannelDsl, ActionCreatorInfo } =
+    bindActionCreators(actionCreators, dispatch);
   const page = useContext(MyGlobalContext);
   return (
     <div>
@@ -73,7 +71,7 @@ export function RightMenu() {
           key={index}
           onClick={() => {
             SelectChannel(
-              ActionCreatorMsgChanel,
+              ActionCreatorMsgIdchannelDsl,
               ActionCreatorInfo,
               chanel,
               item.name,

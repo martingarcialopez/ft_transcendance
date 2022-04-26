@@ -21,6 +21,8 @@ export function chanelReducer(
   switch (action.type) {
     case e_actionType.ADD:
       return [...state, action.payload];
+    case e_actionType.SET_ID_CHANNEL:
+      return [...state, action.payload];
     default:
       return state;
   }
@@ -29,6 +31,7 @@ export function chanelReducer(
 function initChanel(): t_chanel {
   return {
     name: "",
+    id: -1,
     type: "",
     password: "",
     owner: "",
@@ -38,10 +41,10 @@ function initChanel(): t_chanel {
 
 function initStateMsg(): t_stateMsg {
   return {
-    contentReceived: [],
     from: "it going to be the information about about who is send data",
-    destChannel: initChanel(),
     contentToSend: "",
+    channelIdDst: -1,
+    channelName: "",
   };
 }
 
@@ -65,7 +68,12 @@ export function msgReducer(
     case e_actionType.MSG_TO_SEND: {
       return { ...state, contentToSend: action.payload };
     }
-
+    case e_actionType.SET_ID_CHANNEL: {
+      return { ...state, channelIdDst: action.payload };
+    }
+    case e_actionType.SET_NAME_CHANNEL: {
+      return { ...state, channelName: action.payload };
+    }
     default:
       return state;
   }

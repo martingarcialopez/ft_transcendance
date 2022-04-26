@@ -3,6 +3,7 @@ import { t_chanel } from "./type";
 export let listChanel: t_chanel[] = [
   {
     name: "RMC",
+    id: 1,
     type: "private",
     password: "password",
     owner: "lenox",
@@ -10,6 +11,7 @@ export let listChanel: t_chanel[] = [
   },
   {
     name: "BEINSPORT",
+    id: 2,
     type: "private",
     password: "password",
     owner: "martin",
@@ -17,6 +19,7 @@ export let listChanel: t_chanel[] = [
   },
   {
     name: "TFI",
+    id: 3,
     type: "private",
     password: "password",
     owner: "maxime",
