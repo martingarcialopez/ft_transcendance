@@ -22,8 +22,8 @@ export class Message{
 	@JoinColumn({ name: 'userId' })
     user: User;
 
-    @Column()
-    public userId: number;
+    // @Column()
+    // public userId: number;
 
 	@ManyToOne((type) => Room, (room) => room.messages)
 	@JoinColumn({ name: 'roomId' })
