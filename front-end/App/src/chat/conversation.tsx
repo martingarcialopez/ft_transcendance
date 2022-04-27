@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import * as actionCreators from "./redux/actionCreator";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
-import sockeio from "socket.io-client";
+import socketio from "socket.io-client";
 import { TitlePage } from "./utilsComponent";
 import "./style/conversation.css";
 import { useState } from "react";
