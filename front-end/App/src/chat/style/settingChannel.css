@@ -103,3 +103,10 @@ ul{
 		font-size:100%;
 		border-style: hidden;
 }
+
+@media all and (max-width: 768px) {
+ul li {
+				font-size:2vw;
+				
+		}
+}

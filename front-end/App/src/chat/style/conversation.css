@@ -24,8 +24,7 @@ html
 }
 
 .field-chat textarea {
-		width: 20vw;
-		height: 10vh;
+	width: 20vw;
 	border-color: rgb(105, 163, 202);
 	background: #f1f1f1;
 	resize: none;
@@ -39,5 +38,30 @@ html
 		background: #ffffff;
 		font-size: 3.5vw;
 		color: Aquamarine;
+
+}
+
+@media all and (max-width: 768px) {
+.field-chat textarea {
+		width: 30vw;
+		height: 10vh;
+	border-color: rgb(105, 163, 202);
+	background: #f1f1f1;
+	resize: none;
+	min-height: 10vh;
+
+}
+
+.btn-send-msg{
+		margin-left: 1%;
+		font-size: 7vw;
+
+
+}
+
+.field-chat textarea {
+		
+height: 1vh;														 
+}
 
 }
