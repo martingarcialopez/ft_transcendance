@@ -5,7 +5,7 @@ import { AddNewChanel } from "./settingChanel";
 import { useContext } from "react";
 import { MyGlobalContext } from "./index";
 import { e_actionType, t_chanel } from "./type";
-import { TextField } from "./conversation";
+import { socket, TextField } from "./conversation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import { bindActionCreators } from "redux";
@@ -99,6 +99,11 @@ function SelectChannel(
     });
   ActionCreatorMsgIdchannelDsl(channelSected.id);
   ActionCreatorNameChannel(channelSected.name);
+
+  socket.emit("getRoom", channelSected.id);
+  socket.on("MsgToClient: ", (receive: any) => {
+    console.log("MsgToClient: ", receive);
+  });
 }
 
 /**
