@@ -41,7 +41,6 @@ function sendMsg(MsgToSend: Function, state: any, content: string) {
 					if the user selected a channel it can now send  message
 					add the new contnent into the array
 			*/
-
     MsgToSend(content);
     //if uncomment the line bellow it going to broacast content
     /* socket.emit("msgToServer", content); */
@@ -52,7 +51,6 @@ function sendMsg(MsgToSend: Function, state: any, content: string) {
     objMsg.contentToSend = content;
 
     console.log("obj send to server :", objMsg);
-
     socket.emit("createMessage", objMsg, objMsg.channelName);
   }
 
