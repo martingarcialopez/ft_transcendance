@@ -42,7 +42,22 @@ function Frame() {
 function State() {
   return (
     <>
-      <div className="item item2">state</div>
+      <div className="item item2">
+        <div className="stats posts">
+          <span className="big">523</span>
+          <span className="small">posts</span>
+        </div>
+
+        <div className="stats likes">
+          <span className="big">1387</span>
+          <span className="small">likes</span>
+        </div>
+
+        <div className="stats flwrs">
+          <span className="big">146</span>
+          <span className="small">followers</span>
+        </div>
+      </div>
     </>
   );
 }

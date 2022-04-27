@@ -3,8 +3,8 @@ import { Profile } from "./profile/profile";
 const App = () => {
   return (
     <div>
-      {/* <LayoutChat /> */}
-      <Profile />
+      <LayoutChat />
+      {/* <Profile /> */}
     </div>
   );
 };
