@@ -101,9 +101,6 @@ function SelectChannel(
   ActionCreatorNameChannel(channelSected.name);
 
   socket.emit("getRoom", channelSected.id);
-  socket.on("MsgToClient: ", (receive: any) => {
-    console.log("MsgToClient: ", receive);
-  });
 }
 
 /**
