@@ -1,5 +1,6 @@
 import { RootState } from "./redux/store";
 import { useSelector } from "react-redux";
+import { t_channel } from "./type";
 
 export function TitlePage() {
   /*
@@ -24,3 +25,18 @@ export function TitlePage() {
  * 		});
  * 	return <>{console.log("page:", page)}</>;
  * } */
+
+export function CreateChannelObject(
+  arrayChannel: t_channel[],
+  occurence: { id: number; name: string; contentMsg: string }
+) {
+  const newChannel = arrayChannel.map((item) => {
+    if (item.id === occurence.id) {
+      item.message = [
+        ...item.message,
+        { user: "inconu", content: occurence.contentMsg },
+      ];
+    }
+  });
+  return newChannel;
+}

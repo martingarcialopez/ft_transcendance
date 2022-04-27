@@ -1,14 +1,20 @@
-export type t_chanel = {
+export type t_msgInChannel = {
+  user: any;
+  content: string;
+};
+
+export type t_channel = {
   name: string;
   id: number;
-  type: string;
+  typeChannel: string; //type to typeChannel
   password: string;
   owner: string;
   members: string[];
+  message: t_msgInChannel[];
 };
 
-export type t_stateMsg = {
-  from: string;
+export type t_msgToSend = {
+  fromUser: string;
   contentToSend: string;
   channelIdDst: number;
   channelName: string;
@@ -31,7 +37,7 @@ export enum e_actionType {
 
 export type t_ActionChanel = {
   type: string;
-  payload: t_chanel;
+  payload: t_channel;
 };
 
 export type t_ActionMsg = {

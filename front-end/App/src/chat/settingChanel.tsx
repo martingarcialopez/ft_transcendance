@@ -2,21 +2,22 @@ import { bindActionCreators } from "redux";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
-import { t_chanel } from "./type";
+import { t_channel } from "./type";
 import "./style/settingChannel.css";
 import * as actionCreators from "./redux/actionCreator";
 import { TitlePage } from "./utilsComponent";
 import { socket } from "./conversation";
 import { BsPlusSquareFill } from "react-icons/bs";
 
-function updateArrayChanel(data: any): t_chanel {
-  let newChanel: t_chanel = {
+function updateArrayChanel(data: any): t_channel {
+  let newChanel: t_channel = {
     name: data.name,
     id: 0,
-    type: data.type,
+    typeChannel: data.type,
     password: data.password,
     owner: "string",
     members: [],
+    message: [{ user: "inconnu", content: "" }],
   };
   return newChanel;
 }
@@ -29,7 +30,7 @@ function JoinOrLeave() {
   return (
     <>
       <ul>
-        {chanel.map((item: t_chanel, index: number) => (
+        {chanel.map((item: t_channel, index: number) => (
           <li key={index}>
             {item.name}
             <button className="btn-join-channel btn-leave-channel">
@@ -49,7 +50,7 @@ function JoinOrLeave() {
  * @param newChanel
  * @returns
  */
-/* function isDoublon(listOfChanel: t_chanel[], newChanel: t_chanel): boolean {
+/* function isDoublon(listOfChanel: t_channel[], newChanel: t_channel): boolean {
  *   let hasExisting: boolean = listOfChanel.some(
  *     (item) => item.name === newChanel.name
  *   );
@@ -63,7 +64,7 @@ function JoinOrLeave() {
  *return the id of channel to coming to create
  *
  */
-function GetIdChannel(newChannel: t_chanel): number {
+function GetIdChannel(newChannel: t_channel): number {
   let id: number = -1;
   socket.on("idRoom", (receive: { id: number; name: string }) => {
     /* console.log("reponse after creation channel  = ", receive); */

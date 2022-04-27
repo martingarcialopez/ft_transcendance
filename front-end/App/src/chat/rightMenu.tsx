@@ -1,7 +1,7 @@
 import { AiOutlineSetting } from "react-icons/ai";
 import { useContext } from "react";
 import { MyGlobalContext } from "./index";
-import { e_actionType, t_chanel } from "./type";
+import { e_actionType, t_channel } from "./type";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { BsPeopleFill } from "react-icons/bs";
@@ -38,7 +38,7 @@ function ButtonSettingUser() {
 function SelectChannel(
   ActionCreatorMsgChanel: Function,
   ActionCreatorInfo: Function,
-  chanel: t_chanel[],
+  chanel: t_channel[],
   name: string,
   page: any
 ) {

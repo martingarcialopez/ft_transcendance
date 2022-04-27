@@ -4,7 +4,7 @@ import { AiOutlineSetting } from "react-icons/ai";
 import { AddNewChanel } from "./settingChanel";
 import { useContext } from "react";
 import { MyGlobalContext } from "./index";
-import { e_actionType, t_chanel } from "./type";
+import { e_actionType, t_channel } from "./type";
 import { socket, TextField } from "./conversation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
@@ -66,9 +66,9 @@ function ButtonChanel() {
  * this fuction take a chanel name then return back the index of that chanel
  *
  */
-function getIndexChanel(tab: t_chanel[], name_chanel: string): number {
+function getIndexChanel(tab: t_channel[], name_chanel: string): number {
   let index: number = -1;
-  index = tab.findIndex((element: t_chanel) => element.name === name_chanel);
+  index = tab.findIndex((element: t_channel) => element.name === name_chanel);
   return index;
 }
 
@@ -83,12 +83,12 @@ function SelectChannel(
   ActionCreatorMsgIdchannelDsl: Function,
   ActionCreatorNameChannel: Function,
   ActionCreatorInfo: Function,
-  arrayChannel: t_chanel[],
-  channelSected: t_chanel,
+  arrayChannel: t_channel[],
+  channelSected: t_channel,
   page: any
 ) {
   let index = getIndexChanel(arrayChannel, channelSected.name);
-  console.log("channel index == ", index);
+  /* console.log("channel index == ", index); */
   console.log("selected :", channelSected);
   /* ActionCreatorMsgChanel({ ...arrayChannel[index] }); */
   ActionCreatorInfo(channelSected.name); //update title  of page
@@ -120,7 +120,7 @@ export function LeftMenu() {
   return (
     <>
       <ButtonChanel /> <br></br>
-      {chanel.map((item: t_chanel, index: number) => (
+      {chanel.map((item: t_channel, index: number) => (
         <div
           onClick={() => {
             SelectChannel(

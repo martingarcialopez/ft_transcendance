@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
-import { t_chanel, e_actionType, t_ActionChanel, t_ActionMsg } from "../type";
+import { t_channel, e_actionType, t_ActionChanel, t_ActionMsg } from "../type";
 
-export const ActionCreatorChanelAdd = (amount: t_chanel) => {
+export const ActionCreatorChanelAdd = (amount: t_channel) => {
   return (dispatch: Dispatch<t_ActionChanel>) => {
     dispatch({
       type: e_actionType.ADD,

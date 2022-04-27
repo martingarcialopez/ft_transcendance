@@ -1,21 +1,21 @@
 import { listChanel } from "../data";
 
 import {
-  t_chanel,
+  t_channel,
   e_actionType,
   t_ActionChanel,
   t_ActionMsg,
-  t_stateMsg,
+  t_msgToSend,
   t_ActionInfo,
   t_info,
 } from "../type";
 
-function initialState(): t_chanel[] {
+function initialState(): t_channel[] {
   return listChanel;
 }
 
 export function chanelReducer(
-  state: t_chanel[] = initialState(),
+  state: t_channel[] = initialState(),
   action: t_ActionChanel
 ) {
   switch (action.type) {
@@ -28,20 +28,21 @@ export function chanelReducer(
   }
 }
 
-function initChanel(): t_chanel {
+function initChanel(): t_channel {
   return {
     name: "",
     id: -1,
-    type: "",
+    typeChannel: "",
     password: "",
     owner: "",
     members: [],
+    message: [],
   };
 }
 
-function initStateMsg(): t_stateMsg {
+function initStateMsg(): t_msgToSend {
   return {
-    from: "it going to be the information about about who is send data",
+    fromUser: "it going to be the information about about who is send data",
     contentToSend: "",
     channelIdDst: -1,
     channelName: "",
@@ -55,7 +56,7 @@ function initStateMsg(): t_stateMsg {
  * @returns
  */
 export function msgReducer(
-  state: t_stateMsg = initStateMsg(),
+  state: t_msgToSend = initStateMsg(),
   action: t_ActionMsg
 ) {
   switch (action.type) {
