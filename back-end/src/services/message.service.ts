@@ -22,7 +22,7 @@ export class MessageService {
 		/*mettre en dur le userId*/
 	//	new_message.userId = 2;
 		new_message.roomId = messageDto.channelIdDst ;
-		new_message.sender = messageDto.from;
+		new_message.sender = messageDto.fromUser;
 		new_message.content = messageDto.contentToSend;
 		new_message.room_name = messageDto.channelName;
 		await this.messageRepository.save(new_message);

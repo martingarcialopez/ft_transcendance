@@ -23,7 +23,7 @@ export class RoomService {
 	{
         const new_room = new Room();
 		new_room.name = roomDto.name;
-		new_room.type = roomDto.type;
+		new_room.typeChannel = roomDto.typeChannel;
 		new_room.password = roomDto.password;
 		new_room.owner = roomDto.owner;
 		//		new_room.members = roomDto.members;

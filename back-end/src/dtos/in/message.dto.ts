@@ -3,12 +3,11 @@ import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsS
 export class MessageDto {
 	@IsString()
     @IsNotEmpty()
-    public from: string;
+    public fromUser: string;
 
 	@IsString()
     @IsNotEmpty()
     public contentToSend: string;
-
 
 	@IsNumber()
 	@IsNotEmpty()
