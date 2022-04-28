@@ -60,7 +60,7 @@ function sendMsg(MsgToSend: Function, state: any, content: string) {
 }
 
 /**
- * take the message of the field text then stock into the store redux
+ * take the message of the field text then stock into channel, proriety message
  * add the new message in the...
  * @returns chat text form
  */
