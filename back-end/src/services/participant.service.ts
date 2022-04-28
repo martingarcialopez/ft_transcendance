@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { Participant } from '../models/participant.entity';
-import { RoomSnippetDto } from '../dtos/in/RoomSnippetDto.dto';
+import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
 
 @Injectable()
 export class ParticipantService {
@@ -29,14 +29,12 @@ export class ParticipantService {
 */
 	async getUseridRooms(userId: number): Promise<RoomSnippetDto[]>
 	{
-		console.log('xibao888');
 		const roomIds = await this.participantRepository
 			.createQueryBuilder("participant")
 			.leftJoinAndSelect("participant.room", "room")
 			.select(["participant.roomId", "room.name"])
 			.where("participant.userId = :id", { id: userId })
 			.getRawMany();
-
 		return roomIds;
 	}
 

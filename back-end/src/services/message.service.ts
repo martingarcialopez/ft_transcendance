@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { MessageDto } from '../dtos/in/message.dto';
 import { Message } from '../models/message.entity';
 import { classToPlain, Exclude } from 'class-transformer';
-import { MessageSnippetDto } from '../dtos/in/MessageSnippetDto.dto';
+import { MessageSnippetDto } from '../dtos/out/MessageSnippetDto.dto';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RoomDto } from '../dtos/in/room.dto';
-import { RoomSnippetDto } from '../dtos/in/RoomSnippetDto.dto';
+import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
 import { Room } from '../models/room.entity';
 import { Participant } from '../models/participant.entity';
 import { User } from '../models/user.entity';

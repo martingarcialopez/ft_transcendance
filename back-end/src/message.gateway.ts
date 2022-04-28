@@ -21,7 +21,7 @@ import { Socket, Server } from 'socket.io';
 import { MessageDto } from './dtos/in/message.dto';
 import { RoomDto } from './dtos/in/room.dto';
 import { ParticipantDto } from './dtos/in/participant.dto';
-import { RoomSnippetDto } from './dtos/in/RoomSnippetDto.dto';
+import { RoomSnippetDto } from './dtos/out/RoomSnippetDto.dto';
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
