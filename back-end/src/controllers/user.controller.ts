@@ -16,7 +16,7 @@ export class UserController {
         return this.userService.createUser(body);
     }
 
-    @Get(':id')
+    @Get('/:id')
     getUser(@Param('id') id: string) : Promise<User> {
         return this.userService.getUser(id);
 
@@ -27,7 +27,7 @@ export class UserController {
         return this.userService.updateUser(body, id);
     }
 
-    @Get('/delete/:id')
+    @Delete('/:id')
     deleteUser( @Param('id') id: string): Promise <void> {
         return this.userService.deleteUser(id);
     }
