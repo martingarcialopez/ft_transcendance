@@ -13,14 +13,13 @@ export class Room {
 
 	//public or private? false means private
 	@Column()
-	type: string;
+	typeChannel: string;
 
 	@Column()
     password: string;
 
 	@Column()
     owner: string;
-
 
 	@OneToMany((type) => Message, (message) => message.room)
     messages: Message[];

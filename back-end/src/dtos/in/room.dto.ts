@@ -8,7 +8,7 @@ export class RoomDto {
 
 	@IsString()
     @IsNotEmpty()
-    public type: string;
+    public typeChannel: string;
 
 	@IsString()
     @IsNotEmpty()
@@ -22,5 +22,12 @@ export class RoomDto {
 	@IsNumber()
 	public members:string[];
 
+	// probably gonna have to delete this later down the road
+	@IsNumber()
+	@IsNotEmpty()
+	public id: number;
 
+	@IsArray()
+	@IsNotEmpty()
+	public message: string[];
 }

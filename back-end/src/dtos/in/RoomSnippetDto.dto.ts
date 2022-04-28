@@ -11,5 +11,4 @@ export class RoomSnippetDto {
     @Expose()
     @IsString()
     readonly name: string;
-
 }
