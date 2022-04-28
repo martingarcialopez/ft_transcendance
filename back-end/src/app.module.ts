@@ -4,9 +4,7 @@ import { User } from './models/user.entity'
 import { UserModule } from './modules/user.module';
 import { Message } from './models/message.entity';
 import { MessageModule } from './modules/message.module';
-import { OauthModule } from './modules/oauth.module';
 import { OauthMiddleware } from './middleware/Oauth.middleware';
-import { OauthController } from './controllers/oauth.controller';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
@@ -25,18 +23,17 @@ import { HttpModule } from '@nestjs/axios';
     HttpModule,
     UserModule,
     MessageModule,
-    OauthModule,
   ],
   controllers: [],
   providers: [],
 
 })
-// export class AppModule {}
+export class AppModule {}
 
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-      consumer
-        .apply(OauthMiddleware)
-        .forRoutes(OauthController)
-  }
-}
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//       consumer
+//         .apply(OauthMiddleware)
+//         .forRoutes(OauthController)
+//   }
+// }

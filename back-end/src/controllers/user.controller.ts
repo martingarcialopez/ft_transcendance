@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpException, HttpStatus, NotFoundException, Delete } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { userInfo } from 'os';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
