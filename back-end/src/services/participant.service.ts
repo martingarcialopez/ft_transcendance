@@ -14,6 +14,9 @@ export class ParticipantService {
 
     ){}
 
+/*
+** Create a new obj of participant and store in the table
+*/
 	async createParticipant(participantDto: ParticipantDto): Promise<Participant> {
         const new_participant = new Participant();
 		// new_participant.userID = participantDto.userID;
@@ -24,7 +27,7 @@ export class ParticipantService {
 
 /*
  ** From the given userID, obtain infos of RoomId participated and corresponding RoomName
- ** Parameter(userId:number)
+ ** :Param(userId:number)
 ** Return type (RoomSnippetDto) that contain room_id + room_name
 */
 	async getUseridRooms(userId: number): Promise<RoomSnippetDto[]>
@@ -38,11 +41,19 @@ export class ParticipantService {
 		return roomIds;
 	}
 
+/*
+** Obtain the specific column in tab participant by requerying primary id
+**/
 	async getParticipant(id: number): Promise<Participant[]>
     {
         return await this.participantRepository.find({id});
     }
 
+/*
+** Delete the whole column corresponding to the id
+** :param (id:number) id is the primary key in participant table
+** :return void
+*/
 	async deleteParticipant(id: number): Promise<void> {
         await this.participantRepository.delete(id);
     }

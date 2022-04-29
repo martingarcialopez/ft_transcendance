@@ -15,7 +15,10 @@ export class MessageService {
         private readonly messageRepository: Repository<Message>,
 	){}
 
-
+/*
+**create a new obj  of Message entity, store it in the repository
+**return: dto that contains messageId
+*/
 	async createMessage(messageDto: MessageDto): Promise<MessageSnippetDto>
 	{
 		const new_message = new Message();
@@ -30,15 +33,21 @@ export class MessageService {
 		return dto;
 	}
 
-	/*show all the message*/
+/*
+** Show all the message no matter in which channel
+** return (Message[])
+*/
 	async getMessage(): Promise<Message[]>
 	{
 		return await this.messageRepository.find();
 	}
-
+/*
+** requiry all message in the given channel_id
+** :param (room_id :number) the given roomId
+** return value: messages
+*/
 	async getRoomMessage(room_id:number): Promise<Message[]>
 	{
-		//	return await this.messageRepository.find();
 		const messages_in_room = await this.messageRepository
 			.createQueryBuilder("message")
 			.where("message.roomId = :id", { id: room_id })
@@ -46,11 +55,22 @@ export class MessageService {
 		console.log(messages_in_room);
 		return messages_in_room;
 	}
-
-	findOne(id:string): Promise<Message>
+/*
+** Obtain the specific column in table message by requerying primary id
+** :param (id:number)
+** :return (Message): the obj of message entity, equally
+** the column corresponding to the requerying id
+*/
+	findOne(id:number): Promise<Message>
 	{
 		return this.messageRepository.findOne(id);
 	}
+
+/*
+** Delete the whole column corresponding to the id
+** :param (id:number) id is the primary key in message table
+** :return void
+*/
     async deleteMessage(id: number): Promise<void> {
         await this.messageRepository.delete(id);
     }

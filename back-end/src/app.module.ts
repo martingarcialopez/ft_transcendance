@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './models/user.entity'
 import { UserModule } from './modules/user.module';
-import { MessageGateway } from './message.gateway';
 import {MessageService} from './services/message.service';
 import { MessageModule } from './modules/message.module';
 import { Message } from './models/message.entity';
@@ -12,6 +11,11 @@ import { RoomService} from './services/room.service';
 import { Participant } from './models/participant.entity';
 import { ParticipantModule } from './modules/participant.module';
 import { ParticipantService} from './services/participant.service';
+import { MessageGateway } from './gateway/message.gateway';
+import { RoomGateway } from './gateway/room.gateway';
+import { ParticipantGateway } from './gateway/participant.gateway';
+
+
 @Module({
 
 	imports: [
@@ -28,6 +32,6 @@ import { ParticipantService} from './services/participant.service';
 
 		UserModule, MessageModule, RoomModule, ParticipantModule
 	],
-	providers: [MessageGateway],
+	providers: [MessageGateway, RoomGateway, ParticipantGateway],
 })
 export class AppModule {}

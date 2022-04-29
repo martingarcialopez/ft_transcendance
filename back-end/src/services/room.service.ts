@@ -18,8 +18,11 @@ export class RoomService {
         private readonly roomRepository: Repository<Room>,
     ){}
 
-
-	async createRoom(roomDto: RoomDto): Promise<RoomSnippetDto>
+/*
+** Create a new channel(room)
+** :param(RoomDto) the infos of the channel given by front
+** :return (RoomSnippetDto) dto contains new channel id and its name
+*/	async createRoom(roomDto: RoomDto): Promise<RoomSnippetDto>
 	{
         const new_room = new Room();
 		new_room.name = roomDto.name;
@@ -34,7 +37,11 @@ export class RoomService {
     }
 
 
-	/*get all user in the given id room*/
+/*
+** Get all user in the given id room
+** :Param(room_Id: number)
+** return (an obj contains roomid, roomName, and all participants)
+*/
 	async getRoom(room_Id: number): Promise<Room>
 	{
 		const room = await this.roomRepository.findOne(room_Id);
@@ -48,6 +55,11 @@ export class RoomService {
 		return p;
 	}
 
+/*
+** Delete the whole column corresponding to the id
+** :param (id:number) id is the primary key in room table
+** :return void
+*/
 	async deleteRoom(id: number): Promise<void> {
         await this.roomRepository.delete(id);
     }
