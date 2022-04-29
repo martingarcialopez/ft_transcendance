@@ -1,4 +1,4 @@
-import { t_channel, t_msgInChannel } from "./type";
+import { t_channel } from "./type";
 
 export let listChanel: t_channel[] = [
   {
@@ -8,25 +8,40 @@ export let listChanel: t_channel[] = [
     password: "password",
     owner: "lenox",
     members: ["martin", "rapheal"],
-    message: [{ user: "inconnu", content: "" }],
+    message: [
+      {
+        fromUser: "",
+        contentToSend: "",
+        channelIdDst: -1,
+        channelName: "",
+      },
+    ],
   },
 
+  {
+    name: "BEINSPORT",
+    id: 12,
+    typeChannel: "private",
+    password: "password",
+    owner: "martin",
+    members: ["axel", "lenox", "boddez"],
+    message: [
+      {
+        fromUser: "",
+        contentToSend: "",
+        channelIdDst: -1,
+        channelName: "",
+      },
+    ],
+  },
   /* {
-   *   name: "BEINSPORT",
-   *   id: 2,
-   *   type: "private",
-   *   password: "password",
-   *   owner: "martin",
-   *   members: ["axel", "lenox", "boddez"],
-   * },
-   * {
-   *   name: "TFI",
-   *   id: 3,
-   *   type: "private",
-   *   password: "password",
-   *   owner: "maxime",
-   *   members: ["kery james", "youssoupha", "50 cent"],
-   * }, */
+		name: "TFI",
+		id: 3,
+		type: "private",
+		password: "password",
+		owner: "maxime",
+		members: ["kery james", "youssoupha", "50 cent"],
+	}, */
 ];
 
 export const userList = [

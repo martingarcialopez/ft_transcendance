@@ -1,5 +1,11 @@
 import { Dispatch } from "redux";
-import { t_channel, e_actionType, t_ActionChanel, t_ActionMsg } from "../type";
+import {
+  t_channel,
+  e_actionType,
+  t_ActionChanel,
+  t_ActionMsg,
+  t_msgToSend,
+} from "../type";
 
 export const ActionCreatorChanelAdd = (amount: t_channel) => {
   return (dispatch: Dispatch<t_ActionChanel>) => {
@@ -28,11 +34,11 @@ export const ActionCreatorMsgIdchannelDsl = (name: number) => {
   };
 };
 
-export const ActionCreatorMsgContent = (name: string) => {
+export const ActionCreatorMsgContent = (contentMsg: string) => {
   return (dispatch: Dispatch<t_ActionMsg>) => {
     dispatch({
       type: e_actionType.MSG_TO_SEND,
-      payload: name,
+      payload: contentMsg,
     });
   };
 };
@@ -60,6 +66,27 @@ export const ActionCreatorNameChannel = (name: string) => {
     dispatch({
       type: e_actionType.SET_NAME_CHANNEL,
       payload: name,
+    });
+  };
+};
+
+export const ActionCreatorNewChannel = (newChannel: t_channel[]) => {
+  return (dispatch: Dispatch<t_ActionChanel>) => {
+    dispatch({
+      type: e_actionType.CREATE_NEW_CHANNEL,
+      payload: newChannel,
+    });
+  };
+};
+
+/**
+ *add new t_msgToSend into the arrayMsg it like like [...t_msgToSend, newMsg]
+ */
+export const ActionCreatorAddNewMsg = (newMsg: t_msgToSend) => {
+  return (dispatch: Dispatch<t_ActionMsg>) => {
+    dispatch({
+      type: e_actionType.ADD_NEW_MSG,
+      payload: newMsg,
     });
   };
 };

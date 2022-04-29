@@ -4,8 +4,6 @@ import {
   t_channel,
   e_actionType,
   t_ActionChanel,
-  t_ActionMsg,
-  t_msgToSend,
   t_ActionInfo,
   t_info,
 } from "../type";
@@ -14,21 +12,7 @@ function initialState(): t_channel[] {
   return listChanel;
 }
 
-export function chanelReducer(
-  state: t_channel[] = initialState(),
-  action: t_ActionChanel
-) {
-  switch (action.type) {
-    case e_actionType.ADD:
-      return [...state, action.payload];
-    case e_actionType.SET_ID_CHANNEL:
-      return [...state, action.payload];
-    default:
-      return state;
-  }
-}
-
-function initChanel(): t_channel {
+export function initChannel(): t_channel {
   return {
     name: "",
     id: -1,
@@ -40,41 +24,31 @@ function initChanel(): t_channel {
   };
 }
 
-function initStateMsg(): t_msgToSend {
-  return {
-    fromUser: "it going to be the information about about who is send data",
-    contentToSend: "",
-    channelIdDst: -1,
-    channelName: "",
-  };
-}
-
 /**
- * define the propriety of message(from, to, content)
- * @param state
- * @param action
+ * set each propriety of object message
+ * each case is related to a propriety object
+
+ * @param action{proprity : ENUME , proprity:any}
  * @returns
+ * @state = {
+  name: string;
+  id: number;
+  typeChannel: string; //type to typeChannel
+  password: string;
+  owner: string;
+  members: string[];
+  message: t_msgInChannel[];
+};
  */
-export function msgReducer(
-  state: t_msgToSend = initStateMsg(),
-  action: t_ActionMsg
+export function chanelReducer(
+  state: t_channel[] = initialState(),
+  action: t_ActionChanel
 ) {
   switch (action.type) {
-    case e_actionType.MSG_RECEIVED: {
-      return { ...state, contentReceived: action.payload };
-    }
-    case e_actionType.CHANEL_RECIPIENT: {
-      return { ...state, destChannel: action.payload };
-    }
-    case e_actionType.MSG_TO_SEND: {
-      return { ...state, contentToSend: action.payload };
-    }
-    case e_actionType.SET_ID_CHANNEL: {
-      return { ...state, channelIdDst: action.payload };
-    }
-    case e_actionType.SET_NAME_CHANNEL: {
-      return { ...state, channelName: action.payload };
-    }
+    case e_actionType.ADD:
+      return [...state, action.payload];
+    case e_actionType.SET_ID_CHANNEL:
+      return [...state, action.payload];
     default:
       return state;
   }

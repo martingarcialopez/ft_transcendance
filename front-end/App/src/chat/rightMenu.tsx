@@ -57,7 +57,7 @@ function SelectChannel(
  * @returns jsx
  */
 export function RightMenu() {
-  const { chanel } = useSelector((state: RootState) => state);
+  const { channel } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
   const { ActionCreatorMsgIdchannelDsl, ActionCreatorInfo } =
     bindActionCreators(actionCreators, dispatch);
@@ -73,7 +73,7 @@ export function RightMenu() {
             SelectChannel(
               ActionCreatorMsgIdchannelDsl,
               ActionCreatorInfo,
-              chanel,
+              channel,
               item.name,
               page
             );

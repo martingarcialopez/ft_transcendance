@@ -1,6 +1,8 @@
-export type t_msgInChannel = {
-  user: any;
-  content: string;
+export type t_msgToSend = {
+  fromUser: string;
+  contentToSend: string;
+  channelIdDst: number;
+  channelName: string;
 };
 
 export type t_channel = {
@@ -13,12 +15,7 @@ export type t_channel = {
   message: t_msgInChannel[];
 };
 
-export type t_msgToSend = {
-  fromUser: string;
-  contentToSend: string;
-  channelIdDst: number;
-  channelName: string;
-};
+export type t_msgInChannel = t_msgToSend;
 
 export enum e_actionType {
   SET_CHANEL = "setting-chanel",
@@ -33,22 +30,20 @@ export enum e_actionType {
   USER_SETTING_PAGE = "led user setting page",
   SET_ID_CHANNEL = "define the id channel",
   SET_NAME_CHANNEL = "define the name of channel",
+  CREATE_NEW_CHANNEL = "create new channel cause  priority <message> has been updated",
+  ADD_NEW_MSG = "add new object (t_msgToSend) into the array",
 }
 
-export type t_ActionChanel = {
-  type: string;
-  payload: t_channel;
-};
-
-export type t_ActionMsg = {
+type t_Action = {
   type: string;
   payload: any;
 };
 
-export type t_ActionInfo = {
-  type: string;
-  payload: string;
-};
+export type t_ActionChanel = t_Action;
+
+export type t_ActionMsg = t_Action;
+
+export type t_ActionInfo = t_Action;
 
 export type t_info = {
   titleOfPage: string;

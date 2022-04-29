@@ -17,7 +17,14 @@ function updateArrayChanel(data: any): t_channel {
     password: data.password,
     owner: "string",
     members: [],
-    message: [{ user: "inconnu", content: "" }],
+    message: [
+      {
+        fromUser: "",
+        contentToSend: "",
+        channelIdDst: -1,
+        channelName: "",
+      },
+    ],
   };
   return newChanel;
 }
@@ -26,11 +33,11 @@ function updateArrayChanel(data: any): t_channel {
  * display all chanel with option to join it or leave it
  */
 function JoinOrLeave() {
-  const { chanel } = useSelector((state: RootState) => state);
+  const { channel } = useSelector((state: RootState) => state);
   return (
     <>
       <ul>
-        {chanel.map((item: t_channel, index: number) => (
+        {channel.map((item: t_channel, index: number) => (
           <li key={index}>
             {item.name}
             <button className="btn-join-channel btn-leave-channel">

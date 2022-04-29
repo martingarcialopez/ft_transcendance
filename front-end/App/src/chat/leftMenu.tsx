@@ -108,7 +108,7 @@ function SelectChannel(
  *
  */
 export function LeftMenu() {
-  const { chanel } = useSelector((state: RootState) => state);
+  const { channel } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
   const {
     ActionCreatorMsgIdchannelDsl,
@@ -120,14 +120,14 @@ export function LeftMenu() {
   return (
     <>
       <ButtonChanel /> <br></br>
-      {chanel.map((item: t_channel, index: number) => (
+      {channel.map((item: t_channel, index: number) => (
         <div
           onClick={() => {
             SelectChannel(
               ActionCreatorMsgIdchannelDsl,
               ActionCreatorNameChannel,
               ActionCreatorInfo,
-              chanel,
+              channel,
               item,
               page
             );

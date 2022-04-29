@@ -1,13 +1,14 @@
 import { applyMiddleware, createStore } from "redux";
 import { combineReducers } from "redux";
-import { chanelReducer, msgReducer, infoReducer } from "./chanelReducer";
+import { chanelReducer, infoReducer } from "./chanelReducer";
 import thunk from "redux-thunk";
+import { msgReducer, arrayMsgReducer } from "./message";
 
 const reducers = combineReducers({
-  chanel:
-    chanelReducer /*content all information about chanel inside database*/,
+  channel: chanelReducer /*content all information e*/,
   message: msgReducer,
   info: infoReducer,
+  arrayMessage: arrayMsgReducer,
 });
 
 export const store = createStore(reducers, {}, applyMiddleware(thunk));
