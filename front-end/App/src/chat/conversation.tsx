@@ -7,7 +7,7 @@ import { RootState } from "./redux/store";
 import socketio from "socket.io-client";
 import { TitlePage } from "./utilsComponent";
 import "./style/conversation.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { t_msgToSend } from "./type";
 
 /**
@@ -93,6 +93,14 @@ function PrintReceivedMsg() {
     </>
   );
 }
+function initStateMsg(): t_msgToSend {
+  return {
+    fromUser: "unknow",
+    contentToSend: "",
+    channelIdDst: -1,
+    channelName: "",
+  };
+}
 
 /**
  * take the message of the field text then stock into channel, proriety message
@@ -102,24 +110,35 @@ function PrintReceivedMsg() {
 export function TextField() {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
-  const { ActionCreatorMsgContent, ActionCreatorAddNewMsg } =
-    bindActionCreators(actionCreators, dispatch);
+  const { ActionCreatorMsgContent } = bindActionCreators(
+    actionCreators,
+    dispatch
+  );
   const state = useSelector((state: RootState) => state);
-  const { arrayMessage } = useSelector((state: RootState) => state);
   const [inputValue, setinputValue] = useState((): string => {
     return "";
   });
   /* console.log("state.arrayMsg:", state.arrayMessage[0].fromUser); */
-  let str;
-  socket.on("MsgToClient: ", (receive: any) => {
-    console.log("MsgToClient: ", receive);
-    str = receive;
-    /* console.log("str:", str); */
-  });
+  const [msg, setMsg] = useState(() => [""]);
+
+  useEffect(() => {
+    socket.on("MsgToClient: ", (receive: string) => {
+      console.log("MsgToClient: ", receive);
+      console.log("JSON: ", JSON.parse(JSON.stringify(state.message)));
+      /* ActionCreatorAddNewMsg(); */
+      /* console.log("arrayMessage:", JSON.parse(JSON.stringify(state.message))); */
+
+      setMsg((msg) => [...msg, receive]);
+    });
+  }, [socket]);
 
   return (
     <>
       <TitlePage />
+
+      {msg.map((item, index: number) => (
+        <div key={index}>{item}</div>
+      ))}
       <form
         className="field-chat"
         onSubmit={handleSubmit((data) => {
