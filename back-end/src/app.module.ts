@@ -6,6 +6,7 @@ import { Message } from './models/message.entity';
 import { MessageModule } from './modules/message.module';
 import { OauthMiddleware } from './middleware/Oauth.middleware';
 import { HttpModule } from '@nestjs/axios';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
 
@@ -23,6 +24,7 @@ import { HttpModule } from '@nestjs/axios';
     HttpModule,
     UserModule,
     MessageModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
