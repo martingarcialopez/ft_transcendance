@@ -15,8 +15,8 @@ import * as bcrypt from 'bcrypt';
 export class RoomService {
 
 	constructor(
-        @InjectRepository(Room)
-        private readonly roomRepository: Repository<Room>,
+        @InjectRepository(Room) private readonly roomRepository: Repository<Room>,
+		@InjectRepository(Participant) private participantRepository: Repository<Participant>,
     ){}
 
 	/*
@@ -38,6 +38,12 @@ export class RoomService {
 		new_room.owner = roomDto.owner;
 		//		new_room.members = roomDto.members;
 		await this.roomRepository.save(new_room);
+
+		const new_participant = new Participant();
+		new_participant.userId = 2;
+		new_participant.roomId = new_room.id;
+		await this.participantRepository.save(new_participant);
+
 		const dto = plainToClass(RoomSnippetDto, new_room);
 		console.log(typeof 'HERE', typeof dto, dto);
 		return dto;

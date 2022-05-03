@@ -9,9 +9,16 @@ export class Participant {
 	id: number;
 
 	@ManyToOne((type) => User, (user) => user.participants)
+	@JoinColumn({ name: 'userId' })
     user: User;
 
+	@Column()
+    public userId: number;
+
 	@ManyToOne((type) => Room, (room) => room.participants)
+	@JoinColumn({ name: 'roomId' })
     room: Room;
 
+	@Column()
+    public roomId: number;
 }
