@@ -53,7 +53,7 @@ $ {"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxlbyIs
 ```
 </br>
 
-### `GET /user/current/:token`
+### `GET /user/current/:token` 🚧 under construction 🚧
 - Returns user information of the token owner (the actual logged-in user)
 
 </br>
