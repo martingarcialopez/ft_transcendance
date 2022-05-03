@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
 import { User } from '../models/user.entity';
 import { unlinkSync } from 'fs';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -14,13 +15,17 @@ export class UserService {
         private userRepository: Repository<User>,
     ) { }
 
-    createUser(payload: CreateUserDto): Promise<User> {
+    async createUser(payload: CreateUserDto): Promise<User> {
 
         const user = new User();
         user.firstname = payload.firstname;
         user.lastname = payload.lastname;
         user.username = payload.username;
-        user.password = payload.password;
+
+        const saltOrRounds = 10;
+        const hash = await bcrypt.hash(payload.password, saltOrRounds);
+        user.password = hash;
+
         user.login42 = null;
         user.isActive = false;
 
