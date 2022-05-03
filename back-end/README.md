@@ -1,73 +1,89 @@
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
+  
+<h1 align="center"> BACK-END API SPECIFICATION </h1>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+  
+<h3 align="center"> http://localhost:3000 </h3>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+<h1></h1>
+
+<p align="center">
+All the endpoints accepting parameters expect them JSON encoded in the POST body
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<p align="center">
+Endpoints expects session token to be in the request headers: "Authorization: Bearer your_token"
+</p>
+  
+</br>
 
-## Description
+### `POST /user/sign-up`
+register a new user in the database
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- returns 201 upon successful user completion
+ 
+| _Expected Params_|  _type_       | _required_  |
+| :--------------: | :-----------: | :---------: |
+| firstname        | string        |  yes        |
+| lastname         | string        |  yes        |
+| username         | string        |  yes        |
+| password         | string        |  yes        |
+| avatar           | string        |  no         |
 
-## Installation
 
-```bash
-$ npm install
+
+
+</br>
+
+### `POST /auth/login`
+logs in an existing user with valid credentials
+
+- Returns a session token contained in a JSON object
+
+| _Expected Params_|  _type_       | _required_  |
+| ---------------- | ------------- | ----------- |
+| username         | string        |  yes        |
+| password         | string        |  yes        |
+
+code example with curl:
 ```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+$ curl -X POST http://localhost:3000/auth/login -d '{"username": "testuser", "password": "notthesafestpassword"}' -H "Content-Type: application/json"
+$ {"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxlbyIsImlhdCI6MTY1MTYwMTM4NywiZXhwIjoxNjUxNjg3Nzg3fQ.fzsSoSN7umQM1IFtZt-cBYZzf8FGpnodeg03JuEiW7A"}
 ```
+</br>
 
-## Test
+### `GET /user/current/:token` 🚧 under construction 🚧
+- Returns user information of the token owner (the actual logged-in user)
 
-```bash
-# unit tests
-$ npm run test
+</br>
 
-# e2e tests
-$ npm run test:e2e
+### `GET /user/:id`
+🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
+- Returns user information of the user with a matching userId
 
-# test coverage
-$ npm run test:cov
-```
+</br>
 
-## Support
+### `POST /user/update/:id`
+🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Update user information stocked on the database
 
-## Stay in touch
+- returns 200 upon successful completion
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+| _Expected Params_|  _type_       | _required_  |
+| :--------------: | :-----------: | :---------: |
+| firstname        | string        |  no         |
+| lastname         | string        |  no         |
+| username         | string        |  no         |
+| password         | string        |  no         |
+| avatar           | string        |  no         |
 
-## License
+</br>
 
-Nest is [MIT licensed](LICENSE).
+### `DELETE /user/:id`
+🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
+
+Deletes an user of the database
+
+- returns 200 upon successful completion
