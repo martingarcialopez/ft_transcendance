@@ -4,14 +4,13 @@ import { User } from '../models/user.entity';
 import { UserService } from '../services/user.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-
 @Controller('user')
 export class UserController {
 
     constructor(private userService: UserService) {}
 
 
-    @Post('/sign-in')
+    @Post('/sign-up')
     createUser( @Body() body: CreateUserDto) : Promise<User> {
         console.log(body);
         return this.userService.createUser(body);
