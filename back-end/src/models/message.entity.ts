@@ -21,7 +21,6 @@ export class Message{
 	@ManyToOne((type) => User, (user) => user.messages)
 	@JoinColumn({ name: 'userId' })
     user: User;
-
     @Column({nullable:true}) // THIS SHOULD BE DELETE
     //@Column()
     public userId: number;
@@ -29,7 +28,6 @@ export class Message{
 	@ManyToOne((type) => Room, (room) => room.messages)
 	@JoinColumn({ name: 'roomId' })
 	room: Room;
-
 	@Column()
 	public roomId: number;
 

@@ -46,10 +46,9 @@ export class RoomGateway
 	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
 	@SubscribeMessage('JoinRoom')
 	async JoinRoom(@Body() body: JoinRoomDto): Promise<void> {
-		console.log('in gw ', body);
-		const is_correct_pw = await this.roomService.joinRoom(body);
+		const have_access = await this.roomService.joinRoom(body);
 		/*need front send me event name
-		this.server.emit('', var);*/
+		this.server.emit('', have_access);*/
 	}
 
 
@@ -63,4 +62,5 @@ export class RoomGateway
   async deleteRoom(id: number) {
     await this.roomService.deleteRoom(id);
   }
+
 }

@@ -33,9 +33,8 @@ export class RoomService {
 		const password = roomDto.password;
 		const saltOrRounds = 10;
 		const hash = await bcrypt.hash(password, saltOrRounds);
-		console.log('here ', hash);
-
 		new_room.password = hash;
+
 		new_room.owner = roomDto.owner;
 		//		new_room.members = roomDto.members;
 		await this.roomRepository.save(new_room);
@@ -46,7 +45,6 @@ export class RoomService {
 		await this.participantRepository.save(new_participant);
 
 		const dto = plainToClass(RoomSnippetDto, new_room);
-		console.log(typeof 'HERE', typeof dto, dto);
 		return dto;
 	}
 
