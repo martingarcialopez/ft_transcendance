@@ -9,6 +9,7 @@ import { User } from '../models/user.entity';
 import { classToPlain, Exclude } from 'class-transformer';
 import { plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
 
 
 @Injectable()
@@ -76,6 +77,26 @@ export class RoomService {
 	async deleteRoom(id: number): Promise<void> {
         await this.roomRepository.delete(id);
     }
+
+	async joinRoom(joinRoomDto: JoinRoomDto): Promise<boolean> {
+		const room_Id: number = joinRoomDto.roomId;
+		const entered_pw : string = joinRoomDto.entered_pw;
+
+		const room_pw = await this.roomRepository.createQueryBuilder("room")
+            .select(["room.password"])
+			.where("room.id = :room_Id", { room_Id: room_Id })
+			.getOne();
+
+		if (await bcrypt.compare(entered_pw, room_pw['password']))
+		{
+			const new_participant = new Participant();
+			new_participant.userId = joinRoomDto.userId;
+			new_participant.roomId = room_Id;
+			await this.participantRepository.save(new_participant);
+			return true;
+		}
+		return false;
+	}
 }
 
 

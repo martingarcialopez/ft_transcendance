@@ -15,6 +15,7 @@ import { RoomService } from '../services/room.service';
 import { Logger, Body } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { RoomDto } from '../dtos/in/room.dto';
+import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
@@ -36,13 +37,23 @@ export class RoomGateway
   ) {}
 
   @SubscribeMessage('createRoom')
-  async createRoom(@Body() body: RoomDto): Promise<void> {
+	async createRoom(@Body() body: RoomDto): Promise<void> {
     const value = await this.roomService.createRoom(body);
     console.log('return value is ', value);
     this.server.emit('idRoom', value);
   }
 
-  /*get all user in the given id room*/
+	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
+	@SubscribeMessage('JoinRoom')
+	async JoinRoom(@Body() body: JoinRoomDto): Promise<void> {
+		console.log('in gw ', body);
+		const is_correct_pw = await this.roomService.joinRoom(body);
+		/*need front send me event name
+		this.server.emit('', var);*/
+	}
+
+
+	/*already a member in the room*/
   @SubscribeMessage('getRoom')
   async getRoom(socket: Socket, room_id: number) {
     socket.join(room_id.toString());
