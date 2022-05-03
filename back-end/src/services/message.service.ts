@@ -23,8 +23,7 @@ export class MessageService {
 	async createMessage(messageDto: MessageDto): Promise<MessageSnippetDto>
 	{
 		const new_message = new Message();
-		/*mettre en dur le userId*/
-	//	new_message.userId = 2;
+		new_message.userId = 2;
 		new_message.roomId = messageDto.channelIdDst ;
 		new_message.sender = messageDto.fromUser;
 		new_message.content = messageDto.contentToSend;
