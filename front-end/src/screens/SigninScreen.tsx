@@ -12,30 +12,41 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link as LinkRoute } from 'react-router-dom';
-
-function Copyright(props: any) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="/home">
-                ft_transcendance
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import { Link as LinkRoute, useNavigate } from 'react-router-dom';
+import Copyright from '../components/Copyright';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store'
+import { UserState } from '../redux/reducers/userReducers';
+import { login } from '../redux/actions/userActions';
 
 const theme = createTheme();
 
-export default function SignIn() {
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+const SignIn = () => {
+    const [username, setUsername] = React.useState('')
+    const [password, setPassword] = React.useState('')
+
+    const navigate = useNavigate();
+
+    const dispatch = useDispatch();
+
+    const userLogin = useSelector<RootState, UserState>(
+        (state: RootState) => state.userLogin
+    )
+    const { userInfo } = userLogin
+    React.useEffect(() => {
+        if (userInfo !== undefined && userInfo.firstName) {
+            navigate('/home');
+        }
+    }, [userInfo])
+
+    const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
+
+        //dispatch(login(username, password))
+
         console.log({
-            email: data.get('email'),
-            password: data.get('password'),
+            username: username,
+            password: password,
         });
     };
 
@@ -67,6 +78,8 @@ export default function SignIn() {
                             name="pseudo"
                             autoComplete="pseudo"
                             autoFocus
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
                         />
                         <TextField
                             margin="normal"
@@ -77,6 +90,8 @@ export default function SignIn() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
@@ -111,3 +126,5 @@ export default function SignIn() {
         </ThemeProvider>
     );
 }
+
+export default SignIn
