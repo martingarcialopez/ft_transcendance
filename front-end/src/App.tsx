@@ -1,22 +1,23 @@
 import React from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom'
-import SignUp from './components/SIgnUp';
-import SignIn from './components/SignIn';
-import { Home } from './components/Home';
+import { BrowserRouter as Router } from "react-router-dom"
+import SignUp from './screens/SignUpScreen';
+import SignIn from './screens/SigninScreen';
+import HomeScreen from './screens/HomeScreen';
 import { Chat } from './components/Chat';
 import { Pong } from './components/Pong';
-import { NoMatch } from './components/NoMatch';
+import { NoMatch } from './screens/NoMatchScreen';
 import ResponsiveAppBar from './components/NavBar';
 import { Profile } from './components/Profile';
 
 function App() {
   return (
-    <div>
+    <Router>
       <ResponsiveAppBar />
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/home' element={<Home />} />
+        <Route path='/' element={<HomeScreen />} />
+        <Route path='/home' element={<HomeScreen />} />
         <Route path='/login' element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/chat' element={<Chat />} />
@@ -25,7 +26,7 @@ function App() {
 
         <Route path='*' element={<NoMatch />} />
       </Routes>
-    </div>
+    </Router>
   );
 }
 
