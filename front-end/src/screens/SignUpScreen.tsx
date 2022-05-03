@@ -12,31 +12,37 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link as LinkRoute } from 'react-router-dom';
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="/home">
-        ft_transcendance
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { Link as LinkRoute, useNavigate } from 'react-router-dom';
+import Copyright from '../components/Copyright';
 
 const theme = createTheme();
 
-export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+const SignUp = () => 
+{
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
+    await fetch('http://localhost:3000/user/sign-in', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        firstname: data.get('firstName'),
+        lastname: data.get('lastName'),
+        pseudo: data.get('pseudo'),
+        password: data.get('password')
+      }),
+    })
+
     console.log({
-      email: data.get('email'),
+      firstname: data.get('firstName'),
+      lastname: data.get('lastName'),
+      pseudo: data.get('pseudo'),
       password: data.get('password'),
     });
+    navigate('/home');
   };
 
   return (
@@ -132,3 +138,5 @@ export default function SignUp() {
     </ThemeProvider>
   );
 }
+
+export default SignUp

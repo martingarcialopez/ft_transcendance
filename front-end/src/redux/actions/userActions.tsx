@@ -10,7 +10,7 @@ import { RootState } from '../../store'
 
 export const login =
   (
-    email: String,
+    username: String,
     password: String
   ): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
   async (
@@ -21,13 +21,12 @@ export const login =
         type: USER_LOGIN_REQUEST,
       })
 
-      const response = await fetch('http://localhost:8080/api/login', {
+      const response = await fetch('http://localhost:3000/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
-          email,
-          password,
+          username: username,
+          password: password
         }),
       })
 
@@ -57,7 +56,7 @@ export const logout =
     localStorage.removeItem('userInfo')
     dispatch({ type: USER_LOGOUT })
 
-    await fetch('http://localhost:8080/api/logout', {
+    await fetch('http://localhost:3000/auth/logout', {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
     })
