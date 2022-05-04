@@ -1,12 +1,13 @@
-import LayoutChat from "./chat";
-import { Profile } from "./profile/profile";
-const App = () => {
+import "./App.css";
+
+import { Chat } from "./chat";
+
+function App() {
   return (
     <div>
-      <LayoutChat />
-      {/* <Profile /> */}
+      <Chat />
     </div>
   );
-};
+}
 
 export default App;
