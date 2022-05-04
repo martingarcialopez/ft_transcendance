@@ -26,5 +26,4 @@ export class Room {
 
 	@OneToMany((type) => Participant, (participant) => participant.room)
     participants: Participant[];
-
 }
