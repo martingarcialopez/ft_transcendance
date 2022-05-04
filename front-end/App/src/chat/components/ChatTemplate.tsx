@@ -5,8 +5,11 @@ import { RootState } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../../redux/index";
 import { bindActionCreators } from "redux";
+import { useState, useEffect } from "react";
+import socketio from "socket.io-client";
 
-import { useForm } from "react-hook-form";
+const ENDPOINT = "http://localhost:3000";
+export const socket = socketio(ENDPOINT); //connection to the server nestJs
 
 /**
  * this function get info on the one of item drawer has been click up
@@ -14,10 +17,12 @@ import { useForm } from "react-hook-form";
  * these info cam from item
  *
  */
+/* const ENDPOINT = "http://localhost:3000";
+ * export const socket = socketio(ENDPOINT); //connection to the server nestJs */
 
 function GetInfo(item: T_Room | T_User, state: any) {
   /* const dispatch = useDispatch();
-	/* const { ac_getIdRoomMsg } = bindActionCreators(actionCreators, dispatch); */
+					  /* const { ac_getIdRoomMsg } = bindActionCreators(actionCreators, dispatch); */
 
   state.ac_getIdRoomMsg(item.id);
   state.ac_getNameRoomMsg(item.name);
@@ -96,31 +101,70 @@ function PrintMsg() {
     </>
   );
 }
+
+/* function SendData() {
+ *   const { message } = useSelector((state: RootState) => state);
+ *   socket.emit(
+ *     "createMessage",
+ *     {
+ *       fromUser: message.fromName,
+ *       contentToSend: message.content,
+ *       channelIdDst: message.roomId + 1,
+ *       channelName: message.roomName,
+ *     },
+ *     message.content
+ *   );
+ *
+ *   useEffect(() => {
+ *     socket.on("MsgToClient: ", (receive: any) => {
+ *       console.log("Msg receive: ", receive);
+ *     });
+ *   }, []);
+ * }
+ *  */
 /**
  * this function retrieve the input content to set it into the object T_msg
  */
 function InputMsg() {
-  const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const state = bindActionCreators(actionCreators, dispatch);
-
+  const [inputValue, setinputValue] = useState((): string => {
+    return "";
+  });
+  const { message } = useSelector((state: RootState) => state);
   return (
     <>
       <div className="form-group">
         <textarea
+          required
+          value={inputValue}
           className="form-control"
           rows={1}
           id="comment"
-          {...register("contentMsg")}
           cols={40}
+          onChange={(e) => setinputValue(e.target.value)}
         ></textarea>
       </div>
       <i
         className="material-icons btn-send-msg"
-        onClick={handleSubmit((data) => {
-          console.log("value : ", data.contentMsg);
-          state.ac_getContentMsg(data.contentMsg);
-        })}
+        onClick={() => {
+          state.ac_getContentMsg(inputValue);
+          setinputValue("");
+
+          socket.emit(
+            "createMessage",
+            {
+              fromUser: message.fromName,
+              contentToSend: message.content,
+              channelIdDst: message.roomId === 0 ? 1 : message.roomId,
+              channelName: message.roomName,
+            },
+            message.content
+          );
+          socket.on("SendMsg", (receive: any) => {
+            console.log("Msg receive: ", receive);
+          });
+        }}
       >
         send
       </i>
@@ -131,6 +175,7 @@ function InputMsg() {
 export function ChatTemplate() {
   const { arrayRoom, message } = useSelector((state: RootState) => state);
   console.log("message:", message);
+
   return (
     <div>
       <div className="container">
@@ -168,10 +213,6 @@ export function ChatTemplate() {
                   <div className="chat-box-tray">
                     <i className="material-icons">sentiment_very_satisfied</i>
 
-                    {/* <input
-                      type="text"
-                      placeholder="Type your message here..."
-                    /> */}
                     <InputMsg />
                     {/* <i className="material-icons">mic</i> */}
                     {/* <i className="material-icons">send</i> */}
