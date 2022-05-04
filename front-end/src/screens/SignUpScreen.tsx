@@ -5,7 +5,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -17,21 +16,20 @@ import Copyright from '../components/Copyright';
 
 const theme = createTheme();
 
-const SignUp = () => 
-{
+const SignUp = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
-    await fetch('http://localhost:3000/user/sign-in', {
+    await fetch('http://localhost:3000/user/sign-up', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         firstname: data.get('firstName'),
         lastname: data.get('lastName'),
-        pseudo: data.get('pseudo'),
+        username: data.get('pseudo'),
         password: data.get('password')
       }),
     })
@@ -39,7 +37,7 @@ const SignUp = () =>
     console.log({
       firstname: data.get('firstName'),
       lastname: data.get('lastName'),
-      pseudo: data.get('pseudo'),
+      username: data.get('pseudo'),
       password: data.get('password'),
     });
     navigate('/home');
@@ -125,9 +123,7 @@ const SignUp = () =>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <LinkRoute to="/login">
-                  <Link variant="body2">
-                    Already have an account? Sign in
-                  </Link>
+                  Already have an account? Sign in
                 </LinkRoute>
               </Grid>
             </Grid>

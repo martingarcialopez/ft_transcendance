@@ -25,13 +25,13 @@ export const login =
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: username,
-          password: password
+          username,
+          password
         }),
       })
 
       const data = await response.json()
-      const userData = { firstName: data.first_name, lastName: data.last_name }
+      const userData = { firstName: data.firstname, lastName: data.lastname }
 
       dispatch({
         type: USER_LOGIN_SUCCESS,
