@@ -4,7 +4,7 @@ import { E_ActionType } from "../../type/Enum";
 let arrayRoom: T_Room[] = [
   {
     name: "LIVERPOOL",
-    id: 1,
+    id: 1, //this id i creat myself
     typeRoom: "public",
     password: "",
     owner: [],
