@@ -28,6 +28,14 @@ function GetInfo(item: T_Room | T_User, state: any) {
   state.ac_getNameRoomMsg(item.name);
 }
 
+function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
+  let tmp = 0;
+  item.map((data, index: number) => {
+    if (data.id === occurence) tmp = index;
+  });
+  return tmp;
+}
+
 /**
  * list of item in the left side
  * item can be either or groupe (room)
@@ -61,8 +69,8 @@ function FriendDrawer(item: T_Room | T_User, index: number) {
  */
 function ItemSelected() {
   const { arrayRoom, message } = useSelector((state: RootState) => state);
-  let item: T_Room = arrayRoom[message.roomId];
-
+  const index = findIndexItem(arrayRoom, message.roomId);
+  let item: T_Room | T_User = arrayRoom[index];
   return (
     <>
       <div className="settings-tray">
@@ -85,7 +93,18 @@ function ItemSelected() {
   );
 }
 
+/* function SendData() {
+ *   const { message } = useSelector((state: RootState) => state);
+ *
+ * }
+ *  */
 function PrintMsg() {
+  useEffect(() => {
+    socket.on("MsgToClient: ", (receive: any) => {
+      console.log("Msg received: ", receive);
+    });
+  }, [socket]);
+
   return (
     <>
       <div className="row no-gutters">
@@ -102,35 +121,14 @@ function PrintMsg() {
   );
 }
 
-/* function SendData() {
- *   const { message } = useSelector((state: RootState) => state);
- *   socket.emit(
- *     "createMessage",
- *     {
- *       fromUser: message.fromName,
- *       contentToSend: message.content,
- *       channelIdDst: message.roomId + 1,
- *       channelName: message.roomName,
- *     },
- *     message.content
- *   );
- *
- *   useEffect(() => {
- *     socket.on("MsgToClient: ", (receive: any) => {
- *       console.log("Msg receive: ", receive);
- *     });
- *   }, []);
- * }
- *  */
 /**
- * this function retrieve the input content to set it into the object T_msg
+ * handle the content to send
+ * this function retrieve the input content, to set it into the object T_msg
  */
 function InputMsg() {
   const dispatch = useDispatch();
   const state = bindActionCreators(actionCreators, dispatch);
-  const [inputValue, setinputValue] = useState((): string => {
-    return "";
-  });
+  const [inputValue, setinputValue] = useState<string>("");
   const { message } = useSelector((state: RootState) => state);
   return (
     <>
@@ -150,20 +148,16 @@ function InputMsg() {
         onClick={() => {
           state.ac_getContentMsg(inputValue);
           setinputValue("");
-
           socket.emit(
             "createMessage",
             {
               fromUser: message.fromName,
               contentToSend: message.content,
-              channelIdDst: message.roomId === 0 ? 1 : message.roomId,
+              channelIdDst: message.roomId,
               channelName: message.roomName,
             },
             message.content
           );
-          socket.on("SendMsg", (receive: any) => {
-            console.log("Msg receive: ", receive);
-          });
         }}
       >
         send

@@ -4,7 +4,7 @@ import { E_ActionType } from "../../type/Enum";
 let arrayRoom: T_Room[] = [
   {
     name: "LIVERPOOL",
-    id: 0,
+    id: 1,
     typeRoom: "public",
     password: "",
     owner: [],
@@ -13,7 +13,7 @@ let arrayRoom: T_Room[] = [
   },
   {
     name: "REAL",
-    id: 1,
+    id: 3,
     typeRoom: "public",
     password: "",
     owner: [],
@@ -22,7 +22,7 @@ let arrayRoom: T_Room[] = [
   },
   {
     name: "PSG",
-    id: 2,
+    id: 4,
     typeRoom: "privat",
     password: "",
     owner: [],
@@ -31,7 +31,7 @@ let arrayRoom: T_Room[] = [
   },
   {
     name: "CITY",
-    id: 3,
+    id: 6,
     typeRoom: "public",
     password: "",
     owner: [],
