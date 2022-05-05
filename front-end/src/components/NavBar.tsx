@@ -11,12 +11,13 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { UserState } from '../redux/reducers/userReducers';
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, SyntheticEvent, useState } from 'react';
+import { logout } from '../redux/actions/userActions';
 
-const pages = ['Home', 'SignUp', 'Login', 'Chat'];
+const pages = ['Home', 'Chat', 'SignUp', 'Login'];
 const settings = ['Profile', 'Account', 'Logout'];
 
 const ResponsiveAppBar = () => {
@@ -38,12 +39,19 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
+  const dispatch = useDispatch()
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   )
 
   const { userInfo } = userLogin
   const firstName = userInfo ? userInfo.firstName : null
+
+  const logoutHandler = async (e: SyntheticEvent) => {
+    e.preventDefault()
+    dispatch(logout())
+  }
+
 
   return (
     <AppBar position="static">
@@ -88,9 +96,14 @@ const ResponsiveAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+                firstName ?
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                  :
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
               ))}
             </Menu>
           </Box>
@@ -141,9 +154,17 @@ const ResponsiveAppBar = () => {
               >
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Link key={setting} to={setting.toLowerCase()}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </Link>
+                    {
+                      setting === "logout" ?
+                        <Link key={setting} to={setting.toLowerCase()}>
+                          <Typography textAlign="center">{setting}</Typography>
+                        </Link>
+                        :
+                        <Link key={setting} to={"/home"} onClick={logoutHandler}>
+                          <Typography textAlign="center">{setting}</Typography>
+                        </Link>
+                    }
+
                   </MenuItem>
                 ))}
               </Menu>
