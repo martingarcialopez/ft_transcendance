@@ -20,7 +20,7 @@ export class UserService {
         const existing_user = await this.userRepository.findOne({ username: payload.username });
 
         if (existing_user)
-            throw new HttpException('Resource already exist', HttpStatus.CONFLICT);
+            throw new HttpException('Username already in use', HttpStatus.CONFLICT);
 
         const user = new User();
         user.firstname = payload.firstname;
