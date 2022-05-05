@@ -16,9 +16,10 @@ const HomeScreen = () => {
       {firstName ? (
         <h1>Welcome {firstName}</h1>
       ) : (
-        <h1>Welcome to the Home Page!</h1>
+        <div>
+          <ButtonBases />
+        </div>
       )}
-      <ButtonBases />
     </div>
   )
 }

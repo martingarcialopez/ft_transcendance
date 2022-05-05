@@ -17,7 +17,7 @@ import { UserState } from '../redux/reducers/userReducers';
 import { MouseEvent, SyntheticEvent, useState } from 'react';
 import { logout } from '../redux/actions/userActions';
 
-const pages = ['Home', 'Chat', 'SignUp', 'Login'];
+const pages = ['Home', 'Chat'];
 const settings = ['Profile', 'Account', 'Logout'];
 
 const ResponsiveAppBar = () => {
@@ -96,10 +96,13 @@ const ResponsiveAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                firstName ?
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
+                !firstName ?
+                  page === "Home" ?
+                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>
+                    :
+                    null
                   :
                   <MenuItem key={page} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{page}</Typography>
@@ -117,15 +120,18 @@ const ResponsiveAppBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link key={page} to={page.toLowerCase()}>
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page}
-                </Button>
-              </Link>
+              firstName ?
+                <Link key={page} to={page.toLowerCase()}>
+                  <Button
+                    key={page}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                  >
+                    {page}
+                  </Button>
+                </Link>
+                :
+                null
             ))}
           </Box>
 
