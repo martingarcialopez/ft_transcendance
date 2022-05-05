@@ -39,7 +39,7 @@ services:
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
-       - ./back-end:/usr/src/app
+       - ./back-end/:/usr/src/app/
        - /usr/src/app/node_modules
     command: npm run start:dev
     restart: always
