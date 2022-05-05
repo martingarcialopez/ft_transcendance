@@ -17,7 +17,7 @@ export const login =
     dispatch: ThunkDispatch<RootState, unknown, AnyAction>
   ): Promise<void> => {
     try {
-      return dispatch({
+      dispatch({
         type: USER_LOGIN_REQUEST,
       });
 
@@ -58,7 +58,7 @@ export const login =
 
       console.log(userData);
 
-      return dispatch({
+      dispatch({
         type: USER_LOGIN_SUCCESS,
         payload: userData,
       });
@@ -66,7 +66,7 @@ export const login =
       localStorage.setItem("userInfo", JSON.stringify(userData));
     } catch (error: any) {
       console.log("ON A FOIRE");
-      return dispatch({
+      dispatch({
         type: USER_LOGIN_FAIL,
         payload:
           error.response && error.response.data.message
