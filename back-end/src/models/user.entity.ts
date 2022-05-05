@@ -1,31 +1,28 @@
-import { Entity, Column, PrimaryGeneratedColumn,OneToMany } from 'typeorm';
-import { Message } from './message.entity';
-import { Participant } from './participant.entity';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
-	@PrimaryGeneratedColumn()
-	id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-	@Column()
-	firstname: string;
+  @Column({ unique: true, nullable: true })
+  login42: string;
 
-	@Column()
-	lastname: string;
+  @Column({ unique: true })
+  username: string;
 
-	@Column()
-	username: string;
+  @Column()
+  firstname: string;
 
-	@Column()
-	password: string;
+  @Column()
+  lastname: string;
 
-	@Column({ default: false })
-	isActive: boolean;
+  @Column({ nullable: true })
+  password: string;
 
-/* note: we will create user property in the Message entity */
-	@OneToMany((type) => Message, (message) => message.user)
-    messages: Message[];
+  @Column({ nullable: true })
+  avatar: string;
 
-	@OneToMany((type) => Participant, (participant) => participant.user)
-    participants: Participant[];
+  @Column({ default: false })
+  isActive: boolean;
 }

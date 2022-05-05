@@ -10,7 +10,8 @@ COPY . .
 
 RUN npm run build
 
-FROM node:latest as production
+
+FROM node:lts as production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}

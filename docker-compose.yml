@@ -8,6 +8,7 @@ services:
       - ft_nestjs
     build:
       context: ./front-end
+      dockerfile: ./Dockerfile
     container_name: "container-front-end"
     env_file:
       - "./.env"
@@ -36,7 +37,7 @@ services:
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
-       - ./back-end:/usr/src/app
+       - ./back-end/:/usr/src/app/
        - /usr/src/app/node_modules
     command: npm run start:dev
     restart: always
@@ -61,7 +62,9 @@ services:
       - webnet
     restart: always
 
+
 # # # ####################### pgadmin #########################
+
   pgadmin:
     container_name: "container-pgadmin4"
     image: dpage/pgadmin4
