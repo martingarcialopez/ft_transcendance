@@ -16,10 +16,7 @@ services:
     networks:
       - webnet
     volumes:
-      - ./front-end/App/src:/App/src
-      - ./front-end/App/public:/App/public
-      # - /usr/src/app/node_modules
-
+      - ./front-end/:/App/
     restart: always
 
     # ####################### NestJS #########################
@@ -44,7 +41,7 @@ services:
     command: npm run start:dev
     restart: always
 
-# # ####################### postgres #########################
+# # # ####################### postgres #########################
   ft_postgres:
     image: postgres:alpine
     container_name: "container-postgres"
@@ -64,7 +61,7 @@ services:
       - webnet
     restart: always
 
-# # ####################### pgadmin #########################
+# # # ####################### pgadmin #########################
   pgadmin:
     container_name: "container-pgadmin4"
     image: dpage/pgadmin4
