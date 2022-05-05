@@ -10,7 +10,7 @@ import { classToPlain, Exclude } from 'class-transformer';
 import { plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
-
+import { RoomPwDto } from '../dtos/in/room_password.dto';
 
 @Injectable()
 export class RoomService {
@@ -34,8 +34,8 @@ export class RoomService {
 		const saltOrRounds = 10;
 		const hash = await bcrypt.hash(password, saltOrRounds);
 		new_room.password = hash;
-
 		new_room.owner = roomDto.owner;
+		//new_room.owner_id = roomDto.ownerId;
 		//		new_room.members = roomDto.members;
 		await this.roomRepository.save(new_room);
 
@@ -94,6 +94,36 @@ export class RoomService {
 			return true;
 		}
 		return false;
+	}
+
+	async modifyRoomPassword(body: RoomPwDto): Promise<boolean> {
+		const admin = await this.roomRepository.createQueryBuilder("room")
+            .select(["room.owner"])
+            .where("room.id = :room_Id", { room_Id: body.roomId })
+            .getOne();
+		if (body.userName == admin['owner'])
+		{
+			let origin_password =  await this.roomRepository.createQueryBuilder("room")
+			    .select(["room.password"])
+			    .where("room.id = :room_Id", { room_Id: body.roomId })
+				.getOne();
+			console.log(origin_password);
+			let new_hashed_password = await this.get_hash_pw(body['password']);
+			await this.roomRepository
+				.createQueryBuilder()
+				.update(Room)
+				.set({ password: new_hashed_password})
+				.where("room.id = :id", { id: body.roomId})
+				.execute();
+			console.log(await bcrypt.compare('888', origin_password['password']));//should be true
+			return true;
+		}
+		return false;
+	}
+
+	async get_hash_pw(password: string): Promise<string> {
+		const saltOrRounds = 10;
+        return await bcrypt.hash(password, saltOrRounds);
 	}
 }
 

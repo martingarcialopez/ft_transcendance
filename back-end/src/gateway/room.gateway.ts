@@ -16,6 +16,8 @@ import { Logger, Body } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { RoomDto } from '../dtos/in/room.dto';
 import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
+import { RoomPwDto } from '../dtos/in/room_password.dto';
+
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
