@@ -31,7 +31,7 @@ export const login =
         })
 
         console.log(response.status);
-// FAIRE UN CATCH ERROR STATUS POUR 201
+        // FAIRE UN CATCH ERROR STATUS POUR 201
         const data = await response.json()
         console.log("Ceci est data:" + data);
         console.log("Ceci est data.access_token:" + data.access_token);
@@ -75,6 +75,92 @@ export const login =
         })
       }
     }
+
+export const signup =
+  (
+    firstname: String,
+    lastname: String,
+    username: String,
+    password: String,
+  ): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+    async (
+      dispatch: ThunkDispatch<RootState, unknown, AnyAction>
+    ): Promise<void> => {
+      try {
+        dispatch({
+          type: USER_LOGIN_REQUEST,
+        })
+
+        const response = await fetch('http://localhost:3000/user/sign-up', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstname,
+            lastname,
+            username,
+            password,
+          }),
+        })
+
+        console.log(response.status);
+        // FAIRE UN CATCH ERROR STATUS POUR 201
+        const data = await response.json()
+        console.log("Ceci est signup data:" + data);
+
+        const userData = {
+          avatar: data.avatar,
+          firstName: data.firstname,
+          id: data.id,
+          isActive: data.isActive,
+          lastName: data.lastname,
+          login42: data.login42,
+          access_token: data.access_token,
+          password: data.password,
+          username: data.username
+        }
+        // IL N Y A PAS DE TOKEN !!
+        console.log("Ceci est data.access_token:" + data.access_token);
+
+        // const responseData = await fetch('http://localhost:3000/user/current', {
+        //   method: 'GET',
+        //   headers: { 'Authorization': `Bearer ${data.access_token}` }
+        // })
+
+        // const data2 = await responseData.json()
+        // console.log(data2);
+
+        // const userData = {
+        //   avatar: data2.avatar,
+        //   firstName: data2.firstname,
+        //   id: data2.id,
+        //   isActive: data2.isActive,
+        //   lastName: data2.lastname,
+        //   login42: data2.login42,
+        //   access_token: data.access_token,
+        //   password: data2.password,
+        //   username: data2.username
+        // }
+
+        console.log(userData);
+
+        dispatch({
+          type: USER_LOGIN_SUCCESS,
+          payload: userData,
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(userData))
+      } catch (error: any) {
+        console.log("ON A FOIRE");
+        dispatch({
+          type: USER_LOGIN_FAIL,
+          payload:
+            error.response && error.response.data.message
+              ? error.response.data.message
+              : error.message,
+        })
+      }
+    }
+
 
 export const logout =
   (): ThunkAction<void, RootState, unknown, AnyAction> =>

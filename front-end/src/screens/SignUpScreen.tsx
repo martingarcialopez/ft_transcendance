@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,22 +12,34 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as LinkRoute, useNavigate } from 'react-router-dom';
 import Copyright from '../components/Copyright';
+import { signup } from '../redux/actions/userActions';
+import { useDispatch } from 'react-redux';
+import { FormEvent, useState } from 'react';
 
 const theme = createTheme();
 
 const SignUp = () => {
-  const navigate = useNavigate();
+  const [firstname, setFirstname] = useState('')
+  const [lastname, setLastname] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+  // const dispatch = useDispatch()
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
     console.log({
-      firstname: data.get('firstName'),
-      lastname: data.get('lastName'),
-      username: data.get('pseudo'),
-      password: data.get('password'),
+      firstname: firstname,
+      lastname: lastname,
+      username: username,
+      password: password,
     });
+
+    // dispatch(signup(firstname, lastname, username, password))
+
     await fetch('http://localhost:3000/user/sign-up', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -37,7 +48,6 @@ const SignUp = () => {
         lastname: data.get('lastName'),
         username: data.get('pseudo'),
         password: data.get('password'),
-        avatar: null
       }),
     })
 
@@ -74,6 +84,8 @@ const SignUp = () => {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  value={firstname}
+                  onChange={e => setFirstname(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -84,16 +96,20 @@ const SignUp = () => {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                  value={lastname}
+                  onChange={e => setLastname(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  id="pseudo"
+                  id="username"
                   label="Pseudo"
-                  name="pseudo"
-                  autoComplete="pseudo"
+                  name="username"
+                  autoComplete="username"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -105,6 +121,8 @@ const SignUp = () => {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
