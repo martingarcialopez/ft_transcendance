@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
 export class RoomPwDto {
 	@IsString()
@@ -10,6 +10,7 @@ export class RoomPwDto {
 	public roomId: number;
 
 	@IsString()
-    @IsNotEmpty()
+	@Length(5, 100)
+	@IsNotEmpty()
 	public password: string;
 }

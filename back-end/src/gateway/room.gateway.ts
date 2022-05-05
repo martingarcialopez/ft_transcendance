@@ -65,4 +65,22 @@ export class RoomGateway
     await this.roomService.deleteRoom(id);
   }
 
+	@SubscribeMessage('updateRoomPw')
+	async updateRoomPw(): Promise<void> {
+		const body: RoomPwDto = {'userName':'string', 'roomId':21, 'password': '999'};
+		let res = await this.roomService.updateRoomPw(body);
+		//NEED TO SEND TO FRONT AN EVENT
+//		return res;
+	}
+
+	//NEED TO RETURN BOOLEAN, WILL DO IT LATER
+	@SubscribeMessage('deleteRoomPw')
+	async deleteRoomPw(): Promise<void> {
+		const body: RoomPwDto = {'userName':'string', 'roomId':21, 'password': ''};
+		let res = await this.roomService.deleteRoomPw(body);
+		//-----SEND TO FRONT---
+		//this.server.emit('msgToClient', res);
+	}
+
+
 }
