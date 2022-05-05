@@ -16,7 +16,7 @@ export class Room {
 	typeChannel: string;
 
 	@Column({nullable:true})
-    password: string;
+    password?: string;
 
 	@Column()
     owner: string;

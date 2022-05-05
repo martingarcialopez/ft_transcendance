@@ -96,29 +96,47 @@ export class RoomService {
 		return false;
 	}
 
-	async modifyRoomPassword(body: RoomPwDto): Promise<boolean> {
-		const admin = await this.roomRepository.createQueryBuilder("room")
+	async updateRoomPw(body: RoomPwDto): Promise<boolean> {
+		let admin = await this.roomRepository.createQueryBuilder("room")
             .select(["room.owner"])
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
 		if (body.userName == admin['owner'])
 		{
-			let origin_password =  await this.roomRepository.createQueryBuilder("room")
-			    .select(["room.password"])
+			let room =  await this.roomRepository.createQueryBuilder("room")
 			    .where("room.id = :room_Id", { room_Id: body.roomId })
 				.getOne();
-			console.log(origin_password);
+			console.log('origin: ', room['password'], body['password']);
 			let new_hashed_password = await this.get_hash_pw(body['password']);
-			await this.roomRepository
-				.createQueryBuilder()
-				.update(Room)
-				.set({ password: new_hashed_password})
-				.where("room.id = :id", { id: body.roomId})
-				.execute();
-			console.log(await bcrypt.compare('888', origin_password['password']));//should be true
+			room['password'] = new_hashed_password;
+			await this.roomRepository.save(room);
 			return true;
+//			console.log(await bcrypt.compare('888', room['password']));//should be true
 		}
 		return false;
+	}
+
+//NEED TO CHANGE VOID->BOOLEAN IF DELETE PASSWORD
+	async deleteRoomPw(body: RoomPwDto): Promise<void> {
+		let admin = await this.roomRepository.createQueryBuilder("room")
+            .select(["room.owner"])
+            .where("room.id = :room_Id", { room_Id: body.roomId })
+            .getOne();
+		//user does not have the right
+        if (body.userName != admin['owner'])
+			return ;
+		let room =  await this.roomRepository.createQueryBuilder("room")
+            .where("room.id = :room_Id", { room_Id: body.roomId })
+            .getOne();
+		room['password'] = null;
+		await this.roomRepository.save(room);
+		console.log('here room', room);
+		//TEST IS WORKING?
+		room =  await this.roomRepository.createQueryBuilder("room")
+			.select(["room.password"])
+            .where("room.id = :room_Id", { room_Id: body.roomId })
+            .getOne();
+		 console.log('NOW room', room);
 	}
 
 	async get_hash_pw(password: string): Promise<string> {
