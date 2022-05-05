@@ -48,7 +48,9 @@ export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
         user.password = null;
         user.avatar = `/usr/src/app/avatar/${login}.png`;
 
-        const writer = createWriteStream(user.avatar);
+        console.log("before createWriteStream");
+
+        const writer = createWriteStream(user.avatar, {flags: 'w'});
 
         const response = await this.httpService.axiosRef({
             url: image_url,
