@@ -1,43 +1,51 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link as LinkRoute } from 'react-router-dom';
+import { Link as LinkRoute, useNavigate } from 'react-router-dom';
+import Copyright from '../components/Copyright';
 
-function Copyright(props: any) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="/home">
-                ft_transcendance
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import { SyntheticEvent, useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store'
+import { UserState } from '../redux/reducers/userReducers';
+import { login } from '../redux/actions/userActions';
 
 const theme = createTheme();
 
-export default function SignIn() {
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
+const SignIn = () => {
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch()
+    const userLogin = useSelector<RootState, UserState>(
+        (state: RootState) => state.userLogin
+    )
+    const { userInfo } = userLogin
+    useEffect(() => {
+        if (userInfo !== undefined && userInfo.firstName) {
+            navigate('/home');
+        }
+    }, [userInfo, navigate])
+
+    const handleSubmit = async (e: SyntheticEvent) => {
+        e.preventDefault()
+        dispatch(login(username, password))
+
         console.log({
-            email: data.get('email'),
-            password: data.get('password'),
+            username: username,
+            password: password,
         });
-    };
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -67,6 +75,8 @@ export default function SignIn() {
                             name="pseudo"
                             autoComplete="pseudo"
                             autoFocus
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
                         />
                         <TextField
                             margin="normal"
@@ -77,6 +87,8 @@ export default function SignIn() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
@@ -90,19 +102,10 @@ export default function SignIn() {
                         >
                             Sign In
                         </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <LinkRoute to="/signup">
-                                    <Link variant="body2">
-                                        {"Don't have an account? Sign Up"}
-                                    </Link>
-                                </LinkRoute>
-                            </Grid>
+                        <Grid>
+                            <LinkRoute to="/signup">
+                                Don't have an account? Sign Up
+                            </LinkRoute>
                         </Grid>
                     </Box>
                 </Box>
@@ -111,3 +114,5 @@ export default function SignIn() {
         </ThemeProvider>
     );
 }
+
+export default SignIn

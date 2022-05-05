@@ -5,13 +5,13 @@ import { BrowserRouter as Router } from "react-router-dom"
 import SignUp from './screens/SignUpScreen';
 import SignIn from './screens/SigninScreen';
 import HomeScreen from './screens/HomeScreen';
-import { Chat } from './components/Chat';
-import { Pong } from './components/Pong';
+import { Chat } from './screens/Chat';
+import { Pong } from './screens/Pong';
 import { NoMatch } from './screens/NoMatchScreen';
 import ResponsiveAppBar from './components/NavBar';
-import { Profile } from './components/Profile';
+import { Profile } from './screens/Profile';
 
-function App() {
+const App = () => {
   return (
     <Router>
       <ResponsiveAppBar />
