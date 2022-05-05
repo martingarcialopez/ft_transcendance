@@ -1,1 +1,3 @@
-export const Chat = () => <h1>Chat Page</h1>;
+import { ChatTemplate } from "../chat/components/ChatTemplate";
+
+export const Chat = () => ChatTemplate();
