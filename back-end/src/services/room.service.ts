@@ -11,6 +11,7 @@ import { plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
 import { RoomPwDto } from '../dtos/in/room_password.dto';
+import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
 
 @Injectable()
 export class RoomService {
@@ -34,7 +35,7 @@ export class RoomService {
 		const saltOrRounds = 10;
 		const hash = await bcrypt.hash(password, saltOrRounds);
 		new_room.password = hash;
-		new_room.owner = roomDto.owner;
+		new_room.owner.push(roomDto.owner);
 		//new_room.owner_id = roomDto.ownerId;
 		//		new_room.members = roomDto.members;
 		await this.roomRepository.save(new_room);
@@ -101,7 +102,7 @@ export class RoomService {
             .select(["room.owner"])
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
-		if (body.userName == admin['owner'])
+		if (admin['owner'].indexOf(body.userName) != -1)
 		{
 			let room =  await this.roomRepository.createQueryBuilder("room")
 			    .where("room.id = :room_Id", { room_Id: body.roomId })
@@ -123,7 +124,7 @@ export class RoomService {
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
 		//user does not have the right
-        if (body.userName != admin['owner'])
+		if (admin['owner'].indexOf(body.userName) != -1)
 			return ;
 		let room =  await this.roomRepository.createQueryBuilder("room")
             .where("room.id = :room_Id", { room_Id: body.roomId })
@@ -143,6 +144,48 @@ export class RoomService {
 		const saltOrRounds = 10;
         return await bcrypt.hash(password, saltOrRounds);
 	}
+
+	async get_RoomAdmins(roomId: number): Promise<string[]> {
+	let room = await this.roomRepository.createQueryBuilder("room")
+            .select(["room.owner"])
+            .where("room.id = :room_Id", { room_Id: roomId })
+        .getOne();
+		return room.owner;
+	}
+
+	//change userName -> userId LATER
+	async userIsAdmin(roomId: number, userName: string) : Promise<boolean> {
+		let admins = await this.get_RoomAdmins(roomId);
+		console.log('admins is here ', admins.indexOf(userName));
+		//return false;
+		return await admins.indexOf(userName) != -1;
+	}
+
+	async manageAdmin(body: UpdateAdminDto): Promise<void> {
+		let is_already_admin = await this.userIsAdmin(body.roomId, body.userName);
+		let admins = await this.get_RoomAdmins(body.roomId);
+		if (body['toAdd'] == true && is_already_admin == false)
+		{
+			console.log('i am here', admins);
+			admins.push(body.userName);
+		}
+		//remove this admin
+		else if (body['toAdd'] == false && is_already_admin == true)
+		{
+			var index = admins.indexOf(body.userName);
+			admins.splice(index, 1);
+		}
+		else
+			return ;
+		await this.roomRepository
+			.createQueryBuilder()
+			.update(Room)
+			.set({ owner: admins })
+			.where("id = :id", { id: body.roomId })
+			.execute();
+		console.log('i am here', admins);
+	}
+
 }
 
 

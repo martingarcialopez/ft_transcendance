@@ -37,11 +37,11 @@ export class MessageGateway {
 
   @Bind(MessageBody(), ConnectedSocket()) // useful?
   @SubscribeMessage('createMessage')
-  async createMessage(@Body() message: MessageDto): Promise<void> {
-    var value = await this.messageService.createMessage(message[0]);
+	async createMessage(@Body() message: MessageDto): Promise<void> {
+	    var value = await this.messageService.createMessage(message[0]);
 
-    /*Send message_id to front*/
-    this.server.emit('SendMsg', value);
+    /*Send message_id to front
+    this.server.emit('SendMsg', value);*/
     /*Send message infos to everyone in the same channel*/
     this.server
       .to(message[0].channelIdDst.toString())
