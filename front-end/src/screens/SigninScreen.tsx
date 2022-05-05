@@ -41,7 +41,7 @@ const SignIn = () => {
         e.preventDefault()
         dispatch(login(username, password))
 
-        console.log({
+        console.log("TOUT MARCHE SUPER BIEN", {
             username: username,
             password: password,
         });

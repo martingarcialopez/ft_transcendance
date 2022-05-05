@@ -23,6 +23,12 @@ const SignUp = () => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
+    console.log({
+      firstname: data.get('firstName'),
+      lastname: data.get('lastName'),
+      username: data.get('pseudo'),
+      password: data.get('password'),
+    });
     await fetch('http://localhost:3000/user/sign-up', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -30,16 +36,12 @@ const SignUp = () => {
         firstname: data.get('firstName'),
         lastname: data.get('lastName'),
         username: data.get('pseudo'),
-        password: data.get('password')
+        password: data.get('password'),
+        avatar: null
       }),
     })
 
-    console.log({
-      firstname: data.get('firstName'),
-      lastname: data.get('lastName'),
-      username: data.get('pseudo'),
-      password: data.get('password'),
-    });
+
     navigate('/home');
   };
 

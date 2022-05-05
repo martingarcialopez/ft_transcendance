@@ -31,7 +31,20 @@ export const login =
       })
 
       const data = await response.json()
-      const userData = { firstName: data.firstname, lastName: data.lastname }
+      console.log(data);
+
+      const responseData = await fetch('http://localhost:3000/user/current', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          password
+        }),
+      })
+
+      const userData = { access_token: data.access_token }
+
+      console.log(userData);
 
       dispatch({
         type: USER_LOGIN_SUCCESS,
@@ -40,6 +53,7 @@ export const login =
 
       localStorage.setItem('userInfo', JSON.stringify(userData))
     } catch (error: any) {
+      console.log("ON A FOIRE");
       dispatch({
         type: USER_LOGIN_FAIL,
         payload:
