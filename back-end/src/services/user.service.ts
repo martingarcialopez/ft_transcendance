@@ -1,4 +1,4 @@
-import { HttpCode, HttpException, Injectable, NotFoundException, UseGuards } from '@nestjs/common';
+import { HttpStatus, HttpException, Injectable, NotFoundException, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { request } from 'https';
 import { Repository } from 'typeorm';
@@ -15,12 +15,18 @@ export class UserService {
         private userRepository: Repository<User>,
     ) { }
 
-    async createUser(payload: CreateUserDto): Promise<User> {
+    async createUser(payload: CreateUserDto): Promise<any> {
+
+        const existing_user = await this.userRepository.findOne({ username: payload.username });
+
+        if (existing_user)
+            throw new HttpException('Resource already exist', HttpStatus.CONFLICT);
 
         const user = new User();
         user.firstname = payload.firstname;
         user.lastname = payload.lastname;
         user.username = payload.username;
+        user.avatar = payload.avatar;
 
         const saltOrRounds = 10;
         const hash = await bcrypt.hash(payload.password, saltOrRounds);
@@ -29,7 +35,9 @@ export class UserService {
         user.login42 = null;
         user.isActive = false;
 
-        return this.userRepository.save(user);
+        const db_user : User = await this.userRepository.save(user);
+        const { password, ...result} = db_user;
+        return result;
     }
 
     create42User(user: User): Promise<User> {

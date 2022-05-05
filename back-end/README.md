@@ -21,7 +21,7 @@ Endpoints expects session token to be in the request headers: "Authorization: Be
 ### `POST /user/sign-up`
 register a new user in the database
 
-- returns 201 upon successful user completion
+- returns 201 upon successful user creation
  
 | _Expected Params_|  _type_       | _required_  |
 | :--------------: | :-----------: | :---------: |
@@ -53,7 +53,7 @@ $ {"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxlbyIs
 ```
 </br>
 
-### `GET /user/current/:token` 🚧 under construction 🚧
+### `GET /user/current`
 - Returns user information of the token owner (the actual logged-in user)
 
 </br>
