@@ -1,0 +1,16 @@
+export enum E_ActionType {
+  SET_CHANEL = "setting-chanel",
+  TEXT_FIELD = "text Filed",
+  ADD = "add new chanel",
+  MSG_RECEIVED = "new msg arrived",
+  RECIPIENT = "define the recipient of message",
+  MEMBERS = "set the members of chanel",
+  CHANEL_RECIPIENT = "define the chanel recipient for the message",
+  MSG_TO_SEND = "message to send to a  room",
+  NAME_OF_CURRENT_CHANNEL = "the name of current chanel",
+  USER_SETTING_PAGE = "led user setting page",
+  SET_ID_CHANNEL = "define the id channel",
+  SET_NAME_CHANNEL = "define the name of channel",
+  CREATE_NEW_CHANNEL = "create new channel cause  priority <message> has been updated",
+  ADD_NEW_MSG = "add new object (t_msgToSend) into the array",
+}

@@ -1,14 +1,12 @@
 import { applyMiddleware, createStore } from "redux";
 import { combineReducers } from "redux";
-import { chanelReducer, infoReducer } from "./chanelReducer";
 import thunk from "redux-thunk";
-import { msgReducer, arrayMsgReducer } from "./message";
+import { msgReducer } from "./reducers/msgReducer";
+import { roomReducer } from "./reducers/roomReducer";
 
 const reducers = combineReducers({
-  channel: chanelReducer /*content all information e*/,
   message: msgReducer,
-  info: infoReducer,
-  arrayMessage: arrayMsgReducer,
+  arrayRoom: roomReducer,
 });
 
 export const store = createStore(reducers, {}, applyMiddleware(thunk));

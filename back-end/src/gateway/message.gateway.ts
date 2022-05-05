@@ -29,26 +29,23 @@ import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
     origin: '*',
   },
 })
-
-export class MessageGateway
-{
+export class MessageGateway {
   /*gives us access to the websockets server instance*/
   @WebSocketServer() server: Server;
 
-  constructor(
-    private readonly messageService: MessageService,
-  ) {}
+  constructor(private readonly messageService: MessageService) {}
 
   @Bind(MessageBody(), ConnectedSocket()) // useful?
   @SubscribeMessage('createMessage')
-	async createMessage(@Body() message: MessageDto): Promise<void> {
-      var value = await this.messageService.createMessage(message[0]);
-	  /*Send message_id to front*/
+  async createMessage(@Body() message: MessageDto): Promise<void> {
+    var value = await this.messageService.createMessage(message[0]);
+
+    /*Send message_id to front*/
     this.server.emit('SendMsg', value);
     /*Send message infos to everyone in the same channel*/
-      this.server
-		  .to(message[0].channelIdDst.toString())
-		  .emit('MsgToClient: ', message[0].contentToSend);
+    this.server
+      .to(message[0].channelIdDst.toString())
+      .emit('MsgToClient: ', message[0].contentToSend);
   }
 
   /*get all messages from a room*/
