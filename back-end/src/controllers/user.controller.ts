@@ -11,7 +11,7 @@ export class UserController {
     constructor(private userService: UserService) {}
 
     @Post('/sign-up')
-    createUser( @Body(new ValidationPipe()) body: CreateUserDto) : Promise<any> {
+    createUser( @Body() body: CreateUserDto) : Promise<any> {
         console.log(body);
         return this.userService.createUser(body);
     }
@@ -32,7 +32,7 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard)
     @Post('/update/:id')
-    updateUser( @Body(new ValidationPipe()) body: UpdateUserDto, @Param('id', ParseIntPipe) id: string) : Promise<User> {
+    updateUser( @Body() body: UpdateUserDto, @Param('id', ParseIntPipe) id: string) : Promise<User> {
         return this.userService.updateUser(body, id);
     }
 

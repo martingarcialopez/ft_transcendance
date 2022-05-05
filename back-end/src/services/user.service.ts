@@ -57,19 +57,21 @@ export class UserService {
         return this.userRepository.findOne({ login42: user });
     }
 
-    async updateUser(body: CreateUserDto, id: string): Promise<User> {
+    async updateUser(body: Partial<User>, id: string): Promise<User> {
 
         let user = new User();
         if (!(user = await this.userRepository.findOne(id)))
             throw new NotFoundException();
 
-        for (const property in body) {
-            user[property] = body[property];
+        if (body.password) {
+            const saltOrRounds = 10;
+            body.password = await bcrypt.hash(body.password, saltOrRounds);
         }
+        Object.assign(user, body);
         return this.userRepository.save(user);
     }
 
-    async deleteUser(id: string): Promise<void> {
+    async deleteUser(id: string) {
 
         const user: User = await this.getUserById(id);
 
