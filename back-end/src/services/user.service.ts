@@ -1,4 +1,4 @@
-import { HttpStatus, HttpException, Injectable, NotFoundException, UseGuards } from '@nestjs/common';
+import { HttpStatus, HttpException, Injectable, NotFoundException, UseGuards, HttpCode } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { request } from 'https';
 import { Repository } from 'typeorm';
@@ -20,7 +20,7 @@ export class UserService {
         const existing_user = await this.userRepository.findOne({ username: payload.username });
 
         if (existing_user)
-            throw new HttpException('Username already in use', HttpStatus.CONFLICT);
+            throw new HttpException('username already in use', HttpStatus.CONFLICT);
 
         const user = new User();
         user.firstname = payload.firstname;
@@ -35,8 +35,8 @@ export class UserService {
         user.login42 = null;
         user.isActive = false;
 
-        const db_user : User = await this.userRepository.save(user);
-        const { password, ...result} = db_user;
+        const db_user: User = await this.userRepository.save(user);
+        const { password, ...result } = db_user;
         return result;
     }
 
@@ -71,20 +71,19 @@ export class UserService {
 
     async deleteUser(id: string): Promise<void> {
 
-        const user : User = await this.getUserById(id);
+        const user: User = await this.getUserById(id);
 
         if (!user)
-            return null; // user does not exist
+            throw new HttpException('user not found', HttpStatus.NOT_FOUND); // user does not exist
 
-        const path = `/usr/src/app/avatar/${user.login42}.png`;
-
-        try {
-            unlinkSync(path)
-            //file removed
-        } catch (err) {
-            console.error(err)
+        if (user.avatar) {
+            const path = `/usr/src/app/avatar/${user.login42}.png`;
+            try {
+                unlinkSync(path); //file removed
+            } catch (err) {
+                console.error(err);
+            }
         }
-
         await this.userRepository.delete(id);
     }
 }
