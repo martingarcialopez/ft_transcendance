@@ -1,13 +1,5 @@
-import {
-  HttpStatus,
-  HttpException,
-  Injectable,
-  NotFoundException,
-  UseGuards,
-  HttpCode,
-} from '@nestjs/common';
+import { HttpStatus, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { request } from 'https';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
 import { User } from '../models/user.entity';
@@ -16,77 +8,83 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-  ) {}
 
-  async createUser(payload: CreateUserDto): Promise<any> {
-    const existing_user = await this.userRepository.findOne({
-      username: payload.username,
-    });
+    constructor(
+        @InjectRepository(User)
+        private userRepository: Repository<User>,
+    ) { }
 
-    if (existing_user)
-      throw new HttpException('username already in use', HttpStatus.CONFLICT);
+    async createUser(payload: CreateUserDto): Promise<any> {
 
-    const user = new User();
-    user.firstname = payload.firstname;
-    user.lastname = payload.lastname;
-    user.username = payload.username;
-    user.avatar = payload.avatar;
+        const existing_user = await this.userRepository.findOne({ username: payload.username });
 
-    const saltOrRounds = 10;
-    const hash = await bcrypt.hash(payload.password, saltOrRounds);
-    user.password = hash;
+        if (existing_user)
+            throw new HttpException('username already in use', HttpStatus.CONFLICT);
 
-    user.login42 = null;
-    user.isActive = false;
+        const user = new User();
+        user.firstname = payload.firstname;
+        user.lastname = payload.lastname;
+        user.username = payload.username;
+        user.avatar = payload.avatar;
 
-    const db_user: User = await this.userRepository.save(user);
-    const { password, ...result } = db_user;
-    return result;
-  }
+        const saltOrRounds = 10;
+        const hash = await bcrypt.hash(payload.password, saltOrRounds);
+        user.password = hash;
 
-  create42User(user: User): Promise<User> {
-    return this.userRepository.save(user);
-  }
+        user.login42 = null;
+        user.isActive = false;
 
-  getUser(user: string): Promise<User> {
-    return this.userRepository.findOne({ username: user });
-  }
-
-  getUserById(id: string): Promise<User> {
-    return this.userRepository.findOne(id);
-  }
-
-  getUserBy42Login(user: string): Promise<User> {
-    return this.userRepository.findOne({ login42: user });
-  }
-
-  async updateUser(body: CreateUserDto, id: string): Promise<User> {
-    let user = new User();
-    if (!(user = await this.userRepository.findOne(id)))
-      throw new NotFoundException();
-
-    for (const property in body) {
-      user[property] = body[property];
+        const db_user: User = await this.userRepository.save(user);
+        const { password, ...result } = db_user;
+        return result;
     }
-    return this.userRepository.save(user);
-  }
 
-  async deleteUser(id: string): Promise<void> {
-    const user: User = await this.getUserById(id);
+    create42User(user: User): Promise<User> {
 
-    if (!user) throw new HttpException('user not found', HttpStatus.NOT_FOUND); // user does not exist
-
-    if (user.avatar) {
-      const path = `/usr/src/app/avatar/${user.login42}.png`;
-      try {
-        unlinkSync(path); //file removed
-      } catch (err) {
-        console.error(err);
-      }
+        return this.userRepository.save(user);
     }
-    await this.userRepository.delete(id);
-  }
+
+    getUser(user: string): Promise<User> {
+        return this.userRepository.findOne({ username: user });
+    }
+
+    getUserById(id: string): Promise<User> {
+        return this.userRepository.findOne(id);
+    }
+
+    getUserBy42Login(user: string): Promise<User> {
+        return this.userRepository.findOne({ login42: user });
+    }
+
+    async updateUser(body: Partial<User>, id: string): Promise<User> {
+
+        let user = new User();
+        if (!(user = await this.userRepository.findOne(id)))
+            throw new NotFoundException();
+
+        if (body.password) {
+            const saltOrRounds = 10;
+            body.password = await bcrypt.hash(body.password, saltOrRounds);
+        }
+        Object.assign(user, body);
+        return this.userRepository.save(user);
+    }
+
+    async deleteUser(id: string) {
+
+        const user: User = await this.getUserById(id);
+
+        if (!user)
+            throw new HttpException('user not found', HttpStatus.NOT_FOUND); // user does not exist
+
+        if (user.avatar) {
+            const path = `/usr/src/app/avatar/${user.login42}.png`;
+            try {
+                unlinkSync(path); //file removed
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        await this.userRepository.delete(id);
+    }
 }

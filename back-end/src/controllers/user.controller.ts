@@ -1,44 +1,43 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  HttpException,
-  HttpStatus,
-  NotFoundException,
-} from '@nestjs/common';
-import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
-import { userInfo } from 'os';
+import { Controller, Get, Post, Delete, Body, Param, UseGuards, Request, ParseIntPipe } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
+import { UpdateUserDto } from 'src/dtos/in/UpdateUser.dto';
 import { User } from '../models/user.entity';
 import { UserService } from '../services/user.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('/sign-in')
-  createUser(@Body() body: CreateUserDto): Promise<User> {
-    console.log(body);
-    return this.userService.createUser(body);
+  @Post('/sign-up')
+  createUser( @Body() body: CreateUserDto) : Promise<any> {
+      console.log(body);
+      return this.userService.createUser(body);
   }
 
-  @Get(':id')
-  getUser(@Param('id') id: string): Promise<User> {
-    return this.userService.getUser(id);
+  @UseGuards(JwtAuthGuard)
+  @Get('/current')
+  getCurrentUser(@Request() req) {
+      console.log(req.user.userId);
+      return this.userService.getUserById(req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id')
+  getUser(@Param('id', ParseIntPipe) id: string) : Promise<User> {
+      return this.userService.getUserById(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('/update/:id')
-  updateUser(
-    @Body() body: CreateUserDto,
-    @Param('id') id: string,
-  ): Promise<User> {
-    return this.userService.updateUser(body, id);
+  updateUser( @Body() body: UpdateUserDto, @Param('id', ParseIntPipe) id: string) : Promise<User> {
+      return this.userService.updateUser(body, id);
   }
 
-  @Get('/delete/:id')
-  deleteUser(@Param('id') id: string): Promise<void> {
-    return this.userService.deleteUser(id);
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  deleteUser( @Param('id', ParseIntPipe) id: string): Promise <void> {
+      return this.userService.deleteUser(id);
   }
+
 }
