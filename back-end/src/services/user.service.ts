@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { request } from 'https';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
+import { ParticipantDto } from '../dtos/in/participant.dto';
 import { User } from '../models/user.entity';
 import { unlinkSync } from 'fs';
 import * as bcrypt from 'bcrypt';
@@ -89,4 +90,24 @@ export class UserService {
     }
     await this.userRepository.delete(id);
   }
+
+	async getBlockList(userId: number): Promise<number[]> | null {
+
+		console.log('id isss ', userId);
+		let user : User = await this.userRepository.createQueryBuilder("user")
+            .select(["user.blockList"])
+            .where("user.id = :user_Id", { user_Id: userId})
+			.getOne();
+		if (user == null)
+		{
+			console.log("i return null here");
+			return null;
+		}
+		console.log('block list is ', user['blockList']);
+		return user['blockList'];
+	}
+
+
+
+
 }

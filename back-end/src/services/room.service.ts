@@ -1,21 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RoomDto } from '../dtos/in/room.dto';
 import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
+
+import { User } from '../models/user.entity';
 import { Room } from '../models/room.entity';
 import { Participant } from '../models/participant.entity';
-import { User } from '../models/user.entity';
+import { Message } from '../models/message.entity';
 import { classToPlain, Exclude } from 'class-transformer';
 import { plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
 import { RoomPwDto } from '../dtos/in/room_password.dto';
 import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
+import { ParticipantDto } from '../dtos/in/participant.dto';
+import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto';
+import { UserService } from './user.service';
+import { MessageService } from './message.service';
 
 @Injectable()
 export class RoomService {
-
+	@Inject(UserService)
+	private readonly userService: UserService;
+	@Inject(MessageService)
+	private readonly messageService: MessageService;
 	constructor(
         @InjectRepository(Room) private readonly roomRepository: Repository<Room>,
 		@InjectRepository(Participant) private participantRepository: Repository<Participant>,
@@ -185,6 +194,27 @@ export class RoomService {
 			.execute();
 		console.log('i am here', admins);
 	}
+
+	async getUserBlockList_and_message_history(body: any): Promise<newUser_In_Room_Message> {
+		let blockList: number[] = await this.userService.getBlockList(body['userId']);
+		/* if the userid is invalide, send an event to front */
+		if (blockList == null)
+		{
+			console.log('i am here');
+	//		this.server.emit('request err', 'the user is not in database');
+			return ;
+		}
+		const message_history = await this.messageService.getRoomMessage(body['roomId']);
+		console.log('message history', message_history);
+		let new_participant_info = new newUser_In_Room_Message();
+		new_participant_info.userId = body.userId;
+		new_participant_info.blockList = blockList;
+		new_participant_info.message_history = message_history;
+
+		return new_participant_info;
+	}
+
+
 
 }
 

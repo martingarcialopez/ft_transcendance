@@ -49,14 +49,6 @@ export class ParticipantService {
         return await this.participantRepository.find({id});
     }
 
-/*
-** Delete the whole column corresponding to the id
-** :param (id:number) id is the primary key in participant table
-** :return void
-*/
-	async deleteParticipant(id: number): Promise<void> {
-        await this.participantRepository.delete(id);
-    }
 
 
 
