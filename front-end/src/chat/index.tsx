@@ -1,6 +1,6 @@
 import { ChatTemplate } from "./components/ChatTemplate";
 
-export function Chat() {
+export function IndexChat() {
   return (
     <>
       <ChatTemplate />
