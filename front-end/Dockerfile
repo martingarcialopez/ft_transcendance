@@ -1,8 +1,13 @@
 FROM node:lts
 
+WORKDIR /usr/src/app
 
-WORKDIR /App
+COPY package*.json ./
 
-RUN npm install -g npm@latest
+RUN npm install
 
-ENTRYPOINT npm install && npm start
+RUN mkdir node_modules/.cache && chmod -R 777 node_modules/.cache
+
+EXPOSE 8080
+
+CMD ["npm", "start"]
