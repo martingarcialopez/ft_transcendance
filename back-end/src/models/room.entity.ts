@@ -18,8 +18,9 @@ export class Room {
 	@Column({nullable:true})
     password?: string;
 
-	@Column()
-    owner: string;
+	//should modify string -> int
+	@Column("varchar",  { nullable:true, array: true, default: "{}" })
+    owner: string[];
 
 	@OneToMany((type) => Message, (message) => message.room)
     messages: Message[];

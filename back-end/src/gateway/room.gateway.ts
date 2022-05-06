@@ -17,6 +17,7 @@ import { Socket, Server } from 'socket.io';
 import { RoomDto } from '../dtos/in/room.dto';
 import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
 import { RoomPwDto } from '../dtos/in/room_password.dto';
+import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
 
 
 /*this declarator gives us access to the socket.io functionality*/
@@ -39,7 +40,7 @@ export class RoomGateway
   ) {}
 
   @SubscribeMessage('createRoom')
-	async createRoom(@Body() body: RoomDto): Promise<void> {
+  	async createRoom(@Body() body: RoomDto): Promise<void> {
     const value = await this.roomService.createRoom(body);
     console.log('return value is ', value);
     this.server.emit('idRoom', value);
@@ -67,8 +68,8 @@ export class RoomGateway
 
 	@SubscribeMessage('updateRoomPw')
 	async updateRoomPw(): Promise<void> {
-		const body: RoomPwDto = {'userName':'string', 'roomId':21, 'password': '999'};
-		let res = await this.roomService.updateRoomPw(body);
+		// const body: RoomPwDto = {'userName':'string', 'roomId':22, 'password': '999'};
+		// let res = await this.roomService.updateRoomPw(body);
 		//NEED TO SEND TO FRONT AN EVENT
 //		return res;
 	}
@@ -82,5 +83,11 @@ export class RoomGateway
 		//this.server.emit('msgToClient', res);
 	}
 
+	@SubscribeMessage('manageAdmin')
+	//	async manageAdmin(@Body() body: UpdateAdminDto): Promise<void> {
+	async manageAdmin(): Promise<void> {
+		// const body: UpdateAdminDto = {'userName':'miaomiao', 'roomId':22, 'toAdd': false};
+	//	await this.roomService.manageAdmin(body);
+	}
 
 }
