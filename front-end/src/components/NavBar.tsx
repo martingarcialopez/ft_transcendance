@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
 import { MouseEvent, SyntheticEvent, useState } from "react";
 // import { logout } from '../redux/actions/userActions';
 
-const pages = ["Home", "Chat", "Login", "Signup"];
+const pages = ["Home", "Chat", "Room", "Login", "Signup"];
 const settings = ["Profile", "Account", "Logout"];
 
 const ResponsiveAppBar = () => {
