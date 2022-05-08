@@ -11,6 +11,7 @@ import { request } from 'https';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
+import { BlockUserDto } from '../dtos/in/blockUser.dto';
 import { User } from '../models/user.entity';
 import { unlinkSync } from 'fs';
 import * as bcrypt from 'bcrypt';
@@ -99,15 +100,26 @@ export class UserService {
             .where("user.id = :user_Id", { user_Id: userId})
 			.getOne();
 		if (user == null)
-		{
-			console.log("i return null here");
 			return null;
-		}
-		console.log('block list is ', user['blockList']);
 		return user['blockList'];
 	}
 
-
+	async blockUser(body: BlockUserDto) : Promise<void>
+	{
+		if (body.userId == body.blockUserId)
+			return ;
+		let blockList : number[] | null = await this.getBlockList(body.userId);
+		console.log('blockList: ', blockList );
+		if (blockList == null)// the user is invalid
+			return ;
+		blockList.push(body.blockUserId);
+		await this.userRepository
+            .createQueryBuilder()
+            .update("User")
+            .set({ blockList: blockList })
+            .where("id = :id", { id: body.userId })
+            .execute();
+	}
 
 
 }

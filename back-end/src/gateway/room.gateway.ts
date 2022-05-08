@@ -19,6 +19,7 @@ import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
 import { RoomPwDto } from '../dtos/in/room_password.dto';
 import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
+import { BlockUserDto } from '../dtos/in/blockUser.dto';
 import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto';
 import { UserService } from '../services/user.service';
 import { MessageService } from '../services/message.service';
@@ -104,8 +105,8 @@ export class RoomGateway
 	/*
 	 **return: userId + BlockList + message_history
 	 */
-	//  @SubscribeMessage('getMessage')
-	@SubscribeMessage('createRoom')
+	  @SubscribeMessage('getMessage')
+	//@SubscribeMessage('createRoom')
 	//	async getMessage(@Body() body: ParticipantDto) {
 	async getUserBlockList_and_message_history() : Promise<newUser_In_Room_Message> {
 		const body: any = {roomId:1, userId:3};
@@ -114,7 +115,14 @@ export class RoomGateway
 		this.server.emit('msgToClient', info);
 
 		return info;
-  }
+	}
+
+	@SubscribeMessage('blockUser')
+//	async blockUser(@Body() body: BlockUserDto) : Promise<void>
+	async blockUser() : Promise<void>	{
+		const body: any = {userId:3, blockUserId:6};
+		await this.userService.blockUser(body);
+	}
 
 
 }
