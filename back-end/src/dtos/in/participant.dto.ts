@@ -1,5 +1,4 @@
-import { IsNotEmpty, IsNumber } from 'class-valida\
-tor';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class ParticipantDto {
 

@@ -46,12 +46,21 @@ export class RoomGateway
 	  private readonly messageService: MessageService,
   ) {}
 
-  // @SubscribeMessage('createRoom')
-  // 	async createRoom(@Body() body: RoomDto): Promise<void> {
-  //   const value = await this.roomService.createRoom(body);
-  //   console.log('return value is ', value);
+	@SubscribeMessage('createRoom')
+   	//async createRoom(@Body() body: RoomDto): Promise<void> {
+	async createRoom(): Promise<void> {
+		const body: RoomDto = {
+			'name': 'mao room',
+			'typeRoom': 'public',
+			'password': 'i am a cat',
+			'creatorId' : 3,
+			'members': [6, 10],
+			'avatar': 'miao'
+		};
+		const value = await this.roomService.createRoom(body);
+		console.log('return value is ', value);
   //   this.server.emit('idRoom', value);
-  // }
+	}
 
 	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
 	@SubscribeMessage('JoinRoom')
@@ -84,7 +93,7 @@ export class RoomGateway
 	//NEED TO RETURN BOOLEAN, WILL DO IT LATER
 	@SubscribeMessage('deleteRoomPw')
 	async deleteRoomPw(): Promise<void> {
-		const body: RoomPwDto = {'userName':'string', 'roomId':21, 'password': ''};
+		const body: RoomPwDto = {'userId': 3, 'roomId':21, 'password': ''};
 		let res = await this.roomService.deleteRoomPw(body);
 		//-----SEND TO FRONT---
 		//this.server.emit('msgToClient', res);

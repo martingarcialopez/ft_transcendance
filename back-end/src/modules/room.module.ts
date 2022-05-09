@@ -10,10 +10,11 @@ import { MessageService } from '../services/message.service';
 import { ParticipantService } from '../services/participant.service';
 import { UserModule } from './user.module';
 import { MessageModule } from './message.module';
+import { ParticipantModule } from './participant.module';
 
 @Module({
 
-    imports: [TypeOrmModule.forFeature([Room, Participant, User, Message]), UserModule, MessageModule],
+    imports: [TypeOrmModule.forFeature([Room, Participant, User, Message]), UserModule, MessageModule, ParticipantModule],
 	providers: [RoomService],
 	exports: [RoomService],
 

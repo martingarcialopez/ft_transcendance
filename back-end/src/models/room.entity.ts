@@ -11,20 +11,24 @@ export class Room {
 	@Column()
 	name: string;
 
-	//public or private? false means private
+	//public or private or protected
 	@Column()
-	typeChannel: string;
+	typeRoom: string;
 
 	@Column({nullable:true})
     password?: string;
 
-	//should modify string -> int
-	@Column("varchar",  { nullable:true, array: true, default: "{}" })
-    owner: string[];
+	@Column({nullable:true})
+    avatar: string;
+
+
+	@Column("int",  { nullable:true, array: true, default: "{}" })
+	owner: number[] = [];
 
 	@OneToMany((type) => Message, (message) => message.room)
     messages: Message[];
 
 	@OneToMany((type) => Participant, (participant) => participant.room)
     participants: Participant[];
+
 }
