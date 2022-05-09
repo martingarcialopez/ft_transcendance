@@ -13,7 +13,4 @@ export class JoinRoomDto {
 	@IsString()
     @IsNotEmpty()
     public entered_pw: string;
-
-
-
 }
