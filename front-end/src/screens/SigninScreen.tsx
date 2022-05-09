@@ -14,10 +14,10 @@ import { Link as LinkRoute, useNavigate } from 'react-router-dom';
 import Copyright from '../components/Copyright';
 
 import { SyntheticEvent, useState, useEffect } from 'react'
-// import { useDispatch, useSelector } from 'react-redux';
-// import { RootState } from '../store'
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store'
 import { UserState } from '../redux/reducers/userReducers';
-// import { login } from '../redux/actions/userActions';
+import { login } from '../redux/actions/userActions';
 
 const theme = createTheme();
 
@@ -25,17 +25,17 @@ const SignIn = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
-    // const navigate = useNavigate();
-    // const dispatch = useDispatch()
-    // const userLogin = useSelector<RootState, UserState>(
-    //     (state: RootState) => state.userLogin
-    // )
-    // const { userInfo } = userLogin
-    // useEffect(() => {
-    //     if (userInfo !== undefined && userInfo.firstName) {
-    //         navigate('/home');
-    //     }
-    // }, [userInfo, navigate])
+    const navigate = useNavigate();
+    const dispatch = useDispatch()
+    const userLogin = useSelector<RootState, UserState>(
+        (state: RootState) => state.userLogin
+    )
+    const { userInfo } = userLogin
+    useEffect(() => {
+        if (userInfo !== undefined && userInfo.firstName) {
+            navigate('/home');
+        }
+    }, [userInfo, navigate])
 
     const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault()

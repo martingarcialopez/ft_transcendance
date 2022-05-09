@@ -6,7 +6,8 @@ import {
   USER_LOGOUT,
   USER_LOGIN_FAIL,
 } from '../constants/userConstants'
-import { RootState } from '../../store'
+import { RootState } from '../store'
+import { Dispatch } from "redux";
 
 export const login =
   (
@@ -161,10 +162,8 @@ export const signup =
       }
     }
 
-
-export const logout =
-  (): ThunkAction<void, RootState, unknown, AnyAction> =>
-    async (dispatch: ThunkDispatch<RootState, unknown, AnyAction>) => {
+export function logout() {
+  return (dispatch: Dispatch) => {
       localStorage.removeItem('userInfo')
       dispatch({ type: USER_LOGOUT })
 
@@ -173,3 +172,4 @@ export const logout =
       //   credentials: 'include',
       // })
     }
+}

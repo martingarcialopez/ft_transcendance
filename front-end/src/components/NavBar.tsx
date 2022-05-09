@@ -11,11 +11,11 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { RootState } from '../store';
-// import { UserState } from '../redux/reducers/userReducers';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { UserState } from '../redux/reducers/userReducers';
 import { MouseEvent, SyntheticEvent, useState } from 'react';
-// import { logout } from '../redux/actions/userActions';
+import { logout } from '../redux/actions/userActions';
 
 const pages = ['Home', 'Chat', 'Login', 'Signup'];
 const settings = ['Profile', 'Account', 'Logout'];
@@ -39,13 +39,13 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
-  // const dispatch = useDispatch()
-  // const userLogin = useSelector<RootState, UserState>(
-  //   (state: RootState) => state.userLogin
-  // )
+  const dispatch = useDispatch()
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  )
 
-  // const { userInfo } = userLogin
-  // const firstName = userInfo ? userInfo.firstName : null
+  const { userInfo } = userLogin
+  const firstName = userInfo ? userInfo.firstName : null
 
   const logoutHandler = async (e: SyntheticEvent) => {
     e.preventDefault()

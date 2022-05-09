@@ -1,16 +1,14 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
-// import { chanelReducer, infoReducer } from "./redux/reducers/channelReducers";
 import thunk from "redux-thunk";
-// import { msgReducer, arrayMsgReducer } from "./redux/reducers/messageReducers";
+import { msgReducer } from "./reducers/msgReducer";
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { userLoginReducer } from './redux/reducers/userReducers'
+import { userLoginReducer } from './reducers/userReducers'
+import { roomReducer } from "./reducers/roomReducer";
 
 const reducers = combineReducers({
   userLogin: userLoginReducer,
-  // channel: chanelReducer /*content all information e*/,
-  // message: msgReducer,
-  // info: infoReducer,
-  // arrayMessage: arrayMsgReducer,
+  message: msgReducer,
+  arrayRoom: roomReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -29,7 +27,6 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(...middleware))
 );
 
-//export type RootState = ReturnType<typeof reducers>;
 export type RootState = ReturnType<typeof store.getState>
 
 export default store
