@@ -35,12 +35,8 @@
         <td>Lenox</td>
         <td>
           <!-- {"room_id": NUMBER, "message_content": Message,"sender": STRING} -->
-          {
-		  channelIdDst: number,
-		  channelName: string,
-		  contentToSend: string,
-          fromUser: string
-		  }
+          { channelIdDst: number, channelName: string, contentToSend: string,
+          fromUser: string }
         </td>
         <td>{"message_id": NUMBER}</td>
       </tr>
@@ -60,18 +56,10 @@
         <td>createRoom</td>
         <td>Lenox</td>
         <td>
-          <!-- {"room_name": STRING, "type": STRING, "password": STRING, "owner": -->
-          {
-		  name: string,
-		  typeChannel:string
-		  owner: string,
-		  password: string
-		  members: [],
-		  id: number,
-		  message: {user: STRING, content: STRING},
-		  }
+          { name: string; creatorId: number; typeRoom: string; password: string;
+          avatar: string; };
         </td>
-        <td>{"room_id": NUMBER, "room_name": STRING}</td>
+        <td>"room_id": NUMBER</td>
       </tr>
       <tr>
         <td>getRoom</td>
