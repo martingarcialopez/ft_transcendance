@@ -3,11 +3,18 @@
 ## request data
 
 ```
-whatever
+{name: string, creatorId: number, typeRoom: string, password: string, members: number[]; avatar: string
+```
+
+##  event send back
+
+```
+idRoom
+
 ```
 
 ## response data
 
 ```
-whatever
+{id: number}
 ```
