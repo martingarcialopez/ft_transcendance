@@ -14,7 +14,7 @@ const app = new Vue({
     name: this.name,
 	content: this.content
    }
-   this.socket.emit('getMessage', message)
+   this.socket.emit('createRoom', message)
    this.content = ''
   }
  },
@@ -29,7 +29,7 @@ const app = new Vue({
  created() {
   this.socket = io('http://localhost:3000')
  /*add an event listener for event msgToClient*/
-	 this.socket.on('msgToClient', (message) => {
+	 this.socket.on('idRoom', (message) => {
 		 console.log(message);
    this.receivedMessage(message)
   })

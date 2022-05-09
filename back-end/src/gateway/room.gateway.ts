@@ -47,19 +47,18 @@ export class RoomGateway
   ) {}
 
 	@SubscribeMessage('createRoom')
-   	//async createRoom(@Body() body: RoomDto): Promise<void> {
 	async createRoom(): Promise<void> {
+//   	async createRoom(@Body() body: RoomDto): Promise<void> {
 		const body: RoomDto = {
 			'name': 'mao room',
 			'typeRoom': 'public',
 			'password': 'i am a cat',
 			'creatorId' : 3,
-			'members': [6, 10],
 			'avatar': 'miao'
 		};
 		const value = await this.roomService.createRoom(body);
 		console.log('return value is ', value);
-  //   this.server.emit('idRoom', value);
+		this.server.emit('idRoom', value);
 	}
 
 	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/

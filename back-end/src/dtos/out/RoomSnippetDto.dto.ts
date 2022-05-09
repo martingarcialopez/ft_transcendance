@@ -8,7 +8,4 @@ export class RoomSnippetDto {
     @IsNumber()
     readonly id: number;
 
-    @Expose()
-    @IsString()
-    readonly name: string;
 }

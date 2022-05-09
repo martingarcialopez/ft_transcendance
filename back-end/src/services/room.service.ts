@@ -40,7 +40,6 @@ export class RoomService {
 	*/	async createRoom(roomDto: RoomDto): Promise<RoomSnippetDto>
 	{
         const new_room = new Room();
-		console.log('owner is ', new_room.owner);
 		new_room.name = roomDto.name;
 		new_room.typeRoom = roomDto.typeRoom;
 
@@ -60,10 +59,6 @@ export class RoomService {
 		/*the creator is the first participant to be created*/
 		//console.log(roomDto.creatorId, ' ',  new_room.id, new_room.password);
 		await this.participantService.createParticipant({'userId': roomDto.creatorId, 'roomId':  new_room.id});
-		const members: number[] = roomDto.members;
-		for(var i = 0; i<members.length; i++) {
-			await this.participantService.createParticipant({'userId':members[i], 'roomId': new_room.id});
-		}
 		const dto = plainToClass(RoomSnippetDto, new_room);
 		return dto;
 	}

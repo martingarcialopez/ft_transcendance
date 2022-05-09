@@ -17,18 +17,7 @@ export class RoomDto {
 	@IsNotEmpty()
 	public creatorId: number;
 
-	@IsArray()
-	@IsNumber()
-	public members:number[];
-
 	@IsString()
 	public avatar: string;
 
-	// @IsNumber()
-	// @IsNotEmpty()
-	// public id: number;
-
-	// @IsArray()
-	// @IsNotEmpty()
-	// public message: string[];
 }
