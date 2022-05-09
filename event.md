@@ -28,7 +28,7 @@ idRoom
 ```
 {userId: string,
 roomId: number}
-
+```
 ##  event send back
 ```
 participantId
