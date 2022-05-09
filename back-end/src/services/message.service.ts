@@ -50,7 +50,6 @@ export class MessageService {
 			.createQueryBuilder("message")
 			.where("message.roomId = :id", { id: room_id })
             .getMany();
-		console.log(messages_in_room);
 		return messages_in_room;
 	}
 /*
@@ -64,12 +63,4 @@ export class MessageService {
 		return this.messageRepository.findOne(id);
 	}
 
-/*
-** Delete the whole column corresponding to the id
-** :param (id:number) id is the primary key in message table
-** :return void
-*/
-    async deleteMessage(id: number): Promise<void> {
-        await this.messageRepository.delete(id);
-    }
 }

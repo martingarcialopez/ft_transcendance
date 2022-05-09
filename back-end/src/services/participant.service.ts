@@ -19,8 +19,8 @@ export class ParticipantService {
 */
 	async createParticipant(participantDto: ParticipantDto): Promise<Participant> {
         const new_participant = new Participant();
-		// new_participant.userID = participantDto.userID;
-		// new_participant.roomID = participantDto.roomID;
+		new_participant.userId = participantDto.userId;
+		new_participant.roomId = participantDto.roomId;
 
 		return this.participantRepository.save(new_participant);
     }
@@ -49,14 +49,6 @@ export class ParticipantService {
         return await this.participantRepository.find({id});
     }
 
-/*
-** Delete the whole column corresponding to the id
-** :param (id:number) id is the primary key in participant table
-** :return void
-*/
-	async deleteParticipant(id: number): Promise<void> {
-        await this.participantRepository.delete(id);
-    }
 
 
 

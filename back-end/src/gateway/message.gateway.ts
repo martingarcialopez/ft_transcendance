@@ -7,6 +7,7 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   MessageBody,
+  WsException,
 } from '@nestjs/websockets';
 import { Message } from '../models/message.entity';
 import { Room } from '../models/room.entity';
@@ -20,8 +21,8 @@ import { Logger, Body } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { MessageDto } from '../dtos/in/message.dto';
 import { RoomDto } from '../dtos/in/room.dto';
-import { ParticipantDto } from '../dtos/in/participant.dto';
 import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
+
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
@@ -33,7 +34,7 @@ export class MessageGateway {
   /*gives us access to the websockets server instance*/
   @WebSocketServer() server: Server;
 
-  constructor(private readonly messageService: MessageService) {}
+	constructor(private readonly messageService: MessageService,) {}
 
   @Bind(MessageBody(), ConnectedSocket()) // useful?
   @SubscribeMessage('createMessage')
@@ -45,18 +46,7 @@ export class MessageGateway {
     /*Send message infos to everyone in the same channel*/
     this.server
       .to(message[0].channelIdDst.toString())
-      .emit('MsgToClient: ', message[0].contentToSend);
+		.emit('MsgToClient: ', message[0].contentToSend);
   }
 
-  /*get all messages from a room*/
-  @SubscribeMessage('getMessage')
-  async getMessage(room_id: number) {
-    const all_message = await this.messageService.getRoomMessage(room_id);
-    this.server.emit('msgToClient', all_message);
-  }
-
-  @SubscribeMessage('deleteMessage')
-  async deleteMessage(id: number) {
-    await this.messageService.deleteMessage(id);
-  }
 }

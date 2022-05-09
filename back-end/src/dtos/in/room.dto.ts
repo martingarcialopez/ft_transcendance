@@ -8,26 +8,16 @@ export class RoomDto {
 
 	@IsString()
     @IsNotEmpty()
-    public typeChannel: string;
+    public typeRoom: string;
 
 	@IsString()
-    @IsNotEmpty()
-    public owner: string;
-
-	@IsString()
-    @IsNotEmpty()
     public password: string;
 
-	@IsArray()
-	@IsNumber()
-	public members:string[];
-
-	// probably gonna have to delete this later down the road
 	@IsNumber()
 	@IsNotEmpty()
-	public id: number;
+	public creatorId: number;
 
-	@IsArray()
-	@IsNotEmpty()
-	public message: string[];
+	@IsString()
+	public avatar: string;
+
 }

@@ -28,6 +28,9 @@ export class User {
   @Column({ default: false })
 	isActive: boolean;
 
+	@Column("int",  { nullable:true, array: true, default: "{}" })
+    blockList: number[];
+
  @OneToMany((type) => Message, (message) => message.user)
    messages: Message[];
 

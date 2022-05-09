@@ -51,8 +51,5 @@ export class ParticipantGateway
     const rooms = await this.participantService.getUseridRooms(userId);
   }
 
-  @SubscribeMessage('deleteParticipant')
-  async deleteParticipant(id: number) {
-    await this.participantService.deleteParticipant(id);
-  }
+
 }
