@@ -8,7 +8,7 @@ creatorId:
 number,
 typeRoom: string,
 password: string,
-avatar: string
+avatar: string}
 ```
 
 ##  event send back
