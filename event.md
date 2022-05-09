@@ -33,3 +33,7 @@ roomId: number}
 ```
 participantId
 ```
+## response data
+```
+{id: number}
+```
