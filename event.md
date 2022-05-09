@@ -22,3 +22,14 @@ idRoom
 ```
 {id: number}
 ```
+# createParticipant
+
+## request data
+```
+{userId: string,
+roomId: number}
+
+##  event send back
+```
+participantId
+```
