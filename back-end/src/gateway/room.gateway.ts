@@ -48,6 +48,7 @@ export class RoomGateway
 
 	@SubscribeMessage('createRoom')
 	async createRoom(): Promise<void> {
+		console.log('in the gateway of event createRoom');
 //   	async createRoom(@Body() body: RoomDto): Promise<void> {
 		const body: RoomDto = {
 			'name': 'mao room',
@@ -57,7 +58,7 @@ export class RoomGateway
 			'avatar': 'miao'
 		};
 		const value = await this.roomService.createRoom(body);
-		console.log('return value is ', value);
+		console.log('return value of roomId is ', value);
 		this.server.emit('idRoom', value);
 	}
 
