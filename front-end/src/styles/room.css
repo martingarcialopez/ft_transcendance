@@ -79,3 +79,8 @@ ul li {
 }
 
 }
+
+input::placeholder {
+        color: #1c87c9;
+        opacity: 1;
+      }

@@ -20,7 +20,7 @@ function createParticipant(usrId: number, roomId: number) {
 
 function findId(item: T_Room[], occurence: string): number {
   let id = -1;
-  item.map((data) => {
+  item.forEach((data) => {
     if (data.name === occurence) id = data.id;
   });
   return id;
