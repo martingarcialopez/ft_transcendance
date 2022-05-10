@@ -74,7 +74,8 @@ export class RoomGateway
 	/*already a member in the room*/
   @SubscribeMessage('getRoom')
   async getRoom(socket: Socket, room_id: number) {
-    socket.join(room_id.toString());
+      socket.join(room_id.toString());
+	  console.log('jined!');
   }
 
   @SubscribeMessage('deleteRoom')
