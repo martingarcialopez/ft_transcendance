@@ -11,22 +11,22 @@ const reducers = combineReducers({
   arrayRoom: roomReducer,
 });
 
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo')!)
-  : undefined
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo")!)
+  : undefined;
 
 const initialState = {
   userLogin: { userInfo: userInfoFromStorage },
-} as {}
+} as {};
 
-const middleware = [thunk]
+const middleware = [thunk];
 
 const store = createStore(
-  reducers, 
+  reducers,
   initialState,
   composeWithDevTools(applyMiddleware(...middleware))
 );
 
 export type RootState = ReturnType<typeof store.getState>
 
-export default store
+export default store;

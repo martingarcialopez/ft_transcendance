@@ -1,24 +1,24 @@
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { UserState } from '../redux/reducers/userReducers';
-import { MouseEvent, SyntheticEvent, useState } from 'react';
-import { logout } from '../redux/actions/userActions';
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import { Link } from "react-router-dom";
+// import { useDispatch, useSelector } from 'react-redux';
+// import { RootState } from '../store';
+// import { UserState } from '../redux/reducers/userReducers';
+import { MouseEvent, SyntheticEvent, useState } from "react";
+// import { logout } from '../redux/actions/userActions';
 
-const pages = ['Home', 'Chat', 'Login', 'Signup'];
-const settings = ['Profile', 'Account', 'Logout'];
+const pages = ["Home", "Profile", "Chat", "Room", "Login", "Signup"];
+const settings = ["Profile", "Account", "Logout"];
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -39,21 +39,18 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
-  const dispatch = useDispatch()
-  const userLogin = useSelector<RootState, UserState>(
-    (state: RootState) => state.userLogin
-  )
+  // const dispatch = useDispatch()
+  // const userLogin = useSelector<RootState, UserState>(
+  //   (state: RootState) => state.userLogin
+  // )
 
-  const { userInfo } = userLogin
-  const firstName = userInfo ? userInfo.firstName : null
-
-  console.log(userLogin);
+  // const { userInfo } = userLogin
+  // const firstName = userInfo ? userInfo.firstName : null
 
   const logoutHandler = async (e: SyntheticEvent) => {
-    e.preventDefault()
-    dispatch(logout())
-  }
-
+    e.preventDefault();
+    // dispatch(logout())
+  };
 
   return (
     <AppBar position="static">
@@ -63,12 +60,12 @@ const ResponsiveAppBar = () => {
             variant="h6"
             noWrap
             component="div"
-            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
             LOGO
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -83,32 +80,32 @@ const ResponsiveAppBar = () => {
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+                vertical: "bottom",
+                horizontal: "left",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
+                vertical: "top",
+                horizontal: "left",
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: "block", md: "none" },
               }}
             >
               {pages.map((page) => (
-                !firstName ?
-                  page === "Home" ?
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
-                    :
-                    null
-                  :
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
+                // !firstName ?
+                //   page === "Home" ?
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+                //   :
+                //   null
+                // :
+                // <MenuItem key={page} onClick={handleCloseNavMenu}>
+                //   <Typography textAlign="center">{page}</Typography>
+                // </MenuItem>
               ))}
             </Menu>
           </Box>
@@ -116,69 +113,67 @@ const ResponsiveAppBar = () => {
             variant="h6"
             noWrap
             component="div"
-            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              firstName ?
-                <Link key={page} to={page.toLowerCase()}>
-                  <Button
-                    key={page}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                  >
-                    {page}
-                  </Button>
-                </Link>
-                :
-                null
+              // firstName ?
+              <Link key={page} to={page.toLowerCase()}>
+                <Button
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  {page}
+                </Button>
+              </Link>
+              // :
+              // null
             ))}
           </Box>
 
-          {firstName ?
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    {
-                      setting === "logout" ?
-                        <Link key={setting} to={setting.toLowerCase()}>
-                          <Typography textAlign="center">{setting}</Typography>
-                        </Link>
-                        :
-                        <Link key={setting} to={"/home"} onClick={logoutHandler}>
-                          <Typography textAlign="center">{setting}</Typography>
-                        </Link>
-                    }
-
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-            : null
-          }
+          {/* {firstName ? */}
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  {setting === "logout" ? (
+                    <Link key={setting} to={setting.toLowerCase()}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </Link>
+                  ) : (
+                    <Link key={setting} to={"/home"} onClick={logoutHandler}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </Link>
+                  )}
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          {/* : null
+          } */}
         </Toolbar>
       </Container>
     </AppBar>

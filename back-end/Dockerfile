@@ -10,6 +10,7 @@ COPY . .
 
 RUN npm run build
 
+
 FROM node:lts as production
 
 ARG NODE_ENV=production

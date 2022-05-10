@@ -4,13 +4,13 @@ import { BrowserRouter as Router } from "react-router-dom"
 import SignUp from './screens/SignUpScreen';
 import SignIn from './screens/SigninScreen';
 import HomeScreen from './screens/HomeScreen';
-// import { ChatTemplate } from './screens/ChatTemplate';
+import { ChatTemplate } from './screens/ChatTemplate';
 import { Pong } from './screens/Pong';
 import { NoMatch } from './screens/NoMatchScreen';
 import ResponsiveAppBar from './components/NavBar';
 import { Profile } from './screens/Profile';
 import { Room } from './screens/Room';
-import { Chat } from './screens/Chat';
+// import { Chat } from './screens/Chat';
 // import { useDispatch } from 'react-redux';
 // import { useEffect } from 'react';
 // import { Switch } from 'react-router-dom';
@@ -46,19 +46,19 @@ const App = () => {
     <Router>
       <ResponsiveAppBar />
       <Routes>
-        <Route path='/' element={<HomeScreen />} />
-        <Route path='/home' element={<HomeScreen />} />
-        <Route path='/login' element={<SignIn />} />
-        <Route path='/signup' element={<SignUp />} />
-        <Route path='/chat' element={<Chat />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/order-summary' element={<Pong />} />
-        {/* <Route path='/room' element={<Room />} /> */}
-
-        <Route path='*' element={<NoMatch />} />
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/home" element={<HomeScreen />} />
+        <Route path="/login" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/chat" element={<ChatTemplate />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="order-summary" element={<Pong />} />
+        <Route path="/room" element={<Room />} />
+        <Route path="/Profile" element={<Profile />} />
+        <Route path="*" element={<NoMatch />} />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;
