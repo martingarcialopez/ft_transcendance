@@ -1,3 +1,1 @@
-/* import { ChatTemplate } from "../chat/components/ChatTemplate"; */
-import { IndexChat } from "../chat/index";
-export const Chat = () => IndexChat();
+export const Chat = () => <h1>Chat Page</h1>;

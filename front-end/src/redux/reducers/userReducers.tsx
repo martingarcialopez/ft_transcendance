@@ -1,14 +1,17 @@
 import {
-  USER_LOGIN_REQUEST,
-  USER_LOGIN_SUCCESS,
-  USER_LOGIN_FAIL,
-  USER_LOGOUT,
+  LOADING_TOGGLE_ACTION,
+  LOGIN_CONFIRMED_ACTION,
+  LOGIN_FAILED_ACTION,
+  LOGOUT_ACTION,
+  SIGNUP_CONFIRMED_ACTION,
+  SIGNUP_FAILED_ACTION
 } from '../constants/userConstants'
 
 export interface UserState {
-  loading?: boolean
-  error?: string
-  userInfo: { firstName?: string; lastName?: string }
+  showLoading?: boolean
+  errorMessage?: string,
+  successMessage?: string,
+  userInfo: { firstName?: string; lastName?: string } //ADD other elements
 }
 
 interface Action {
@@ -21,14 +24,34 @@ export const userLoginReducer = (
   action: Action
 ) => {
   switch (action.type) {
-    case USER_LOGIN_REQUEST:
-      return { loading: true }
-    case USER_LOGIN_SUCCESS:
-      return { loading: false, userInfo: action.payload }
-    case USER_LOGIN_FAIL:
-      return { loading: false, error: action.payload }
-    case USER_LOGOUT:
-      return {}
+    case LOADING_TOGGLE_ACTION:
+      return {
+        showLoading: true
+      }
+    case LOGIN_CONFIRMED_ACTION:
+      return {
+        showLoading: false,
+        userInfo: action.payload,
+        errorMessage: '',
+        successMessage: 'Login Successfully Completed',
+      }
+    case SIGNUP_CONFIRMED_ACTION:
+      return {
+        showLoading: false,
+        userInfo: action.payload,
+        errorMessage: '',
+        successMessage: 'Signup Successfully Completed',
+      }
+    case LOGIN_FAILED_ACTION || SIGNUP_FAILED_ACTION:
+      return {
+        showLoading: false,
+        errorMessage: action.payload,
+        successMessage: '',
+      }
+    case LOGOUT_ACTION:
+      return {
+
+      }
     default:
       return state
   }
