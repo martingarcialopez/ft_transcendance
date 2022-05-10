@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { Participant } from '../models/participant.entity';
 import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
+import { plainToClass } from 'class-transformer';
+
 
 @Injectable()
 export class ParticipantService {
@@ -17,12 +19,13 @@ export class ParticipantService {
 /*
 ** Create a new obj of participant and store in the table
 */
-	async createParticipant(participantDto: ParticipantDto): Promise<Participant> {
+	async createParticipant(participantDto: ParticipantDto): Promise<RoomSnippetDto> {
         const new_participant = new Participant();
 		new_participant.userId = participantDto.userId;
 		new_participant.roomId = participantDto.roomId;
-
-		return this.participantRepository.save(new_participant);
+		await this.participantRepository.save(new_participant);
+		const dto = plainToClass(RoomSnippetDto, new_participant);
+		return dto;
     }
 
 /*

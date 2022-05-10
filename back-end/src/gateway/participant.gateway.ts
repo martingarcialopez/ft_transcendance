@@ -25,18 +25,18 @@ import { ParticipantDto } from '../dtos/in/participant.dto';
     origin: '*',
   },
 })
-
-export class ParticipantGateway
-{
+export class ParticipantGateway {
   @WebSocketServer() server: Server;
 
-  constructor(
-    private readonly participantService: ParticipantService,
-  ) {}
+  constructor(private readonly participantService: ParticipantService) {}
 
 	@SubscribeMessage('createParticipant')
-	async createParticipant(participant: ParticipantDto) {
-    const value = await this.participantService.createParticipant(participant);
+	async createParticipant( @Body() participant: ParticipantDto) {
+		console.log('userId:', participant.userId, ' roomId: ', participant.roomId);
+		console.log('participant: ', participant);
+		const participantId = await this.participantService.createParticipant(participant);
+		this.server.emit('participantId', participantId);
+    console.log('already send to FRONT');
   }
 
   @SubscribeMessage('getParticipant')
@@ -50,6 +50,4 @@ export class ParticipantGateway
   async getUseridRooms(userId: any) {
     const rooms = await this.participantService.getUseridRooms(userId);
   }
-
-
 }

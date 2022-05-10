@@ -211,7 +211,6 @@ export class RoomService {
 		const message_history = await this.messageService.getRoomMessage(body['roomId']);
 		console.log('message history', message_history);
 		let new_participant_info = new newUser_In_Room_Message();
-		new_participant_info.userId = body.userId;
 		new_participant_info.blockList = blockList;
 		new_participant_info.message_history = message_history;
 
