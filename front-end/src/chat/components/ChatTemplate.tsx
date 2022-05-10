@@ -29,7 +29,7 @@ function GetInfo(item: T_Room | T_User, state: any) {
 
 function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
   let tmp = 0;
-  item.map((data, index: number) => {
+  item.forEach((data, index: number) => {
     if (data.id === occurence) tmp = index;
   });
   return tmp;
@@ -102,7 +102,7 @@ function PrintMsg() {
     socket.on("MsgToClient: ", (receive: any) => {
       console.log("Msg received: ", receive);
     });
-  }, [socket]);
+  }, []);
 
   return (
     <>
