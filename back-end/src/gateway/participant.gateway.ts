@@ -36,7 +36,8 @@ export class ParticipantGateway
 
   @SubscribeMessage('createParticipant')
   async createParticipant(participant: ParticipantDto) {
-    const value = await this.participantService.createParticipant(participant);
+      const participantId = await this.participantService.createParticipant(participant);
+	  this.server.emit('participantId', participantId);
   }
 
   @SubscribeMessage('getParticipant')
