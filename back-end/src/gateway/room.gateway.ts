@@ -115,13 +115,13 @@ export class RoomGateway
 	 **return: BlockList + message_history
 	 */
 	  @SubscribeMessage('getMessage')
-	async getMessage(@Body() body: ParticipantDto) : Promise<void>{
+	async getMessage(socket: Socket, @Body() body: ParticipantDto) : Promise<void>{
 //		const body: any = {roomId:1, userId:3};
 		const info = await this.roomService.getUserBlockList_and_message_history(body);
 		console.log('in gate way, info is', info);
 		this.server.emit('msgToClient', info);
 		// the user join to the room
-		socket.join(room_id.toString());
+		socket.join(body.roomId.toString());
 	}
 
 	@SubscribeMessage('blockUser')
