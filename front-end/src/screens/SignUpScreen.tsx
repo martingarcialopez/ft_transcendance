@@ -30,7 +30,6 @@ const SignUp = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
     console.log({
       firstname: firstname,
       lastname: lastname,
@@ -39,18 +38,6 @@ const SignUp = () => {
     });
 
     dispatch(signupAction(firstname, lastname, username, password))
-
-    await fetch('http://localhost:3000/user/sign-up', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        firstname: data.get('firstName'),
-        lastname: data.get('lastName'),
-        username: data.get('pseudo'),
-        password: data.get('password'),
-      }),
-    })
-
 
     navigate('/home');
   };

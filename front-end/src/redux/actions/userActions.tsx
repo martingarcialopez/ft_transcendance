@@ -4,75 +4,101 @@ import {
   SIGNUP_CONFIRMED_ACTION,
   LOGOUT_ACTION,
   LOGIN_FAILED_ACTION,
-  SIGNUP_FAILED_ACTION
+  SIGNUP_FAILED_ACTION,
 } from '../constants/userConstants'
-import { formatError, login, signUp } from '../services/userServices';
+import { formatError, getInfo, login, signUp } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, email: any, password: any) {
   return (dispatch: any) => {
-      signUp(firstname, lastname, email, password)
-          .then((response) => {
-              dispatch(confirmedSignupAction(response.data));
-          })
-          .catch((error) => {
-              const errorMessage = formatError(error.response.data);
-              dispatch(signupFailedAction(errorMessage));
-          });
+    signUp(firstname, lastname, email, password)
+      .then((response) => {
+        console.log("signupAction response : ")
+        console.log(response)
+        dispatch(confirmedSignupAction(response));
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(signupFailedAction(errorMessage));
+      });
+  };
+}
+
+export function getInfoAction(access_token: any) {
+  return (dispatch: any) => {
+    getInfo(access_token)
+      .then((response) => {
+        console.log("signupAction response : ")
+        console.log(response)
+        dispatch(loginConfirmedAction(response.data));
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(loginFailedAction(errorMessage));
+      });
   };
 }
 
 export function logout() {
   localStorage.removeItem('userDetails');
   return {
-      type: LOGOUT_ACTION,
+    type: LOGOUT_ACTION,
   };
 }
 
 export function loginAction(email: any, password: any) {
   return (dispatch: any) => {
-      login(email, password)
-          .then((response) => {
-              dispatch(loginConfirmedAction(response.data));
-          })
-          .catch((error) => {
-              const errorMessage = formatError(error.response.data);
-              dispatch(loginFailedAction(errorMessage));
-          });
+    login(email, password)
+      .then((response) => {
+        console.log("loginAction qui fct :")
+        console.log(response)
+        console.log("loginAction data qui fct :")
+        console.log(response.data)
+        console.log("loginAction data access qui fct :")
+        console.log(response.data.access_token)
+        dispatch(getInfoAction(response.data.access_token))
+      })
+      .catch((error) => {
+        console.log("ceci est une error dans loginAction :")
+        console.log(error);
+        const errorMessage = formatError(error.code);
+        console.log("ceci est une errorMessage return de formatError dans loginAction :" + errorMessage)
+        dispatch(loginFailedAction(errorMessage));
+      });
   };
 }
 
 export function loginFailedAction(data: any) {
   return {
-      type: LOGIN_FAILED_ACTION,
-      payload: data,
+    type: LOGIN_FAILED_ACTION,
+    payload: data,
   };
 }
 
 export function loginConfirmedAction(data: any) {
   return {
-      type: LOGIN_CONFIRMED_ACTION,
-      payload: data,
+    type: LOGIN_CONFIRMED_ACTION,
+    payload: data,
   };
 }
 
 export function confirmedSignupAction(payload: any) {
   return {
-      type: SIGNUP_CONFIRMED_ACTION,
-      payload,
+    type: SIGNUP_CONFIRMED_ACTION,
+    payload,
   };
 }
 
 export function signupFailedAction(message: any) {
   return {
-      type: SIGNUP_FAILED_ACTION,
-      payload: message,
+    type: SIGNUP_FAILED_ACTION,
+    payload: message,
   };
 }
 
 export function loadingToggleAction(status: any) {
   return {
-      type: LOADING_TOGGLE_ACTION,
-      payload: status,
+    type: LOADING_TOGGLE_ACTION,
+    payload: status,
   };
 }
 

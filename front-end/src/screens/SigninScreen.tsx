@@ -17,7 +17,7 @@ import { SyntheticEvent, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store'
 import { UserState } from '../redux/reducers/userReducers';
-import { loginAction } from '../redux/actions/userActions';
+import { loginAction, signupAction } from '../redux/actions/userActions';
 
 const theme = createTheme();
 

@@ -20,7 +20,6 @@ export function login(username: any, password: any) {
     const postData = {
         username,
         password,
-        returnSecureToken: true,
     };
 
     return axios.post(
@@ -30,26 +29,31 @@ export function login(username: any, password: any) {
 }
 
 export function getInfo(access_token: any) {
+    console.log("getInfo TOKEN :")
+        console.log(access_token)
     return axios({
         method: 'get',
-        url: `http://localhost:3000/auth/login`,
-        headers: {'Authorization': access_token}
+        url: `http://localhost:3000/user/current`,
+        headers: { 'Authorization': `Bearer ${access_token}` }
     });
 }
 
 
 export function formatError(errorResponse: any) {
-    switch (errorResponse.error.message) {
+    // TODO: FAIRE TOUTES LES ERRORS POUR LES CONNECTER CORRECTEMENT
+    console.log("Ceci est l err return dans la fct formatError :")
+    console.log(errorResponse)
+    switch (errorResponse) {
         case 'EMAIL_EXISTS':
             return 'Email already exists';
-
         case 'EMAIL_NOT_FOUND':
             return 'Email not found';
         case 'INVALID_PASSWORD':
             return 'Invalid Password';
         case 'USER_DISABLED':
             return 'User Disabled';
-
+        case 'ERR_BAD_REQUEST':
+            return 'Pseudo not found';
         default:
             return '';
     }

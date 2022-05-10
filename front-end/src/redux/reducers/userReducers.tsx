@@ -42,13 +42,7 @@ export const userLoginReducer = (
         errorMessage: '',
         successMessage: 'Signup Successfully Completed',
       }
-    case LOGIN_FAILED_ACTION:
-      return {
-        showLoading: false,
-        errorMessage: action.payload,
-        successMessage: '',
-      }
-    case SIGNUP_FAILED_ACTION:
+    case LOGIN_FAILED_ACTION || SIGNUP_FAILED_ACTION:
       return {
         showLoading: false,
         errorMessage: action.payload,
