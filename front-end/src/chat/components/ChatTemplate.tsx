@@ -1,5 +1,4 @@
-import "../styles/ChatTemplate.css";
-/* import { rooms } from "../index"; */
+import "../../styles/ChatTemplate.css";
 import { T_Room, T_User } from "../../type/chat";
 import { RootState } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
