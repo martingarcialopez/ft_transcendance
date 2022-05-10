@@ -74,6 +74,7 @@ export function AddRoom() {
         <select className="inputRoom" id="pet-select" {...register("typeRoom")}>
           <option value="public">Public</option>
           <option value="private">Private</option>
+          <option value="private">Protected</option>
         </select>
         <br />
         <input type="submit" className="btn-new-room" value="New" />
