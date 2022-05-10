@@ -11,7 +11,7 @@ export interface UserState {
   showLoading?: boolean
   errorMessage?: string,
   successMessage?: string,
-  userInfo: { firstName?: string; lastName?: string } //ADD other elements
+  userInfo: { firstname?: string; lastname?: string, expiresIn?: any } //ADD other elements
 }
 
 interface Action {
@@ -20,7 +20,7 @@ interface Action {
 }
 
 export const userLoginReducer = (
-  state: UserState = { userInfo: {} },
+  state: UserState = { userInfo: { expiresIn: '' } },
   action: Action
 ) => {
   switch (action.type) {

@@ -9,13 +9,13 @@ const HomeScreen = () => {
   )
 
   const { userInfo } = userLogin
-  const firstName = userInfo ? userInfo.firstName : null
+  const firstname = userInfo ? userInfo.firstname : null
 
   return (
     <div>
-      {firstName ?
+      {firstname ?
         <div>
-          <h1>Welcome {firstName}</h1>
+          <h1>Welcome {firstname}</h1>
         </div>
         :
         <div>

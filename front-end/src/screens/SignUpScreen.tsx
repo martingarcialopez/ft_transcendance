@@ -12,9 +12,11 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as LinkRoute, useNavigate } from 'react-router-dom';
 import Copyright from '../components/Copyright';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { signupAction } from '../redux/actions/userActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux';
+import { UserState } from '../redux/reducers/userReducers';
 
 const theme = createTheme();
 
@@ -26,6 +28,15 @@ const SignUp = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch()
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  )
+  const { userInfo } = userLogin
+  useEffect(() => {
+    if (userInfo !== undefined && userInfo.firstname) {
+      navigate('/home');
+    }
+  }, [userInfo, navigate])
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -65,10 +76,10 @@ const SignUp = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="firstname"
                   required
                   fullWidth
-                  id="firstName"
+                  id="firstname"
                   label="First Name"
                   autoFocus
                   value={firstname}
@@ -79,9 +90,9 @@ const SignUp = () => {
                 <TextField
                   required
                   fullWidth
-                  id="lastName"
+                  id="lastname"
                   label="Last Name"
-                  name="lastName"
+                  name="lastname"
                   autoComplete="family-name"
                   value={lastname}
                   onChange={e => setLastname(e.target.value)}

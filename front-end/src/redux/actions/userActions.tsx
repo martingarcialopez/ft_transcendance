@@ -6,7 +6,7 @@ import {
   LOGIN_FAILED_ACTION,
   SIGNUP_FAILED_ACTION,
 } from '../constants/userConstants'
-import { formatError, getInfo, login, signUp } from '../services/userServices';
+import { formatError, getInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, email: any, password: any) {
   return (dispatch: any) => {
@@ -27,8 +27,16 @@ export function getInfoAction(access_token: any) {
   return (dispatch: any) => {
     getInfo(access_token)
       .then((response) => {
+        saveTokenInLocalStorage(response.data);
+        // tokenDetails.expiresIn
+        runLogoutTimer(
+          dispatch,
+          500000000 * 1000,
+        );
         console.log("signupAction response : ")
         console.log(response)
+        console.log("signupAction response data : ")
+        console.log(response.data)
         dispatch(loginConfirmedAction(response.data));
       })
       .catch((error) => {
@@ -39,7 +47,7 @@ export function getInfoAction(access_token: any) {
 }
 
 export function logout() {
-  localStorage.removeItem('userDetails');
+  localStorage.removeItem('userInfo');
   return {
     type: LOGOUT_ACTION,
   };
@@ -140,10 +148,10 @@ export function loadingToggleAction(status: any) {
 
 //         const userData = {
 //           avatar: data2.avatar,
-//           firstName: data2.firstname,
+//           firstname: data2.firstname,
 //           id: data2.id,
 //           isActive: data2.isActive,
-//           lastName: data2.lastname,
+//           lastname: data2.lastname,
 //           login42: data2.login42,
 //           access_token: data.access_token,
 //           password: data2.password,
@@ -203,10 +211,10 @@ export function loadingToggleAction(status: any) {
 
 //         const userData = {
 //           avatar: data.avatar,
-//           firstName: data.firstname,
+//           firstname: data.firstname,
 //           id: data.id,
 //           isActive: data.isActive,
-//           lastName: data.lastname,
+//           lastname: data.lastname,
 //           login42: data.login42,
 //           access_token: data.access_token,
 //           password: data.password,
@@ -225,10 +233,10 @@ export function loadingToggleAction(status: any) {
 
 //         // const userData = {
 //         //   avatar: data2.avatar,
-//         //   firstName: data2.firstname,
+//         //   firstname: data2.firstname,
 //         //   id: data2.id,
 //         //   isActive: data2.isActive,
-//         //   lastName: data2.lastname,
+//         //   lastname: data2.lastname,
 //         //   login42: data2.login42,
 //         //   access_token: data.access_token,
 //         //   password: data2.password,

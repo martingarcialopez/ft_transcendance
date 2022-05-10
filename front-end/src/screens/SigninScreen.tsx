@@ -32,7 +32,7 @@ const SignIn = () => {
     )
     const { userInfo } = userLogin
     useEffect(() => {
-        if (userInfo !== undefined && userInfo.firstName) {
+        if (userInfo !== undefined && userInfo.firstname) {
             navigate('/home');
         }
     }, [userInfo, navigate])
@@ -45,6 +45,7 @@ const SignIn = () => {
       username: username,
       password: password,
     });
+    navigate('/home');
   };
 
   return (
