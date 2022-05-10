@@ -84,7 +84,7 @@ export class RoomGateway
 
 	@SubscribeMessage('updateRoomPw')
 	async updateRoomPw(): Promise<void> {
-		// const body: RoomPwDto = {'userName':'string', 'roomId':22, 'password': '999'};
+		// const body: RoomPwDto = {'userId': 3, 'roomId':22, 'password': '999'};
 		// let res = await this.roomService.updateRoomPw(body);
 		//NEED TO SEND TO FRONT AN EVENT
 //		return res;
@@ -102,7 +102,7 @@ export class RoomGateway
 	@SubscribeMessage('manageAdmin')
 	//	async manageAdmin(@Body() body: UpdateAdminDto): Promise<void> {
 	async manageAdmin(): Promise<void> {
-		// const body: UpdateAdminDto = {'userName':'miaomiao', 'roomId':22, 'toAdd': false};
+		// const body: UpdateAdminDto = {'userId':3, 'roomId':22, 'toAdd': false};
 	//	await this.roomService.manageAdmin(body);
 	}
 

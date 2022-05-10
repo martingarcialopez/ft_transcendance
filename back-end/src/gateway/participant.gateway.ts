@@ -47,12 +47,12 @@ export class ParticipantGateway
   @SubscribeMessage('getParticipant')
   async getParticipant(room_id: number) {
     const all_participant = await this.participantService.getParticipant(
-      room_id,
+		room_id,
     );
   }
 
   @SubscribeMessage('getUseridRooms')
-  async getUseridRooms(userId: any) {
+	async getUseridRooms(userId: number) : Promise<void> {
     const rooms = await this.participantService.getUseridRooms(userId);
   }
 
