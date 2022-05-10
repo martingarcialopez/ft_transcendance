@@ -1,24 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RoomDto } from '../dtos/in/room.dto';
 import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
+
+import { User } from '../models/user.entity';
 import { Room } from '../models/room.entity';
 import { Participant } from '../models/participant.entity';
-import { User } from '../models/user.entity';
+import { Message } from '../models/message.entity';
 import { classToPlain, Exclude } from 'class-transformer';
 import { plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
 import { RoomPwDto } from '../dtos/in/room_password.dto';
 import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
+import { ParticipantDto } from '../dtos/in/participant.dto';
+import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto';
+import { UserService } from './user.service';
+import { MessageService } from './message.service';
+import { ParticipantService } from './participant.service';
 
 @Injectable()
 export class RoomService {
-
+	@Inject(UserService)
+	private readonly userService: UserService;
+	@Inject(MessageService)
+	private readonly messageService: MessageService;
+	@Inject(ParticipantService)
+	private readonly participantService: ParticipantService;
 	constructor(
         @InjectRepository(Room) private readonly roomRepository: Repository<Room>,
-		@InjectRepository(Participant) private participantRepository: Repository<Participant>,
+//		@InjectRepository(Participant) private readonly participantRepository: Repository<Participant>,
     ){}
 
 	/*
@@ -29,22 +41,24 @@ export class RoomService {
 	{
         const new_room = new Room();
 		new_room.name = roomDto.name;
-		new_room.typeChannel = roomDto.typeChannel;
+		new_room.typeRoom = roomDto.typeRoom;
 
-		const password = roomDto.password;
-		const saltOrRounds = 10;
-		const hash = await bcrypt.hash(password, saltOrRounds);
-		new_room.password = hash;
-		new_room.owner.push(roomDto.owner);
-		//new_room.owner_id = roomDto.ownerId;
-		//		new_room.members = roomDto.members;
+		if (roomDto.password != null && roomDto.typeRoom == 'protected')
+		{
+			const password = roomDto.password;
+			const saltOrRounds = 10;
+			const hash = await bcrypt.hash(password, saltOrRounds);
+			new_room.password = hash;
+		}
+		else
+			new_room.password = null;
+		new_room.owner.push(roomDto.creatorId);
+		new_room.avatar = roomDto.avatar;
 		await this.roomRepository.save(new_room);
 
-		const new_participant = new Participant();
-		new_participant.userId = 2;
-		new_participant.roomId = new_room.id;
-		await this.participantRepository.save(new_participant);
-
+		/*the creator is the first participant to be created*/
+		//console.log(roomDto.creatorId, ' ',  new_room.id, new_room.password);
+		await this.participantService.createParticipant({'userId': roomDto.creatorId, 'roomId':  new_room.id});
 		const dto = plainToClass(RoomSnippetDto, new_room);
 		return dto;
 	}
@@ -88,10 +102,11 @@ export class RoomService {
 
 		if (await bcrypt.compare(entered_pw, room_pw['password']))
 		{
-			const new_participant = new Participant();
-			new_participant.userId = joinRoomDto.userId;
-			new_participant.roomId = room_Id;
-			await this.participantRepository.save(new_participant);
+			await this.participantService.createParticipant({'userId': joinRoomDto.userId, 'roomId': room_Id});
+			// const new_participant = new Participant();
+			// new_participant.userId = joinRoomDto.userId;
+			// new_participant.roomId = room_Id;
+			// await this.participantRepository.save(new_participant);
 			return true;
 		}
 		return false;
@@ -102,7 +117,7 @@ export class RoomService {
             .select(["room.owner"])
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
-		if (admin['owner'].indexOf(body.userName) != -1)
+		if (admin['owner'].indexOf(body.userId) != -1)
 		{
 			let room =  await this.roomRepository.createQueryBuilder("room")
 			    .where("room.id = :room_Id", { room_Id: body.roomId })
@@ -124,7 +139,7 @@ export class RoomService {
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
 		//user does not have the right
-		if (admin['owner'].indexOf(body.userName) != -1)
+		if (admin['owner'].indexOf(body.userId) != -1)
 			return ;
 		let room =  await this.roomRepository.createQueryBuilder("room")
             .where("room.id = :room_Id", { room_Id: body.roomId })
@@ -145,7 +160,7 @@ export class RoomService {
         return await bcrypt.hash(password, saltOrRounds);
 	}
 
-	async get_RoomAdmins(roomId: number): Promise<string[]> {
+	async get_RoomAdmins(roomId: number): Promise<number[]> {
 	let room = await this.roomRepository.createQueryBuilder("room")
             .select(["room.owner"])
             .where("room.id = :room_Id", { room_Id: roomId })
@@ -154,25 +169,25 @@ export class RoomService {
 	}
 
 	//change userName -> userId LATER
-	async userIsAdmin(roomId: number, userName: string) : Promise<boolean> {
+	async userIsAdmin(roomId: number, userId: number) : Promise<boolean> {
 		let admins = await this.get_RoomAdmins(roomId);
-		console.log('admins is here ', admins.indexOf(userName));
+		console.log('admins is here ', admins.indexOf(userId));
 		//return false;
-		return await admins.indexOf(userName) != -1;
+		return await admins.indexOf(userId) != -1;
 	}
 
 	async manageAdmin(body: UpdateAdminDto): Promise<void> {
-		let is_already_admin = await this.userIsAdmin(body.roomId, body.userName);
+		let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
 		let admins = await this.get_RoomAdmins(body.roomId);
 		if (body['toAdd'] == true && is_already_admin == false)
 		{
 			console.log('i am here', admins);
-			admins.push(body.userName);
+			admins.push(body.userId);
 		}
 		//remove this admin
 		else if (body['toAdd'] == false && is_already_admin == true)
 		{
-			var index = admins.indexOf(body.userName);
+			var index = admins.indexOf(body.userId);
 			admins.splice(index, 1);
 		}
 		else
@@ -183,8 +198,26 @@ export class RoomService {
 			.set({ owner: admins })
 			.where("id = :id", { id: body.roomId })
 			.execute();
-		console.log('i am here', admins);
 	}
+
+	async getUserBlockList_and_message_history(body: any): Promise<newUser_In_Room_Message> {
+		let blockList: number[] = await this.userService.getBlockList(body['userId']);
+		/* if the userid is invalide, send an event to front */
+		if (blockList == null)
+		{
+	//		this.server.emit('request err', 'the user is not in database');
+			return ;
+		}
+		const message_history = await this.messageService.getRoomMessage(body['roomId']);
+		console.log('message history', message_history);
+		let new_participant_info = new newUser_In_Room_Message();
+		new_participant_info.blockList = blockList;
+		new_participant_info.message_history = message_history;
+
+		return new_participant_info;
+	}
+
+
 
 }
 

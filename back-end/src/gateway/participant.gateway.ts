@@ -35,8 +35,13 @@ export class ParticipantGateway
   ) {}
 
   @SubscribeMessage('createParticipant')
-  async createParticipant(participant: ParticipantDto) {
-    const value = await this.participantService.createParticipant(participant);
+	async createParticipant(participant: ParticipantDto) {
+		console.log('Enter to createParticipant event');
+		cosole.log('userId:', participant.userId, ' roomId: ', participant.roomId);
+      const participantId = await this.participantService.createParticipant(participant);
+		console.log('after call createParticipant service and send to front');
+		this.server.emit('participantId', participantId);
+		console.log('already send to FRONT');
   }
 
   @SubscribeMessage('getParticipant')
@@ -51,8 +56,5 @@ export class ParticipantGateway
     const rooms = await this.participantService.getUseridRooms(userId);
   }
 
-  @SubscribeMessage('deleteParticipant')
-  async deleteParticipant(id: number) {
-    await this.participantService.deleteParticipant(id);
-  }
+
 }

@@ -4,8 +4,8 @@ services:
 
 # ####################### React #########################
   ft_react:
-    # depends_on:
-    #   - ft_nestjs
+    depends_on:
+      - ft_nestjs
     build:
       context: ./front-end
       dockerfile: ./Dockerfile
@@ -17,11 +17,12 @@ services:
     networks:
       - webnet
     volumes:
-      - ./front-end/:/App/
+      - ./front-end:/usr/src/app
+      - /usr/src/app/node_modules
+       
     restart: always
 
-    # ####################### NestJS #########################
-
+# ####################### NestJS #########################
 
   ft_nestjs:
     depends_on:
@@ -38,13 +39,12 @@ services:
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
-       - ./back-end/:/usr/src/app/
+       - ./back-end:/usr/src/app
        - /usr/src/app/node_modules
     command: npm run start:dev
     restart: always
 
-# # # # ####################### postgres #########################
-
+# ####################### postgres #########################
   ft_postgres:
     image: postgres:alpine
     container_name: "container-postgres"
@@ -64,9 +64,7 @@ services:
       - webnet
     restart: always
 
-
-# # # # ####################### pgadmin #########################
-
+# ####################### pgadmin #########################
   pgadmin:
     container_name: "container-pgadmin4"
     image: dpage/pgadmin4

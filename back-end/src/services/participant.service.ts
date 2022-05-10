@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { Participant } from '../models/participant.entity';
 import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
+import { plainToClass } from 'class-transformer';
+
 
 @Injectable()
 export class ParticipantService {
@@ -17,12 +19,13 @@ export class ParticipantService {
 /*
 ** Create a new obj of participant and store in the table
 */
-	async createParticipant(participantDto: ParticipantDto): Promise<Participant> {
+	async createParticipant(participantDto: ParticipantDto): Promise<RoomSnippetDto> {
         const new_participant = new Participant();
-		// new_participant.userID = participantDto.userID;
-		// new_participant.roomID = participantDto.roomID;
-
-		return this.participantRepository.save(new_participant);
+		new_participant.userId = participantDto.userId;
+		new_participant.roomId = participantDto.roomId;
+		await this.participantRepository.save(new_participant);
+		const dto = plainToClass(RoomSnippetDto, new_participant);
+		return dto;
     }
 
 /*
@@ -49,14 +52,6 @@ export class ParticipantService {
         return await this.participantRepository.find({id});
     }
 
-/*
-** Delete the whole column corresponding to the id
-** :param (id:number) id is the primary key in participant table
-** :return void
-*/
-	async deleteParticipant(id: number): Promise<void> {
-        await this.participantRepository.delete(id);
-    }
 
 
 

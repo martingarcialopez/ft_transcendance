@@ -1,9 +1,9 @@
 import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
 export class RoomPwDto {
-	@IsString()
+	@IsNumber()
     @IsNotEmpty()
-    public userName: string;
+    public userId: number;
 
 	@IsNumber()
 	@IsNotEmpty()
