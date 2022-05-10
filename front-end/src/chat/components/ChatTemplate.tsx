@@ -102,7 +102,7 @@ function PrintMsg() {
     socket.on("MsgToClient: ", (receive: any) => {
       console.log("Msg received: ", receive);
     });
-  }, []);
+  }, [socket]);
 
   return (
     <>

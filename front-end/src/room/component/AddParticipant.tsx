@@ -7,14 +7,14 @@ import { useForm } from "react-hook-form";
 
 function createParticipant(usrId: number, roomId: number) {
   if (usrId > 0 && roomId > 0) {
+    console.log("userId: ", usrId, "room id:", roomId);
     socket.emit("createParticipant", {
       userId: usrId,
       roomId: roomId,
     });
-    /* socket.on("idRoom", (receive: { id: number }) => {
-     *   console.log("reponse creation Room : ", receive);
-     *   newRoom.id = receive.id;
-     * }); */
+    socket.on("participantId", (receive: { id: number }) => {
+      console.log("reponse participant : ", receive);
+    });
   }
 }
 
@@ -39,8 +39,7 @@ export function AddParticipant() {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           const roomId = findId(arrayRoom, data.roomName);
-          console.log("room: ", data.roomName, "room id:", roomId);
-          createParticipant(2, roomId);
+          createParticipant(1, 29);
         })}
       >
         <input
