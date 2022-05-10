@@ -75,6 +75,7 @@ message_history: Message[]}
 roomId: number,
 entered_pw: string
 }
+```
 
 ##  event send back
 ```
