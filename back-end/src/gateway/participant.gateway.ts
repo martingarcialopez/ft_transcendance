@@ -25,23 +25,22 @@ import { ParticipantDto } from '../dtos/in/participant.dto';
     origin: '*',
   },
 })
-
-export class ParticipantGateway
-{
+export class ParticipantGateway {
   @WebSocketServer() server: Server;
 
-  constructor(
-    private readonly participantService: ParticipantService,
-  ) {}
+  constructor(private readonly participantService: ParticipantService) {}
 
   @SubscribeMessage('createParticipant')
-	async createParticipant(participant: ParticipantDto) {
-		console.log('Enter to createParticipant event');
-		cosole.log('userId:', participant.userId, ' roomId: ', participant.roomId);
-      const participantId = await this.participantService.createParticipant(participant);
-		console.log('after call createParticipant service and send to front');
-		this.server.emit('participantId', participantId);
-		console.log('already send to FRONT');
+  async createParticipant(participant: ParticipantDto) {
+    console.log('Enter to createParticipant event');
+    // console.log('userId:', participant.userId, ' roomId: ', participant.roomId);
+    console.log('participant: ', participant);
+    const participantId = await this.participantService.createParticipant(
+      participant,
+    );
+    console.log('after call createParticipant service and send to front');
+    this.server.emit('participantId', participantId);
+    console.log('already send to FRONT');
   }
 
   @SubscribeMessage('getParticipant')
@@ -55,6 +54,4 @@ export class ParticipantGateway
   async getUseridRooms(userId: any) {
     const rooms = await this.participantService.getUseridRooms(userId);
   }
-
-
 }

@@ -5,11 +5,11 @@ import { useSelector } from "react-redux";
 import { socket } from "../../chat/components/ChatTemplate";
 import { useForm } from "react-hook-form";
 
-function createParticipant(usrId: number, roomId: number) {
-  if (usrId > 0 && roomId > 0) {
-    console.log("userId: ", usrId, "room id:", roomId);
+function createParticipant(userId: number, roomId: number) {
+  if (userId > 0 && roomId > 0) {
+    console.log("userId: ", userId, "room id:", roomId);
     socket.emit("createParticipant", {
-      userId: usrId,
+      userId: userId,
       roomId: roomId,
     });
     socket.on("participantId", (receive: { id: number }) => {
