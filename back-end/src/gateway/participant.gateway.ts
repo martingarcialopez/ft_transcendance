@@ -34,8 +34,8 @@ export class ParticipantGateway
     private readonly participantService: ParticipantService,
   ) {}
 
-  @SubscribeMessage('createParticipant')
-  async createParticipant(participant: ParticipantDto) {
+	@SubscribeMessage('createParticipant')
+	async createParticipant(participant: ParticipantDto) {
     const value = await this.participantService.createParticipant(participant);
   }
 
