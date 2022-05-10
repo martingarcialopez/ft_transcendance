@@ -6,14 +6,12 @@ import { Message } from '../../models/message.entity';
 @Exclude()
 export class newUser_In_Room_Message {
 
-    @Expose()
-    @IsNumber()
-    public userId: number;
-
+	@Expose()
 	@IsArray()
 	@IsNumber({ allowNaN: false })
 	public blockList: number[];
 
+    @Expose()
 	@IsArray()
 	public message_history: Message[];
 
