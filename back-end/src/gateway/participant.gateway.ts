@@ -30,16 +30,12 @@ export class ParticipantGateway {
 
   constructor(private readonly participantService: ParticipantService) {}
 
-  @SubscribeMessage('createParticipant')
-  async createParticipant(participant: ParticipantDto) {
-    console.log('Enter to createParticipant event');
-    // console.log('userId:', participant.userId, ' roomId: ', participant.roomId);
-    console.log('participant: ', participant);
-    const participantId = await this.participantService.createParticipant(
-      participant,
-    );
-    console.log('after call createParticipant service and send to front');
-    this.server.emit('participantId', participantId);
+	@SubscribeMessage('createParticipant')
+	async createParticipant( @Body() participant: ParticipantDto) {
+		console.log('userId:', participant.userId, ' roomId: ', participant.roomId);
+		console.log('participant: ', participant);
+		const participantId = await this.participantService.createParticipant(participant);
+		this.server.emit('participantId', participantId);
     console.log('already send to FRONT');
   }
 
