@@ -112,18 +112,16 @@ export class RoomGateway
 	  it is the preparation for event `createMessage`, FRONT need to filter the messages
 	  so that user will not receive message from blocked ppl*/
 	/*
-	 **return: userId + BlockList + message_history
+	 **return: BlockList + message_history
 	 */
 	  @SubscribeMessage('getMessage')
-	//@SubscribeMessage('createRoom')
-	//	async getMessage(@Body() body: ParticipantDto) {
-	async getUserBlockList_and_message_history() : Promise<newUser_In_Room_Message> {
-		const body: any = {roomId:1, userId:3};
+	async getMessage(socket: Socket, @Body() body: ParticipantDto) : Promise<void>{
+//		const body: any = {roomId:1, userId:3};
 		const info = await this.roomService.getUserBlockList_and_message_history(body);
 		console.log('in gate way, info is', info);
 		this.server.emit('msgToClient', info);
-
-		return info;
+		// the user join to the room
+		socket.join(body.roomId.toString());
 	}
 
 	@SubscribeMessage('blockUser')
