@@ -47,9 +47,11 @@ const ResponsiveAppBar = () => {
   const { userInfo } = userLogin
   const firstName = userInfo ? userInfo.firstName : null
 
+  console.log(userLogin);
+
   const logoutHandler = async (e: SyntheticEvent) => {
     e.preventDefault()
-    // dispatch(logout())
+    dispatch(logout())
   }
 
 
@@ -96,17 +98,17 @@ const ResponsiveAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                // !firstName ?
-                //   page === "Home" ?
+                !firstName ?
+                  page === "Home" ?
                     <MenuItem key={page} onClick={handleCloseNavMenu}>
                       <Typography textAlign="center">{page}</Typography>
                     </MenuItem>
-                  //   :
-                  //   null
-                  // :
-                  // <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  //   <Typography textAlign="center">{page}</Typography>
-                  // </MenuItem>
+                    :
+                    null
+                  :
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
               ))}
             </Menu>
           </Box>
@@ -120,7 +122,7 @@ const ResponsiveAppBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              // firstName ?
+              firstName ?
                 <Link key={page} to={page.toLowerCase()}>
                   <Button
                     key={page}
@@ -130,12 +132,12 @@ const ResponsiveAppBar = () => {
                     {page}
                   </Button>
                 </Link>
-                // :
-                // null
+                :
+                null
             ))}
           </Box>
 
-          {/* {firstName ? */}
+          {firstName ?
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -175,8 +177,8 @@ const ResponsiveAppBar = () => {
                 ))}
               </Menu>
             </Box>
-            {/* : null
-          } */}
+            : null
+          }
         </Toolbar>
       </Container>
     </AppBar>

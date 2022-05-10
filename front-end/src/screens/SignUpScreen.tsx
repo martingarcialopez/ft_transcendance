@@ -12,9 +12,9 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as LinkRoute, useNavigate } from 'react-router-dom';
 import Copyright from '../components/Copyright';
-import { signup } from '../redux/actions/userActions';
-import { useDispatch } from 'react-redux';
 import { FormEvent, useState } from 'react';
+import { signupAction } from '../redux/actions/userActions';
+import { useDispatch } from 'react-redux';
 
 const theme = createTheme();
 
@@ -25,7 +25,7 @@ const SignUp = () => {
   const [password, setPassword] = useState('')
 
   const navigate = useNavigate();
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,7 +38,7 @@ const SignUp = () => {
       password: password,
     });
 
-    // dispatch(signup(firstname, lastname, username, password))
+    dispatch(signupAction(firstname, lastname, username, password))
 
     await fetch('http://localhost:3000/user/sign-up', {
       method: 'POST',

@@ -1,4 +1,3 @@
-import React from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom'
 import { BrowserRouter as Router } from "react-router-dom"
@@ -11,8 +10,37 @@ import { NoMatch } from './screens/NoMatchScreen';
 import ResponsiveAppBar from './components/NavBar';
 import { Profile } from './screens/Profile';
 import { Room } from './screens/Room';
+// import { useDispatch } from 'react-redux';
+// import { useEffect } from 'react';
+// import { Switch } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 
 const App = () => {
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   console.log(props);
+  //   // checkAutoLogin(dispatch, props.history);
+  // }, []);
+
+  // let routes = (
+  //   <Switch>
+  //     <Route path='/signup' element={<SignUp />} />
+  //     <Route path='/login' element={<SignIn />} />
+  //     <Route path='/' element={<HomeScreen />} />
+  //   </Switch>
+  // );
+
+  // if (props.isAuthenticated) {
+  //   routes = (
+  //     <Switch>
+  //       <Route path='/posts' element={<ChatTemplate />} />
+  //       <Route path='/createpost' element={<Profile />} />
+  //       <Route exact path='/' element={<HomeScreen />} />
+  //       <Redirect to='/' />
+  //     </Switch>
+  //   );
+  // }
+
   return (
     <Router>
       <ResponsiveAppBar />

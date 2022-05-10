@@ -17,7 +17,7 @@ import { SyntheticEvent, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store'
 import { UserState } from '../redux/reducers/userReducers';
-import { login } from '../redux/actions/userActions';
+import { loginAction } from '../redux/actions/userActions';
 
 const theme = createTheme();
 
@@ -39,7 +39,7 @@ const SignIn = () => {
 
     const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault()
-        // dispatch(login(username, password))
+        dispatch(loginAction(username, password))
 
         console.log("TOUT MARCHE SUPER BIEN", {
             username: username,
