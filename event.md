@@ -67,6 +67,25 @@ type: newUser_In_Room_Message
 {blockList : number[],
 message_history: Message[]}
 ```
+
+# createMessage
+
+## request data
+```
+message: MessageDto
+```
+
+##  event send back
+```
+
+MsgToClient:
+```
+
+## response data
+```
+message[0].contentToSend
+ ```
+
 # JoinRoom
 
 ## request data
