@@ -1,7 +1,7 @@
 import "../../styles/room.css";
 //import { T_Room } from "../../type/chat";
-import { RootState } from "../../redux/store";
-import { useSelector } from "react-redux";
+/* import { RootState } from "../../redux/store";*/
+/* * import { useSelector } from "react-redux"; */
 import { socket } from "../../chat/components/ChatTemplate";
 import { useForm } from "react-hook-form";
 
@@ -15,8 +15,6 @@ function createParticipant(userId: number, roomId: number) {
     socket.on("participantId", (receive: { id: number }) => {
       console.log("reponse participant : ", receive);
     });
-
-    //JoinRoom(userId);
   }
 }
 

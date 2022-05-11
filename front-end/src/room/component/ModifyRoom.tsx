@@ -1,13 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { BsPlusLg } from "react-icons/bs";
 import "../../styles/room.css";
 import { useForm } from "react-hook-form";
-import { JoinRoom } from "./RoomPublic";
-
 import { T_Room, T_PropsRoomArray } from "../../type/chat";
+import { useState } from "react";
+import { socket } from "../../chat/components/ChatTemplate";
 
 const style = {
   position: "absolute" as "absolute",
@@ -21,17 +20,23 @@ const style = {
   p: 4,
 };
 
-/* function IsProctect({ roomId, setRoomId }: AppProps) { */
-function IsProctect({ id: number }: T_Room) {
+function EventUpdatePwd(userId: number, roomId: number, pwd: string) {
+  socket.emit("updateRoomPw", {
+    userId: userId,
+    roomId: roomId,
+    password: pwd,
+  });
+  console.log("send event : updatePwd");
+}
+
+function ChangePassWord() {
   const { register, handleSubmit } = useForm();
   return (
-    <div>
-      <br />
+    <>
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
-          console.log("protected: ", data.target);
-          JoinRoom(3, 29, data.pwd);
+          EventUpdatePwd(3, 29, data.pwd);
         })}
       >
         <input
@@ -48,7 +53,51 @@ function IsProctect({ id: number }: T_Room) {
           value="Enter"
         />
       </form>
-    </div>
+    </>
+  );
+}
+
+function Event(userId: number, roomId: number, eventName: string) {
+  socket.emit(eventName, {
+    userId: userId,
+    roomId: roomId,
+  });
+  console.log("send event : ", eventName);
+}
+
+function Options({ id: number }: T_Room) {
+  const [state, setSate] = useState<boolean>(false);
+  return (
+    <>
+      <form
+        className="box-fom-option"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <input
+          className="btn1 opt1 btn-new-room"
+          type="submit"
+          value="Leave Room"
+          onClick={() => Event(3, 29, "leaveRoom")}
+        />
+        <input
+          className="btn1 opt2 btn-new-room"
+          type="submit"
+          value="Remove Password"
+          onClick={() => Event(3, 29, "deleteRoomPw")}
+        />
+        <input
+          className="btn1 opt3 btn-new-room"
+          type="submit"
+          value="Set Password"
+          onClick={() => {
+            setSate(true);
+          }}
+        />
+      </form>
+      {state === true ? <ChangePassWord /> : <></>}
+    </>
   );
 }
 
@@ -56,7 +105,7 @@ function BasicModal(room: T_Room, index: number) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  if (room.typeRoom != "protected") return <div key={index}></div>;
+
   return (
     <div key={index}>
       <div className="roomList" onClick={handleOpen}>
@@ -72,34 +121,18 @@ function BasicModal(room: T_Room, index: number) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            align="center"
-          >
-            Channel Protected by password
-          </Typography>
-
-          <Typography
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-            align="center"
-          >
-            Enter Password to join channel
-          </Typography>
-          <IsProctect {...room} />
+          <Options {...room} />
         </Box>
       </Modal>
     </div>
   );
 }
 
-export function RoomProtected({ room }: T_PropsRoomArray) {
+export function ModifyRoom({ room }: T_PropsRoomArray) {
   return (
     <>
       {" "}
-      <h3 style={{ position: "relative", left: "25%" }}>Join Protected Room</h3>
+      <h3 style={{ position: "relative", left: "25%" }}>Modify Room</h3>
       {room.map(BasicModal)}
     </>
   );

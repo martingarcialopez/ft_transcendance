@@ -22,7 +22,7 @@ export function JoinRoom(userId: number, roomId: number, pwd: string) {
 export function RoomPublic({ room }: T_PropsRoomArray) {
   return (
     <>
-      <h3 style={{ position: "relative", left: "25%" }}>Public</h3>
+      <h3 style={{ position: "relative", left: "25%" }}>Join Public Room</h3>
       <div className="box-Room">
         {room.map((item: T_Room, index: number) => (
           <div className="roomList" key={index}>

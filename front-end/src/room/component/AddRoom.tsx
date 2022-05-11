@@ -24,7 +24,7 @@ function createRoom(data: any): T_Room {
  * to get id, there for need to send the  room at server so that it give back the id
  */
 
-function GetIdRoom(newRoom: T_Room) {
+function EventCreateRoom(newRoom: T_Room) {
   socket.emit("createRoom", {
     name: newRoom.name,
     creatorId: 2,
@@ -41,16 +41,16 @@ export function AddRoom() {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const { ac_AddRoom } = bindActionCreators(actionCreators, dispatch);
-  /* const [inputValue, setInputValue] =  */
   return (
     <>
       <br />
       <br />
+      <h3 style={{ position: "relative", left: "25%" }}>Create Channel</h3>
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          GetIdRoom(newRoom);
+          EventCreateRoom(newRoom);
           console.log("newRoom:", newRoom);
           ac_AddRoom(newRoom);
         })}
