@@ -31,7 +31,7 @@ function createParticipant(userId: number, roomId: number) {
 
 export function AddParticipant() {
   const { register, handleSubmit } = useForm();
-  const { arrayRoom } = useSelector((state: RootState) => state);
+  /* const { arrayRoom } = useSelector((state: RootState) => state); */
 
   return (
     <>

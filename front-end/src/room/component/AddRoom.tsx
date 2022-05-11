@@ -23,6 +23,7 @@ function createRoom(data: any): T_Room {
 /**
  * to get id, there for need to send the  room at server so that it give back the id
  */
+
 function GetIdRoom(newRoom: T_Room) {
   socket.emit("createRoom", {
     name: newRoom.name,
