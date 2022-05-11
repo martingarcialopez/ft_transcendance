@@ -37,6 +37,7 @@ export function AddParticipant() {
     <>
       <br />
       <br />
+      <h3 style={{ position: "relative", left: "25%" }}>Private</h3>
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
@@ -47,7 +48,7 @@ export function AddParticipant() {
         <input
           className="inputRoom"
           type="text"
-          placeholder="Room Name"
+          placeholder="Channel Name"
           required
           autoComplete="on"
           {...register("roomName")}

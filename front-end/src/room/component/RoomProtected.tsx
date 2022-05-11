@@ -4,11 +4,10 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { BsPlusLg } from "react-icons/bs";
 import "../../styles/room.css";
-import { T_Room } from "../../type/chat";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 import { useForm } from "react-hook-form";
-import { JoinRoom } from "./RoomList";
+import { JoinRoom } from "./RoomPublic";
+
+import { T_Room, T_PropsRoomArray } from "../../type/chat";
 
 const style = {
   position: "absolute" as "absolute",
@@ -29,8 +28,9 @@ function IsProctect({ id: number }: T_Room) {
     <div>
       <br />
       <form
+        className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
-          console.log("protected: ");
+          console.log("protected: ", data.target);
           JoinRoom(3, 29, data.pwd);
         })}
       >
@@ -43,8 +43,7 @@ function IsProctect({ id: number }: T_Room) {
           {...register("pwd")}
         />
         <input
-          className="btn1 btn-new-room"
-          style={{ position: "relative", left: "30%", width: "20%" }}
+          className="btn1 btn-new-room btn-Protected"
           type="submit"
           value="Enter"
         />
@@ -73,10 +72,20 @@ function BasicModal(room: T_Room, index: number) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            align="center"
+          >
             Channel Protected by password
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+
+          <Typography
+            id="modal-modal-description"
+            sx={{ mt: 2 }}
+            align="center"
+          >
             Enter Password to join channel
           </Typography>
           <IsProctect {...room} />
@@ -86,14 +95,12 @@ function BasicModal(room: T_Room, index: number) {
   );
 }
 
-export function RoomProtected() {
-  const { arrayRoom } = useSelector((state: RootState) => state);
-
+export function RoomProtected({ room }: T_PropsRoomArray) {
   return (
     <>
       {" "}
       <h3 style={{ position: "relative", left: "25%" }}>Protected</h3>
-      {arrayRoom.map(BasicModal)}
+      {room.map(BasicModal)}
     </>
   );
 }

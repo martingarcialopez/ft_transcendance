@@ -67,7 +67,7 @@ export function AddRoom() {
         <input
           className="inputRoom"
           type="password"
-          placeholder="password (optionnal)"
+          placeholder="password (optionnal for private and public)"
           autoComplete="on"
           {...register("password")}
         />
