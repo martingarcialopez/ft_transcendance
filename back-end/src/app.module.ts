@@ -19,6 +19,11 @@ import { ParticipantModule } from './modules/participant.module';
 import { ParticipantService} from './services/participant.service';
 import { ParticipantGateway } from './gateway/participant.gateway';
 
+import { PongGateway } from './gateway/pong.gateway';
+import { PongService} from './services/pong.service';
+import { Pong} from './models/pong.entity';
+import { PongModule} from './modules/pong.module';
+
 
 @Module({
   imports: [
@@ -29,17 +34,18 @@ import { ParticipantGateway } from './gateway/participant.gateway';
       username: 'root',
       password: 'root',
       database: 'db',
-		entities: [User, Message, Room, Participant],
+		entities: [User, Message, Room, Participant, Pong],
       synchronize: true,
     }),
     HttpModule,
     UserModule,
     MessageModule,
       AuthModule,
-	  RoomModule, ParticipantModule
+	  RoomModule, ParticipantModule,
+	  PongModule
   ],
   controllers: [],
-  providers: [MessageGateway, RoomGateway, ParticipantGateway],
+	providers: [MessageGateway, RoomGateway, ParticipantGateway, PongGateway],
 })
 export class AppModule {}
 

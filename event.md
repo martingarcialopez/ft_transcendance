@@ -43,14 +43,13 @@ participantId
 ## request data
 ```
 room_id: number
-
 ```
 
-##description
+## description
 ```
 socket.join subscribe the socket to a given roomId
 ```
-#getMessage
+# getMessage
 
 ## request data
 ```
@@ -68,7 +67,26 @@ type: newUser_In_Room_Message
 {blockList : number[],
 message_history: Message[]}
 ```
-#JoinRoom
+
+# createMessage
+
+## request data
+```
+message: MessageDto
+```
+
+##  event send back
+```
+
+MsgToClient:
+```
+
+## response data
+```
+message[0].contentToSend
+ ```
+
+# JoinRoom
 
 ## request data
 ```
@@ -76,16 +94,173 @@ message_history: Message[]}
 roomId: number,
 entered_pw: string
 }
+```
 
 ##  event send back
 ```
 
 ```
-##response data
+## response data
 ```
 boolean     to tell FRONT successfully joined or not with password
 ```
-##description
+## description
 ```
 a new user use password to join a room already existed, BACK compare his password with the one in db
+```
+
+# getUseridRooms
+
+## request data
+```
+
+userId: number
+```
+##  event send back
+```
+UNDEFINED
+```
+## response data
+
+```
+RoomSnippetDto contain
+{
+room_id : number,
+room_name : string
+}
+```
+
+## description
+
+```
+
+from a userId, we will get all the room he joined et name
+```
+
+# getParticipant
+
+## request data
+```
+room_id: number
+```
+
+##  event send back
+```
+UNDEFINED
+```
+## response data
+```
+Participant[]
+```
+
+## description
+```
+when the user is in a room, FRONT show all participant in the same room
+BE CAREFUUL: FRONT fileter participant in block list
+```
+
+
+# getRoom
+
+## request data
+```
+room_id: number
+```
+
+##  event send back
+NO NEED
+
+## description
+```
+when a user join a room, socket.io will manager the join of the room
+```
+
+# updateRoomPw
+
+## request data
+```
+{userId: number,
+roomId: number,
+password: string};
+
+```
+
+##  event send back
+```
+
+UNDEFINED
+```
+
+## response data
+```
+UNDEFINED
+```
+## description
+```
+
+
+```
+
+# deleteRoomPw
+
+## request data
+```
+{userId: number,
+roomId: number
+}
+```
+## event send back
+```
+
+NO NEED
+```
+## response data
+```
+void
+```
+
+# manageAdmin
+
+## request data
+ ```
+
+ {userId:number,
+ roomId: number,
+ toAdd: boolean};
+```
+ ## event send back
+ ```
+ UNDEFINED
+ ```
+
+ ## response data
+ ```
+ void
+ ```
+
+ ## description
+ ```
+ toADD is to declare it is to add the administrator or to remove the admin.
+ if the admin is not in the list owner[] and toAdd is true, so add into db;
+ if the admin is already inside of list and toadd is false, so remove it from db
+  ```
+# blockUser
+
+## request data
+```
+
+{
+	userId: number,
+	blockUserId:number}
+```
+
+## event send back
+```
+UNDEFINED
+```
+
+## response data
+```
+
+void
 ```

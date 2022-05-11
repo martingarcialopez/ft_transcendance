@@ -1,9 +1,9 @@
 import "../styles/ChatTemplate.css";
 /* import { rooms } from "../index"; */
-import { T_Room, T_User } from "../../type/chat";
-import { RootState } from "../../redux/store";
+import { T_Room, T_User } from "../type/chat";
+import { RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { actionCreators } from "../../redux/index";
+import * as actionCreators from "../redux/actions/creatorActions";
 import { bindActionCreators } from "redux";
 import { useState, useEffect } from "react";
 import socketio from "socket.io-client";

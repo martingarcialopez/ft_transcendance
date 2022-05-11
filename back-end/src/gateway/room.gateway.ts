@@ -84,7 +84,7 @@ export class RoomGateway
 
 	@SubscribeMessage('updateRoomPw')
 	async updateRoomPw(): Promise<void> {
-		// const body: RoomPwDto = {'userName':'string', 'roomId':22, 'password': '999'};
+		// const body: RoomPwDto = {'userId': 3, 'roomId':22, 'password': '999'};
 		// let res = await this.roomService.updateRoomPw(body);
 		//NEED TO SEND TO FRONT AN EVENT
 //		return res;
@@ -102,7 +102,7 @@ export class RoomGateway
 	@SubscribeMessage('manageAdmin')
 	//	async manageAdmin(@Body() body: UpdateAdminDto): Promise<void> {
 	async manageAdmin(): Promise<void> {
-		// const body: UpdateAdminDto = {'userName':'miaomiao', 'roomId':22, 'toAdd': false};
+		// const body: UpdateAdminDto = {'userId':3, 'roomId':22, 'toAdd': false};
 	//	await this.roomService.manageAdmin(body);
 	}
 
@@ -112,18 +112,16 @@ export class RoomGateway
 	  it is the preparation for event `createMessage`, FRONT need to filter the messages
 	  so that user will not receive message from blocked ppl*/
 	/*
-	 **return: userId + BlockList + message_history
+	 **return: BlockList + message_history
 	 */
 	  @SubscribeMessage('getMessage')
-	//@SubscribeMessage('createRoom')
-	//	async getMessage(@Body() body: ParticipantDto) {
-	async getUserBlockList_and_message_history() : Promise<newUser_In_Room_Message> {
-		const body: any = {roomId:1, userId:3};
+	async getMessage(socket: Socket, @Body() body: ParticipantDto) : Promise<void>{
+//		const body: any = {roomId:1, userId:3};
 		const info = await this.roomService.getUserBlockList_and_message_history(body);
 		console.log('in gate way, info is', info);
 		this.server.emit('msgToClient', info);
-
-		return info;
+		// the user join to the room
+		socket.join(body.roomId.toString());
 	}
 
 	@SubscribeMessage('blockUser')
