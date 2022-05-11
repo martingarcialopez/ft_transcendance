@@ -65,9 +65,9 @@ export class RoomGateway
 	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
 	@SubscribeMessage('JoinRoom')
 	async JoinRoom(@Body() body: JoinRoomDto): Promise<void> {
+		console.log('in gateway of JoinRoom');
 		const have_access = await this.roomService.joinRoom(body);
-		/*need front send me event name
-		this.server.emit('', have_access);*/
+		this.server.emit('hasJoined', have_access);
 	}
 
 

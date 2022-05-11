@@ -98,7 +98,7 @@ entered_pw: string
 
 ##  event send back
 ```
-
+hasJoined
 ```
 ## response data
 ```
