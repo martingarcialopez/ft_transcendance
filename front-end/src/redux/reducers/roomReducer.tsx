@@ -14,7 +14,7 @@ let arrayRoom: T_Room[] = [
   {
     name: "REAL",
     id: 3,
-    typeRoom: "public",
+    typeRoom: "protected",
     password: "",
     owner: [],
     members: [],

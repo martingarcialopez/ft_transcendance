@@ -35,6 +35,20 @@ function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
   return tmp;
 }
 
+function GetMessage(userId: number, roomId: number) {
+  socket.emit("getMessage", {
+    userId: userId,
+    roomId: roomId,
+  });
+
+  socket.on(
+    "msgToClient",
+    (received: { blockList: number[]; message_history: any }) => {
+      console.log("reponse msgToclient  : ", received);
+    }
+  );
+}
+
 /**
  * list of item in the left side
  * item can be either or groupe (room)
@@ -48,6 +62,7 @@ function FriendDrawer(item: T_Room | T_User, index: number) {
         className="friend-drawer friend-drawer--onhover"
         onClick={(e) => {
           GetInfo(item, state);
+          GetMessage(1, 29); //1 is the user id and 29 roomId
         }}
       >
         <img className="profile-image" src={item.avatar} alt="" />

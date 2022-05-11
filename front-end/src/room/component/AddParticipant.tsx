@@ -1,5 +1,5 @@
 import "../../styles/room.css";
-import { T_Room } from "../../type/chat";
+//import { T_Room } from "../../type/chat";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { socket } from "../../chat/components/ChatTemplate";
@@ -15,21 +15,23 @@ function createParticipant(userId: number, roomId: number) {
     socket.on("participantId", (receive: { id: number }) => {
       console.log("reponse participant : ", receive);
     });
+
+    //JoinRoom(userId);
   }
 }
 
-function findId(item: T_Room[], occurence: string): number {
-  let id = -1;
-  item.forEach((data) => {
-    if (data.name === occurence) id = data.id;
-  });
-  return id;
-}
+/* function findId(item: T_Room[], occurence: string): number {
+ *   let id = -1;
+ *   item.forEach((data) => {
+ *     if (data.name === occurence) id = data.id;
+ *   });
+ *   return id;
+ * }
+ *  */
 
 export function AddParticipant() {
   const { register, handleSubmit } = useForm();
   const { arrayRoom } = useSelector((state: RootState) => state);
-  /* findId(arrayRoom,  ) */
 
   return (
     <>
@@ -38,7 +40,7 @@ export function AddParticipant() {
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
-          const roomId = findId(arrayRoom, data.roomName);
+          //const roomId = findId(arrayRoom, data.roomName);
           createParticipant(1, 29);
         })}
       >

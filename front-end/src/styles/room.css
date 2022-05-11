@@ -84,3 +84,45 @@ input::placeholder {
         color: #1c87c9;
         opacity: 1;
       }
+
+.box-Room{
+		display: flex;
+		/* background-color: chartreuse; */
+		flex-direction: column;
+		align-items:stretch;
+		align-content:flex-end;
+
+}
+
+.roomList{
+		font-size: 100%;
+		position: relative;
+		left: 25%;
+		margin: 10px;
+		padding: 10px;
+		background-color: #E8F8F5;
+		width: 50%;
+}
+
+/* Set all odd list items to a different color (zebra-stripes) */
+.roomList:nth-child(odd) {
+  background: #f9f9f9;
+}
+
+/* Darker background-color on hover */
+.roomList:hover {
+  background: #ddd;
+}
+
+.btn-join-room{
+		position: relative;
+		margin-right: 35%;
+		left: 30%;
+		  cursor: pointer;
+}
+
+.roomProtected
+{
+		position: relative;
+		left: 25%;
+}
