@@ -57,4 +57,9 @@ export class ParticipantGateway
   }
 
 
+	@SubscribeMessage('leaveRoom')
+	async leaveRoom(@Body() body: ParticipantDto) {
+		console.log('leaveRoom in gw participant', body);
+		await this.participantService.leaveRoom(body);
+	}
 }
