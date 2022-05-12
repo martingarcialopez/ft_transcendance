@@ -65,9 +65,9 @@ export class RoomGateway
 	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
 	@SubscribeMessage('JoinRoom')
 	async JoinRoom(@Body() body: JoinRoomDto): Promise<void> {
+		console.log('in gateway of JoinRoom');
 		const have_access = await this.roomService.joinRoom(body);
-		/*need front send me event name
-		this.server.emit('', have_access);*/
+		this.server.emit('hasJoined', have_access);
 	}
 
 
@@ -84,7 +84,7 @@ export class RoomGateway
 
 	@SubscribeMessage('updateRoomPw')
 	async updateRoomPw(): Promise<void> {
-		// const body: RoomPwDto = {'userName':'string', 'roomId':22, 'password': '999'};
+		// const body: RoomPwDto = {'userId': 3, 'roomId':22, 'password': '999'};
 		// let res = await this.roomService.updateRoomPw(body);
 		//NEED TO SEND TO FRONT AN EVENT
 //		return res;
@@ -102,7 +102,7 @@ export class RoomGateway
 	@SubscribeMessage('manageAdmin')
 	//	async manageAdmin(@Body() body: UpdateAdminDto): Promise<void> {
 	async manageAdmin(): Promise<void> {
-		// const body: UpdateAdminDto = {'userName':'miaomiao', 'roomId':22, 'toAdd': false};
+		// const body: UpdateAdminDto = {'userId':3, 'roomId':22, 'toAdd': false};
 	//	await this.roomService.manageAdmin(body);
 	}
 
