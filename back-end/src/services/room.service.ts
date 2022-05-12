@@ -224,6 +224,27 @@ export class RoomService {
 		return new_participant_info;
 	}
 
+	async AdminleaveRoom(body: ParticipantDto): Promise<void> {
+		console.log('AdminleaveRoom');
+        let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
+        let admins = await this.get_RoomAdmins(body.roomId);
+        //remove this admin
+        if (is_already_admin == true)
+        {
+            var index = admins.indexOf(body.userId);
+            admins.splice(index, 1);
+        }
+		console.log('delete admin');
+        await this.roomRepository
+            .createQueryBuilder()
+            .update(Room)
+            .set({ owner: admins })
+            .where("id = :id", { id: body.roomId })
+            .execute();
+    }
+
+
+
 
 
 }

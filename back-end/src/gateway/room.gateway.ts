@@ -130,11 +130,15 @@ export class RoomGateway
 	}
 
 	@SubscribeMessage('blockUser')
-//	async blockUser(@Body() body: BlockUserDto) : Promise<void>
-	async blockUser() : Promise<void>	{
-		const body: any = {userId:3, blockUserId:6};
+	async blockUser(@Body() body: BlockUserDto) : Promise<void> {
+//		const body: any = {userId:3, blockUserId:6};
 		await this.userService.blockUser(body);
 	}
 
 
+	@SubscribeMessage('leaveRoom')
+	async leaveRoom(@Body() body: ParticipantDto) {
+        console.log('leaveRoom in room gw ', body);
+        await this.roomService.AdminleaveRoom(body);
+    }
 }
