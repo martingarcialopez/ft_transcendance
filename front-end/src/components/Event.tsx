@@ -90,4 +90,35 @@ export function E_ManageAdmin(userId: number, roomId: number, state: boolean) {
     roomId: roomId,
     toAdd: state,
   });
+  socket.on("UpdatePwRes", (receive: { state: boolean }) => {
+    console.log("reponse manageAdmin : ", receive);
+  });
+}
+
+export function E_DeleteRoomPw(userId: number, roomId: number) {
+  socket.emit("deleteRoomPw", {
+    userId: userId,
+    roomId: roomId,
+  });
+  socket.on("UpdatePwRes", (receive: { state: boolean }) => {
+    console.log("reponse UpdatePwRes : ", receive);
+  });
+}
+
+export function E_LeaveRoom(userId: number, roomId: number) {
+  socket.emit("leaveRoom", {
+    userId: userId,
+    roomId: roomId,
+  });
+  /* socket.on("UpdatePwRes", (receive: { state: boolean }) => {
+   *   console.log("reponse UpdatePwRes : ", receive);
+   * }); */
+}
+
+export function E_BlockUser(userId: number, blockUserId: number) {
+  socket.emit("blockUser", {
+    userId: userId,
+    blockUserId: blockUserId,
+  });
+  console.log("send event blockUserId: ", blockUserId);
 }

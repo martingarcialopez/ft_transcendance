@@ -6,7 +6,11 @@ import "../../styles/room.css";
 import { useForm } from "react-hook-form";
 import { T_Room, T_PropsRoomArray } from "../../type/chat";
 import { useState } from "react";
-import { E_UpdatePwd, E_SendEvent } from "../../components/Event";
+import {
+  E_UpdatePwd,
+  E_LeaveRoom,
+  E_DeleteRoomPw,
+} from "../../components/Event";
 
 const style = {
   position: "absolute" as "absolute",
@@ -48,8 +52,14 @@ function ChangePassWord() {
   );
 }
 
-function Options({ id: number }: T_Room) {
+function Hidden(typeRoom: string) {
+  if (typeRoom === "protected") return "inline";
+  return "none";
+}
+
+function Options({ id: number, typeRoom }: T_Room) {
   const [state, setSate] = useState<boolean>(false);
+  console.log("typeRoom:", typeRoom);
   return (
     <>
       <form
@@ -62,17 +72,18 @@ function Options({ id: number }: T_Room) {
           className="btn1 opt1 btn-new-room"
           type="submit"
           value="Leave Room"
-          onClick={() => E_SendEvent(3, 29, "leaveRoom")}
+          onClick={() => E_LeaveRoom(3, 29)}
         />
         <input
           className="btn1 opt2 btn-new-room"
           type="submit"
           value="Remove Password"
-          onClick={() => E_SendEvent(3, 29, "deleteRoomPw")}
+          onClick={() => E_DeleteRoomPw(3, 29)}
         />
         <input
           className="btn1 opt3 btn-new-room"
           type="submit"
+          style={{ display: Hidden(typeRoom) }}
           value="Set Password"
           onClick={() => {
             setSate(true);

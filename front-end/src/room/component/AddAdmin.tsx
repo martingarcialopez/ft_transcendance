@@ -9,6 +9,7 @@ import { T_Room, T_PropsRoomArray } from "../../type/chat";
 //import { E_UpdatePwd, E_SendEvent } from "../../components/Event";
 import { useForm } from "react-hook-form";
 import { E_ManageAdmin } from "../../components/Event";
+import Typography from "@mui/material/Typography";
 
 const style = {
   position: "absolute" as "absolute",
@@ -72,6 +73,9 @@ function BasicModal(room: T_Room, index: number) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+          <h3 style={{ fontSize: "calc(0.75em + 2vmin)" }}>
+            Add another admin
+          </h3>
           <Adduser {...room} />
         </Box>
       </Modal>

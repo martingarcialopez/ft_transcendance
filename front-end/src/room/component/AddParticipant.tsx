@@ -17,13 +17,12 @@ import { E_CreateParticipant } from "../../components/Event";
 
 export function AddParticipant() {
   const { register, handleSubmit } = useForm();
-  /* const { arrayRoom } = useSelector((state: RootState) => state); */
 
   return (
     <>
-      <br />
-      <br />
-      <h3 style={{ position: "relative", left: "25%" }}>Private</h3>
+      <h3 style={{ position: "relative", left: "25%" }}>
+        Add user Into Private Room{" "}
+      </h3>
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {

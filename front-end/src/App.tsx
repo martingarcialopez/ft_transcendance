@@ -11,7 +11,7 @@ import { NoMatch } from "./screens/NoMatchScreen";
 import ResponsiveAppBar from "./components/NavBar";
 import { Profile } from "./screens/Profile";
 import { Room } from "./screens/Room";
-
+import { Users } from "./screens/User";
 const App = () => {
   return (
     <Router>
@@ -25,6 +25,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="order-summary" element={<Pong />} />
         <Route path="/room" element={<Room />} />
+        <Route path="/users" element={<Users />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
