@@ -98,7 +98,7 @@ entered_pw: string
 
 ##  event send back
 ```
-
+hasJoined
 ```
 ## response data
 ```
@@ -188,12 +188,12 @@ password: string};
 ##  event send back
 ```
 
-UNDEFINED
+UpdatePwRes 
 ```
 
 ## response data
 ```
-UNDEFINED
+boolean
 ```
 ## description
 ```
@@ -212,11 +212,11 @@ roomId: number
 ## event send back
 ```
 
-NO NEED
+deletePWRes
 ```
 ## response data
 ```
-void
+boolean
 ```
 
 # manageAdmin

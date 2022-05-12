@@ -32,6 +32,12 @@ export class PongGateway
     private readonly pongService: PongService,
   ) {}
 
+	@SubscribeMessage('joinPongRoom')
+	async join(socket: Socket, pongDto: PongDto): Promise<void> {
+        let value = await this.pongService.moveAction(pongDto);
+        this.server.emit('EVENT_TO_FRONT', value);
+    }
+
 	@SubscribeMessage('move')
 	async moveAction(socket: Socket, pongDto: PongDto): Promise<void> {
 		let value = await this.pongService.moveAction(pongDto);
