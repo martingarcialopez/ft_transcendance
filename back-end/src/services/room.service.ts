@@ -128,7 +128,7 @@ export class RoomService {
 			room['password'] = new_hashed_password;
 			await this.roomRepository.save(room);
 			return true;
-//			console.log(await bcrypt.compare('888', room['password']));//should be true
+//			console.log(await bcrypt.compare('666', room['password']));//should be true
 		}
 		return false;
 	}
