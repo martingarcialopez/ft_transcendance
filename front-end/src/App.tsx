@@ -25,7 +25,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="order-summary" element={<Pong />} />
         <Route path="/room" element={<Room />} />
-
+        <Route path="/Profile" element={<Profile />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </Router>

@@ -1,5 +1,4 @@
-import "../styles/ChatTemplate.css";
-/* import { rooms } from "../index"; */
+import "../../styles/ChatTemplate.css";
 import { T_Room, T_User } from "../../type/chat";
 import { RootState } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,10 +29,24 @@ function GetInfo(item: T_Room | T_User, state: any) {
 
 function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
   let tmp = 0;
-  item.map((data, index: number) => {
+  item.forEach((data, index: number) => {
     if (data.id === occurence) tmp = index;
   });
   return tmp;
+}
+
+function GetMessage(userId: number, roomId: number) {
+  socket.emit("getMessage", {
+    userId: userId,
+    roomId: roomId,
+  });
+
+  socket.on(
+    "msgToClient",
+    (received: { blockList: number[]; message_history: any }) => {
+      console.log("reponse msgToclient  : ", received);
+    }
+  );
 }
 
 /**
@@ -49,6 +62,7 @@ function FriendDrawer(item: T_Room | T_User, index: number) {
         className="friend-drawer friend-drawer--onhover"
         onClick={(e) => {
           GetInfo(item, state);
+          GetMessage(1, 29); //1 is the user id and 29 roomId
         }}
       >
         <img className="profile-image" src={item.avatar} alt="" />

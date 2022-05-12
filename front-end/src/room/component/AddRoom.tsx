@@ -1,4 +1,4 @@
-import "../styles/settingChannel.css";
+import "../../styles/room.css";
 import { useForm } from "react-hook-form";
 import { T_Room } from "../../type/chat";
 import { bindActionCreators } from "redux";
@@ -15,7 +15,7 @@ function createRoom(data: any): T_Room {
     password: data.password,
     owner: [],
     members: [],
-    avatar: "",
+    avatar: "https://avatars.dicebear.com/api/adventurer/" + data.name + ".svg",
   };
   return room;
 }
@@ -23,15 +23,15 @@ function createRoom(data: any): T_Room {
 /**
  * to get id, there for need to send the  room at server so that it give back the id
  */
-function GetIdRoom(newRoom: T_Room) {
-  /* socket.emit("createRoom", newRoom); */
+
+function EventCreateRoom(newRoom: T_Room) {
   socket.emit("createRoom", {
     name: newRoom.name,
     creatorId: 2,
     typeRoom: newRoom.typeRoom,
     password: newRoom.password,
   });
-  socket.on("idRoom", (receive: { id: number; name: string }) => {
+  socket.on("idRoom", (receive: { id: number }) => {
     console.log("reponse creation Room : ", receive);
     newRoom.id = receive.id;
   });
@@ -41,21 +41,22 @@ export function AddRoom() {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const { ac_AddRoom } = bindActionCreators(actionCreators, dispatch);
-  /* const [inputValue, setInputValue] =  */
   return (
     <>
       <br />
       <br />
+      <h3 style={{ position: "relative", left: "25%" }}>Create Channel</h3>
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          GetIdRoom(newRoom);
+          EventCreateRoom(newRoom);
           console.log("newRoom:", newRoom);
           ac_AddRoom(newRoom);
         })}
       >
         <input
+          className="inputRoom"
           type="text"
           placeholder="Name of new channel"
           required
@@ -64,18 +65,20 @@ export function AddRoom() {
         />
         <br />
         <input
+          className="inputRoom"
           type="password"
-          placeholder="password (optionnal)"
+          placeholder="password (optionnal for private and public)"
           autoComplete="on"
           {...register("password")}
         />
         <br />
-        <select id="pet-select" {...register("typeRoom")}>
+        <select className="inputRoom" id="pet-select" {...register("typeRoom")}>
           <option value="public">Public</option>
           <option value="private">Private</option>
+          <option value="private">Protected</option>
         </select>
         <br />
-        <input type="submit" value="Add" />
+        <input type="submit" className="btn-new-room" value="New" />
       </form>
     </>
   );
