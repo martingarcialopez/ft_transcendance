@@ -134,14 +134,19 @@ export class RoomService {
 	}
 
 //NEED TO CHANGE VOID->BOOLEAN IF DELETE PASSWORD
-	async deleteRoomPw(body: RoomPwDto): Promise<void> {
+	async deleteRoomPw(body: RoomPwDto): Promise<boolean> {
+		console.log('in svc of deleteRoomPw');
 		let admin = await this.roomRepository.createQueryBuilder("room")
             .select(["room.owner"])
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
+		console.log(admin, admin['owner'], body.userId);
 		//user does not have the right
-		if (admin['owner'].indexOf(body.userId) != -1)
-			return ;
+		if (admin['owner'].indexOf(body.userId) == -1)
+		{
+			console.log('il a pas le droit pour supprimer le pw');
+			return false;
+		}
 		let room =  await this.roomRepository.createQueryBuilder("room")
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
@@ -150,10 +155,11 @@ export class RoomService {
 		console.log('here room', room);
 		//TEST IS WORKING?
 		room =  await this.roomRepository.createQueryBuilder("room")
-			.select(["room.password"])
+//			.select(["room.password"])
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
-		 console.log('NOW room', room);
+//		console.log('NOW room', room);
+		return true;
 	}
 
 	async get_hash_pw(password: string): Promise<string> {
