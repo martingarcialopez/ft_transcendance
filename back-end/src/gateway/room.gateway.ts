@@ -90,16 +90,16 @@ export class RoomGateway
 		console.log(res);
 		this.server.emit('UpdatePwRes', res);
 		//NEED TO SEND TO FRONT AN EVENT
-		return res;
 	}
 
 	//NEED TO RETURN BOOLEAN, WILL DO IT LATER
 	@SubscribeMessage('deleteRoomPw')
-	async deleteRoomPw(): Promise<void> {
-		const body: RoomPwDto = {'userId': 3, 'roomId':21, 'password': ''};
+	async deleteRoomPw(@Body() body: RoomPwDto): Promise<void> {
+		//		const body: RoomPwDto = {'userId': 3, 'roomId':21, 'password': ''};
+		console.log('deleteRoomPw', body);
 		let res = await this.roomService.deleteRoomPw(body);
 		//-----SEND TO FRONT---
-		//this.server.emit('msgToClient', res);
+		this.server.emit('deletePWRes', res);
 	}
 
 	@SubscribeMessage('manageAdmin')
