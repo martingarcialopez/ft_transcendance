@@ -188,7 +188,7 @@ password: string};
 ##  event send back
 ```
 
-UpdatePwRes 
+UpdatePwRes
 ```
 
 ## response data
@@ -212,11 +212,11 @@ roomId: number
 ## event send back
 ```
 
-NO NEED
+deletePWRes
 ```
 ## response data
 ```
-void
+boolean
 ```
 
 # manageAdmin
@@ -264,3 +264,24 @@ UNDEFINED
 
 void
 ```
+
+# leaveRoom
+
+## request data
+```
+
+ParticipantDto
+```
+
+## event send back && response data
+```
+
+void
+```
+
+## description
+```
+
+in the case of a user leave the room, BACK: remove the item of this participant from the participant table
+ also if the participant is the owner of the room, remove his userId from the owner array in the table of room
+ ```
