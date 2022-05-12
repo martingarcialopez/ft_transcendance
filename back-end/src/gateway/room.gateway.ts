@@ -75,7 +75,7 @@ export class RoomGateway
   @SubscribeMessage('getRoom')
   async getRoom(socket: Socket, room_id: number) {
       socket.join(room_id.toString());
-	  console.log('jined!');
+	  console.log('joined!');
   }
 
   @SubscribeMessage('deleteRoom')
