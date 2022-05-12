@@ -31,7 +31,7 @@ export function getInfoAction(access_token: any) {
         // tokenDetails.expiresIn
         runLogoutTimer(
           dispatch,
-          500000000 * 1000,
+          5000000000 * 1000,
         );
         console.log("signupAction response : ")
         console.log(response)

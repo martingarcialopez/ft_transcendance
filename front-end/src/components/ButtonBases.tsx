@@ -5,18 +5,18 @@ import { Image, ImageBackdrop, ImageButton, ImageMarked, ImageSrc } from './Butt
 
 const images = [
   {
-    url: "./42_logo.webp",
+    url: "./42_logo.jpg",
     title: 'Connect to 42',
     width: '40%',
     to: 'login'
   },
   {
-    url: './cat_fond.webp',
+    url: './cat_fond.jpg',
     title: 'Login',
     width: '30%',
   },
   {
-    url: './dog_fond.webp',
+    url: './dog_fond.jpg',
     title: 'Sign up',
     width: '30%',
   },

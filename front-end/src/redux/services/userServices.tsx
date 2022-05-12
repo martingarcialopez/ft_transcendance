@@ -67,7 +67,7 @@ export function saveTokenInLocalStorage(tokenDetails: any) {
     console.log(tokenDetails.expiresIn)
     // tokenDetails.expiresIn
     tokenDetails.expireDate = new Date(
-        new Date().getTime() + 500000000 * 1000,
+        new Date().getTime() + 5000000000 * 1000,
     );
     localStorage.setItem('userInfo', JSON.stringify(tokenDetails));
 }

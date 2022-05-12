@@ -17,7 +17,7 @@ import { UserState } from '../redux/reducers/userReducers';
 import { MouseEvent, SyntheticEvent, useState } from 'react';
 import { logout } from '../redux/actions/userActions';
 
-const pages = ["Home", "Chat", "Room", "Login", "Signup"];
+const pages = ["Home", "Chat", "Room"];
 const settings = ["Profile", "Account", "Logout"];
 
 const ResponsiveAppBar = () => {
