@@ -84,9 +84,10 @@ export function E_JoinRoom(userId: number, roomId: number, pwd: string) {
   });
 }
 
-export function E_ManageAdmin(userId: number, roomId: number, pwd: string) {
+export function E_ManageAdmin(userId: number, roomId: number, state: boolean) {
   socket.emit("manageAdmin", {
     userId: userId,
     roomId: roomId,
+    toAdd: state,
   });
 }

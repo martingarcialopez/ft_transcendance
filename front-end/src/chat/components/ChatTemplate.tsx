@@ -5,10 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../../redux/index";
 import { bindActionCreators } from "redux";
 import { useState, useEffect } from "react";
-import socketio from "socket.io-client";
-
-const ENDPOINT = "http://localhost:3000";
-export const socket = socketio(ENDPOINT); //connection to the server nestJs
+import { socket } from "../../components/Event";
 
 /**
  * this function get info on the one of item drawer has been click up

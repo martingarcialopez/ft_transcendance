@@ -3,9 +3,9 @@ import { useForm } from "react-hook-form";
 import { T_Room } from "../../type/chat";
 import { bindActionCreators } from "redux";
 
-import { socket } from "../../chat/components/ChatTemplate";
 import * as actionCreators from "../../redux/action-creators/Ac_room";
 import { useDispatch } from "react-redux";
+import { E_CreateRoom } from "../../components/Event";
 
 function createRoom(data: any): T_Room {
   let room: T_Room = {
@@ -18,23 +18,6 @@ function createRoom(data: any): T_Room {
     avatar: "https://avatars.dicebear.com/api/adventurer/" + data.name + ".svg",
   };
   return room;
-}
-
-/**
- * to get id, there for need to send the  room at server so that it give back the id
- */
-
-function EventCreateRoom(newRoom: T_Room) {
-  socket.emit("createRoom", {
-    name: newRoom.name,
-    creatorId: 2,
-    typeRoom: newRoom.typeRoom,
-    password: newRoom.password,
-  });
-  socket.on("idRoom", (receive: { id: number }) => {
-    console.log("reponse creation Room : ", receive);
-    newRoom.id = receive.id;
-  });
 }
 
 export function AddRoom() {
@@ -50,7 +33,7 @@ export function AddRoom() {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          EventCreateRoom(newRoom);
+          E_CreateRoom(newRoom);
           console.log("newRoom:", newRoom);
           ac_AddRoom(newRoom);
         })}

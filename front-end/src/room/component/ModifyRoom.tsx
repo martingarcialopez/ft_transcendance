@@ -1,12 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import { BsPlusLg } from "react-icons/bs";
+import { FiSettings } from "react-icons/fi";
 import "../../styles/room.css";
 import { useForm } from "react-hook-form";
 import { T_Room, T_PropsRoomArray } from "../../type/chat";
 import { useState } from "react";
-import { socket } from "../../chat/components/ChatTemplate";
+import { E_UpdatePwd, E_SendEvent } from "../../components/Event";
 
 const style = {
   position: "absolute" as "absolute",
@@ -20,15 +20,6 @@ const style = {
   p: 4,
 };
 
-function EventUpdatePwd(userId: number, roomId: number, pwd: string) {
-  socket.emit("updateRoomPw", {
-    userId: userId,
-    roomId: roomId,
-    password: pwd,
-  });
-  console.log("send event : updatePwd");
-}
-
 function ChangePassWord() {
   const { register, handleSubmit } = useForm();
   return (
@@ -36,7 +27,7 @@ function ChangePassWord() {
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
-          EventUpdatePwd(3, 29, data.pwd);
+          E_UpdatePwd(3, 29, data.pwd);
         })}
       >
         <input
@@ -57,14 +48,6 @@ function ChangePassWord() {
   );
 }
 
-function Event(userId: number, roomId: number, eventName: string) {
-  socket.emit(eventName, {
-    userId: userId,
-    roomId: roomId,
-  });
-  console.log("send event : ", eventName);
-}
-
 function Options({ id: number }: T_Room) {
   const [state, setSate] = useState<boolean>(false);
   return (
@@ -79,13 +62,13 @@ function Options({ id: number }: T_Room) {
           className="btn1 opt1 btn-new-room"
           type="submit"
           value="Leave Room"
-          onClick={() => Event(3, 29, "leaveRoom")}
+          onClick={() => E_SendEvent(3, 29, "leaveRoom")}
         />
         <input
           className="btn1 opt2 btn-new-room"
           type="submit"
           value="Remove Password"
-          onClick={() => Event(3, 29, "deleteRoomPw")}
+          onClick={() => E_SendEvent(3, 29, "deleteRoomPw")}
         />
         <input
           className="btn1 opt3 btn-new-room"
@@ -110,7 +93,7 @@ function BasicModal(room: T_Room, index: number) {
     <div key={index}>
       <div className="roomList" onClick={handleOpen}>
         <span className="btn-join-room">
-          <BsPlusLg />
+          <FiSettings />
         </span>
         {room.name}
       </div>

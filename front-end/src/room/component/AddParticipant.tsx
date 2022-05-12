@@ -2,21 +2,9 @@ import "../../styles/room.css";
 //import { T_Room } from "../../type/chat";
 /* import { RootState } from "../../redux/store";*/
 /* * import { useSelector } from "react-redux"; */
-import { socket } from "../../chat/components/ChatTemplate";
-import { useForm } from "react-hook-form";
 
-function createParticipant(userId: number, roomId: number) {
-  if (userId > 0 && roomId > 0) {
-    console.log("userId: ", userId, "room id:", roomId);
-    socket.emit("createParticipant", {
-      userId: userId,
-      roomId: roomId,
-    });
-    socket.on("participantId", (receive: { id: number }) => {
-      console.log("reponse participant : ", receive);
-    });
-  }
-}
+import { useForm } from "react-hook-form";
+import { E_CreateParticipant } from "../../components/Event";
 
 /* function findId(item: T_Room[], occurence: string): number {
  *   let id = -1;
@@ -40,7 +28,7 @@ export function AddParticipant() {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           //const roomId = findId(arrayRoom, data.roomName);
-          createParticipant(1, 29);
+          E_CreateParticipant(1, 29);
         })}
       >
         <input

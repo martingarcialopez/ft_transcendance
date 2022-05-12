@@ -1,12 +1,14 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { BsPlusLg } from "react-icons/bs";
+import { GrUserAdmin } from "react-icons/gr";
 import "../../styles/room.css";
-import { useForm } from "react-hook-form";
-import { E_JoinRoom } from "../../components/Event";
+//import { useForm } from "react-hook-form";
 import { T_Room, T_PropsRoomArray } from "../../type/chat";
+//import { useState } from "react";
+//import { E_UpdatePwd, E_SendEvent } from "../../components/Event";
+import { useForm } from "react-hook-form";
+import { E_ManageAdmin } from "../../components/Event";
 
 const style = {
   position: "absolute" as "absolute",
@@ -20,8 +22,7 @@ const style = {
   p: 4,
 };
 
-/* function IsProctect({ roomId, setRoomId }: AppProps) { */
-function IsProctect({ id: number }: T_Room) {
+function Adduser({ id: number }: T_Room) {
   const { register, handleSubmit } = useForm();
   return (
     <div>
@@ -29,17 +30,17 @@ function IsProctect({ id: number }: T_Room) {
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
-          console.log("protected: ", data.target);
-          E_JoinRoom(3, 29, data.pwd);
+          //E_JoinRoom(3, 29, data.pwd);
+          E_ManageAdmin(3, 29, true);
         })}
       >
         <input
           className="inputRoom roomProtected"
-          type="password"
-          placeholder="Password"
+          type="ext"
+          placeholder="user name"
           required
           autoComplete="on"
-          {...register("pwd")}
+          {...register("name")}
         />
         <input
           className="btn1 btn-new-room btn-Protected"
@@ -55,12 +56,12 @@ function BasicModal(room: T_Room, index: number) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  if (room.typeRoom != "protected") return <div key={index}></div>;
+
   return (
     <div key={index}>
       <div className="roomList" onClick={handleOpen}>
         <span className="btn-join-room">
-          <BsPlusLg />
+          <GrUserAdmin />
         </span>
         {room.name}
       </div>
@@ -71,34 +72,20 @@ function BasicModal(room: T_Room, index: number) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            align="center"
-          >
-            Channel Protected by password
-          </Typography>
-
-          <Typography
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-            align="center"
-          >
-            Enter Password to join channel
-          </Typography>
-          <IsProctect {...room} />
+          <Adduser {...room} />
         </Box>
       </Modal>
     </div>
   );
 }
 
-export function RoomProtected({ room }: T_PropsRoomArray) {
+export function AddAdmin({ room }: T_PropsRoomArray) {
   return (
     <>
       {" "}
-      <h3 style={{ position: "relative", left: "25%" }}>Join Protected Room</h3>
+      <h3 style={{ position: "relative", left: "25%" }}>
+        Mangement Admin Channel
+      </h3>
       {room.map(BasicModal)}
     </>
   );

@@ -118,12 +118,46 @@ input::placeholder {
 		position: relative;
 		margin-right: 35%;
 		left: 30%;
-		  cursor: pointer;
+		cursor: pointer;
 }
 
-.roomProtected
-{
-		position: relative;
-		left: 25%;
+.box-fom-procted{
+		display: flex;
+		flex-direction: column;
+		align-items:center;
+}
 
+.roomProtected, .btn-Protected
+{
+		/* position: relative; */
+		/* left: 25%; */
+
+}
+
+
+
+.box-fom-option{
+		display: flex;
+		flex-direction: column;
+		/* background-color: cornflowerblue; */
+		align-items: center;
+
+}
+
+.opt1, .opt2, .opt3{
+		width: 20vw;
+}
+
+.opt1
+{
+		  background-color:#DE3163;
+}
+.opt2
+{
+		  background-color:#FFBF00;
+}
+
+.opt3
+{
+		  background-color:#FF7F50;
 }
