@@ -188,12 +188,12 @@ password: string};
 ##  event send back
 ```
 
-UNDEFINED
+UpdatePwRes 
 ```
 
 ## response data
 ```
-UNDEFINED
+boolean
 ```
 ## description
 ```
