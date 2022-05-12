@@ -212,11 +212,11 @@ roomId: number
 ## event send back
 ```
 
-NO NEED
+deletePWRes
 ```
 ## response data
 ```
-void
+boolean
 ```
 
 # manageAdmin
