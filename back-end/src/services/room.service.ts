@@ -113,6 +113,7 @@ export class RoomService {
 	}
 
 	async updateRoomPw(body: RoomPwDto): Promise<boolean> {
+		console.log(body);
 		let admin = await this.roomRepository.createQueryBuilder("room")
             .select(["room.owner"])
             .where("room.id = :room_Id", { room_Id: body.roomId })
@@ -122,7 +123,7 @@ export class RoomService {
 			let room =  await this.roomRepository.createQueryBuilder("room")
 			    .where("room.id = :room_Id", { room_Id: body.roomId })
 				.getOne();
-			console.log('origin: ', room['password'], body['password']);
+	//		console.log('origin: ', room['password'], body['password']);
 			let new_hashed_password = await this.get_hash_pw(body['password']);
 			room['password'] = new_hashed_password;
 			await this.roomRepository.save(room);
