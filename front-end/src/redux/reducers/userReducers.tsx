@@ -58,7 +58,8 @@ export const userLoginReducer = (
       }
     case LOGOUT_ACTION:
       return {
-
+        userInfo: action.payload,
+        successMessage: 'Logout Successfully Completed',
       }
     default:
       return state

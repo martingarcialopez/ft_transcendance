@@ -46,10 +46,12 @@ const ResponsiveAppBar = () => {
 
   console.log("NavBar userLogin INFO");
   console.log(userLogin);
+  const userInfo = userLogin.userInfo;
 
 
   const logoutHandler = async (e: SyntheticEvent) => {
     e.preventDefault()
+    console.log("NavBar call logout function")
     dispatch(logout())
   }
 
@@ -97,7 +99,7 @@ const ResponsiveAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                !userLogin ?
+                !userInfo ?
                   page === "Home" ?
                     <MenuItem key={page} onClick={handleCloseNavMenu}>
                       <Typography textAlign="center">{page}</Typography>
@@ -121,7 +123,7 @@ const ResponsiveAppBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              userLogin ?
+              userInfo ?
                 <Link key={page} to={page.toLowerCase()}>
                   <Button
                     key={page}
@@ -136,7 +138,7 @@ const ResponsiveAppBar = () => {
             ))}
           </Box>
 
-          {userLogin ?
+          {userInfo ?
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -162,12 +164,12 @@ const ResponsiveAppBar = () => {
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     {
-                      setting !== "logout" ?
+                      setting !== "Logout" ?
                         <Link key={setting} to={setting.toLowerCase()}>
                           <Typography textAlign="center">{setting}</Typography>
                         </Link>
                         :
-                        <Link key={setting} to={"/home"} onClick={logoutHandler}>
+                        <Link key={setting} onClick={logoutHandler} to={"/home"}>
                           <Typography textAlign="center">{setting}</Typography>
                         </Link>
                     }
