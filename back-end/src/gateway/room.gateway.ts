@@ -83,10 +83,11 @@ export class RoomGateway
   }
 
 	@SubscribeMessage('updateRoomPw')
-	async updateRoomPw(@Body() body: RoomPwDto): Promise<boolean> {
+	async updateRoomPw(@Body() body: RoomPwDto): Promise<void> {
 		// const body: RoomPwDto = {'userName':'string', 'roomId':22, 'password': '999'};
 		let res = await this.roomService.updateRoomPw(body);
 		console.log(res);
+		this.server.emit('UpdatePwRes', res);
 		//NEED TO SEND TO FRONT AN EVENT
 		return res;
 	}
