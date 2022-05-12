@@ -84,20 +84,22 @@ export class RoomGateway
   }
 
 	@SubscribeMessage('updateRoomPw')
-	async updateRoomPw(): Promise<void> {
+	async updateRoomPw(@Body() body: RoomPwDto): Promise<void> {
 		// const body: RoomPwDto = {'userName':'string', 'roomId':22, 'password': '999'};
-		// let res = await this.roomService.updateRoomPw(body);
+		let res = await this.roomService.updateRoomPw(body);
+		console.log(res);
+		this.server.emit('UpdatePwRes', res);
 		//NEED TO SEND TO FRONT AN EVENT
-//		return res;
 	}
 
 	//NEED TO RETURN BOOLEAN, WILL DO IT LATER
 	@SubscribeMessage('deleteRoomPw')
-	async deleteRoomPw(): Promise<void> {
-		const body: RoomPwDto = {'userId': 3, 'roomId':21, 'password': ''};
+	async deleteRoomPw(@Body() body: RoomPwDto): Promise<void> {
+		//		const body: RoomPwDto = {'userId': 3, 'roomId':21, 'password': ''};
+		console.log('deleteRoomPw', body);
 		let res = await this.roomService.deleteRoomPw(body);
 		//-----SEND TO FRONT---
-		//this.server.emit('msgToClient', res);
+		this.server.emit('deletePWRes', res);
 	}
 
 	@SubscribeMessage('manageAdmin')
@@ -128,11 +130,15 @@ export class RoomGateway
 	}
 
 	@SubscribeMessage('blockUser')
-//	async blockUser(@Body() body: BlockUserDto) : Promise<void>
-	async blockUser() : Promise<void>	{
-		const body: any = {userId:3, blockUserId:6};
+	async blockUser(@Body() body: BlockUserDto) : Promise<void> {
+//		const body: any = {userId:3, blockUserId:6};
 		await this.userService.blockUser(body);
 	}
 
 
+	@SubscribeMessage('leaveRoom')
+	async leaveRoom(@Body() body: ParticipantDto) {
+        console.log('leaveRoom in room gw ', body);
+        await this.roomService.AdminleaveRoom(body);
+    }
 }

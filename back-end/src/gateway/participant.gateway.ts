@@ -50,4 +50,12 @@ export class ParticipantGateway {
   async getUseridRooms(userId: any) {
     const rooms = await this.participantService.getUseridRooms(userId);
   }
+
+
+	@SubscribeMessage('leaveRoom')
+	async leaveRoom(@Body() body: ParticipantDto) {
+		console.log('leaveRoom in gw participant', body);
+		await this.participantService.leaveRoom(body);
+	}
+
 }
