@@ -13,9 +13,9 @@ inform the 2 players the exact time when the game will start
 
 <details><summary>Click to expand</summary>
 
-# playerMovement (front to back)
+## playerMovement (front to back)
 
-## data
+### data
 
 ```
 {
@@ -24,9 +24,9 @@ inform the 2 players the exact time when the game will start
 }
 ```
 
-# opponentMovement (back to front)
+## opponentMovement (back to front)
 
-## data
+### data
 
 ```
 {
@@ -42,9 +42,9 @@ inform the 2 players the exact time when the game will start
 
 <details><summary>Click to expand</summary>
 
-# newScore (front to back)
+## newScore (front to back)
 
-## data
+### data
 
 ```
 {
@@ -52,4 +52,7 @@ inform the 2 players the exact time when the game will start
     current_score : number,
 }
 ```
+
+
+
 </details>
