@@ -21,7 +21,7 @@ const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     checkAutoLogin(dispatch);
-  }, []);
+  }, [dispatch]);
 
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
@@ -48,10 +48,11 @@ const App = () => {
       <Routes>
         <Route path="/chat" element={<Chat />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="order-summary" element={<Pong />} />
+        <Route path="pong" element={<Pong />} />
         <Route path="/room" element={<Room />} />
-        <Route path="/Profile" element={<Profile />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path='/home' element={<HomeScreen />} />
+        <Route path='/logout' element={<HomeScreen />} />
         <Route path='/' element={<HomeScreen />} />
         <Route
           path="*"

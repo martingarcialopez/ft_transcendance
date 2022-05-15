@@ -1,4 +1,4 @@
-import { Container, TableBody, TableCell, TableRow } from "@mui/material";
+import { Container, TableCell, TableRow } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
@@ -8,11 +8,8 @@ export const Profile = () => {
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   )
-
-  const { userInfo } = userLogin
-  console.log("Profile Userinfo :");
+  console.log("Profile UserLogin :");
   console.log(userLogin);
-  const firstname = userInfo ? userInfo.firstname : null
 
   // "login42": null,
   // "username": "Lillon1",
@@ -24,7 +21,6 @@ export const Profile = () => {
   return (
     <>
       <Container>
-        <TableBody>
           <TableRow>
             <TableCell align="right">{userLogin.userInfo.login42}</TableCell>
             <TableCell align="right">{userLogin.userInfo.username}</TableCell>
@@ -39,7 +35,6 @@ export const Profile = () => {
             <TableCell align="right">650 Total Match</TableCell>
             <TableCell align="right">190 Level</TableCell>
           </TableRow>
-        </TableBody>
       </Container>
     </>
   );
