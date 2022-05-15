@@ -11,7 +11,8 @@ inform the 2 players the exact time when the game will start
 
 # player movement events
 
-...
+<details><summary>Click to expand</summary>
+
 # playerMovement (front to back)
 
 ## data
@@ -34,7 +35,12 @@ inform the 2 players the exact time when the game will start
 }
 
 ```
-...
+
+</details>
+
+# score management
+
+<details><summary>Click to expand</summary>
 
 # newScore (front to back)
 
@@ -46,3 +52,4 @@ inform the 2 players the exact time when the game will start
     current_score : number,
 }
 ```
+</details>
