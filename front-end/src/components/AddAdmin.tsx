@@ -23,6 +23,9 @@ const style = {
   p: 4,
 };
 
+/**
+ * the form to add user into channel
+ */
 function Adduser({ id: number }: T_Room) {
   const { register, handleSubmit } = useForm();
   return (
@@ -83,6 +86,9 @@ function BasicModal(room: T_Room, index: number) {
   );
 }
 
+/**
+ * add a new new user admin into a channel
+ */
 export function AddAdmin({ room }: T_PropsRoomArray) {
   return (
     <>

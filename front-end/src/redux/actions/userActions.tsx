@@ -6,7 +6,7 @@ import {
   USER_LOGOUT,
   USER_LOGIN_FAIL,
 } from "../constants/userConstants";
-import { RootState } from "../../store";
+import { RootState } from "../store";
 
 export const login =
   (
