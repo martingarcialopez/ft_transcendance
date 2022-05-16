@@ -28,16 +28,31 @@ interface Action {
 }
 
 export const userLoginReducer = (
-  state: UserState = { userInfo: { expiresIn: '' } },
+  state: UserState = {
+    showLoading: false,
+    errorMessage: '',
+    successMessage: '',
+    userInfo: {
+      login42: '',
+      username: '',
+      firstname: '',
+      lastname: '',
+      password: '',
+      avatar: '',
+      expiresIn: '',
+    }
+  },
   action: Action
 ) => {
   switch (action.type) {
     case LOADING_TOGGLE_ACTION:
       return {
+        ...state,
         showLoading: true
       }
     case LOGIN_CONFIRMED_ACTION:
       return {
+        ...state,
         showLoading: false,
         userInfo: action.payload,
         errorMessage: '',
@@ -45,6 +60,7 @@ export const userLoginReducer = (
       }
     case SIGNUP_CONFIRMED_ACTION:
       return {
+        ...state,
         showLoading: false,
         userInfo: action.payload,
         errorMessage: '',
@@ -52,12 +68,14 @@ export const userLoginReducer = (
       }
     case LOGIN_FAILED_ACTION || SIGNUP_FAILED_ACTION:
       return {
+        ...state,
         showLoading: false,
         errorMessage: action.payload,
         successMessage: '',
       }
     case LOGOUT_ACTION:
       return {
+        ...state,
         userInfo: action.payload,
         successMessage: 'Logout Successfully Completed',
       }
