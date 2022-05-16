@@ -17,7 +17,7 @@ import { UserState } from '../redux/reducers/userReducers';
 import { MouseEvent, SyntheticEvent, useState } from 'react';
 import { logout } from '../redux/actions/userActions';
 
-const pages = ["Home", "Chat", "Room"];
+const pages = ["Home", "Chat", "Room", "Pong"];
 const settings = ["Profile", "Account", "Logout"];
 
 const ResponsiveAppBar = () => {
@@ -44,14 +44,14 @@ const ResponsiveAppBar = () => {
     (state: RootState) => state.userLogin
   )
 
-  const { userInfo } = userLogin
-  console.log("userLogin INFO");
+  console.log("NavBar userLogin INFO");
   console.log(userLogin);
-  const firstname = userInfo ? userInfo.firstname : null
+  const userInfo = userLogin.userInfo;
 
 
   const logoutHandler = async (e: SyntheticEvent) => {
     e.preventDefault()
+    console.log("NavBar call logout function")
     dispatch(logout())
   }
 
@@ -99,7 +99,7 @@ const ResponsiveAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                !firstname ?
+                !userInfo ?
                   page === "Home" ?
                     <MenuItem key={page} onClick={handleCloseNavMenu}>
                       <Typography textAlign="center">{page}</Typography>
@@ -123,7 +123,7 @@ const ResponsiveAppBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              firstname ?
+              userInfo ?
                 <Link key={page} to={page.toLowerCase()}>
                   <Button
                     key={page}
@@ -138,7 +138,7 @@ const ResponsiveAppBar = () => {
             ))}
           </Box>
 
-          {firstname ?
+          {userInfo ?
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -164,12 +164,12 @@ const ResponsiveAppBar = () => {
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     {
-                      setting === "logout" ?
+                      setting !== "Logout" ?
                         <Link key={setting} to={setting.toLowerCase()}>
                           <Typography textAlign="center">{setting}</Typography>
                         </Link>
                         :
-                        <Link key={setting} to={"/home"} onClick={logoutHandler}>
+                        <Link key={setting} onClick={logoutHandler} to={"/home"}>
                           <Typography textAlign="center">{setting}</Typography>
                         </Link>
                     }
