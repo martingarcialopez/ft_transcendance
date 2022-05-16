@@ -26,3 +26,7 @@ export type T_Action = {
   type: string;
   payload: any;
 };
+
+export type T_PropsRoomArray = {
+  room: T_Room[];
+};

@@ -1,52 +1,39 @@
 import "../styles/room.css";
-import { T_Room } from "../type/chat";
-import { RootState } from "../redux/store";
-import { useSelector } from "react-redux";
-import { socket } from "../screens/ChatTemplate";
+//import { T_Room } from "../../type/chat";
+/* import { RootState } from "../../redux/store";*/
+/* * import { useSelector } from "react-redux"; */
+
 import { useForm } from "react-hook-form";
+import { E_CreateParticipant } from "./Event";
 
-function createParticipant(usrId: number, roomId: number) {
-  if (usrId > 0 && roomId > 0) {
-    socket.emit("createParticipant", {
-      userId: usrId,
-      roomId: roomId,
-    });
-    /* socket.on("idRoom", (receive: { id: number }) => {
-     *   console.log("reponse creation Room : ", receive);
-     *   newRoom.id = receive.id;
-     * }); */
-  }
-}
-
-function findId(item: T_Room[], occurence: string): number {
-  let id = -1;
-  item.forEach((data) => {
-    if (data.name === occurence) id = data.id;
-  });
-  return id;
-}
+/* function findId(item: T_Room[], occurence: string): number {
+ *   let id = -1;
+ *   item.forEach((data) => {
+ *     if (data.name === occurence) id = data.id;
+ *   });
+ *   return id;
+ * }
+ *  */
 
 export function AddParticipant() {
   const { register, handleSubmit } = useForm();
-  const { arrayRoom } = useSelector((state: RootState) => state);
-  /* findId(arrayRoom,  ) */
 
   return (
     <>
-      <br />
-      <br />
+      <h3 style={{ position: "relative", left: "25%" }}>
+        Add user Into Private Room{" "}
+      </h3>
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
-          const roomId = findId(arrayRoom, data.roomName);
-          console.log("room: ", data.roomName, "room id:", roomId);
-          createParticipant(2, roomId);
+          //const roomId = findId(arrayRoom, data.roomName);
+          E_CreateParticipant(1, 29);
         })}
       >
         <input
           className="inputRoom"
           type="text"
-          placeholder="Room Name"
+          placeholder="Channel Name"
           required
           autoComplete="on"
           {...register("roomName")}
