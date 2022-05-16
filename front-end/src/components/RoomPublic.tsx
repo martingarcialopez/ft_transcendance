@@ -1,8 +1,8 @@
-import { T_Room, T_PropsRoomArray } from "../../type/chat";
+import { T_Room, T_PropsRoomArray } from "../type/chat";
 import { BsPlusLg } from "react-icons/bs";
-import "../../styles/room.css";
+import "../styles/room.css";
 //import { socket } from "../../chat/components/ChatTemplate";
-import { E_JoinRoom } from "../../components/Event";
+import { E_JoinRoom } from "./Event";
 
 /*
  * display all chanel with option to join it or leave it

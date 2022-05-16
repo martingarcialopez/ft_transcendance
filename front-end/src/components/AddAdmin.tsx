@@ -2,13 +2,13 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { GrUserAdmin } from "react-icons/gr";
-import "../../styles/room.css";
+import "../styles/room.css";
 //import { useForm } from "react-hook-form";
-import { T_Room, T_PropsRoomArray } from "../../type/chat";
+import { T_Room, T_PropsRoomArray } from "../type/chat";
 //import { useState } from "react";
 //import { E_UpdatePwd, E_SendEvent } from "../../components/Event";
 import { useForm } from "react-hook-form";
-import { E_ManageAdmin } from "../../components/Event";
+import { E_ManageAdmin } from "./Event";
 import Typography from "@mui/material/Typography";
 
 const style = {

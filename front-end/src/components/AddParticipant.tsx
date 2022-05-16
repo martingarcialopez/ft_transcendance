@@ -1,10 +1,10 @@
-import "../../styles/room.css";
+import "../styles/room.css";
 //import { T_Room } from "../../type/chat";
 /* import { RootState } from "../../redux/store";*/
 /* * import { useSelector } from "react-redux"; */
 
 import { useForm } from "react-hook-form";
-import { E_CreateParticipant } from "../../components/Event";
+import { E_CreateParticipant } from "./Event";
 
 /* function findId(item: T_Room[], occurence: string): number {
  *   let id = -1;

@@ -1,11 +1,10 @@
-import "../../styles/room.css";
 import { useForm } from "react-hook-form";
-import { T_Room } from "../../type/chat";
+import { T_Room } from "../type/chat";
 import { bindActionCreators } from "redux";
-
-import * as actionCreators from "../../redux/action-creators/Ac_room";
+import * as actionCreators from "../redux/action-creators/Ac_room";
 import { useDispatch } from "react-redux";
-import { E_CreateRoom } from "../../components/Event";
+import { E_CreateRoom } from "./Event";
+import "../styles/room.css";
 
 function createRoom(data: any): T_Room {
   let room: T_Room = {

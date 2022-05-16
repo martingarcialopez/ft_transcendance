@@ -2,15 +2,11 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { FiSettings } from "react-icons/fi";
-import "../../styles/room.css";
+import "../styles/room.css";
 import { useForm } from "react-hook-form";
-import { T_Room, T_PropsRoomArray } from "../../type/chat";
+import { T_Room, T_PropsRoomArray } from "../type/chat";
 import { useState } from "react";
-import {
-  E_UpdatePwd,
-  E_LeaveRoom,
-  E_DeleteRoomPw,
-} from "../../components/Event";
+import { E_UpdatePwd, E_LeaveRoom, E_DeleteRoomPw } from "./Event";
 
 const style = {
   position: "absolute" as "absolute",

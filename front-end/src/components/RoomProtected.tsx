@@ -3,10 +3,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { BsPlusLg } from "react-icons/bs";
-import "../../styles/room.css";
+import "../styles/room.css";
 import { useForm } from "react-hook-form";
-import { E_JoinRoom } from "../../components/Event";
-import { T_Room, T_PropsRoomArray } from "../../type/chat";
+import { E_JoinRoom } from "./Event";
+import { T_Room, T_PropsRoomArray } from "../type/chat";
 
 const style = {
   position: "absolute" as "absolute",
