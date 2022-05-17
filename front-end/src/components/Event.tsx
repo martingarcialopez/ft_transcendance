@@ -6,7 +6,7 @@ export const socket = socketio(ENDPOINT); //connection to the server nestJs
 export function E_CreateParticipant(userId: number, roomId: number) {
   if (userId > 0 && roomId > 0) {
     console.log("userId: ", userId, "room id:", roomId);
-    socket.emit("EventCreateParticipant", {
+    socket.emit("createParticipant", {
       userId: userId,
       roomId: roomId,
     });

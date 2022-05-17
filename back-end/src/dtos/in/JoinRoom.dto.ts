@@ -3,14 +3,23 @@ import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsS
 export class JoinRoomDto {
 
 	@IsNumber()
-	@IsNotEmpty()
-	public userId: number;
-
-	@IsNumber()
-    @IsNotEmpty()
-    public roomId: number;
+	@IsOptional()
+	public userId?: number;
 
 	@IsString()
-    @IsNotEmpty()
-    public entered_pw: string;
+	@IsOptional()
+	public userName?: string;
+
+	@IsNumber()
+	@IsOptional()
+    public roomId?: number;
+
+
+	@IsString()
+	@IsOptional()
+	public roomName?: string;
+
+	@IsString()
+	@IsOptional()
+    public entered_pw?: string;
 }
