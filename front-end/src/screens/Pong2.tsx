@@ -1,8 +1,8 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GameState } from '../type/pongType';
 import socketio from "socket.io-client";
 import { Button } from '@mui/material';
-import Canvas from '../game/canvas/Canvas';
+import Canvas from '../components/Canvas';
 // import Canvas from '../components/Canvas';
 
 export const socket = socketio('http://localhost:3000')
@@ -15,8 +15,6 @@ const window_size = {
 export const Pong = () => {
     // Use a ref to access the Canvas
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [left, setLeft] = useState(0);
-    const [top, setTop] = useState(0);
     const [gameState, setGameState] = useState<GameState>({
         ballPos: { x: 50, y: 50 },
         ballVel: { x: 20, y: 16 },

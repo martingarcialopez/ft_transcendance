@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect } from 'react';
-import * as S from '../../styles/canvasStyle';
+import * as S from '../styles/canvasStyle';
 
 type CanvasProps = React.DetailedHTMLProps<
   React.CanvasHTMLAttributes<HTMLCanvasElement>,
