@@ -8,8 +8,8 @@ import Canvas from '../components/Canvas';
 export const socket = socketio('http://localhost:3000')
 
 const window_size = {
-    canvasWidth: window.innerWidth - (window.innerWidth / 5),
-    canvasHeight: window.innerHeight - (window.innerHeight / 5),
+    canvasWidth: 600,
+    canvasHeight: 300,
 }
 
 export const Pong = () => {
@@ -58,10 +58,12 @@ export const Pong = () => {
         ctx.fillRect(window_size.canvasWidth - 20, gameState.rightPaddle, 20, 70)
 
         ctx.fillStyle = "black";
-        ctx.fillRect(250, 60, 20, 70)
+        ctx.fillText(gameState.rightScore.toString(), window_size.canvasWidth - 100, 50);
 
         ctx.fillStyle = "black";
-        ctx.fillRect(window_size.canvasWidth - 270, 60, 20, 70)
+        ctx.fillText(gameState.leftScore.toString(), 100, 50);
+
+        ctx.stroke()
       };
 
     return (
