@@ -1,7 +1,7 @@
 import { AddRoom } from "../components/AddRoom";
 import { AddParticipant } from "../components/AddParticipant";
-import { RoomPublic } from "../components/RoomPublic";
-import { RoomProtected } from "../components/RoomProtected";
+import { JoinPublicRoom } from "../components/RoomPublic";
+import { JoinProtectedRoom } from "../components/RoomProtected";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { T_Room } from "../type/chat";
@@ -41,9 +41,9 @@ export function Room() {
       <br />
       <AddParticipant />
       <br />
-      <RoomPublic room={publicRoom} />
+      <JoinPublicRoom room={publicRoom} />
       <br />
-      <RoomProtected room={protectedRoom} />
+      <JoinProtectedRoom room={protectedRoom} />
       <br />
       <ModifyRoom room={arrayRoom} />
       <br />

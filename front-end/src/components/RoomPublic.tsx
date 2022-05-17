@@ -1,14 +1,18 @@
-import { T_Room, T_PropsRoomArray } from "../type/chat";
+import { T_Room } from "../type/chat";
 import { BsPlusLg } from "react-icons/bs";
 import "../styles/room.css";
 //import { socket } from "../../chat/components/ChatTemplate";
 import { E_JoinRoom } from "./Event";
 
+export type T_PropsRoomArray = {
+  room: T_Room[];
+};
+
 /*
  * display all chanel with option to join it or leave it
  */
 
-export function RoomPublic({ room }: T_PropsRoomArray) {
+export function JoinPublicRoom({ room }: T_PropsRoomArray) {
   return (
     <>
       <h3 style={{ position: "relative", left: "25%" }}>Join Public Room</h3>
