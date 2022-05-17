@@ -47,34 +47,38 @@ export class RoomGateway
   ) {}
 
 	@SubscribeMessage('createRoom')
-	async createRoom(): Promise<void> {
+	async createRoom(socket: Socket): Promise<void> {
 		console.log('in the gateway of event createRoom');
 //   	async createRoom(@Body() body: RoomDto): Promise<void> {
 		const body: RoomDto = {
 			'name': 'mao room',
-			'typeRoom': 'public',
+			'typeRoom': 'protected',
 			'password': 'i am a cat',
 			'creatorId' : 3,
 			'avatar': 'miao'
 		};
 		const value = await this.roomService.createRoom(body);
 		console.log('return value of roomId is ', value);
-		this.server.emit('idRoom', value);
+		//		this.server.emit('idRoom', value);
+		socket.emit('idRoom', value); //sending to sender-client only
 	}
 
 	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
 	@SubscribeMessage('JoinRoom')
-	async JoinRoom(@Body() body: JoinRoomDto): Promise<void> {
+	//	async JoinRoom(@Body() body: JoinRoomDto): Promise<void> {
+	async JoinRoom(socket: Socket): Promise<void> {
 		console.log('in gateway of JoinRoom');
+		let body: JoinRoomDto = {userId: 13, roomId: 50, entered_pw: 'i am a cat'};
 		const have_access = await this.roomService.joinRoom(body);
-		this.server.emit('hasJoined', have_access);
+//		this.server.emit('hasJoined', have_access);
+		socket.emit('hasJoined', have_access);
 	}
 
 
 	/*already a member in the room*/
   @SubscribeMessage('getRoom')
   async getRoom(socket: Socket, room_id: number) {
-    socket.join(room_id.toString());
+      socket.join(room_id.toString());
   }
 
   @SubscribeMessage('deleteRoom')
@@ -83,29 +87,30 @@ export class RoomGateway
   }
 
 	@SubscribeMessage('updateRoomPw')
-	async updateRoomPw(@Body() body: RoomPwDto): Promise<void> {
+	async updateRoomPw(socket: Socket, @Body() body: RoomPwDto): Promise<void> {
 		// const body: RoomPwDto = {'userName':'string', 'roomId':22, 'password': '999'};
 		let res = await this.roomService.updateRoomPw(body);
 		console.log(res);
-		this.server.emit('UpdatePwRes', res);
+		//		this.server.emit('UpdatePwRes', res);
+		socket.emit('UpdatePwRes', res);
 		//NEED TO SEND TO FRONT AN EVENT
 	}
 
 	//NEED TO RETURN BOOLEAN, WILL DO IT LATER
 	@SubscribeMessage('deleteRoomPw')
-	async deleteRoomPw(@Body() body: RoomPwDto): Promise<void> {
+	async deleteRoomPw(socket: Socket, @Body() body: RoomPwDto): Promise<void> {
 		//		const body: RoomPwDto = {'userId': 3, 'roomId':21, 'password': ''};
 		console.log('deleteRoomPw', body);
 		let res = await this.roomService.deleteRoomPw(body);
 		//-----SEND TO FRONT---
-		this.server.emit('deletePWRes', res);
+		socket.emit('deletePWRes', res);
 	}
 
 	@SubscribeMessage('manageAdmin')
 	//	async manageAdmin(@Body() body: UpdateAdminDto): Promise<void> {
 	async manageAdmin(): Promise<void> {
 		// const body: UpdateAdminDto = {'userId':3, 'roomId':22, 'toAdd': false};
-	//	await this.roomService.manageAdmin(body);
+		//	await this.roomService.manageAdmin(body);
 	}
 
 
@@ -121,7 +126,7 @@ export class RoomGateway
 //		const body: any = {roomId:1, userId:3};
 		const info = await this.roomService.getUserBlockList_and_message_history(body);
 		console.log('in gate way, info is', info);
-		this.server.emit('msgToClient', info);
+		socket.emit('msgToClient', info);
 		// the user join to the room
 		socket.join(body.roomId.toString());
 	}

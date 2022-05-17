@@ -35,12 +35,12 @@ export class ParticipantGateway
   ) {}
 
   @SubscribeMessage('createParticipant')
-	async createParticipant(participant: ParticipantDto) {
+	async createParticipant(socket: Socket, participant: ParticipantDto) {
 		console.log('Enter to createParticipant event');
 		console.log('userId:', participant.userId, ' roomId: ', participant.roomId);
       const participantId = await this.participantService.createParticipant(participant);
 		console.log('after call createParticipant service and send to front');
-		this.server.emit('participantId', participantId);
+		socket.emit('participantId', participantId);
 		console.log('already send to FRONT');
   }
 
