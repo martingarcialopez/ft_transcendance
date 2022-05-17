@@ -3,18 +3,18 @@ import { T_Room } from "../type/chat";
 const ENDPOINT = "http://localhost:3000";
 export const socket = socketio(ENDPOINT); //connection to the server nestJs
 
-export function E_CreateParticipant(userId: number, roomId: number) {
-  if (userId > 0 && roomId > 0) {
-    console.log("userId: ", userId, "room id:", roomId);
-    socket.emit("createParticipant", {
-      userId: userId,
-      roomId: roomId,
-    });
-    socket.on("participantId", (receive: { id: number }) => {
-      console.log("reponse participant : ", receive);
-    });
-  }
+export function E_CreateParticipant(userName: number, roomId: number) {
+  console.log("send:\nuserName: ", userName, "\nroom id:", roomId);
+  socket.emit("createParticipant", {
+    userName: userName,
+    roomId: roomId,
+  });
+  socket.on("participantId", (receive: { id: number }) => {
+    console.log("reponse createParticipant : ", receive);
+  });
+
 }
+
 /*
  * function E_GetMessage(userId: number, roomId: number) {
  *   socket.emit("getMessage", {

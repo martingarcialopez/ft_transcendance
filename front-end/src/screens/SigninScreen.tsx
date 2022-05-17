@@ -15,7 +15,7 @@ import Copyright from "../components/Copyright";
 
 import { SyntheticEvent, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import store, { RootState } from '../redux/store'
+import { RootState } from '../redux/store'
 import { UserState } from '../redux/reducers/userReducers';
 import { loginAction } from '../redux/actions/userActions';
 import { Alert, Collapse, IconButton } from "@mui/material";

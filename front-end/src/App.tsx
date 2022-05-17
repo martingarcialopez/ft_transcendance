@@ -6,7 +6,7 @@ import SignIn from './screens/SigninScreen';
 import HomeScreen from './screens/HomeScreen';
 import { Chat } from './screens/Chat';
 // import { ChatTemplate } from './screens/ChatTemplate';
-import { Pong } from './screens/Pong';
+import { Pong } from './screens/Pong2';
 // import { NoMatch } from './screens/NoMatchScreen';
 import ResponsiveAppBar from './components/NavBar';
 import { Profile } from './screens/Profile';

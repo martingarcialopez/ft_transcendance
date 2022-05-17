@@ -12,15 +12,15 @@ export interface UserState {
   errorMessage?: string;
   successMessage?: string;
   userInfo: {
-    login42?: string;
-    username?: string;
-    firstname?: string;
-    lastname?: string;
-    password?: string;
-    avatar?: string;
-    expiresIn?: any;
-    id: number;
-  }; //ADD other elements
+    login42?: string,
+    username?: string,
+    firstname?: string,
+    lastname?: string,
+    password?: string,
+    avatar?: string,
+    expiresIn?: any
+    id?: any
+  } //ADD other elements
 }
 
 interface Action {
@@ -34,15 +34,15 @@ export const userLoginReducer = (
     errorMessage: "",
     successMessage: "",
     userInfo: {
-      login42: "",
-      username: "",
-      firstname: "",
-      lastname: "",
-      password: "",
-      avatar: "",
-      expiresIn: "",
+      login42: '',
+      username: '',
+      firstname: '',
+      lastname: '',
+      password: '',
+      avatar: '',
+      expiresIn: '',
       id: 0,
-    },
+    }
   },
   action: Action
 ) => {
