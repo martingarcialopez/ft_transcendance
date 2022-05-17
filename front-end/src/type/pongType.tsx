@@ -3,7 +3,7 @@ export type CanvasProps = {
   canvasHeight: number;
 };
 
-export type Point = {
+export type Position = {
   x: number;
   y: number;
 };
@@ -23,3 +23,10 @@ export type CanvasType = React.DetailedHTMLProps<
 > & {
   draw: (context: CanvasRenderingContext2D) => void;
 };
+
+export enum Direction {
+  UP,
+  DOWN,
+  LEFT,
+  RIGHT,
+}

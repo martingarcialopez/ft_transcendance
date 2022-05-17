@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { GameState } from '../type/pongType';
+import { Direction, GameState, Position } from '../type/pongType';
 import socketio from "socket.io-client";
 import { Button } from '@mui/material';
 import Canvas from '../components/Canvas';
+import { GameWrapper } from '../styles/gameStyle';
 // import Canvas from '../components/Canvas';
 
 export const socket = socketio('http://localhost:3000')
 
 const window_size = {
-    canvasWidth: window.innerWidth - (window.innerWidth / 5),
-    canvasHeight: window.innerHeight - (window.innerHeight / 5),
+    canvasWidth: 600,
+    canvasHeight: 300,
 }
 
 export const Pong = () => {
@@ -23,6 +24,28 @@ export const Pong = () => {
         leftScore: 0,
         rightScore: 0,
     });
+    const [direction, setDirection] = useState<Direction | undefined>();
+
+    const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        console.log("event code = ")
+        console.log(event.code)
+        switch (event.code) {
+            case 'KeyS' || 'ArrowDown':
+                if (direction !== Direction.UP) {
+                    setDirection(Direction.DOWN);
+                    socket.emit('move', 'MaPetiteCopineElleEstBonne', "leftplayer", 1);
+                }
+                break;
+            case 'KeyW' || 'ArrowUp':
+                if (direction !== Direction.DOWN) {
+                    setDirection(Direction.UP);
+                    socket.emit('move', 'MaPetiteCopineElleEstBonne', "leftplayer", -1);
+                }
+                break;
+        }
+        console.log("direction = ");
+        console.log(direction);
+    };
 
     const receive_socket_info = () => {
         socket.on('gameState', (...args) => {
@@ -35,11 +58,6 @@ export const Pong = () => {
             console.log(gameState);
         });
     }
-
-    useEffect(() => {
-        console.log("useEffect receive soket info")
-        socket.emit('startGame');
-    }, [])
 
     function handleClick() {
         socket.emit('startGame');
@@ -58,16 +76,18 @@ export const Pong = () => {
         ctx.fillRect(window_size.canvasWidth - 20, gameState.rightPaddle, 20, 70)
 
         ctx.fillStyle = "black";
-        ctx.fillRect(250, 60, 20, 70)
+        ctx.fillText(gameState.rightScore.toString(), window_size.canvasWidth - 100, 50);
 
         ctx.fillStyle = "black";
-        ctx.fillRect(window_size.canvasWidth - 270, 60, 20, 70)
-      };
+        ctx.fillText(gameState.leftScore.toString(), 100, 50);
+
+        ctx.stroke()
+    };
 
     return (
-        <div>
+        <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
             <Button onClick={handleClick}>Send event</Button>
             <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
-        </div>
+        </GameWrapper>
     );
 }
