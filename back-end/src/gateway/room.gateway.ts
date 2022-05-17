@@ -77,7 +77,7 @@ export class RoomGateway
 	@SubscribeMessage('JoinPublicRoom')
 	async JoinPublicRoom(socket: Socket, body1: JoinRoomDto): Promise<void>
 	{
-		let body: JoinRoomDto = {roomName : 'cat room', userId : 19};
+		let body: JoinRoomDto = {'roomName' : 'cat room', 'userId' : 19};
 		let roomName: string = body.roomName;
 		let roomId: number = await this.roomService.getRoomId(roomName);
 
