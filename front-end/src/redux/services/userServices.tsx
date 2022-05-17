@@ -54,7 +54,7 @@ export function formatError(errorResponse: any) {
         case 'USER_DISABLED':
             return 'User Disabled';
         case 'ERR_BAD_REQUEST':
-            return 'Pseudo not found';
+            return 'Username or password invalid';
         default:
             return '';
     }

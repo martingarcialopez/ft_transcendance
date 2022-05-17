@@ -1,3 +1,4 @@
+import { NavigateFunction } from 'react-router-dom';
 import {
   LOADING_TOGGLE_ACTION,
   LOGIN_CONFIRMED_ACTION,
@@ -53,7 +54,7 @@ export function logout() {
   };
 }
 
-export function loginAction(email: any, password: any) {
+export function loginAction(email: any, password: any, navigate: NavigateFunction) {
   return (dispatch: any) => {
     login(email, password)
       .then((response) => {
@@ -63,7 +64,9 @@ export function loginAction(email: any, password: any) {
         console.log(response.data)
         console.log("loginAction data access qui fct :")
         console.log(response.data.access_token)
-        dispatch(getInfoAction(response.data.access_token))
+        dispatch(getInfoAction(response.data.access_token)).then(
+          navigate('/home')
+        )
       })
       .catch((error) => {
         console.log("ceci est une error dans loginAction :")

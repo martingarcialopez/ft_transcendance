@@ -17,7 +17,7 @@ export class RoomDto {
 	@IsNotEmpty()
 	public creatorId: number;
 
-	@IsString()
-	public avatar: string;
+	// @IsString()
+	// public avatar: string;
 
 }

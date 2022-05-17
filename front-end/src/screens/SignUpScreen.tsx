@@ -17,6 +17,8 @@ import { signupAction } from '../redux/actions/userActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux';
 import { UserState } from '../redux/reducers/userReducers';
+import { Alert, Collapse, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const theme = createTheme();
 
@@ -25,6 +27,8 @@ const SignUp = () => {
   const [lastname, setLastname] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState({ firstname: '', lastname: '', username: "", password: "" });
+  const [open, setOpen] = useState(true);
 
   const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -38,19 +42,53 @@ const SignUp = () => {
     }
   }, [userInfo, navigate])
 
+  const validate = () => {
+    let temp = { ...errors }
+    if (username)
+      temp.username = username ? "" : "This field is required."
+    else
+      temp.username = "This field is required."
+    if (password)
+      temp.password = password ? "" : "This field is required."
+    else
+      temp.password = "This field is required."
+    setErrors({
+      ...temp
+    })
+  }
+
+  const twoCalls = (function1: any, value: React.SetStateAction<string>, function2: any, value2: any) => {
+    function1(value);
+    function2(value2);
+  }
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    console.log({
-      firstname: firstname,
-      lastname: lastname,
-      username: username,
-      password: password,
-    });
+    validate();
+    setOpen(true);
+    if (!errors.firstname && !errors.lastname && !errors.password && !errors.username) {
+      dispatch(signupAction(firstname, lastname, username, password))
 
-    dispatch(signupAction(firstname, lastname, username, password))
-
-    navigate('/home');
+      console.log("signUp :" + {
+        firstname: firstname,
+        lastname: lastname,
+        username: username,
+        password: password,
+      });
+    }
+    else {
+      console.log("sign up voici les errors", {
+        Errorfirstname: errors.firstname,
+        Errorlastname: errors.lastname,
+        Errorusername: errors.username,
+        Errorpassword: errors.password,
+        firstname: firstname,
+        lastname: lastname,
+        username: username,
+        password: password,
+      });
+    }
   };
 
   return (
@@ -71,6 +109,31 @@ const SignUp = () => {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+          {userLogin.errorMessage ?
+            <Collapse in={open}>
+              <Alert
+                variant="outlined"
+                severity="error"
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setOpen(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+                sx={{ mb: 2 }}
+              >
+                {userLogin.errorMessage}
+              </Alert>
+            </Collapse>
+            :
+            null
+          }
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -83,7 +146,9 @@ const SignUp = () => {
                   label="First Name"
                   autoFocus
                   value={firstname}
-                  onChange={e => setFirstname(e.target.value)}
+                  onChange={(e) => twoCalls(setFirstname, (e.target.value), setErrors, ({ ...errors, firstname: '' }))}
+                  error={errors.firstname ? true : false}
+                  helperText={errors.firstname}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -95,7 +160,9 @@ const SignUp = () => {
                   name="lastname"
                   autoComplete="family-name"
                   value={lastname}
-                  onChange={e => setLastname(e.target.value)}
+                  onChange={(e) => twoCalls(setLastname, (e.target.value), setErrors, ({ ...errors, lastname: '' }))}
+                  error={errors.lastname ? true : false}
+                  helperText={errors.lastname}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -107,7 +174,9 @@ const SignUp = () => {
                   name="username"
                   autoComplete="username"
                   value={username}
-                  onChange={e => setUsername(e.target.value)}
+                  onChange={(e) => twoCalls(setUsername, (e.target.value), setErrors, ({ ...errors, username: '' }))}
+                  error={errors.username ? true : false}
+                  helperText={errors.username}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -120,7 +189,9 @@ const SignUp = () => {
                   id="password"
                   autoComplete="new-password"
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={(e) => twoCalls(setPassword, (e.target.value), setErrors, ({ ...errors, password: '' }))}
+                  error={errors.password ? true : false}
+                  helperText={errors.password}
                 />
               </Grid>
               <Grid item xs={12}>

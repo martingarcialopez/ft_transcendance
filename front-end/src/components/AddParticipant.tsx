@@ -1,52 +1,38 @@
 import "../styles/room.css";
-import { T_Room } from "../type/chat";
-import { RootState } from "../redux/store";
-import { useSelector } from "react-redux";
-import { socket } from "../screens/ChatTemplate";
+//import { T_Room } from "../../type/chat";
+/* import { RootState } from "../../redux/store";*/
+/* * import { useSelector } from "react-redux"; */
+
 import { useForm } from "react-hook-form";
+import { E_CreateParticipant } from "./Event";
+import { TitleOptionRoom } from "./TitleOptionRoom";
 
-function createParticipant(usrId: number, roomId: number) {
-  if (usrId > 0 && roomId > 0) {
-    socket.emit("createParticipant", {
-      userId: usrId,
-      roomId: roomId,
-    });
-    /* socket.on("idRoom", (receive: { id: number }) => {
-     *   console.log("reponse creation Room : ", receive);
-     *   newRoom.id = receive.id;
-     * }); */
-  }
-}
-
-function findId(item: T_Room[], occurence: string): number {
-  let id = -1;
-  item.forEach((data) => {
-    if (data.name === occurence) id = data.id;
-  });
-  return id;
-}
+/* function findId(item: T_Room[], occurence: string): number {
+ *   let id = -1;
+ *   item.forEach((data) => {
+ *     if (data.name === occurence) id = data.id;
+ *   });
+ *   return id;
+ * }
+ *  */
 
 export function AddParticipant() {
   const { register, handleSubmit } = useForm();
-  const { arrayRoom } = useSelector((state: RootState) => state);
-  /* findId(arrayRoom,  ) */
 
   return (
     <>
-      <br />
-      <br />
+      <TitleOptionRoom title="Add user Into Private Room" />
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
-          const roomId = findId(arrayRoom, data.roomName);
-          console.log("room: ", data.roomName, "room id:", roomId);
-          createParticipant(2, roomId);
+          //const roomId = findId(arrayRoom, data.roomName);
+          E_CreateParticipant(data.userName, 29);
         })}
       >
         <input
           className="inputRoom"
           type="text"
-          placeholder="Room Name"
+          placeholder="Channel Name"
           required
           autoComplete="on"
           {...register("roomName")}
@@ -61,10 +47,10 @@ export function AddParticipant() {
           {...register("userName")}
         />
         <br />
-        <div className="box-btn ">
-          <input className="btn1 btn-new-room" type="submit" value="Add" />
-          <input className="btn2 btn-new-room" type="submit" value="Remove" />
-        </div>
+        {/* <div className="box-btn "> */}
+        <input className="btn-new-room" type="submit" value="Add" />
+        {/* <input className="btn2 btn-new-room" type="submit" value="Remove" /> */}
+        {/* </div> */}
       </form>
     </>
   );

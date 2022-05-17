@@ -15,37 +15,76 @@ import Copyright from "../components/Copyright";
 
 import { SyntheticEvent, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/store'
+import store, { RootState } from '../redux/store'
 import { UserState } from '../redux/reducers/userReducers';
 import { loginAction } from '../redux/actions/userActions';
+import { Alert, Collapse, IconButton } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 
 const theme = createTheme();
 
 const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ username: "", password: "" });
+  const [open, setOpen] = useState(true);
 
-    const navigate = useNavigate();
-    const dispatch = useDispatch()
-    const userLogin = useSelector<RootState, UserState>(
-        (state: RootState) => state.userLogin
-    )
-    const { userInfo } = userLogin
-    useEffect(() => {
-        if (userInfo !== undefined && userInfo.firstname) {
-            navigate('/home');
-        }
-    }, [userInfo, navigate])
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  )
+  const { userInfo } = userLogin
+  useEffect(() => {
+    console.log("signin userInfo :")
+    console.log(userInfo);
+    if (userInfo !== undefined && userInfo.firstname) {
+      navigate('/home');
+    }
+  }, [userInfo, navigate])
 
-    const handleSubmit = async (e: SyntheticEvent) => {
-        e.preventDefault()
-        dispatch(loginAction(username, password))
+  const validate = () => {
+    let temp = { ...errors }
+    if (username)
+      temp.username = username ? "" : "This field is required."
+    else
+      temp.username = "This field is required."
+    if (password)
+      temp.password = password ? "" : "This field is required."
+    else
+      temp.password = "This field is required."
+    setErrors({
+      ...temp
+    })
+  }
 
-    console.log("TOUT MARCHE SUPER BIEN", {
-      username: username,
-      password: password,
-    });
-    navigate('/home');
+  const twoCalls = (function1: any, value: React.SetStateAction<string>, function2: any, value2: any) => {
+    function1(value);
+    function2(value2);
+  }
+
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault()
+    validate();
+    setOpen(true);
+    if (!errors.password && !errors.username) {
+      dispatch(loginAction(username, password, navigate))
+
+      console.log("signin TOUT MARCHE SUPER BIEN", {
+        username: username,
+        password: password,
+      });
+    }
+    else {
+      console.log("sign in voici les errors", {
+        Errorusername: errors.username,
+        Errorpassword: errors.password,
+        username: username,
+        password: password,
+      });
+    }
+    // console.log("sign fin de handle")
+    // console.log(store.getState())
   };
 
   return (
@@ -66,6 +105,31 @@ const SignIn = () => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          {userLogin.errorMessage ?
+            <Collapse in={open}>
+              <Alert
+                variant="outlined"
+                severity="error"
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setOpen(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+                sx={{ mb: 2 }}
+              >
+                {userLogin.errorMessage}
+              </Alert>
+            </Collapse>
+            :
+            null
+          }
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -82,7 +146,9 @@ const SignIn = () => {
               autoComplete="pseudo"
               autoFocus
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => twoCalls(setUsername, (e.target.value), setErrors, ({ ...errors, username: '' }))}
+              error={errors.username ? true : false}
+              helperText={errors.username}
             />
             <TextField
               margin="normal"
@@ -94,7 +160,9 @@ const SignIn = () => {
               id="password"
               autoComplete="current-password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => twoCalls(setPassword, (e.target.value), setErrors, ({ ...errors, password: '' }))}
+              error={errors.password ? true : false}
+              helperText={errors.password}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
