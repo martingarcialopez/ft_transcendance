@@ -1,30 +1,33 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import { BsPlusLg } from "react-icons/bs";
+import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import "../styles/room.css";
 import { useForm } from "react-hook-form";
 import { E_JoinRoom } from "./Event";
-import { T_Room, T_PropsRoomArray } from "../type/chat";
+import { T_Room } from "../type/chat";
+import { BasicModal } from "./BasicModal";
 
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "40vw",
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
+export type T_PropsRoomArray = {
+  room: T_Room[];
 };
 
 /* function IsProctect({ roomId, setRoomId }: AppProps) { */
+
 function IsProctect({ id: number }: T_Room) {
   const { register, handleSubmit } = useForm();
   return (
     <div>
+      <Typography
+        id="modal-modal-title"
+        variant="h6"
+        component="h2"
+        align="center"
+      >
+        Channel Protected by password
+      </Typography>
+      <Typography id="modal-modal-description" sx={{ mt: 2 }} align="center">
+        Enter Password to join channel
+      </Typography>
+
       <br />
       <form
         className="box-fom-procted"
@@ -51,55 +54,25 @@ function IsProctect({ id: number }: T_Room) {
   );
 }
 
-function BasicModal(room: T_Room, index: number) {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  if (room.typeRoom != "protected") return <div key={index}></div>;
-  return (
-    <div key={index}>
-      <div className="roomList" onClick={handleOpen}>
-        <span className="btn-join-room">
-          <BsPlusLg />
-        </span>
-        {room.name}
-      </div>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            align="center"
-          >
-            Channel Protected by password
-          </Typography>
-
-          <Typography
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-            align="center"
-          >
-            Enter Password to join channel
-          </Typography>
-          <IsProctect {...room} />
-        </Box>
-      </Modal>
-    </div>
-  );
-}
-
-export function RoomProtected({ room }: T_PropsRoomArray) {
+/**
+ * management the joining a  proctected room
+ * to Join a Protected Room  password is require
+ */
+export function JoinProtectedRoom({ room }: T_PropsRoomArray) {
   return (
     <>
       {" "}
       <h3 style={{ position: "relative", left: "25%" }}>Join Protected Room</h3>
-      {room.map(BasicModal)}
+      {room.map((item: T_Room, index: number) => {
+        return (
+          <BasicModal
+            channel={item}
+            fct={IsProctect}
+            key={index}
+            icon={RiGitRepositoryPrivateFill}
+          />
+        );
+      })}
     </>
   );
 }
