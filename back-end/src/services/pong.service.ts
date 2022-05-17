@@ -23,14 +23,31 @@ export class PongService {
 	async playGame(client: Socket) {
 
 		let state: State = initGameState();
+		let lastMove: number = 0;
 
 		 while (true) {
 
-			// const move : GameEntity[] = this.gameService.getAll();
+			const move : GameEntity[] = this.gameService.getAll();
 
-			// console.log(move);
+			console.log(move);
 
-			state = nextState(state, 0, 0);
+			let leftPlayerMove = 0;
+			let rightPlayerMove = 0;
+
+			if (move.length > lastMove) {
+
+
+				for (let i: number = lastMove; i < move.length ; i++) {
+					if (move[i].player === "leftplayer")
+						leftPlayerMove += move[i].move;
+					else if (move[i].player === "rightplayer")
+						rightPlayerMove += move[i].move;
+
+				}
+			}
+			lastMove = move.length;
+
+			state = nextState(state, leftPlayerMove, rightPlayerMove);
 
 			client.emit('gameState', state);
 
@@ -41,7 +58,6 @@ export class PongService {
 		 }
 
 
-
 	}
 
 	async registerMove(move: GameEntity): Promise<void> {
@@ -49,7 +65,7 @@ export class PongService {
 		console.log(move);
 
 		const created: GameEntity = this.gameService.create({
-			id: '0',
+			id: move[0],
 			player: move[1],
 			move: move[2]
 		});
