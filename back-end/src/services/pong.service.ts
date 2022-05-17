@@ -36,9 +36,11 @@ export class PongService {
 
 			console.log(state);
 
-			await sleep(1000); // sleep in ms
+			await sleep(40); // sleep in ms
 
 		 }
+
+
 
 	}
 
@@ -64,13 +66,12 @@ export class PongService {
 
 
 
-
 function initGameState(): State {
 
 	return new State(
 		{
 			ballPos: new Point(board_x_size / 2, board_y_size / 2),
-			ballVel: new Point(20, Math.floor(Math.random() * (20 + 1))),
+			ballVel: new Point(initial_velocity, Math.floor(Math.random() * (initial_velocity + 1))),
 			leftPaddle: board_y_size / 2,
 			rightPaddle: board_y_size / 2,
 			leftScore: 0,
@@ -86,6 +87,8 @@ function sleep(ms: number) {
 var board_x_size: number = 600;
 var board_y_size: number = 300;
 var paddle_size: number = 50;
+
+var initial_velocity: number = 5;
 
 class Point {
 
@@ -164,9 +167,9 @@ function updateBallPosition(current: State, next: State) {
 			next.ballPos.x = board_x_size / 2 + 50;
 			next.ballPos.y = board_y_size / 2;
 			// Ball also heads in the direction of player that have just scored
-			next.ballVel.x = 20;
+			next.ballVel.x = initial_velocity;
 			// We randomize y component so that the ball will not move on a straight line
-			next.ballVel.y = Math.floor(Math.random() * (20 + 1));
+			next.ballVel.y = Math.floor(Math.random() * (initial_velocity + 1));
 		}
 	}
 	else if (next.ballPos.x >= board_x_size) { // exact same calculations on the other field
@@ -181,8 +184,8 @@ function updateBallPosition(current: State, next: State) {
 			next.leftScore += 1;
 			next.ballPos.x = board_x_size / 2;
 			next.ballPos.y = board_y_size / 2;
-			next.ballVel.x = -20;
-			next.ballVel.y = Math.floor(Math.random() * (20 + 1));
+			next.ballVel.x = -initial_velocity;
+			next.ballVel.y = Math.floor(Math.random() * (initial_velocity + 1));
 		}
 	}
 }
