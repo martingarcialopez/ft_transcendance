@@ -7,6 +7,7 @@ import { E_CreateRoom, socket } from "./Event";
 import "../styles/room.css";
 import { useState } from "react";
 import { Hidden } from "./Hidden";
+
 import { RootState } from "../redux/store";
 import { UserState } from "../redux/reducers/userReducers";
 
@@ -46,6 +47,7 @@ export function CreateRoom() {
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
           E_CreateRoom(newRoom, userLogin.userInfo.id);
+          console.log("userId : ", userLogin.userInfo.id);
           console.log("newRoom:", newRoom);
           socket.on("idRoom", (receive: { id: number }) => {
             console.log("reponse creation Room : ", receive);
