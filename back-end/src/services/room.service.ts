@@ -39,6 +39,8 @@ export class RoomService {
 	** :return (RoomSnippetDto) dto contains new channel id and its name
 	*/	async createRoom(roomDto: RoomDto): Promise<RoomSnippetDto>
 	{
+		// console.log('throw err after');
+
         const new_room = new Room();
 		new_room.name = roomDto.name;
 		new_room.typeRoom = roomDto.typeRoom;
@@ -55,7 +57,6 @@ export class RoomService {
 		if(new_room.owner == null)
 			new_room.owner = [];
 		new_room.owner.push(roomDto.creatorId);
-//		new_room.avatar = roomDto.avatar;
 		await this.roomRepository.save(new_room);
 
 		/*the creator is the first participant to be created*/
@@ -244,9 +245,28 @@ export class RoomService {
             .execute();
     }
 
+	async getRoomId(roomName: string): Promise<number> {
+		let room : Room =  await this.roomRepository.createQueryBuilder("room")
+			.select("room.id")
+			.where("room.name = :roomName", { roomName: roomName })
+            .getOne();
 
+		console.log('here room ', room);
+		return room.id;
 
+	}
 
+	async IsRoomName_Unique(roomName: string): Promise<boolean> {
+		console.log(roomName);
+		let names: any = await this.roomRepository.createQueryBuilder("room")
+			.select("room.id")
+			.where("room.name = :room_name", { room_name: roomName })
+			.getOne();
+
+		if (names != undefined)//name exist deja
+			return false;
+		return true;
+	}
 
 }
 

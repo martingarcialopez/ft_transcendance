@@ -19,37 +19,52 @@ export class PongService {
 		private readonly gameService: InMemoryDBService<GameEntity>
 	) { }
 
-
 	async playGame(client: Socket) {
 
 		let state: State = initGameState();
+		let lastMove: number = 0;
+
+		let paddleSpeed = 5;
 
 		 while (true) {
 
-			// const move : GameEntity[] = this.gameService.getAll();
+			const move : GameEntity[] = this.gameService.getAll();
 
-			// console.log(move);
+			//console.log(move);
 
-			state = nextState(state, 0, 0);
+			let leftPlayerMove = 0;
+			let rightPlayerMove = 0;
+
+			if (move.length > lastMove) {
+
+
+				for (let i: number = lastMove; i < move.length ; i++) {
+					if (move[i].player === "leftplayer")
+						leftPlayerMove += move[i].move;
+					else if (move[i].player === "rightplayer")
+						rightPlayerMove += move[i].move;
+
+				}
+			}
+			lastMove = move.length;
+
+			state = nextState(state, leftPlayerMove * paddleSpeed, rightPlayerMove * paddleSpeed);
 
 			client.emit('gameState', state);
 
-			console.log(state);
+			// console.log(state);
 
 			await sleep(40); // sleep in ms
 
 		 }
-
-
-
 	}
 
 	async registerMove(move: GameEntity): Promise<void> {
 
-		console.log(move);
+		//console.log(move);
 
 		const created: GameEntity = this.gameService.create({
-			id: '0',
+			id: move[0],
 			player: move[1],
 			move: move[2]
 		});
