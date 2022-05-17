@@ -2,11 +2,13 @@ import { useForm } from "react-hook-form";
 import { T_Room } from "../type/chat";
 import { bindActionCreators } from "redux";
 import * as actionCreators from "../redux/action-creators/Ac_room";
-import { useDispatch } from "react-redux";
-import { E_CreateRoom } from "./Event";
+import { useDispatch, useSelector } from "react-redux";
+import { E_CreateRoom, socket } from "./Event";
 import "../styles/room.css";
 import { useState } from "react";
 import { Hidden } from "./Hidden";
+import { RootState } from "../redux/store";
+import { UserState } from "../redux/reducers/userReducers";
 
 function createRoom(data: any): T_Room {
   let room: T_Room = {
@@ -21,23 +23,35 @@ function createRoom(data: any): T_Room {
   return room;
 }
 
-export function AddRoom() {
+export function CreateRoom() {
   const { register, handleSubmit } = useForm();
   const [state, setSate] = useState<string>("none");
   const dispatch = useDispatch();
   const { ac_AddRoom } = bindActionCreators(actionCreators, dispatch);
+
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
+
+  /* console.log("userLogin INFO", userLogin); */
   return (
     <>
       <br />
       <br />
-      <h3 style={{ position: "relative", left: "25%" }}>Create Channel</h3>
+      <h3 style={{ position: "relative", left: "25%", width: "25%" }}>
+        Create Channel
+      </h3>
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          E_CreateRoom(newRoom);
+          E_CreateRoom(newRoom, userLogin.userInfo.id);
           console.log("newRoom:", newRoom);
-          ac_AddRoom(newRoom);
+          socket.on("idRoom", (receive: { id: number }) => {
+            console.log("reponse creation Room : ", receive);
+            newRoom.id = receive.id;
+            ac_AddRoom(newRoom);
+          });
         })}
       >
         <input
@@ -64,7 +78,6 @@ export function AddRoom() {
           {...register("typeRoom")}
           onChange={(e) => {
             setSate(Hidden(e.target.value));
-            console.log("hello: ", e.target.value);
           }}
         >
           <option value="public">Public</option>

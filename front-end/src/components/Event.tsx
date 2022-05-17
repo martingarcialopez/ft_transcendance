@@ -15,44 +15,44 @@ export function E_CreateParticipant(userId: number, roomId: number) {
     });
   }
 }
-
-function E_GetMessage(userId: number, roomId: number) {
-  socket.emit("getMessage", {
-    userId: userId,
-    roomId: roomId,
-  });
-
-  socket.on(
-    "msgToClient",
-    (received: { blockList: number[]; message_history: any }) => {
-      console.log("reponse msgToclient  : ", received);
-    }
-  );
-}
-
-function E_CreateMessage(userId: number, roomId: number, content: string) {
-  socket.emit("createMessage", {
-    userId: userId,
-    roomId: roomId,
-    content: content,
-  });
-}
-
+/*
+ * function E_GetMessage(userId: number, roomId: number) {
+ *   socket.emit("getMessage", {
+ *     userId: userId,
+ *     roomId: roomId,
+ *   });
+ *
+ *   socket.on(
+ *     "msgToClient",
+ *     (received: { blockList: number[]; message_history: any }) => {
+ *       console.log("reponse msgToclient  : ", received);
+ *     }
+ *   );
+ * }
+ *
+ * function E_CreateMessage(userId: number, roomId: number, content: string) {
+ *   socket.emit("createMessage", {
+ *     userId: userId,
+ *     roomId: roomId,
+ *     content: content,
+ *   });
+ * }
+ *  */
 /**
  * to get id, there for need to send the  room at server so that it give back the id
  */
 
-export function E_CreateRoom(newRoom: T_Room) {
+export function E_CreateRoom(newRoom: T_Room, creatorId: number) {
   socket.emit("createRoom", {
     name: newRoom.name,
-    creatorId: 2,
+    creatorId: creatorId,
     typeRoom: newRoom.typeRoom,
     password: newRoom.password,
   });
-  socket.on("idRoom", (receive: { id: number }) => {
-    console.log("reponse creation Room : ", receive);
-    newRoom.id = receive.id;
-  });
+  /* socket.on("idRoom", (receive: { id: number }) => {
+   *   console.log("reponse creation Room : ", receive);
+   *   newRoom.id = receive.id;
+   * }); */
 }
 
 export function E_UpdatePwd(userId: number, roomId: number, pwd: string) {

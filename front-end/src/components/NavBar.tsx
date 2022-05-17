@@ -1,21 +1,21 @@
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { UserState } from '../redux/reducers/userReducers';
-import { MouseEvent, SyntheticEvent, useState } from 'react';
-import { logout } from '../redux/actions/userActions';
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { UserState } from "../redux/reducers/userReducers";
+import { MouseEvent, SyntheticEvent, useState } from "react";
+import { logout } from "../redux/actions/userActions";
 
 const pages = ["Home", "Chat", "Room", "Pong"];
 const settings = ["Profile", "Account", "Logout"];
@@ -39,22 +39,20 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
-  )
+  );
 
-  console.log("NavBar userLogin INFO");
-  console.log(userLogin);
+  /* console.log("NavBar userLogin INFO");
+   * console.log(userLogin); */
   const userInfo = userLogin.userInfo;
 
-
   const logoutHandler = async (e: SyntheticEvent) => {
-    e.preventDefault()
-    console.log("NavBar call logout function")
-    dispatch(logout())
-  }
-
+    e.preventDefault();
+    console.log("NavBar call logout function");
+    dispatch(logout());
+  };
 
   return (
     <AppBar position="static">
@@ -98,19 +96,19 @@ const ResponsiveAppBar = () => {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                !userInfo ?
-                  page === "Home" ?
+              {pages.map((page) =>
+                !userInfo ? (
+                  page === "Home" ? (
                     <MenuItem key={page} onClick={handleCloseNavMenu}>
                       <Typography textAlign="center">{page}</Typography>
                     </MenuItem>
-                    :
-                    null
-                  :
+                  ) : null
+                ) : (
                   <MenuItem key={page} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{page}</Typography>
                   </MenuItem>
-              ))}
+                )
+              )}
             </Menu>
           </Box>
           <Typography
@@ -122,23 +120,22 @@ const ResponsiveAppBar = () => {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              userInfo ?
+            {pages.map((page) =>
+              userInfo ? (
                 <Link key={page} to={page.toLowerCase()}>
                   <Button
                     key={page}
                     onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
+                    sx={{ my: 2, color: "white", display: "block" }}
                   >
                     {page}
                   </Button>
                 </Link>
-                :
-                null
-            ))}
+              ) : null
+            )}
           </Box>
 
-          {userInfo ?
+          {userInfo ? (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -146,40 +143,37 @@ const ResponsiveAppBar = () => {
                 </IconButton>
               </Tooltip>
               <Menu
-                sx={{ mt: '45px' }}
+                sx={{ mt: "45px" }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 keepMounted
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    {
-                      setting !== "Logout" ?
-                        <Link key={setting} to={setting.toLowerCase()}>
-                          <Typography textAlign="center">{setting}</Typography>
-                        </Link>
-                        :
-                        <Link key={setting} onClick={logoutHandler} to={"/home"}>
-                          <Typography textAlign="center">{setting}</Typography>
-                        </Link>
-                    }
-
+                    {setting !== "Logout" ? (
+                      <Link key={setting} to={setting.toLowerCase()}>
+                        <Typography textAlign="center">{setting}</Typography>
+                      </Link>
+                    ) : (
+                      <Link key={setting} onClick={logoutHandler} to={"/home"}>
+                        <Typography textAlign="center">{setting}</Typography>
+                      </Link>
+                    )}
                   </MenuItem>
                 ))}
               </Menu>
             </Box>
-            : null
-          }
+          ) : null}
         </Toolbar>
       </Container>
     </AppBar>

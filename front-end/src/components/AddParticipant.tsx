@@ -20,7 +20,7 @@ export function AddParticipant() {
 
   return (
     <>
-      <h3 style={{ position: "relative", left: "25%" }}>
+      <h3 style={{ position: "relative", left: "19%" }}>
         Add user Into Private Room{" "}
       </h3>
       <form
