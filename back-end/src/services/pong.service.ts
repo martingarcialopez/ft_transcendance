@@ -5,6 +5,9 @@ import { Socket } from 'socket.io'
 
 import { Pong } from '../models/pong.entity';
 import { PongDto } from '../dtos/in/pong.dto';
+import { moveDto } from 'src/dtos/in/move.dto';
+import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import { GameEntity } from '../models/game.entity';
 
 @Injectable()
 export class PongService {
@@ -13,14 +16,19 @@ export class PongService {
 	//  private readonly userService: UserService;
 	constructor(
 		@InjectRepository(Pong) private readonly pongRepository: Repository<Pong>,
+		private readonly gameService: InMemoryDBService<GameEntity>
 	) { }
 
 
-	async PlayGame(client: Socket) {
+	async playGame(client: Socket) {
 
 		let state: State = initGameState();
 
 		 while (true) {
+
+			// const move : GameEntity[] = this.gameService.getAll();
+
+			// console.log(move);
 
 			state = nextState(state, 0, 0);
 
@@ -28,16 +36,23 @@ export class PongService {
 
 			console.log(state);
 
-			await sleep(2000); // sleep in ms
-
-			return ;
+			await sleep(1000); // sleep in ms
 
 		 }
 
 	}
 
-	async moveAction(pongDto: PongDto): Promise<void> {
-		//DO SOME STUSS
+	async registerMove(move: GameEntity): Promise<void> {
+
+		console.log(move);
+
+		const created: GameEntity = this.gameService.create({
+			id: '0',
+			player: move[1],
+			move: move[2]
+		});
+		console.log('from register move, created entity is');
+		console.log(created);
 	}
 }
 
