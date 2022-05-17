@@ -55,7 +55,7 @@ export class RoomService {
 		if(new_room.owner == null)
 			new_room.owner = [];
 		new_room.owner.push(roomDto.creatorId);
-		new_room.avatar = roomDto.avatar;
+//		new_room.avatar = roomDto.avatar;
 		await this.roomRepository.save(new_room);
 
 		/*the creator is the first participant to be created*/
