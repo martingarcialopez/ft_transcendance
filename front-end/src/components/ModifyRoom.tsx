@@ -5,6 +5,7 @@ import { useState } from "react";
 import { FiSettings } from "react-icons/fi";
 import { E_UpdatePwd, E_LeaveRoom, E_DeleteRoomPw } from "./Event";
 import { BasicModal } from "./BasicModal";
+import { Hidden } from "./Hidden";
 
 function ChangePassWord() {
   const { register, handleSubmit } = useForm();
@@ -32,11 +33,6 @@ function ChangePassWord() {
       </form>
     </>
   );
-}
-
-function Hidden(typeRoom: string) {
-  if (typeRoom === "protected") return "inline";
-  return "none";
 }
 
 function Options({ id: number, typeRoom }: T_Room) {

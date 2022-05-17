@@ -5,6 +5,8 @@ import * as actionCreators from "../redux/action-creators/Ac_room";
 import { useDispatch } from "react-redux";
 import { E_CreateRoom } from "./Event";
 import "../styles/room.css";
+import { useState } from "react";
+import { Hidden } from "./Hidden";
 
 function createRoom(data: any): T_Room {
   let room: T_Room = {
@@ -21,6 +23,7 @@ function createRoom(data: any): T_Room {
 
 export function AddRoom() {
   const { register, handleSubmit } = useForm();
+  const [state, setSate] = useState<string>("none");
   const dispatch = useDispatch();
   const { ac_AddRoom } = bindActionCreators(actionCreators, dispatch);
   return (
@@ -52,12 +55,21 @@ export function AddRoom() {
           placeholder="password (optionnal for private and public)"
           autoComplete="on"
           {...register("password")}
+          style={{ display: state }}
         />
         <br />
-        <select className="inputRoom" id="pet-select" {...register("typeRoom")}>
+        <select
+          className="inputRoom"
+          id="pet-select"
+          {...register("typeRoom")}
+          onChange={(e) => {
+            setSate(Hidden(e.target.value));
+            console.log("hello: ", e.target.value);
+          }}
+        >
           <option value="public">Public</option>
           <option value="private">Private</option>
-          <option value="private">Protected</option>
+          <option value="protected">Protected</option>
         </select>
         <br />
         <input type="submit" className="btn-new-room" value="New" />
