@@ -10,6 +10,7 @@ import { Hidden } from "./Hidden";
 import { TitleOptionRoom } from "./TitleOptionRoom";
 import { RootState } from "../redux/store";
 import { UserState } from "../redux/reducers/userReducers";
+import { color } from "@mui/system";
 
 function createRoom(data: any): T_Room {
   let room: T_Room = {
@@ -45,14 +46,8 @@ export function CreateRoom() {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          E_CreateRoom(newRoom, userLogin.userInfo.id);
-          console.log("userId : ", userLogin.userInfo.id);
-          console.log("newRoom:", newRoom);
-          socket.on("idRoom", (receive: { id: number }) => {
-            console.log("reponse creation Room : ", receive);
-            newRoom.id = receive.id;
-            ac_AddRoom(newRoom);
-          });
+          E_CreateRoom(newRoom, userLogin.userInfo.id, ac_AddRoom);
+          console.log("userId : ", userLogin.userInfo.id, "newRoom:", newRoom);
         })}
       >
         <input

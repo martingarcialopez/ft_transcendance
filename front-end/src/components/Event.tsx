@@ -41,17 +41,22 @@ export function E_CreateParticipant(userName: number, roomId: number) {
  * to get id, there for need to send the  room at server so that it give back the id
  */
 
-export function E_CreateRoom(newRoom: T_Room, creatorId: number) {
+export function E_CreateRoom(
+  newRoom: T_Room,
+  creatorId: number,
+  callback: Function
+) {
   socket.emit("createRoom", {
     name: newRoom.name,
     creatorId: creatorId,
     typeRoom: newRoom.typeRoom,
     password: newRoom.password,
   });
-  /* socket.on("idRoom", (receive: { id: number }) => {
-   *   console.log("reponse creation Room : ", receive);
-   *   newRoom.id = receive.id;
-   * }); */
+  socket.on("idRoom", (receive: { id: number }) => {
+    console.log("reponse creation Room : ", receive);
+    newRoom.id = receive.id;
+    callback(newRoom);
+  });
 }
 
 export function E_UpdatePwd(userId: number, roomId: number, pwd: string) {
