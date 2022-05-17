@@ -24,7 +24,6 @@ import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto
 import { UserService } from '../services/user.service';
 import { MessageService } from '../services/message.service';
 
-
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
   cors: {
@@ -47,25 +46,23 @@ export class RoomGateway
   ) {}
 
 	@SubscribeMessage('createRoom')
-	async createRoom(socket: Socket): Promise<void> {
+	async createRoom(socket: Socket, body: RoomDto): Promise<void> {
 		console.log('in the gateway of event createRoom');
-//   	async createRoom(@Body() body: RoomDto): Promise<void> {
-		const body: RoomDto = {
-			'name': 'mao room',
-			'typeRoom': 'protected',
-			'password': 'i am a cat',
-			'creatorId' : 3,
-			'avatar': 'miao'
-		};
+		// const body: RoomDto = {
+		// 	'name': 'mao room',
+		// 	'typeRoom': 'protected',
+		// 	'password': 'i am a cat',
+		// 	'creatorId' : 18,
+		// };
+		console.log(body);
 		const value = await this.roomService.createRoom(body);
 		console.log('return value of roomId is ', value);
-		//		this.server.emit('idRoom', value);
 		socket.emit('idRoom', value); //sending to sender-client only
 	}
 
 	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
 	@SubscribeMessage('JoinRoom')
-	//	async JoinRoom(@Body() body: JoinRoomDto): Promise<void> {
+	//	async JoinRoom(body: JoinRoomDto): Promise<void> {
 	async JoinRoom(socket: Socket): Promise<void> {
 		console.log('in gateway of JoinRoom');
 		let body: JoinRoomDto = {userId: 13, roomId: 50, entered_pw: 'i am a cat'};
@@ -87,7 +84,7 @@ export class RoomGateway
   }
 
 	@SubscribeMessage('updateRoomPw')
-	async updateRoomPw(socket: Socket, @Body() body: RoomPwDto): Promise<void> {
+	async updateRoomPw(socket: Socket, body: RoomPwDto): Promise<void> {
 		// const body: RoomPwDto = {'userName':'string', 'roomId':22, 'password': '999'};
 		let res = await this.roomService.updateRoomPw(body);
 		console.log(res);
@@ -98,7 +95,7 @@ export class RoomGateway
 
 	//NEED TO RETURN BOOLEAN, WILL DO IT LATER
 	@SubscribeMessage('deleteRoomPw')
-	async deleteRoomPw(socket: Socket, @Body() body: RoomPwDto): Promise<void> {
+	async deleteRoomPw(socket: Socket, body: RoomPwDto): Promise<void> {
 		//		const body: RoomPwDto = {'userId': 3, 'roomId':21, 'password': ''};
 		console.log('deleteRoomPw', body);
 		let res = await this.roomService.deleteRoomPw(body);
@@ -107,7 +104,7 @@ export class RoomGateway
 	}
 
 	@SubscribeMessage('manageAdmin')
-	//	async manageAdmin(@Body() body: UpdateAdminDto): Promise<void> {
+	//	async manageAdmin(body: UpdateAdminDto): Promise<void> {
 	async manageAdmin(): Promise<void> {
 		// const body: UpdateAdminDto = {'userId':3, 'roomId':22, 'toAdd': false};
 		//	await this.roomService.manageAdmin(body);
@@ -122,7 +119,7 @@ export class RoomGateway
 	 **return: BlockList + message_history
 	 */
 	  @SubscribeMessage('getMessage')
-	async getMessage(socket: Socket, @Body() body: ParticipantDto) : Promise<void>{
+	async getMessage(socket: Socket, body: ParticipantDto) : Promise<void>{
 //		const body: any = {roomId:1, userId:3};
 		const info = await this.roomService.getUserBlockList_and_message_history(body);
 		console.log('in gate way, info is', info);
