@@ -19,6 +19,7 @@ export interface UserState {
     password?: string,
     avatar?: string,
     expiresIn?: any
+    id?: any
   } //ADD other elements
 }
 
@@ -40,6 +41,7 @@ export const userLoginReducer = (
       password: '',
       avatar: '',
       expiresIn: '',
+      id: '',
     }
   },
   action: Action
