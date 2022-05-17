@@ -29,6 +29,7 @@ export class PongService {
 
 			const move : GameEntity[] = this.gameService.getAll();
 
+
 			console.log(move);
 
 			let leftPlayerMove = 0;
