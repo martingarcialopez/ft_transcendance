@@ -18,23 +18,50 @@ export class PongService {
 
 	async PlayGame(client: Socket) {
 
-		let state: State = new State( { ballPos: new Point(8,3) } );
+		let state: State = initGameState();
 
-		// while (true) {
+		 while (true) {
+
+			state = nextState(state, 0, 0);
 
 			client.emit('gameState', state);
 
 			console.log(state);
 
-		//	await sleep(4000);
+			await sleep(2000); // sleep in ms
 
-		// }
+			return ;
+
+		 }
 
 	}
 
 	async moveAction(pongDto: PongDto): Promise<void> {
 		//DO SOME STUSS
 	}
+}
+
+
+
+
+
+
+
+
+
+
+function initGameState(): State {
+
+	return new State(
+		{
+			ballPos: new Point(board_x_size / 2, board_y_size / 2),
+			ballVel: new Point(20, Math.floor(Math.random() * (20 + 1))),
+			leftPaddle: board_y_size / 2,
+			rightPaddle: board_y_size / 2,
+			leftScore: 0,
+			rightScore: 0
+		}
+	);
 }
 
 function sleep(ms: number) {
