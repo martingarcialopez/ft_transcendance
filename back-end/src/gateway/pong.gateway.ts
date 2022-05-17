@@ -43,4 +43,10 @@ export class PongGateway
 		let value = await this.pongService.moveAction(pongDto);
 		this.server.emit('EVENT_TO_FRONT', value);
 	}
+
+  @SubscribeMessage('startGame')
+  startPongGame(client: Socket) {
+
+    this.pongService.PlayGame(client);
+  }
 }
