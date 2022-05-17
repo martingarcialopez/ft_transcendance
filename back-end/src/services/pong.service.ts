@@ -19,18 +19,18 @@ export class PongService {
 		private readonly gameService: InMemoryDBService<GameEntity>
 	) { }
 
-
 	async playGame(client: Socket) {
 
 		let state: State = initGameState();
 		let lastMove: number = 0;
 
+		let paddleSpeed = 5;
+
 		 while (true) {
 
 			const move : GameEntity[] = this.gameService.getAll();
 
-
-			console.log(move);
+			//console.log(move);
 
 			let leftPlayerMove = 0;
 			let rightPlayerMove = 0;
@@ -48,22 +48,20 @@ export class PongService {
 			}
 			lastMove = move.length;
 
-			state = nextState(state, leftPlayerMove, rightPlayerMove);
+			state = nextState(state, leftPlayerMove * paddleSpeed, rightPlayerMove * paddleSpeed);
 
 			client.emit('gameState', state);
 
-			console.log(state);
+			// console.log(state);
 
 			await sleep(40); // sleep in ms
 
 		 }
-
-
 	}
 
 	async registerMove(move: GameEntity): Promise<void> {
 
-		console.log(move);
+		//console.log(move);
 
 		const created: GameEntity = this.gameService.create({
 			id: move[0],
