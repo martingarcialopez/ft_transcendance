@@ -8,7 +8,7 @@ export class Room {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
+	@Column({unique: true})
 	name: string;
 
 	//public or private or protected

@@ -13,8 +13,8 @@ const app = new Vue({
     const message = {
     name: this.name,
 	content: this.content
-   }
-//   this.socket.emit('createRoom', message)
+	}
+   this.socket.emit('JoinPublicRoom', message)
    this.content = ''
   }
  },

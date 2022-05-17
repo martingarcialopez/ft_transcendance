@@ -12,6 +12,7 @@ export function E_CreateParticipant(userName: number, roomId: number) {
   socket.on("participantId", (receive: { id: number }) => {
     console.log("reponse createParticipant : ", receive);
   });
+
 }
 
 /*
