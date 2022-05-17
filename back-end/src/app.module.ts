@@ -23,6 +23,7 @@ import { PongGateway } from './gateway/pong.gateway';
 import { PongService} from './services/pong.service';
 import { Pong} from './models/pong.entity';
 import { PongModule} from './modules/pong.module';
+import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 
 
 @Module({
@@ -37,6 +38,7 @@ import { PongModule} from './modules/pong.module';
 		entities: [User, Message, Room, Participant, Pong],
       synchronize: true,
     }),
+    InMemoryDBModule.forRoot({}),
     HttpModule,
     UserModule,
     MessageModule,

@@ -23,7 +23,8 @@ export class Room {
 
 
 	@Column("int",  { nullable:true, array: true, default: "{}" })
-	owner: number[] = [];
+	//owner: number[] = [];
+	owner: number[];
 
 	@OneToMany((type) => Message, (message) => message.room)
     messages: Message[];
