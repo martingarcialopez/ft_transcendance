@@ -25,6 +25,7 @@ export const Pong = () => {
         rightScore: 0,
     });
     const [direction, setDirection] = useState<Direction | undefined>();
+    const [id, setId] = useState(0);
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         console.log("event code = ")
@@ -33,16 +34,17 @@ export const Pong = () => {
             case 'KeyS' || 'ArrowDown':
                 if (direction !== Direction.UP) {
                     setDirection(Direction.DOWN);
-                    socket.emit('move', 'MaPetiteCopineElleEstBonne', "leftplayer", 1);
+                    socket.emit('move', id, "leftplayer", 1);
                 }
                 break;
             case 'KeyW' || 'ArrowUp':
                 if (direction !== Direction.DOWN) {
                     setDirection(Direction.UP);
-                    socket.emit('move', 'MaPetiteCopineElleEstBonne', "leftplayer", -1);
+                    socket.emit('move', id, "leftplayer", -1);
                 }
                 break;
         }
+        setId(id + 1);
         console.log("direction = ");
         console.log(direction);
     };
