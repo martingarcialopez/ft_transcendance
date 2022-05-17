@@ -26,7 +26,7 @@ export function AddParticipant() {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           //const roomId = findId(arrayRoom, data.roomName);
-          E_CreateParticipant(1, 29);
+          E_CreateParticipant(data.userName, 29);
         })}
       >
         <input
@@ -47,10 +47,10 @@ export function AddParticipant() {
           {...register("userName")}
         />
         <br />
-        <div className="box-btn ">
-          <input className="btn1 btn-new-room" type="submit" value="Add" />
-          <input className="btn2 btn-new-room" type="submit" value="Remove" />
-        </div>
+        {/* <div className="box-btn "> */}
+        <input className="btn-new-room" type="submit" value="Add" />
+        {/* <input className="btn2 btn-new-room" type="submit" value="Remove" /> */}
+        {/* </div> */}
       </form>
     </>
   );
