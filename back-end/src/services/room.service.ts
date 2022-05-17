@@ -52,8 +52,10 @@ export class RoomService {
 		}
 		else
 			new_room.password = null;
+		if(new_room.owner == null)
+			new_room.owner = [];
 		new_room.owner.push(roomDto.creatorId);
-		new_room.avatar = roomDto.avatar;
+//		new_room.avatar = roomDto.avatar;
 		await this.roomRepository.save(new_room);
 
 		/*the creator is the first participant to be created*/
@@ -92,21 +94,20 @@ export class RoomService {
     }
 
 	async joinRoom(joinRoomDto: JoinRoomDto): Promise<boolean> {
+		console.log('joinRoomDto: ', joinRoomDto);
 		const room_Id: number = joinRoomDto.roomId;
 		const entered_pw : string = joinRoomDto.entered_pw;
 
-		const room_pw = await this.roomRepository.createQueryBuilder("room")
-            .select(["room.password"])
+		const room_info = await this.roomRepository.createQueryBuilder("room")
+            .select(["room.typeRoom", "room.password"])
 			.where("room.id = :room_Id", { room_Id: room_Id })
 			.getOne();
-
-		if (await bcrypt.compare(entered_pw, room_pw['password']))
+		if (room_info.typeRoom == 'public' || room_info.typeRoom == 'private')
+			return true;
+		console.log('room_type_pw ', room_info);
+		if (await bcrypt.compare(entered_pw, room_info['password']))
 		{
 			await this.participantService.createParticipant({'userId': joinRoomDto.userId, 'roomId': room_Id});
-			// const new_participant = new Participant();
-			// new_participant.userId = joinRoomDto.userId;
-			// new_participant.roomId = room_Id;
-			// await this.participantRepository.save(new_participant);
 			return true;
 		}
 		return false;
@@ -118,7 +119,7 @@ export class RoomService {
             .select(["room.owner"])
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
-		if (admin['owner'].indexOf(body.userId) != -1)
+		if (admin && admin['owner'].indexOf(body.userId) != -1)
 		{
 			let room =  await this.roomRepository.createQueryBuilder("room")
 			    .where("room.id = :room_Id", { room_Id: body.roomId })
