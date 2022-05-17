@@ -36,11 +36,6 @@ export const Pong = () => {
         });
     }
 
-    useEffect(() => {
-        console.log("useEffect receive soket info")
-        socket.emit('startGame');
-    }, [])
-
     function handleClick() {
         socket.emit('startGame');
         console.log("HANDKE CKUC")
