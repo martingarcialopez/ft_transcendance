@@ -7,7 +7,7 @@ import { E_CreateRoom, socket } from "./Event";
 import "../styles/room.css";
 import { useState } from "react";
 import { Hidden } from "./Hidden";
-
+import { TitleOptionRoom } from "./TitleOptionRoom";
 import { RootState } from "../redux/store";
 import { UserState } from "../redux/reducers/userReducers";
 
@@ -39,9 +39,8 @@ export function CreateRoom() {
     <>
       <br />
       <br />
-      <h3 style={{ position: "relative", left: "25%", width: "25%" }}>
-        Create Channel
-      </h3>
+
+      <TitleOptionRoom title="Create Channel" />
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
@@ -64,7 +63,6 @@ export function CreateRoom() {
           autoComplete="on"
           {...register("name")}
         />
-        <br />
         <input
           className="inputRoom"
           type="password"
@@ -73,7 +71,6 @@ export function CreateRoom() {
           {...register("password")}
           style={{ display: state }}
         />
-        <br />
         <select
           className="inputRoom"
           id="pet-select"

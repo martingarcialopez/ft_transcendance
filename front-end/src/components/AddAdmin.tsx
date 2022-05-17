@@ -1,13 +1,10 @@
 import { GrUserAdmin } from "react-icons/gr";
 import "../styles/room.css";
-//import { useForm } from "react-hook-form";
 import { T_Room } from "../type/chat";
-//import { useState } from "react";
-//import { E_UpdatePwd, E_SendEvent } from "../../components/Event";
 import { useForm } from "react-hook-form";
 import { E_ManageAdmin } from "./Event";
-
 import { BasicModal } from "./BasicModal";
+import { TitleOptionRoom } from "./TitleOptionRoom";
 
 export type T_PropsRoomArray = {
   room: T_Room[];
@@ -55,9 +52,7 @@ export function AddAdmin({ room }: T_PropsRoomArray) {
   return (
     <>
       {" "}
-      <h3 style={{ position: "relative", left: "25%" }}>
-        Mangement Admin Channel
-      </h3>
+      <TitleOptionRoom title="Mangement Admin Channel" />
       {room.map((item: T_Room, index: number) => {
         return (
           <BasicModal

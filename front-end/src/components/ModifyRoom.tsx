@@ -6,6 +6,7 @@ import { FiSettings } from "react-icons/fi";
 import { E_UpdatePwd, E_LeaveRoom, E_DeleteRoomPw } from "./Event";
 import { BasicModal } from "./BasicModal";
 import { Hidden } from "./Hidden";
+import { TitleOptionRoom } from "./TitleOptionRoom";
 
 function ChangePassWord() {
   const { register, handleSubmit } = useForm();
@@ -81,7 +82,7 @@ export function ModifyRoom({ room }: T_PropsRoomArray) {
   return (
     <>
       {" "}
-      <h3 style={{ position: "relative", left: "25%" }}>Modify Room</h3>
+      <TitleOptionRoom title="Modify Room" />
       {room.map((item: T_Room, index: number) => {
         return (
           <BasicModal

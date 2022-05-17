@@ -37,7 +37,7 @@ html
   cursor: pointer;
 	font-size: 100%;
 	position: relative;
-	left: 10%;
+	/* left: 10%; */
 }
 
 input[type=submit]:hover {
@@ -45,8 +45,15 @@ input[type=submit]:hover {
 }
 
 .frm-add-room{
-		position: relative;
-		left: 25%;
+		/* position: relative; */
+		/* left: 25%; */
+		overflow: hidden;
+		/* background-color: black; */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		
+
 
 }
 

@@ -5,6 +5,7 @@ import "../styles/room.css";
 
 import { useForm } from "react-hook-form";
 import { E_CreateParticipant } from "./Event";
+import { TitleOptionRoom } from "./TitleOptionRoom";
 
 /* function findId(item: T_Room[], occurence: string): number {
  *   let id = -1;
@@ -20,9 +21,7 @@ export function AddParticipant() {
 
   return (
     <>
-      <h3 style={{ position: "relative", left: "25%" }}>
-        Add user Into Private Room{" "}
-      </h3>
+      <TitleOptionRoom title="Add user Into Private Room" />
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {

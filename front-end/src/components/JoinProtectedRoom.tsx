@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { E_JoinRoom } from "./Event";
 import { T_Room } from "../type/chat";
 import { BasicModal } from "./BasicModal";
+import { TitleOptionRoom } from "./TitleOptionRoom";
 
 export type T_PropsRoomArray = {
   room: T_Room[];
@@ -62,7 +63,7 @@ export function JoinProtectedRoom({ room }: T_PropsRoomArray) {
   return (
     <>
       {" "}
-      <h3 style={{ position: "relative", left: "25%" }}>Join Protected Room</h3>
+      <TitleOptionRoom title="Join Protected Room" />
       {room.map((item: T_Room, index: number) => {
         return (
           <BasicModal

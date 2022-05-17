@@ -3,5 +3,9 @@ type T_props = {
 };
 
 export function TitleOptionRoom(props: T_props) {
-  return <h3>props.title</h3>;
+  return (
+    <h3 style={{ position: "relative", left: "25%", width: "25%" }}>
+      {props.title}
+    </h3>
+  );
 }
