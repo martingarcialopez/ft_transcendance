@@ -122,6 +122,7 @@ var board_x_size: number = 600;
 var board_y_size: number = 300;
 var paddle_size: number = 70;
 var paddle_width: number = 20;
+var ball_radius: number = 10;
 
 var initial_velocity: number = 8;
 
@@ -178,20 +179,20 @@ function updateBallPosition(current: State, next: State) {
 	// calculate next ball position adding current position with current velocity (friction is not yet taken into account)
 	next.ballPos.add(current.ballVel);
 
-	if (next.ballPos.y >= board_y_size) { // if ball touches lower edge, make it bounce
-		next.ballPos.y = board_y_size; // keep ball inside the canvas (ball radius not taken into account yet)
+	if (next.ballPos.y + ball_radius >= board_y_size) { // if ball touches lower edge, make it bounce
+		next.ballPos.y = board_y_size - ball_radius; // keep ball inside the canvas (ball radius not taken into account yet)
 		next.ballVel.y = -current.ballVel.y; // change the y velocity component, so next turn will rebound in opposite direction
 	}
-	else if (next.ballPos.y <= 0) { // same calculations if ball touches higher edge
-		next.ballPos.y = 0;
+	else if (next.ballPos.y - ball_radius <= 0) { // same calculations if ball touches higher edge
+		next.ballPos.y = ball_radius;
 		next.ballVel.y = -current.ballVel.y;
 	}
 
-	if (next.ballPos.x <= paddle_width + 2) { // Could be a Goal or a Rebound (Paddle width not taken into account yet)
+	if (next.ballPos.x - ball_radius <= paddle_width + 2) { // Could be a Goal or a Rebound (Paddle width not taken into account yet)
 
 		if (Math.abs(next.ballPos.y - next.leftPaddle) <= paddle_size / 2) { // if rebounds on paddle
 
-			next.ballPos.x = paddle_width; // keep the ball touching the paddle
+			next.ballPos.x = paddle_width + ball_radius; // keep the ball touching the paddle
 			next.ballVel.x = -current.ballVel.x; // change the x velocity component, so next turn will rebound in opposite direction
 
 		} else if (next.ballPos.x <= 0) { // If there were no paddle to stop it >> There is a Goal
@@ -207,11 +208,11 @@ function updateBallPosition(current: State, next: State) {
 			next.ballVel.y = Math.floor(Math.random() * (initial_velocity + 1));
 		}
 	}
-	else if (next.ballPos.x >= (board_x_size - paddle_width - 2)) { // exact same calculations on the other field
+	else if (next.ballPos.x + ball_radius >= (board_x_size - paddle_width - 2)) { // exact same calculations on the other field
 
 		if (Math.abs(next.ballPos.y - next.rightPaddle) <= paddle_size / 2) {
 
-			next.ballPos.x = board_x_size - paddle_width;
+			next.ballPos.x = board_x_size - paddle_width - ball_radius;
 			next.ballVel.x = -current.ballVel.x;
 
 		} else if (next.ballPos.x >= board_x_size) {
