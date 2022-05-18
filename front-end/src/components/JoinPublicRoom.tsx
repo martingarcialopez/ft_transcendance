@@ -1,8 +1,8 @@
 import { T_Room } from "../type/chat";
 import { BsPlusLg } from "react-icons/bs";
 import "../styles/room.css";
-//import { socket } from "../../chat/components/ChatTemplate";
 import { E_JoinRoom } from "./Event";
+import { TitleOptionRoom } from "./TitleOptionRoom";
 
 export type T_PropsRoomArray = {
   room: T_Room[];
@@ -15,9 +15,7 @@ export type T_PropsRoomArray = {
 export function JoinPublicRoom({ room }: T_PropsRoomArray) {
   return (
     <>
-      <h3 style={{ position: "relative", left: "25%", width: "25%" }}>
-        Join Public Room
-      </h3>
+      <TitleOptionRoom title="Join Public Room" />
       <div className="box-Room">
         {room.map((item: T_Room, index: number) => (
           <div className="roomList" key={index}>

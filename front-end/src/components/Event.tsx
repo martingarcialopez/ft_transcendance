@@ -126,3 +126,11 @@ export function E_BlockUser(userId: number, blockUserId: number) {
   });
   console.log("send event blockUserId: ", blockUserId);
 }
+
+export function E_allRoomInfos() {
+  socket.emit("allRoomInfos");
+
+  socket.on("allRoomInfosRes", (receive: any) => {
+    console.log("reponse allRoomInfosRes : ", receive);
+  });
+}
