@@ -25,7 +25,7 @@ export class PongService {
 		let lastMove: number = 0;
 		let winner: string;
 
-		let paddleSpeed = 5;
+		let paddleSpeed = 10;
 
 		 while (true) {
 
@@ -112,9 +112,10 @@ function sleep(ms: number) {
 
 var board_x_size: number = 600;
 var board_y_size: number = 300;
-var paddle_size: number = 150;
+var paddle_size: number = 70;
+var paddle_width: number = 20;
 
-var initial_velocity: number = 10;
+var initial_velocity: number = 8;
 
 class Point {
 
@@ -178,14 +179,14 @@ function updateBallPosition(current: State, next: State) {
 		next.ballVel.y = -current.ballVel.y;
 	}
 
-	if (next.ballPos.x <= 0) { // Could be a Goal or a Rebound (Paddle width not taken into account yet)
+	if (next.ballPos.x <= paddle_width) { // Could be a Goal or a Rebound (Paddle width not taken into account yet)
 
 		if (Math.abs(next.ballPos.y - next.leftPaddle) <= paddle_size / 2) { // if rebounds on paddle
 
-			next.ballPos.x = 0; // keep the ball touching the paddle
+			next.ballPos.x = paddle_width; // keep the ball touching the paddle
 			next.ballVel.x = -current.ballVel.x; // change the x velocity component, so next turn will rebound in opposite direction
 
-		} else { // If there were no paddle to stop it >> There is a Goal
+		} else if (next.ballPos.x <= 0) { // If there were no paddle to stop it >> There is a Goal
 
 			// rightPlayer scores a point
 			next.rightScore += 1;
@@ -198,14 +199,14 @@ function updateBallPosition(current: State, next: State) {
 			next.ballVel.y = Math.floor(Math.random() * (initial_velocity + 1));
 		}
 	}
-	else if (next.ballPos.x >= board_x_size) { // exact same calculations on the other field
+	else if (next.ballPos.x >= (board_x_size - paddle_width)) { // exact same calculations on the other field
 
 		if (Math.abs(next.ballPos.y - next.rightPaddle) <= paddle_size / 2) {
 
-			next.ballPos.x = board_x_size;
+			next.ballPos.x = board_x_size - paddle_width;
 			next.ballVel.x = -current.ballVel.x;
 
-		} else {
+		} else if (next.ballPos.x >= board_x_size) {
 
 			next.leftScore += 1;
 			next.ballPos.x = board_x_size / 2;
@@ -225,3 +226,8 @@ function nextState(current: State, leftPlayerMove: number, rightPlayerMove: numb
 
 	return next;
 }
+
+
+
+
+
