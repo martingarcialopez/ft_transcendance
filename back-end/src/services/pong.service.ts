@@ -68,11 +68,8 @@ export class PongService {
 		}
     }
 
-<<<<<<< HEAD
+
 	async playGame(socket: Socket, socketRoom: string) {
-=======
-	async playGame(client: Socket, roomName: string) {
->>>>>>> e622ac90a4f364bc7d8d69de6b82b6fca44fbdc5
 
 		let state: State = initGameState();
 		let lastMove: number = 0;
