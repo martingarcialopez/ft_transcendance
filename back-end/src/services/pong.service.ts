@@ -123,7 +123,7 @@ var board_y_size: number = 300;
 var paddle_size: number = 70;
 var paddle_width: number = 20;
 
-var initial_velocity: number = 8;
+var initial_velocity: number = 10;
 
 class Point {
 
@@ -193,6 +193,8 @@ function updateBallPosition(current: State, next: State) {
 
 			next.ballPos.x = paddle_width; // keep the ball touching the paddle
 			next.ballVel.x = -current.ballVel.x; // change the x velocity component, so next turn will rebound in opposite direction
+//			if (next.ballVel.y === 0)
+//				next.ballVel.x = Math.abs(next.ballPos.y - next.leftPaddle);
 
 		} else if (next.ballPos.x <= 0) { // If there were no paddle to stop it >> There is a Goal
 
