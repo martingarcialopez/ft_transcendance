@@ -28,3 +28,6 @@ export enum Direction {
   UP,
   DOWN,
 }
+
+export const PADDLE_WIDTH  = 20;
+export const PADDLE_HEIGTH = 70;

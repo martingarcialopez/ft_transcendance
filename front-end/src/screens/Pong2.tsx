@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Direction, GameState } from '../type/pongType';
+import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
 import { Button } from '@mui/material';
 import Canvas from '../components/Canvas';
@@ -63,6 +63,7 @@ export const Pong = () => {
     function handleClick() {
         socket.emit('startGame');
         console.log("HANDKE CKUC")
+        setWinner('');
         receive_socket_info();
     }
 
@@ -71,10 +72,10 @@ export const Pong = () => {
         ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
 
         ctx.fillStyle = "green";
-        ctx.fillRect(0, gameState.leftPaddle, 20, 70)
+        ctx.fillRect(0, gameState.leftPaddle, PADDLE_WIDTH, PADDLE_HEIGTH)
 
         ctx.fillStyle = "red";
-        ctx.fillRect(window_size.canvasWidth - 20, gameState.rightPaddle, 20, 70)
+        ctx.fillRect(window_size.canvasWidth - 20, gameState.rightPaddle, PADDLE_WIDTH, PADDLE_HEIGTH)
 
         ctx.fillStyle = "black";
         ctx.fillText(gameState.rightScore.toString(), window_size.canvasWidth - 100, 50);
@@ -87,7 +88,17 @@ export const Pong = () => {
 
     return (
         <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
-            <Button onClick={handleClick}>Send event</Button>
+            <Button onClick={handleClick}>
+                {winner === '' ? (
+                    <div>
+                        Start Game
+                    </div>
+                ) : (
+                    <div>
+                        Restart Game
+                    </div>
+                )}
+            </Button>
             <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
             {winner === '' ? (
                 <div>
@@ -95,7 +106,7 @@ export const Pong = () => {
                 </div>
             ) : (
                 <div>
-                    ${winner} a gagné la partie ! 
+                    {winner} a gagné la partie !
                 </div>
             )}
         </GameWrapper>
