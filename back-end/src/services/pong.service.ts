@@ -31,9 +31,9 @@ export class PongService {
 
 			if (state.leftScore >= 10 || state.rightScore >= 10) {
 
-				if (state.leftScore >= 10)
+				if (state.leftScore >= 3)
 					winner = 'leftplayer';
-				else if (state.rightScore >= 10)
+				else if (state.rightScore >= 3)
 					winner = 'rightplayer';
 				client.emit('gameOver', winner);
 				return ;
@@ -114,7 +114,7 @@ var board_x_size: number = 600;
 var board_y_size: number = 300;
 var paddle_size: number = 150;
 
-var initial_velocity: number = 5;
+var initial_velocity: number = 10;
 
 class Point {
 
