@@ -6,19 +6,25 @@ import {
   LOGOUT_ACTION,
   LOGIN_FAILED_ACTION,
   SIGNUP_FAILED_ACTION,
+  CHANGE_PAGE_ACTION,
 } from '../constants/userConstants'
 import { formatError, getInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp } from '../services/userServices';
 
-export function signupAction(firstname: any, lastname: any, email: any, password: any) {
+export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
-    signUp(firstname, lastname, email, password)
+    signUp(firstname, lastname, username, password)
       .then((response) => {
         console.log("signupAction response : ")
         console.log(response)
-        dispatch(confirmedSignupAction(response));
+        dispatch(confirmedSignupAction(response)).then(() => {
+          dispatch(loginAction(username, password, navigate))
+        });
       })
       .catch((error) => {
-        const errorMessage = formatError(error.response.data);
+        console.log("ceci est une error dans signupAction :")
+        console.log(error);
+        const errorMessage = formatError(error.code);
+        console.log("ceci est une errorMessage return de formatError dans signupAction :" + errorMessage)
         dispatch(signupFailedAction(errorMessage));
       });
   };
@@ -54,9 +60,9 @@ export function logout() {
   };
 }
 
-export function loginAction(email: any, password: any, navigate: NavigateFunction) {
+export function loginAction(username: any, password: any, navigate: NavigateFunction) {
   return (dispatch: any) => {
-    login(email, password)
+    login(username, password)
       .then((response) => {
         console.log("loginAction qui fct :")
         console.log(response)
@@ -113,167 +119,8 @@ export function loadingToggleAction(status: any) {
   };
 }
 
-// export const login =
-//   (
-//     username: String,
-//     password: String
-//   ): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
-//     async (
-//       dispatch: ThunkDispatch<RootState, unknown, AnyAction>
-//     ): Promise<void> => {
-//       try {
-//         dispatch({
-//           type: LOADING_TOGGLE_ACTION,
-//         })
-
-//         const response = await fetch('http://localhost:3000/auth/login', {
-//           method: 'POST',
-//           headers: { 'Content-Type': 'application/json' },
-//           body: JSON.stringify({
-//             username,
-//             password
-//           }),
-//         })
-
-//         console.log(response.status);
-//         // FAIRE UN CATCH ERROR STATUS POUR 201
-//         const data = await response.json()
-//         console.log("Ceci est data:" + data);
-//         console.log("Ceci est data.access_token:" + data.access_token);
-
-//         const responseData = await fetch('http://localhost:3000/user/current', {
-//           method: 'GET',
-//           headers: { 'Authorization': `Bearer ${data.access_token}` }
-//         })
-
-//         const data2 = await responseData.json()
-//         console.log(data2);
-
-//         const userData = {
-//           avatar: data2.avatar,
-//           firstname: data2.firstname,
-//           id: data2.id,
-//           isActive: data2.isActive,
-//           lastname: data2.lastname,
-//           login42: data2.login42,
-//           access_token: data.access_token,
-//           password: data2.password,
-//           username: data2.username
-//         }
-
-//         console.log(userData);
-
-//         dispatch({
-//           type: LOGIN_CONFIRMED_ACTION,
-//           payload: userData,
-//         })
-
-//         localStorage.setItem('userInfo', JSON.stringify(userData))
-//       } catch (error: any) {
-//         console.log("ON A FOIRE");
-//         dispatch({
-//           type: LOGIN_FAILED_ACTION,
-//           payload:
-//             error.response && error.response.data.message
-//               ? error.response.data.message
-//               : error.message,
-//         })
-//       }
-//     }
-
-// export const signup =
-//   (
-//     firstname: String,
-//     lastname: String,
-//     username: String,
-//     password: String,
-//   ): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
-//     async (
-//       dispatch: ThunkDispatch<RootState, unknown, AnyAction>
-//     ): Promise<void> => {
-//       try {
-//         dispatch({
-//           type: LOADING_TOGGLE_ACTION,
-//         })
-
-//         const response = await fetch('http://localhost:3000/user/sign-up', {
-//           method: 'POST',
-//           headers: { 'Content-Type': 'application/json' },
-//           body: JSON.stringify({
-//             firstname,
-//             lastname,
-//             username,
-//             password,
-//           }),
-//         })
-
-//         console.log(response.status);
-//         // FAIRE UN CATCH ERROR STATUS POUR 201
-//         const data = await response.json()
-//         console.log("Ceci est signup data:" + data);
-
-//         const userData = {
-//           avatar: data.avatar,
-//           firstname: data.firstname,
-//           id: data.id,
-//           isActive: data.isActive,
-//           lastname: data.lastname,
-//           login42: data.login42,
-//           access_token: data.access_token,
-//           password: data.password,
-//           username: data.username
-//         }
-//         // IL N Y A PAS DE TOKEN !!
-//         console.log("Ceci est data.access_token:" + data.access_token);
-
-//         // const responseData = await fetch('http://localhost:3000/user/current', {
-//         //   method: 'GET',
-//         //   headers: { 'Authorization': `Bearer ${data.access_token}` }
-//         // })
-
-//         // const data2 = await responseData.json()
-//         // console.log(data2);
-
-//         // const userData = {
-//         //   avatar: data2.avatar,
-//         //   firstname: data2.firstname,
-//         //   id: data2.id,
-//         //   isActive: data2.isActive,
-//         //   lastname: data2.lastname,
-//         //   login42: data2.login42,
-//         //   access_token: data.access_token,
-//         //   password: data2.password,
-//         //   username: data2.username
-//         // }
-
-//         console.log(userData);
-
-//         dispatch({
-//           type: LOGIN_CONFIRMED_ACTION,
-//           payload: userData,
-//         })
-
-//         localStorage.setItem('userInfo', JSON.stringify(userData))
-//       } catch (error: any) {
-//         console.log("ON A FOIRE");
-//         dispatch({
-//           type: LOGIN_FAILED_ACTION,
-//           payload:
-//             error.response && error.response.data.message
-//               ? error.response.data.message
-//               : error.message,
-//         })
-//       }
-//     }
-
-// export function logout() {
-//   return (dispatch: Dispatch) => {
-//       localStorage.removeItem('userInfo')
-//       dispatch({ type: LOGOUT_ACTION })
-
-//       // await fetch('http://localhost:3000/auth/logout', {
-//       //   headers: { 'Content-Type': 'application/json' },
-//       //   credentials: 'include',
-//       // })
-//     }
-// }
+export function changePageAction() {
+  return {
+    type: CHANGE_PAGE_ACTION,
+  };
+}

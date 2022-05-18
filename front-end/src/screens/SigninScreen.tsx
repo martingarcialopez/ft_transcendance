@@ -10,14 +10,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Link as LinkRoute, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Copyright from "../components/Copyright";
 
 import { SyntheticEvent, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store'
 import { UserState } from '../redux/reducers/userReducers';
-import { loginAction } from '../redux/actions/userActions';
+import { changePageAction, loginAction } from '../redux/actions/userActions';
 import { Alert, Collapse, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -28,6 +28,7 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ username: "", password: "" });
   const [open, setOpen] = useState(true);
+  const [errorFromBack, setErrorFromBack]: any = useState();
 
   const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -45,14 +46,8 @@ const SignIn = () => {
 
   const validate = () => {
     let temp = { ...errors }
-    if (username)
-      temp.username = username ? "" : "This field is required."
-    else
-      temp.username = "This field is required."
-    if (password)
-      temp.password = password ? "" : "This field is required."
-    else
-      temp.password = "This field is required."
+    temp.username = username ? "" : "This field is required."
+    temp.password = password ? "" : "This field is required."
     setErrors({
       ...temp
     })
@@ -63,12 +58,19 @@ const SignIn = () => {
     function2(value2);
   }
 
+  const handleChangePage = async () => {
+    dispatch(changePageAction())
+    navigate("/signup")
+  };
+
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
+
     validate();
     setOpen(true);
     if (!errors.password && !errors.username) {
       dispatch(loginAction(username, password, navigate))
+      setErrorFromBack()
 
       console.log("signin TOUT MARCHE SUPER BIEN", {
         username: username,
@@ -86,6 +88,11 @@ const SignIn = () => {
     // console.log("sign fin de handle")
     // console.log(store.getState())
   };
+
+  useEffect(() => {
+    console.log("useEffect userLogin")
+    setErrorFromBack(userLogin.errorMessage)
+  }, [userLogin.errorMessage])
 
   return (
     <ThemeProvider theme={theme}>
@@ -105,7 +112,7 @@ const SignIn = () => {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          {userLogin.errorMessage ?
+          {errorFromBack ?
             <Collapse in={open}>
               <Alert
                 variant="outlined"
@@ -124,7 +131,7 @@ const SignIn = () => {
                 }
                 sx={{ mb: 2 }}
               >
-                {userLogin.errorMessage}
+                {errorFromBack}
               </Alert>
             </Collapse>
             :
@@ -164,10 +171,6 @@ const SignIn = () => {
               error={errors.password ? true : false}
               helperText={errors.password}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -177,7 +180,9 @@ const SignIn = () => {
               Sign In
             </Button>
             <Grid>
-              <LinkRoute to="/signup">Don't have an account? Sign Up</LinkRoute>
+              <Button onClick={handleChangePage}>
+                Don't have an account? Sign Up
+              </Button>
             </Grid>
           </Box>
         </Box>

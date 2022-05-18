@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { BALL_RADIUS, GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
 import { Button } from '@mui/material';
@@ -7,9 +7,10 @@ import { GameWrapper } from '../styles/gameStyle';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux';
 import { UserState } from '../redux/reducers/userReducers';
+import { URL_test } from '../constants/url';
 // import Canvas from '../components/Canvas';
 
-export const socket = socketio('http://localhost:3000')
+export const socket = socketio(`${URL_test}`)
 
 const window_size = {
     canvasWidth: 600,
@@ -64,6 +65,7 @@ export const Pong = () => {
             // console.log(gameState);
         });
         socket.on('gameOver', (winnerPlayer) => {
+            console.log("winnerPlayer")
             console.log(winnerPlayer)
             setWinner(winnerPlayer);
             setGameStarted(false);
@@ -78,18 +80,14 @@ export const Pong = () => {
         receive_socket_info();
     }
 
-    useEffect(() => {
-        if (gameStarted === false) {
-            socket.on('GameInfo', (roomId, side) => {
-                console.log("roomId / side");
-                console.log(roomId);
-                console.log(side);
-                setRoomId(roomId)
-                setPlayerSide(side)
-                setGameStarted(true);
-            });
-        }
-    })
+    socket.on('GameInfo', (...args) => {
+        console.log("roomId / side");
+        console.log(args);
+        // console.log(side);
+        // setRoomId(args)
+        // setPlayerSide(side)
+        setGameStarted(true);
+    });
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
         ctx.fillStyle = "blue";
