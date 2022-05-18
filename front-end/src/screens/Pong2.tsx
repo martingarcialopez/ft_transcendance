@@ -17,10 +17,10 @@ export const Pong = () => {
     // Use a ref to access the Canvas
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [gameState, setGameState] = useState<GameState>({
-        ballPos: { x: 50, y: 50 },
-        ballVel: { x: 20, y: 16 },
-        leftPaddle: 150,
-        rightPaddle: 150,
+        ballPos: { x: window_size.canvasWidth / 2, y: window_size.canvasHeight / 2 },
+        ballVel: { x: 10, y: 10 },
+        leftPaddle: window_size.canvasHeight / 2,
+        rightPaddle: window_size.canvasHeight / 2,
         leftScore: 0,
         rightScore: 0,
     });
@@ -72,10 +72,10 @@ export const Pong = () => {
         ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
 
         ctx.fillStyle = "green";
-        ctx.fillRect(0, gameState.leftPaddle, PADDLE_WIDTH, PADDLE_HEIGTH)
+        ctx.fillRect(0, (gameState.leftPaddle - (PADDLE_HEIGTH / 2)), PADDLE_WIDTH, PADDLE_HEIGTH)
 
         ctx.fillStyle = "red";
-        ctx.fillRect(window_size.canvasWidth - 20, gameState.rightPaddle, PADDLE_WIDTH, PADDLE_HEIGTH)
+        ctx.fillRect((window_size.canvasWidth - PADDLE_WIDTH), (gameState.rightPaddle - (PADDLE_HEIGTH / 2)), PADDLE_WIDTH, PADDLE_HEIGTH)
 
         ctx.fillStyle = "black";
         ctx.fillText(gameState.rightScore.toString(), window_size.canvasWidth - 100, 50);
