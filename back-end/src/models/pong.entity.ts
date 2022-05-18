@@ -7,5 +7,5 @@ export class Pong {
 	id: number;
 
 	@Column()
-	name: string;
+	userId: number;
 }

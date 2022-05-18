@@ -268,6 +268,13 @@ export class RoomService {
 		return true;
 	}
 
+	async allRoomInfos() : Promise<Room[] | undefined> {
+		let rooms: any = await this.roomRepository.createQueryBuilder("room")
+            .getMany();
+		return rooms;
+
+	}
+
 }
 
 
