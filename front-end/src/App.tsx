@@ -9,7 +9,7 @@ import { Chat } from './screens/Chat';
 import { Pong } from './screens/Pong2';
 // import { NoMatch } from './screens/NoMatchScreen';
 import ResponsiveAppBar from './components/NavBar';
-import { Profile } from './screens/Profile';
+import { ProfileContainer } from './screens/ProfileContainer';
 import { Room } from './screens/Room';
 import { useDispatch, useSelector } from 'react-redux';
 import { Suspense, useEffect } from 'react';
@@ -47,10 +47,9 @@ const App = () => {
     routes = (
       <Routes>
         <Route path="/chat" element={<Chat />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<ProfileContainer />} />
         <Route path="pong" element={<Pong />} />
         <Route path="/room" element={<Room />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path='/home' element={<HomeScreen />} />
         <Route path='/logout' element={<HomeScreen />} />
         <Route path='/' element={<HomeScreen />} />

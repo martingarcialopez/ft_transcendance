@@ -29,8 +29,8 @@ export const Pong = () => {
     const [winner, setWinner] = useState('');
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        console.log("event code = ")
-        console.log(event.code)
+        // console.log("event code = ")
+        // console.log(event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
                 socket.emit('move', id.toString(), "leftplayer", 1);
@@ -41,8 +41,8 @@ export const Pong = () => {
                 setId(id + 1);
                 break;
         }
-        console.log("id = ");
-        console.log(id);
+        // console.log("id = ");
+        // console.log(id);
     };
 
     const receive_socket_info = () => {
@@ -64,7 +64,7 @@ export const Pong = () => {
 
     function handleClick() {
         socket.emit('startGame');
-        console.log("HANDKE CKUC")
+        // console.log("HANDKE CKUC")
         setWinner('');
         setGameStarted(true);
         receive_socket_info();
