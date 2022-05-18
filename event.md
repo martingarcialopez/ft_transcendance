@@ -285,3 +285,26 @@ void
 in the case of a user leave the room, BACK: remove the item of this participant from the participant table
  also if the participant is the owner of the room, remove his userId from the owner array in the table of room
  ```
+
+
+# JoinPublicRoom
+
+## request data
+```
+
+JoinRoomDto
+{
+	roomName: string,
+	userId: number
+}
+```
+## event send back
+```
+
+hasJoined
+```
+
+## response data
+```
+boolean
+```

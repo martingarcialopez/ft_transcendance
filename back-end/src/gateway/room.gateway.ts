@@ -21,6 +21,7 @@ import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { BlockUserDto } from '../dtos/in/blockUser.dto';
 import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto';
+import { PublicRoomDto } from '../dtos/in/publicRoom.dto';
 import { UserService } from '../services/user.service';
 import { MessageService } from '../services/message.service';
 
@@ -48,13 +49,14 @@ export class RoomGateway
 	@SubscribeMessage('createRoom')
 	async createRoom(socket: Socket, body: RoomDto): Promise<void> {
 		console.log('in the gateway of event createRoom');
-		// const body: RoomDto = {
-		// 	'name': 'mao room',
-		// 	'typeRoom': 'protected',
-		// 	'password': 'i am a cat',
-		// 	'creatorId' : 18,
-		// };
-		console.log(body);
+		const name_exist = await this.roomService.IsRoomName_Unique(body.name);
+		if (name_exist == false) {
+			socket.emit('exception', {
+				status: 'error',
+				message: 'name is already exist'
+			});
+			return ;
+		}
 		const value = await this.roomService.createRoom(body);
 		console.log('return value of roomId is ', value);
 		socket.emit('idRoom', value); //sending to sender-client only
@@ -65,11 +67,22 @@ export class RoomGateway
 	//	async JoinRoom(body: JoinRoomDto): Promise<void> {
 	async JoinRoom(socket: Socket): Promise<void> {
 		console.log('in gateway of JoinRoom');
-		let body: JoinRoomDto = {userId: 13, roomId: 50, entered_pw: 'i am a cat'};
+		let body: JoinRoomDto = {userId: 19, roomId: 50, entered_pw: 'i am a cat'};
 		const have_access = await this.roomService.joinRoom(body);
 //		this.server.emit('hasJoined', have_access);
 		socket.emit('hasJoined', have_access);
 	}
+
+
+	@SubscribeMessage('JoinPublicRoom')
+	async JoinPublicRoom(socket: Socket, body1: JoinRoomDto): Promise<void>
+	{
+		let body: JoinRoomDto = {'roomName' : 'cat room', 'userId' : 19};
+		let roomName: string = body.roomName;
+		let roomId: number = await this.roomService.getRoomId(roomName);
+
+	}
+
 
 
 	/*already a member in the room*/
@@ -129,15 +142,26 @@ export class RoomGateway
 	}
 
 	@SubscribeMessage('blockUser')
-	async blockUser(@Body() body: BlockUserDto) : Promise<void> {
+	async blockUser(body: BlockUserDto) : Promise<void> {
 //		const body: any = {userId:3, blockUserId:6};
 		await this.userService.blockUser(body);
 	}
 
 
 	@SubscribeMessage('leaveRoom')
-	async leaveRoom(@Body() body: ParticipantDto) {
+	async leaveRoom(body: ParticipantDto) {
         console.log('leaveRoom in room gw ', body);
         await this.roomService.AdminleaveRoom(body);
     }
+
+
+	@SubscribeMessage('allRoomInfos')
+	async allRoomInfos(socket: Socket) : Promise<void | undefined> {
+		let rooms  = await this.roomService.allRoomInfos();
+		console.log('allRoomInfos: ', rooms);
+		socket.emit('allRoomInfosRes', rooms);
+	}
+
+
+
 }
