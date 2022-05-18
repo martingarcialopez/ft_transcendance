@@ -25,6 +25,7 @@ export const Pong = () => {
         rightScore: 0,
     });
     const [id, setId] = useState(0);
+    const [winner, setWinner] = useState('');
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         console.log("event code = ")
@@ -52,6 +53,10 @@ export const Pong = () => {
             // console.log(args[0].ballPos.x);
             // console.log(args[0].ballPos.y);
             // console.log(gameState);
+        });
+        socket.on('gameOver', (winnerPlayer) => {
+            console.log(winnerPlayer)
+            setWinner(winnerPlayer);
         });
     }
 
@@ -84,6 +89,15 @@ export const Pong = () => {
         <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
             <Button onClick={handleClick}>Send event</Button>
             <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
+            {winner === '' ? (
+                <div>
+                    Partie en cours.
+                </div>
+            ) : (
+                <div>
+                    ${winner} a gagné la partie ! 
+                </div>
+            )}
         </GameWrapper>
     );
 }
