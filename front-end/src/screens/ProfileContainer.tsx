@@ -30,7 +30,7 @@ const matchs = [
   },
 ];
 
-export const ProfileContainer = (props: any) => {
+export const ProfileContainer = () => {
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   )

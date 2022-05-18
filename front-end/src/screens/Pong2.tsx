@@ -1,9 +1,12 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BALL_RADIUS, GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
 import { Button } from '@mui/material';
 import Canvas from '../components/Canvas';
 import { GameWrapper } from '../styles/gameStyle';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux';
+import { UserState } from '../redux/reducers/userReducers';
 // import Canvas from '../components/Canvas';
 
 export const socket = socketio('http://localhost:3000')
@@ -27,17 +30,22 @@ export const Pong = () => {
     const [id, setId] = useState(0);
     const [gameStarted, setGameStarted] = useState(false);
     const [winner, setWinner] = useState('');
+    const userLogin = useSelector<RootState, UserState>(
+        (state: RootState) => state.userLogin
+    )
+    const [playerSide, setPlayerSide] = useState('');
+    const [roomId, setRoomId] = useState('');
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         // console.log("event code = ")
         // console.log(event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
-                socket.emit('move', id.toString(), "leftplayer", 1);
+                socket.emit('move', id.toString(), roomId, playerSide, 1);
                 setId(id + 1);
                 break;
             case 'KeyW' || 'ArrowUp':
-                socket.emit('move', id.toString(), "leftplayer", -1);
+                socket.emit('move', id.toString(), roomId, playerSide, -1);
                 setId(id + 1);
                 break;
         }
@@ -63,12 +71,25 @@ export const Pong = () => {
     }
 
     function handleClick() {
-        socket.emit('startGame');
+        socket.emit('lookingForplay', userLogin.userInfo.id);
+
         // console.log("HANDKE CKUC")
         setWinner('');
-        setGameStarted(true);
         receive_socket_info();
     }
+
+    useEffect(() => {
+        if (gameStarted === false) {
+            socket.on('GameInfo', (roomId, side) => {
+                console.log("roomId / side");
+                console.log(roomId);
+                console.log(side);
+                setRoomId(roomId)
+                setPlayerSide(side)
+                setGameStarted(true);
+            });
+        }
+    })
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
         ctx.fillStyle = "blue";
@@ -103,7 +124,7 @@ export const Pong = () => {
                 <Button onClick={handleClick}>
                     {winner === '' ? (
                         <div>
-                            Start Game
+                            Find a game
                         </div>
                     ) : (
                         <div>
