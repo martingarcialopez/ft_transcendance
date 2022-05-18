@@ -1,9 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import {v4 as uuidv4} from 'uuid';
 import { Socket } from 'socket.io'
 
-import { Pong } from '../models/pong.entity';
+import { Matchmaking } from '../models/matchmaking.entity';
 import { PongDto } from '../dtos/in/pong.dto';
 import { moveDto } from 'src/dtos/in/move.dto';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
@@ -15,9 +17,49 @@ export class PongService {
 	//	@Inject(UserService)
 	//  private readonly userService: UserService;
 	constructor(
-		@InjectRepository(Pong) private readonly pongRepository: Repository<Pong>,
+		@InjectRepository(Matchmaking) private readonly pongRepository: Repository<Matchmaking>,
 		private readonly gameService: InMemoryDBService<GameEntity>
 	) { }
+
+	//----------------------Matchmaking------------------------
+	/*check the player is already exist or not*/
+    async managePlayer(socket: Socket, userId : number) :Promise<void> {
+
+		let myuuid = uuidv4();
+
+		let res = await this.pongRepository
+			.createQueryBuilder()
+			.update(Matchmaking)
+            .set({ lock:myuuid })
+			.where("id in (select id from matchmaking where lock is null limit 1)")
+			.execute();
+
+		if (res.affected == 0){
+			const new_matchmaking = new Matchmaking();
+			new_matchmaking.userId = userId;
+			new_matchmaking.roomName = myuuid;
+			await this.pongRepository.save(new_matchmaking);
+			socket.join(myuuid);
+		}
+		else
+		{
+			let user_infos = await this.pongRepository
+				.createQueryBuilder('matchmaking')
+				.select(['matchmaking.userId', 'matchmaking.roomName'])
+				.where("matchmaking.lock = :lock", { lock: myuuid })
+				.execute();
+			let user_id = user_infos.matchmaking_userId;
+			let roomName = user_infos.matchmaking_roomName;
+			await this.pongRepository
+				.createQueryBuilder('matchmaking')
+				.delete()
+				.where("matchmaking.lock = :lock", { lock: myuuid })
+				.execute();
+			socket.join(roomName);
+
+			socket.to(roomName).emit('playGame', roomName);
+		}
+    }
 
 	async playGame(client: Socket) {
 
@@ -226,8 +268,3 @@ function nextState(current: State, leftPlayerMove: number, rightPlayerMove: numb
 
 	return next;
 }
-
-
-
-
-
