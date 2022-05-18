@@ -29,7 +29,7 @@ export class PongService {
 
 		 while (true) {
 
-			if (state.leftScore >= 10 || state.rightScore >= 10) {
+			if (state.leftScore >= 3 || state.rightScore >= 3) {
 
 				if (state.leftScore >= 3)
 					winner = 'leftplayer';
