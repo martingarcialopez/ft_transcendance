@@ -61,9 +61,9 @@ export class PongGateway
 
 	}
 
-  @SubscribeMessage('startGame')
-  startPongGame(client: Socket) {
+  // @SubscribeMessage('startGame')
+  // startPongGame(client: Socket) {
 
-    this.pongService.playGame(client);
-  }
+  //   this.pongService.playGame(client);
+  // }
 }

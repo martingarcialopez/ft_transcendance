@@ -43,6 +43,7 @@ export class PongService {
 			new_matchmaking.roomName = myuuid;
 			await this.pongRepository.save(new_matchmaking);
 			socket.join(myuuid);
+			socket.to(socket.id).emit('GameInfo', 'leftPlayer', myuuid);
 		}
 		else
 		{
@@ -52,7 +53,7 @@ export class PongService {
 				.select(['matchmaking.userId', 'matchmaking.roomName'])
 				.where("matchmaking.lock = :lock", { lock: myuuid })
 				.execute();
-			let user_id = user_infos.matchmaking_userId;
+			let other_user_id = user_infos.matchmaking_userId;
 			let roomName = user_infos.matchmaking_roomName;
 			// DELETE LOCKED PLAYER
 			await this.pongRepository
@@ -62,11 +63,16 @@ export class PongService {
 				.execute();
 
 			socket.join(roomName);
-			socket.to(roomName).emit('playGame', roomName);
+			socket.to(socket.id).emit('GameInfo', 'rightPlayer', roomName);
+			this.playGame(socket, roomName);
 		}
     }
 
+<<<<<<< HEAD
 	async playGame(socket: Socket, socketRoom: string) {
+=======
+	async playGame(client: Socket, roomName: string) {
+>>>>>>> e622ac90a4f364bc7d8d69de6b82b6fca44fbdc5
 
 		let state: State = initGameState();
 		let lastMove: number = 0;
