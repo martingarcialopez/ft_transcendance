@@ -54,8 +54,8 @@ export class PongGateway
 	async moveAction(socket: Socket, move: GameEntity): Promise<void> {
 		// let value = await this.pongService.moveAction(pongDto);
 		// this.server.emit('EVENT_TO_FRONT', value);
-    console.log('in move event with move');
-    console.log(move);
+    //console.log('in move event with move');
+    //console.log(move);
 
     await this.pongService.registerMove(move);
 

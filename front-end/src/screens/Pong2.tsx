@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
+import { BALL_RADIUS, GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
 import { Button } from '@mui/material';
 import Canvas from '../components/Canvas';
@@ -17,14 +17,15 @@ export const Pong = () => {
     // Use a ref to access the Canvas
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [gameState, setGameState] = useState<GameState>({
-        ballPos: { x: 50, y: 50 },
-        ballVel: { x: 20, y: 16 },
-        leftPaddle: 150,
-        rightPaddle: 150,
+        ballPos: { x: window_size.canvasWidth / 2, y: window_size.canvasHeight / 2 },
+        ballVel: { x: 10, y: 10 },
+        leftPaddle: window_size.canvasHeight / 2,
+        rightPaddle: window_size.canvasHeight / 2,
         leftScore: 0,
         rightScore: 0,
     });
     const [id, setId] = useState(0);
+    const [gameStarted, setGameStarted] = useState(false);
     const [winner, setWinner] = useState('');
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -57,6 +58,7 @@ export const Pong = () => {
         socket.on('gameOver', (winnerPlayer) => {
             console.log(winnerPlayer)
             setWinner(winnerPlayer);
+            setGameStarted(false);
         });
     }
 
@@ -64,20 +66,29 @@ export const Pong = () => {
         socket.emit('startGame');
         console.log("HANDKE CKUC")
         setWinner('');
+        setGameStarted(true);
         receive_socket_info();
     }
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
         ctx.fillStyle = "blue";
-        ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
+        // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
+        ctx.beginPath();
+        ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
+        ctx.closePath();
+
+        ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI)
+        ctx.fillStyle = 'pink';
+        ctx.fill();
 
         ctx.fillStyle = "green";
-        ctx.fillRect(0, gameState.leftPaddle, PADDLE_WIDTH, PADDLE_HEIGTH)
+        ctx.fillRect(0, (gameState.leftPaddle - (PADDLE_HEIGTH / 2)), PADDLE_WIDTH, PADDLE_HEIGTH)
 
         ctx.fillStyle = "red";
-        ctx.fillRect(window_size.canvasWidth - 20, gameState.rightPaddle, PADDLE_WIDTH, PADDLE_HEIGTH)
+        ctx.fillRect((window_size.canvasWidth - PADDLE_WIDTH), (gameState.rightPaddle - (PADDLE_HEIGTH / 2)), PADDLE_WIDTH, PADDLE_HEIGTH)
 
         ctx.fillStyle = "black";
+        ctx.font = '16px Palantino';
         ctx.fillText(gameState.rightScore.toString(), window_size.canvasWidth - 100, 50);
 
         ctx.fillStyle = "black";
@@ -88,17 +99,23 @@ export const Pong = () => {
 
     return (
         <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
-            <Button onClick={handleClick}>
-                {winner === '' ? (
-                    <div>
-                        Start Game
-                    </div>
-                ) : (
-                    <div>
-                        Restart Game
-                    </div>
-                )}
-            </Button>
+            {gameStarted === false ?
+                <Button onClick={handleClick}>
+                    {winner === '' ? (
+                        <div>
+                            Start Game
+                        </div>
+                    ) : (
+                        <div>
+                            Restart Game
+                        </div>
+                    )}
+                </Button>
+                :
+                <div>
+                    PONG
+                </div>
+            }
             <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
             {winner === '' ? (
                 <div>

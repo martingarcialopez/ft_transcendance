@@ -80,6 +80,7 @@ export class PongService {
 				client.emit('gameOver', winner);
 				return ;
 			}
+		
 
 			const move : GameEntity[] = this.gameService.getAll();
 
@@ -101,13 +102,20 @@ export class PongService {
 			}
 			lastMove = move.length;
 
+			const prevTotalScore: number = state.leftScore + state.rightScore;
+
 			state = nextState(state, leftPlayerMove * paddleSpeed, rightPlayerMove * paddleSpeed);
+
+
 
 			client.emit('gameState', state);
 
 			// console.log(state);
 
-			await sleep(40); // sleep in ms
+			if (prevTotalScore != state.leftScore + state.rightScore)
+				await sleep(400);
+			else
+				await sleep(40); // sleep in ms
 
 		 }
 	}
@@ -121,8 +129,8 @@ export class PongService {
 			player: move[1],
 			move: move[2]
 		});
-		console.log('from register move, created entity is');
-		console.log(created);
+		//console.log('from register move, created entity is');
+		//console.log(created);
 	}
 }
 
@@ -194,15 +202,15 @@ class State {
 function updatePaddlePosition(next: State, leftPlayerMove: number, rightPlayerMove: number) {
 
 	next.leftPaddle += leftPlayerMove; // the position of the paddle after left player move is applied
-	if (next.leftPaddle + paddle_size / 2 > board_y_size) // if paddle exits canvas (lower end), block it at the bottom
+	if (next.leftPaddle + paddle_size / 2 >= board_y_size) // if paddle exits canvas (lower end), block it at the bottom
 		next.leftPaddle = board_y_size - paddle_size / 2;
-	else if (next.leftPaddle + paddle_size / 2 < 0) // if paddle exits canvas (higher end), block it at the top
+	else if (next.leftPaddle - paddle_size / 2 <= 0) // if paddle exits canvas (higher end), block it at the top
 		next.leftPaddle = paddle_size / 2;
 
 	next.rightPaddle += rightPlayerMove;
-	if (next.rightPaddle + paddle_size / 2 > board_y_size)
+	if (next.rightPaddle + paddle_size / 2 >= board_y_size)
 		next.rightPaddle = board_y_size - paddle_size / 2;
-	else if (next.rightPaddle + paddle_size / 2 < 0)
+	else if (next.rightPaddle - paddle_size / 2 <= 0)
 		next.rightPaddle = paddle_size / 2;
 
 }
@@ -221,7 +229,7 @@ function updateBallPosition(current: State, next: State) {
 		next.ballVel.y = -current.ballVel.y;
 	}
 
-	if (next.ballPos.x <= paddle_width) { // Could be a Goal or a Rebound (Paddle width not taken into account yet)
+	if (next.ballPos.x <= paddle_width + 2) { // Could be a Goal or a Rebound (Paddle width not taken into account yet)
 
 		if (Math.abs(next.ballPos.y - next.leftPaddle) <= paddle_size / 2) { // if rebounds on paddle
 
@@ -241,7 +249,7 @@ function updateBallPosition(current: State, next: State) {
 			next.ballVel.y = Math.floor(Math.random() * (initial_velocity + 1));
 		}
 	}
-	else if (next.ballPos.x >= (board_x_size - paddle_width)) { // exact same calculations on the other field
+	else if (next.ballPos.x >= (board_x_size - paddle_width - 2)) { // exact same calculations on the other field
 
 		if (Math.abs(next.ballPos.y - next.rightPaddle) <= paddle_size / 2) {
 
