@@ -2,10 +2,18 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany
 import { Exclude, Expose } from 'class-transformer';
 
 @Entity()
-export class Pong {
+export class Matchmaking {
 	@PrimaryGeneratedColumn()
 	id: number;
 
 	@Column()
 	userId: number;
+
+	@Column()
+	roomName: string;
+
+	@Column( {nullable:true, default: null} )
+	lock: string;
+
+
 }

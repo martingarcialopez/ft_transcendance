@@ -13,7 +13,7 @@ import { Bind, UseInterceptors } from '@nestjs/common';
 import { Logger, Body } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 
-import { Pong } from '../models/pong.entity'
+import { Matchmaking } from '../models/matchmaking.entity'
 import { PongDto } from '../dtos/in/pong.dto';
 import { PongService } from '../services/pong.service';
 import { moveDto } from 'src/dtos/in/move.dto';
@@ -34,8 +34,18 @@ export class PongGateway
     private readonly pongService: PongService,
   ) {}
 
+
+	@SubscribeMessage('lookingForplay')
+	async lookingForplayn(socket: Socket, userId: number) : Promise<void> {
+		console.log('lookingForplay Gateway');
+		let value = await this.pongService.managePlayer(socket, userId);
+
+	}
+
+
 	@SubscribeMessage('joinPongRoom')
 	async join(socket: Socket, pongDto: PongDto): Promise<void> {
+		console.log('joinPongRoom Gateway');
         // let value = await this.pongService.moveAction(pongDto);
         // this.server.emit('EVENT_TO_FRONT', value);
     }
