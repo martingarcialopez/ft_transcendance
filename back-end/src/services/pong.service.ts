@@ -27,6 +27,8 @@ export class PongService {
 
 		let myuuid = uuidv4();
 
+		// CHECK IF AT LEAST A PLAYER IS ALSO WAITING FOR A GAME
+		// AND IF SO LOCK HIM
 		let res = await this.pongRepository
 			.createQueryBuilder()
 			.update(Matchmaking)
@@ -34,6 +36,7 @@ export class PongService {
 			.where("id in (select id from matchmaking where lock is null limit 1)")
 			.execute();
 
+		// IF NO PLAYER WAITING, WE ADD CURRENT ONE
 		if (res.affected == 0){
 			const new_matchmaking = new Matchmaking();
 			new_matchmaking.userId = userId;
@@ -43,6 +46,7 @@ export class PongService {
 		}
 		else
 		{
+			// GET INFOS FROM LOCKED PLAYER
 			let user_infos = await this.pongRepository
 				.createQueryBuilder('matchmaking')
 				.select(['matchmaking.userId', 'matchmaking.roomName'])
@@ -50,13 +54,14 @@ export class PongService {
 				.execute();
 			let user_id = user_infos.matchmaking_userId;
 			let roomName = user_infos.matchmaking_roomName;
+			// DELETE LOCKED PLAYER
 			await this.pongRepository
 				.createQueryBuilder('matchmaking')
 				.delete()
 				.where("matchmaking.lock = :lock", { lock: myuuid })
 				.execute();
-			socket.join(roomName);
 
+			socket.join(roomName);
 			socket.to(roomName).emit('playGame', roomName);
 		}
     }
@@ -80,7 +85,7 @@ export class PongService {
 				client.emit('gameOver', winner);
 				return ;
 			}
-		
+
 
 			const move : GameEntity[] = this.gameService.getAll();
 
