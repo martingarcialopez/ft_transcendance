@@ -43,6 +43,7 @@ export class PongService {
 			new_matchmaking.roomName = myuuid;
 			await this.pongRepository.save(new_matchmaking);
 			socket.join(myuuid);
+			socket.to(socket.id).emit('GameInfo', 'leftPlayer', myuuid);
 		}
 		else
 		{
@@ -62,14 +63,7 @@ export class PongService {
 				.execute();
 
 			socket.join(roomName);
-			let game_infos = {
-				'roomName': roomName,
-				'playerPosition': {
-					'left': other_user_id,
-					'right': userId
-				}
-			};
-			socket.to(roomName).emit('GameInfo', game_infos);
+			socket.to(socket.id).emit('GameInfo', 'rightPlayer', roomName);
 			this.playGame(socket, roomName);
 		}
     }
