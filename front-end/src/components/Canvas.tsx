@@ -25,7 +25,7 @@ const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
       }
 
       draw(context);
-      return () => context.clearRect(0, 0, window.innerWidth, 400);
+      return () => context.clearRect(0, 0, window.innerWidth, window.innerHeight);
     }, [draw, canvasRef]);
 
     if (!canvasRef) {
