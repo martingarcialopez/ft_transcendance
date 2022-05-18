@@ -25,19 +25,19 @@ export const Pong = () => {
         rightScore: 0,
     });
     const [id, setId] = useState(0);
+    const [gameStarted, setGameStarted] = useState(false);
     const [winner, setWinner] = useState('');
+    const [eventCode, setEventCode] = useState('');
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         console.log("event code = ")
         console.log(event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
-                socket.emit('move', id.toString(), "leftplayer", 1);
-                setId(id + 1);
+                setEventCode('Up');
                 break;
             case 'KeyW' || 'ArrowUp':
-                socket.emit('move', id.toString(), "leftplayer", -1);
-                setId(id + 1);
+                setEventCode('Down');
                 break;
         }
         console.log("id = ");
@@ -64,10 +64,20 @@ export const Pong = () => {
         socket.emit('startGame');
         console.log("HANDKE CKUC")
         setWinner('');
+        setGameStarted(true);
         receive_socket_info();
     }
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
+        if (eventCode === 'Up') {
+            socket.emit('move', id.toString(), "leftplayer", 1);
+            setId(id + 1);
+        }
+        if (eventCode === 'Down') {
+            socket.emit('move', id.toString(), "leftplayer", -1);
+            setId(id + 1);
+        }
+        setEventCode('');
         ctx.fillStyle = "blue";
         ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
 
@@ -88,17 +98,23 @@ export const Pong = () => {
 
     return (
         <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
-            <Button onClick={handleClick}>
-                {winner === '' ? (
-                    <div>
-                        Start Game
-                    </div>
-                ) : (
-                    <div>
-                        Restart Game
-                    </div>
-                )}
-            </Button>
+            {gameStarted === false ?
+                <Button onClick={handleClick}>
+                    {winner === '' ? (
+                        <div>
+                            Start Game
+                        </div>
+                    ) : (
+                        <div>
+                            Restart Game
+                        </div>
+                    )}
+                </Button>
+                :
+                <div>
+                    PONG
+                </div>
+            }
             <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
             {winner === '' ? (
                 <div>
