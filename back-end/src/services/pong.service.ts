@@ -66,7 +66,7 @@ export class PongService {
 		}
     }
 
-	async playGame(client: Socket) {
+	async playGame(socket: Socket, socketRoom: string) {
 
 		let state: State = initGameState();
 		let lastMove: number = 0;
@@ -82,12 +82,12 @@ export class PongService {
 					winner = 'leftplayer';
 				else if (state.rightScore >= 3)
 					winner = 'rightplayer';
-				client.emit('gameOver', winner);
+				socket.to(socketRoom).emit('gameOver', winner);
 				return ;
 			}
 
 
-			const move : GameEntity[] = this.gameService.getAll();
+			const move : GameEntity[] = this.gameService.query((record) => record.room === socketRoom);
 
 			//console.log(move);
 
@@ -111,9 +111,7 @@ export class PongService {
 
 			state = nextState(state, leftPlayerMove * paddleSpeed, rightPlayerMove * paddleSpeed);
 
-
-
-			client.emit('gameState', state);
+			socket.to(socketRoom).emit('gameState', state);
 
 			// console.log(state);
 
@@ -131,8 +129,9 @@ export class PongService {
 
 		const created: GameEntity = this.gameService.create({
 			id: move[0],
-			player: move[1],
-			move: move[2]
+			room: move[1],
+			player: move[2],
+			move: move[3]
 		});
 		//console.log('from register move, created entity is');
 		//console.log(created);
