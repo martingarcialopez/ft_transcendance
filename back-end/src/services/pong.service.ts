@@ -63,10 +63,11 @@ export class PongService {
 
 			socket.join(roomName);
 			socket.to(roomName).emit('playGame', roomName);
+			await this.playGame(socket, roomName);
 		}
     }
 
-	async playGame(client: Socket) {
+	async playGame(client: Socket, roomName: string) {
 
 		let state: State = initGameState();
 		let lastMove: number = 0;
