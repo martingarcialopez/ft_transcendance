@@ -52,7 +52,7 @@ export class PongService {
 				.select(['matchmaking.userId', 'matchmaking.roomName'])
 				.where("matchmaking.lock = :lock", { lock: myuuid })
 				.execute();
-			let user_id = user_infos.matchmaking_userId;
+			let other_user_id = user_infos.matchmaking_userId;
 			let roomName = user_infos.matchmaking_roomName;
 			// DELETE LOCKED PLAYER
 			await this.pongRepository
@@ -62,8 +62,15 @@ export class PongService {
 				.execute();
 
 			socket.join(roomName);
-			socket.to(roomName).emit('playGame', roomName);
-			await this.playGame(socket, roomName);
+			let game_infos = {
+				'roomName': roomName,
+				'playerPosition': {
+					'left': other_user_id,
+					'right': userId
+				}
+			};
+			socket.to(roomName).emit('GameInfo', game_infos);
+			this.playGame(socket, roomName);
 		}
     }
 
