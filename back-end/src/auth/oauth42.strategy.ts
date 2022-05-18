@@ -15,11 +15,11 @@ export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
     constructor(private httpService: HttpService, private authService: AuthService, private userService: UserService) {
         super({
             authorizationURL:
-                'https://api.intra.42.fr/oauth/authorize?client_id=e2d030a76b4b62d20c5f0ef2b431169b9d845bdb68bfc12dc12d9aa31f215733&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauthentication%2Foauth2%2Fschool42%2Fcallback&response_type=code&scope=public',
+                `https://api.intra.42.fr/oauth/authorize?client_id=e2d030a76b4b62d20c5f0ef2b431169b9d845bdb68bfc12dc12d9aa31f215733&redirect_uri=http%3A%2F%2F${process.env.SERVER_URL}%3A8080%2Fauthentication%2Foauth2%2Fschool42%2Fcallback&response_type=code&scope=public1`,
             tokenURL: "https://api.intra.42.fr/oauth/token",
             clientID: "0d77316db950f62b0c04ce5cb7615491ce8e70486696b85c25473932430686d4",
             clientSecret: "24467ba395d0b6c69823d05c4350e99ca01cfbca1bf9d7b93aa2dd6440538e07",
-            callbackURL: "http://localhost:3000/auth/redirect",
+            callbackURL: `http://${process.env.SERVER_URL}:3000/auth/redirect`,
             scope: "public"
 
         });

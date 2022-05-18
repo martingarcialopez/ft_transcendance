@@ -25,9 +25,12 @@ import { Matchmaking} from './models/matchmaking.entity';
 import { PongModule} from './modules/pong.module';
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 
+import { ConfigModule } from '@nestjs/config';
+
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'container-postgres',

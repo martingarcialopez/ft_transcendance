@@ -19,6 +19,7 @@ services:
     volumes:
       - ./front-end:/usr/src/app
       - /usr/src/app/node_modules
+      - ./shared:/usr/src/app/shared/
        
     restart: always
 
@@ -41,6 +42,7 @@ services:
     volumes:
        - ./back-end:/usr/src/app
        - /usr/src/app/node_modules
+       - ./shared:/usr/src/app/shared
     command: npm run start:dev
     restart: always
 

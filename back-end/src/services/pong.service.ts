@@ -23,53 +23,94 @@ export class PongService {
 
 	//----------------------Matchmaking------------------------
 	/*check the player is already exist or not*/
-    async managePlayer(socket: Socket, userId : number) :Promise<void> {
 
-		let myuuid = uuidv4();
 
-		// CHECK IF AT LEAST A PLAYER IS ALSO WAITING FOR A GAME
-		// AND IF SO LOCK HIM
-		let res = await this.pongRepository
-			.createQueryBuilder()
-			.update(Matchmaking)
-            .set({ lock:myuuid })
-			.where("id in (select id from matchmaking where lock is null limit 1)")
-			.execute();
+    // async managePlayer(socket: Socket, userId : number) :Promise<void> {
 
-		// IF NO PLAYER WAITING, WE ADD CURRENT ONE
-		if (res.affected == 0){
-			const new_matchmaking = new Matchmaking();
-			new_matchmaking.userId = userId;
-			new_matchmaking.roomName = myuuid;
-			await this.pongRepository.save(new_matchmaking);
-			socket.join(myuuid);
-			socket.to(socket.id).emit('GameInfo', 'leftPlayer', myuuid);
+	// 	let myuuid = uuidv4();
+
+	// 	// CHECK IF AT LEAST A PLAYER IS ALSO WAITING FOR A GAME
+	// 	// AND IF SO LOCK HIM
+	// 	let res = await this.pongRepository
+	// 		.createQueryBuilder()
+	// 		.update(Matchmaking)
+    //         .set({ lock:myuuid })
+	// 		.where("id in (select id from matchmaking where lock is null limit 1)")
+	// 		.execute();
+
+	// 	// IF NO PLAYER WAITING, WE ADD CURRENT ONE
+	// 	if (res.affected == 0){
+	// 		const new_matchmaking = new Matchmaking();
+	// 		new_matchmaking.userId = userId;
+	// 		new_matchmaking.roomName = myuuid;
+	// 		await this.pongRepository.save(new_matchmaking);
+	// 		socket.join(myuuid);
+	// 		socket.to(socket.id).emit('GameInfo', 'leftPlayer', myuuid);
+	// 		console.log(`first player arrived and joined room ${myuuid}`);
+	// 	}
+	// 	else
+	// 	{
+	// 		// GET INFOS FROM LOCKED PLAYER
+	// 		let user_infos = await this.pongRepository
+	// 			.createQueryBuilder('matchmaking')
+	// 			.select(['matchmaking.userId', 'matchmaking.roomName'])
+	// 			.where("matchmaking.lock = :lock", { lock: myuuid })
+	// 			.execute();
+	// 		let other_user_id = user_infos.matchmaking_userId;
+	// 		let roomName = user_infos.matchmaking_roomName;
+	// 		// DELETE LOCKED PLAYER
+	// 		await this.pongRepository
+	// 			.createQueryBuilder('matchmaking')
+	// 			.delete()
+	// 			.where("matchmaking.lock = :lock", { lock: myuuid })
+	// 			.execute();
+
+	// 		socket.join(roomName);
+	// 		socket.to(socket.id).emit('GameInfo', 'rightPlayer', roomName);
+	// 		console.log(`second player arrived and joined room ${roomName}`);
+	// 		this.playGame(socket, roomName);
+	// 		console.log('GAME STARTED');
+	// 	}
+    // }
+
+	async managePlayer(socket: Socket, userId : number) :Promise<void> {
+
+
+	// if THERE IS SOMEBODY IN THE DATABASE 
+		let bbdd = await this.pongRepository.find();
+		
+		if (!bbdd.length) {
+
+			const player: Matchmaking = new Matchmaking();
+
+			player.userId = userId;
+			player.roomName = uuidv4();
+			await this.pongRepository.save(player);
+
+			socket.emit('GameInfo', 'leftPlayer', player.roomName);
+			socket.join(player.roomName);
+			console.log(`first player arrived and joined room ${player.roomName}`);
+
+
+		} else {
+
+			let opponent: Matchmaking = bbdd.at(0);
+			this.pongRepository.delete( { userId: opponent.userId });
+
+			socket.emit('GameInfo', 'rightPlayer', opponent.roomName);
+			socket.join(opponent.roomName);
+			console.log(`second player arrived and joined room ${opponent.roomName}`);
+			this.playGame(socket, opponent.roomName);
+			console.log(`GAME STARTED in room ${opponent.roomName}`);	
+
 		}
-		else
-		{
-			// GET INFOS FROM LOCKED PLAYER
-			let user_infos = await this.pongRepository
-				.createQueryBuilder('matchmaking')
-				.select(['matchmaking.userId', 'matchmaking.roomName'])
-				.where("matchmaking.lock = :lock", { lock: myuuid })
-				.execute();
-			let other_user_id = user_infos.matchmaking_userId;
-			let roomName = user_infos.matchmaking_roomName;
-			// DELETE LOCKED PLAYER
-			await this.pongRepository
-				.createQueryBuilder('matchmaking')
-				.delete()
-				.where("matchmaking.lock = :lock", { lock: myuuid })
-				.execute();
 
-			socket.join(roomName);
-			socket.to(socket.id).emit('GameInfo', 'rightPlayer', roomName);
-			this.playGame(socket, roomName);
-		}
-    }
+	}
 
 
 	async playGame(socket: Socket, socketRoom: string) {
+
+		console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
 
 		let state: State = initGameState();
 		let lastMove: number = 0;
