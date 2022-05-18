@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Direction, GameState, Position } from '../type/pongType';
+import { useRef, useState } from 'react';
+import { Direction, GameState } from '../type/pongType';
 import socketio from "socket.io-client";
 import { Button } from '@mui/material';
 import Canvas from '../components/Canvas';
@@ -24,40 +24,39 @@ export const Pong = () => {
         leftScore: 0,
         rightScore: 0,
     });
-    const [direction, setDirection] = useState<Direction | undefined>();
     const [id, setId] = useState(0);
+    const [winner, setWinner] = useState('');
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         console.log("event code = ")
         console.log(event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
-                if (direction !== Direction.UP) {
-                    setDirection(Direction.DOWN);
-                    socket.emit('move', id, "leftplayer", 1);
-                }
+                socket.emit('move', id.toString(), "leftplayer", 1);
+                setId(id + 1);
                 break;
             case 'KeyW' || 'ArrowUp':
-                if (direction !== Direction.DOWN) {
-                    setDirection(Direction.UP);
-                    socket.emit('move', id, "leftplayer", -1);
-                }
+                socket.emit('move', id.toString(), "leftplayer", -1);
+                setId(id + 1);
                 break;
         }
-        setId(id + 1);
-        console.log("direction = ");
-        console.log(direction);
+        console.log("id = ");
+        console.log(id);
     };
 
     const receive_socket_info = () => {
         socket.on('gameState', (...args) => {
             setGameState(args[0])
-            console.log(args);
-            console.log(args[0]);
-            console.log(args[0].ballPos);
-            console.log(args[0].ballPos.x);
-            console.log(args[0].ballPos.y);
-            console.log(gameState);
+            // console.log(args);
+            // console.log(args[0]);
+            // console.log(args[0].ballPos);
+            // console.log(args[0].ballPos.x);
+            // console.log(args[0].ballPos.y);
+            // console.log(gameState);
+        });
+        socket.on('gameOver', (winnerPlayer) => {
+            console.log(winnerPlayer)
+            setWinner(winnerPlayer);
         });
     }
 
@@ -90,6 +89,15 @@ export const Pong = () => {
         <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
             <Button onClick={handleClick}>Send event</Button>
             <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
+            {winner === '' ? (
+                <div>
+                    Partie en cours.
+                </div>
+            ) : (
+                <div>
+                    ${winner} a gagné la partie ! 
+                </div>
+            )}
         </GameWrapper>
     );
 }

@@ -19,37 +19,63 @@ export class PongService {
 		private readonly gameService: InMemoryDBService<GameEntity>
 	) { }
 
-
 	async playGame(client: Socket) {
 
 		let state: State = initGameState();
+		let lastMove: number = 0;
+		let winner: string;
+
+		let paddleSpeed = 5;
 
 		 while (true) {
 
-			// const move : GameEntity[] = this.gameService.getAll();
+			if (state.leftScore >= 3 || state.rightScore >= 3) {
 
-			// console.log(move);
+				if (state.leftScore >= 3)
+					winner = 'leftplayer';
+				else if (state.rightScore >= 3)
+					winner = 'rightplayer';
+				client.emit('gameOver', winner);
+				return ;
+			}
 
-			state = nextState(state, 0, 0);
+			const move : GameEntity[] = this.gameService.getAll();
+
+			//console.log(move);
+
+			let leftPlayerMove = 0;
+			let rightPlayerMove = 0;
+
+			if (move.length > lastMove) {
+
+
+				for (let i: number = lastMove; i < move.length ; i++) {
+					if (move[i].player === "leftplayer")
+						leftPlayerMove += move[i].move;
+					else if (move[i].player === "rightplayer")
+						rightPlayerMove += move[i].move;
+
+				}
+			}
+			lastMove = move.length;
+
+			state = nextState(state, leftPlayerMove * paddleSpeed, rightPlayerMove * paddleSpeed);
 
 			client.emit('gameState', state);
 
-			console.log(state);
+			// console.log(state);
 
 			await sleep(40); // sleep in ms
 
 		 }
-
-
-
 	}
 
 	async registerMove(move: GameEntity): Promise<void> {
 
-		console.log(move);
+		//console.log(move);
 
 		const created: GameEntity = this.gameService.create({
-			id: '0',
+			id: move[0],
 			player: move[1],
 			move: move[2]
 		});
@@ -86,9 +112,9 @@ function sleep(ms: number) {
 
 var board_x_size: number = 600;
 var board_y_size: number = 300;
-var paddle_size: number = 50;
+var paddle_size: number = 150;
 
-var initial_velocity: number = 5;
+var initial_velocity: number = 10;
 
 class Point {
 

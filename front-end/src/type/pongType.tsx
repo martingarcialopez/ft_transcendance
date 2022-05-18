@@ -27,6 +27,4 @@ export type CanvasType = React.DetailedHTMLProps<
 export enum Direction {
   UP,
   DOWN,
-  LEFT,
-  RIGHT,
 }
