@@ -23,10 +23,21 @@ export class PongService {
 
 		let state: State = initGameState();
 		let lastMove: number = 0;
+		let winner: string;
 
 		let paddleSpeed = 5;
 
 		 while (true) {
+
+			if (state.leftScore >= 10 || state.rightScore >= 10) {
+
+				if (state.leftScore >= 10)
+					winner = 'leftplayer';
+				else if (state.rightScore >= 10)
+					winner = 'rightplayer';
+				client.emit('gameOver', winner);
+				return ;
+			}
 
 			const move : GameEntity[] = this.gameService.getAll();
 
@@ -101,7 +112,7 @@ function sleep(ms: number) {
 
 var board_x_size: number = 600;
 var board_y_size: number = 300;
-var paddle_size: number = 50;
+var paddle_size: number = 150;
 
 var initial_velocity: number = 5;
 
