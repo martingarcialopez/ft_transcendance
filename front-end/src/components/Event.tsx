@@ -130,7 +130,7 @@ export function E_BlockUser(userId: number, blockUserId: number) {
   console.log("send event blockUserId: ", blockUserId);
 }
 
-export function E_AllRoomInfos(updateArrayRoom: Function): T_Room[] {
+export function E_AllRoomInfos(updateArrayRoom: any): T_Room[] {
   let test: any;
   socket.emit("allRoomInfos");
 
@@ -140,10 +140,11 @@ export function E_AllRoomInfos(updateArrayRoom: Function): T_Room[] {
         "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
     });
 
-    updateArrayRoom(receive);
+    updateArrayRoom = receive;
     test = receive;
+    console.log("test : ", test);
     /* test = JSON.parse(JSON.stringify(receive)); */
   });
-  console.log("test : ", test);
+
   return test;
 }

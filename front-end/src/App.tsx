@@ -16,12 +16,30 @@ import { Suspense, useEffect } from "react";
 import { checkAutoLogin } from "./redux/services/userServices";
 import { RootState } from "./redux";
 import { UserState } from "./redux/reducers/userReducers";
-
+import { bindActionCreators } from "redux";
+import { socket } from "./components/Event";
+import * as actionCreatorsRoom from "./redux/action-creators/Ac_room";
+import { T_Room } from "./type/chat";
 const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     checkAutoLogin(dispatch);
   }, [dispatch]);
+
+  const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
+
+  /* console.log("message:", message); */
+
+  socket.emit("allRoomInfos");
+
+  socket.on("allRoomInfosRes", (receive: T_Room[]) => {
+    receive.forEach((item: T_Room) => {
+      item.avatar =
+        "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
+    });
+    console.log("test : ", receive);
+    ac_InitRoomArray([...receive]);
+  });
 
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin

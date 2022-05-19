@@ -185,24 +185,9 @@ function InputMsg() {
 
 export function Chat() {
   const dispatch = useDispatch();
-  const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
 
   const { arrayRoom, message } = useSelector((state: RootState) => state);
-  /* console.log("message:", message); */
-  socket.emit("allRoomInfos");
-
-  useEffect(() => {
-    // Update the document title using the browser API
-    console.log("helo");
-    socket.on("allRoomInfosRes", (receive: T_Room[]) => {
-      receive.forEach((item: T_Room) => {
-        item.avatar =
-          "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
-      });
-      ac_InitRoomArray(receive);
-    });
-  }, []);
-
+  console.log("message:", message);
   return (
     <div>
       <div className="container">
