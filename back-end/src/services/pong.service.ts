@@ -75,8 +75,6 @@ export class PongService {
 
 	async managePlayer(socket: Socket, userId : number) :Promise<void> {
 
-
-	// if THERE IS SOMEBODY IN THE DATABASE 
 		let bbdd = await this.pongRepository.find();
 		
 		if (!bbdd.length) {
@@ -91,7 +89,6 @@ export class PongService {
 			socket.join(player.roomName);
 			console.log(`first player arrived and joined room ${player.roomName}`);
 
-
 		} else {
 
 			let opponent: Matchmaking = bbdd.at(0);
@@ -99,14 +96,12 @@ export class PongService {
 
 			socket.emit('GameInfo', 'rightPlayer', opponent.roomName);
 			socket.join(opponent.roomName);
-			console.log(`second player arrived and joined room ${opponent.roomName}`);
 			this.playGame(socket, opponent.roomName);
+			console.log(`second player arrived and joined room ${opponent.roomName}`);
 			console.log(`GAME STARTED in room ${opponent.roomName}`);	
 
 		}
-
 	}
-
 
 	async playGame(socket: Socket, socketRoom: string) {
 
@@ -155,6 +150,7 @@ export class PongService {
 
 			state = nextState(state, leftPlayerMove * paddleSpeed, rightPlayerMove * paddleSpeed);
 
+			socket.emit('gameState', state);
 			socket.to(socketRoom).emit('gameState', state);
 
 			// console.log(state);
@@ -169,7 +165,7 @@ export class PongService {
 
 	async registerMove(move: GameEntity): Promise<void> {
 
-		//console.log(move);
+		// console.log(move);
 
 		const created: GameEntity = this.gameService.create({
 			id: move[0],
@@ -177,12 +173,10 @@ export class PongService {
 			player: move[2],
 			move: move[3]
 		});
-		//console.log('from register move, created entity is');
-		//console.log(created);
+		// console.log('from register move, created entity is');
+		// console.log(created);
 	}
 }
-
-
 
 
 

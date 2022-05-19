@@ -1,7 +1,8 @@
 import socketio from "socket.io-client";
+import { URL_test } from "../constants/url";
 import { T_Room } from "../type/chat";
 
-const ENDPOINT = 'http://localhost:3000';
+const ENDPOINT = URL_test;
 export const socket = socketio(ENDPOINT); //connection to the server nestJs
 
 export function E_CreateParticipant(userName: number, roomId: number) {
