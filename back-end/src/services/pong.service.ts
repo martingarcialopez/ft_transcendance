@@ -56,8 +56,9 @@ export class PongService {
 	// 			.select(['matchmaking.userId', 'matchmaking.roomName'])
 	// 			.where("matchmaking.lock = :lock", { lock: myuuid })
 	// 			.execute();
-	// 		let other_user_id = user_infos.matchmaking_userId;
-	// 		let roomName = user_infos.matchmaking_roomName;
+	// 		let other_user_id = user_infos[0].matchmaking_userId;
+	// 		let roomName = user_infos[0].matchmaking_roomName;
+
 	// 		// DELETE LOCKED PLAYER
 	// 		await this.pongRepository
 	// 			.createQueryBuilder('matchmaking')
