@@ -31,6 +31,7 @@ export class RoomService {
 	constructor(
         @InjectRepository(Room) private readonly roomRepository: Repository<Room>,
 		@InjectRepository(Participant) private readonly participantRepository: Repository<Participant>,
+		@InjectRepository(User) private readonly userRepository: Repository<User>,
     ){}
 
 	/*
@@ -123,12 +124,12 @@ export class RoomService {
 		else if (typeRoom == 'private')
 		{
 			console.log('enter in private room');
-			let is_admin = await this.userIsAdmin(userId, roomId);
+			let is_admin = await this.userIsAdmin(roomId, userId);
 			if (is_admin == false)
 				return false;
 			const login: string = joinRoomDto.login;
 			console.log('login', login);
-			const invitee_info = await this.roomRepository.createQueryBuilder("user")
+			const invitee_info = await this.userRepository.createQueryBuilder("user")
 				.select(["user.id"])
 				.where("user.login42 = :login", { login: login })
 				.getOne();
