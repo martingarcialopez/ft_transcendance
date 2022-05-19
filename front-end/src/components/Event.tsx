@@ -1,5 +1,5 @@
 import socketio from "socket.io-client";
-import { T_Room } from "../type/chat";
+import { T_AddUserRoom, T_Room } from "../type/chat";
 
 const ENDPOINT = "http://localhost:3000";
 
@@ -81,13 +81,10 @@ export function E_SendEvent(userId: number, roomId: number, eventName: string) {
   console.log("send event : ", eventName);
 }
 
-export function E_JoinRoom(userId: number, roomId: number, pwd: string) {
-  socket.emit("JoinRoom", {
-    userId: userId,
-    roomId: roomId,
-    password: pwd,
-  });
-  console.log("user :", userId, " roomId:", roomId, " password:", pwd);
+/* export function E_JoinRoom(userId: number, roomId: number, pwd: string) { */
+export function E_JoinRoom(info: T_AddUserRoom) {
+  socket.emit("JoinRoom", info);
+  console.log("Event 'JoinRoom' :", info);
   socket.on("hasJoined", (receive: { state: boolean }) => {
     console.log("reponse hasJoined Room : ", receive);
   });

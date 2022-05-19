@@ -1,32 +1,48 @@
 import "../styles/room.css";
-//import { T_Room } from "../../type/chat";
-/* import { RootState } from "../../redux/store";*/
-/* * import { useSelector } from "react-redux"; */
-
 import { useForm } from "react-hook-form";
-import { E_CreateParticipant } from "./Event";
 import { TitleOptionRoom } from "./TitleOptionRoom";
+import { T_Room } from "../type/chat";
+import { RootState } from "../redux/store";
+import { UserState } from "../redux/reducers/userReducers";
+import { useSelector } from "react-redux";
+import { SetInfoUserRoom } from "./SetInfoUserRoom";
 
-/* function findId(item: T_Room[], occurence: string): number {
- *   let id = -1;
- *   item.forEach((data) => {
- *     if (data.name === occurence) id = data.id;
- *   });
- *   return id;
- * }
- *  */
+import { E_JoinRoom } from "./Event";
 
-export function AddParticipant() {
+export type T_PropsRoomArray = {
+  room: T_Room[];
+};
+
+function findId(room: T_Room[], occurence: string) {
+  let target: any;
+  room.forEach((item: T_Room) => {
+    if (item.name === occurence) target = item;
+  });
+  return target;
+}
+
+export function AddParticipant({ room }: T_PropsRoomArray) {
   const { register, handleSubmit } = useForm();
-
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
+  if (room.length < 1) return <></>;
   return (
     <>
       <TitleOptionRoom title="Add user Into Private Room" />
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
-          //const roomId = findId(arrayRoom, data.roomName);
-          E_CreateParticipant(data.userName, 29);
+          const targetRoom = findId(room, data.roomName);
+
+          const info = SetInfoUserRoom(
+            userLogin.userInfo.id,
+            targetRoom.roomId,
+            targetRoom.typeRoom,
+            "",
+            data.userName
+          );
+          E_JoinRoom(info);
         })}
       >
         <input

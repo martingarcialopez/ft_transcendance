@@ -34,7 +34,9 @@ function IsProctect({ id: number }: T_Room) {
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
           console.log("protected: ", data.target);
-          E_JoinRoom(3, 29, data.pwd);
+          {
+            /* E_JoinRoom(3, 29, data.pwd); */
+          }
         })}
       >
         <input

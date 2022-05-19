@@ -24,7 +24,9 @@ export function JoinPublicRoom({ room }: T_PropsRoomArray) {
               className="btn-join-room"
               onClick={() => {
                 console.log("Public: ");
-                E_JoinRoom(3, 23, "");
+                {
+                  /* E_JoinRoom(3, 23, ""); */
+                }
               }}
             >
               <BsPlusLg />

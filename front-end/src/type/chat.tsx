@@ -26,3 +26,11 @@ export type T_Action = {
   type: string;
   payload: any;
 };
+
+export type T_AddUserRoom = {
+  userId: number;
+  roomId: number;
+  typeRoom: string;
+  password: string;
+  login: string;
+};
