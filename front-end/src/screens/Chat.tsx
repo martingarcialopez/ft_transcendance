@@ -22,7 +22,7 @@ import { socket } from "../components/Event";
 
 function GetInfo(item: T_Room | T_User, state: any) {
   /* const dispatch = useDispatch();
-					  /* const { ac_getIdRoomMsg } = bindActionCreators(actionCreators, dispatch); */
+						/* const { ac_getIdRoomMsg } = bindActionCreators(actionCreators, dispatch); */
 
   state.ac_getIdRoomMsg(item.id);
   state.ac_getNameRoomMsg(item.name);
@@ -182,9 +182,8 @@ function InputMsg() {
 }
 
 export function Chat() {
-  const { arrayRoom, message } = useSelector((state: RootState) => state);
-  console.log("message:", message);
-
+  const { arrayRoom } = useSelector((state: RootState) => state);
+  if (arrayRoom.length === 0) return <></>;
   return (
     <div>
       <div className="container">

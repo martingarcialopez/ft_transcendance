@@ -3,13 +3,14 @@ import { T_Room } from "../type/chat";
 import { bindActionCreators } from "redux";
 import * as actionCreators from "../redux/action-creators/Ac_room";
 import { useDispatch, useSelector } from "react-redux";
-import { E_CreateRoom, socket } from "./Event";
+import { E_CreateRoom } from "./Event";
 import "../styles/room.css";
 import { useState } from "react";
 import { Hidden } from "./Hidden";
 import { TitleOptionRoom } from "./TitleOptionRoom";
 import { RootState } from "../redux/store";
 import { UserState } from "../redux/reducers/userReducers";
+//import { color } from "@mui/system";
 
 function createRoom(data: any): T_Room {
   let room: T_Room = {
@@ -35,6 +36,8 @@ export function CreateRoom() {
   );
 
   /* console.log("userLogin INFO", userLogin); */
+
+  console.log("userId : ", userLogin.userInfo.id);
   return (
     <>
       <br />
@@ -45,14 +48,8 @@ export function CreateRoom() {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          E_CreateRoom(newRoom, userLogin.userInfo.id);
-          console.log("userId : ", userLogin.userInfo.id);
-          console.log("newRoom:", newRoom);
-          socket.on("idRoom", (receive: { id: number }) => {
-            console.log("reponse creation Room : ", receive);
-            newRoom.id = receive.id;
-            ac_AddRoom(newRoom);
-          });
+          console.log("userId: ", userLogin.userInfo.id);
+          E_CreateRoom(newRoom, userLogin.userInfo.id, ac_AddRoom);
         })}
       >
         <input

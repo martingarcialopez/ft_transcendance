@@ -34,16 +34,17 @@ export function Room() {
   const { arrayRoom } = useSelector((state: RootState) => state);
   const publicRoom = CoypRoom(arrayRoom, "public");
   const protectedRoom = CoypRoom(arrayRoom, "protected");
+  const pvRoom = CoypRoom(arrayRoom, "protected");
 
   return (
     <>
       <CreateRoom />
       <br />
-      <AddParticipant />
+      <AddParticipant room={pvRoom} />
       <br />
       <JoinPublicRoom room={publicRoom} />
       <br />
-      <JoinProtectedRoom room={arrayRoom} />
+      <JoinProtectedRoom room={protectedRoom} />
       <br />
       <ModifyRoom room={arrayRoom} />
       <br />

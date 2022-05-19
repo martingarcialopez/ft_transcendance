@@ -1,8 +1,8 @@
 import socketio from "socket.io-client";
-import { URL_test } from "../constants/url";
-import { T_Room } from "../type/chat";
+import { T_AddUserRoom, T_Room } from "../type/chat";
 
-const ENDPOINT = URL_test;
+const ENDPOINT = "http://localhost:3000";
+
 export const socket = socketio(ENDPOINT); //connection to the server nestJs
 
 export function E_CreateParticipant(userName: number, roomId: number) {
@@ -14,7 +14,6 @@ export function E_CreateParticipant(userName: number, roomId: number) {
   socket.on("participantId", (receive: { id: number }) => {
     console.log("reponse createParticipant : ", receive);
   });
-
 }
 
 /*
@@ -44,17 +43,25 @@ export function E_CreateParticipant(userName: number, roomId: number) {
  * to get id, there for need to send the  room at server so that it give back the id
  */
 
-export function E_CreateRoom(newRoom: T_Room, creatorId: number) {
+export function E_CreateRoom(
+  newRoom: T_Room,
+  creatorId: number,
+  updateRoomArray: Function
+) {
   socket.emit("createRoom", {
     name: newRoom.name,
     creatorId: creatorId,
     typeRoom: newRoom.typeRoom,
     password: newRoom.password,
   });
-  /* socket.on("idRoom", (receive: { id: number }) => {
-   *   console.log("reponse creation Room : ", receive);
-   *   newRoom.id = receive.id;
-   * }); */
+  socket.on("idRoom", (receive: { id: number }) => {
+    console.log("reponse creationRoom 'idRoom': ", receive);
+    newRoom.id = receive.id;
+    updateRoomArray(newRoom);
+  });
+  socket.on("exception", (receive: { status: string; message: string }) => {
+    console.log("reponse creation 'exception': ", receive);
+  });
 }
 
 export function E_UpdatePwd(userId: number, roomId: number, pwd: string) {
@@ -74,13 +81,10 @@ export function E_SendEvent(userId: number, roomId: number, eventName: string) {
   console.log("send event : ", eventName);
 }
 
-export function E_JoinRoom(userId: number, roomId: number, pwd: string) {
-  socket.emit("JoinRoom", {
-    userId: userId,
-    roomId: roomId,
-    password: pwd,
-  });
-  console.log("user :", userId, " roomId:", roomId, " password:", pwd);
+/* export function E_JoinRoom(userId: number, roomId: number, pwd: string) { */
+export function E_JoinRoom(info: T_AddUserRoom) {
+  socket.emit("JoinRoom", info);
+  console.log("Event 'JoinRoom' :", info);
   socket.on("hasJoined", (receive: { state: boolean }) => {
     console.log("reponse hasJoined Room : ", receive);
   });
@@ -124,3 +128,17 @@ export function E_BlockUser(userId: number, blockUserId: number) {
   });
   console.log("send event blockUserId: ", blockUserId);
 }
+
+/*
+ *
+ *
+ * export function E_AllRoomInfos(updateArrayRoom: Function) {
+ *   socket.emit("allRoomInfos");
+ *   socket.on("allRoomInfosRes", (receive: T_Room[]) => {
+ *     receive.forEach((item: T_Room) => {
+ *       item.avatar =
+ *         "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
+ *     });
+ *     updateArrayRoom(receive);
+ *   });
+ * } */

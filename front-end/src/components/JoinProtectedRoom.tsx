@@ -34,7 +34,9 @@ function IsProctect({ id: number }: T_Room) {
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
           console.log("protected: ", data.target);
-          E_JoinRoom(3, 29, data.pwd);
+          {
+            /* E_JoinRoom(3, 29, data.pwd); */
+          }
         })}
       >
         <input
@@ -60,6 +62,7 @@ function IsProctect({ id: number }: T_Room) {
  * to Join a Protected Room  password is require
  */
 export function JoinProtectedRoom({ room }: T_PropsRoomArray) {
+  if (room.length === 0) return <></>;
   return (
     <>
       {" "}
