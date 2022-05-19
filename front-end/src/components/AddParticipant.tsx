@@ -6,8 +6,8 @@ import { RootState } from "../redux/store";
 import { UserState } from "../redux/reducers/userReducers";
 import { useSelector } from "react-redux";
 import { SetInfoUserRoom } from "./SetInfoUserRoom";
-
 import { E_JoinRoom } from "./Event";
+import { useState } from "react";
 
 export type T_PropsRoomArray = {
   room: T_Room[];
@@ -29,12 +29,16 @@ function findId(room: T_Room[], occurence: string) {
   });
   return target;
 }
+/**
+ *add user into private room
+ */
 
 export function AddParticipant({ room }: T_PropsRoomArray) {
   const { register, handleSubmit } = useForm();
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   );
+  const [display, setDisplay] = useState<string>("none");
   if (room.length < 1) return <></>;
   return (
     <>
@@ -54,7 +58,7 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
             );
             console.log("info:", info);
             E_JoinRoom(info);
-          }
+          } else setDisplay("inline");
         })}
       >
         <input
@@ -74,6 +78,7 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
           autoComplete="on"
           {...register("userName")}
         />
+        <h4 style={{ display: display, color: "#FF0F00" }}>Invalid Room</h4>
         <br />
         {/* <div className="box-btn "> */}
         <input className="btn-new-room" type="submit" value="Add" />
