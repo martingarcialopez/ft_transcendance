@@ -6,14 +6,23 @@ import { T_Room } from "../type/chat";
 import { BasicModal } from "./BasicModal";
 import { TitleOptionRoom } from "./TitleOptionRoom";
 
+import { RootState } from "../redux/store";
+import { UserState } from "../redux/reducers/userReducers";
+import { useSelector } from "react-redux";
+import { SetInfoUserRoom } from "./SetInfoUserRoom";
+import { E_JoinRoom } from "./Event";
+
 export type T_PropsRoomArray = {
   room: T_Room[];
 };
 
 /* function IsProctect({ roomId, setRoomId }: AppProps) { */
 
-function IsProctect({ id: number }: T_Room) {
+function IsProctect({ id, typeRoom }: T_Room) {
   const { register, handleSubmit } = useForm();
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
   return (
     <div>
       <Typography
@@ -33,6 +42,14 @@ function IsProctect({ id: number }: T_Room) {
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
           console.log("protected: ", data.target);
+          const info = SetInfoUserRoom(
+            userLogin.userInfo.id,
+            id,
+            typeRoom,
+            data.pwd,
+            ""
+          );
+          E_JoinRoom(info);
         })}
       >
         <input
