@@ -58,6 +58,7 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
             );
             console.log("info:", info);
             E_JoinRoom(info);
+            setDisplay("none");
           } else setDisplay("inline");
         })}
       >
