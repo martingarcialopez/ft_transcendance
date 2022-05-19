@@ -13,6 +13,7 @@ export type T_PropsRoomArray = {
  */
 
 export function JoinPublicRoom({ room }: T_PropsRoomArray) {
+  if (room.length === 0) return <></>;
   return (
     <>
       <TitleOptionRoom title="Join Public Room" />

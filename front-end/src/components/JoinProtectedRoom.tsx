@@ -60,6 +60,7 @@ function IsProctect({ id: number }: T_Room) {
  * to Join a Protected Room  password is require
  */
 export function JoinProtectedRoom({ room }: T_PropsRoomArray) {
+  if (room.length === 0) return <></>;
   return (
     <>
       {" "}

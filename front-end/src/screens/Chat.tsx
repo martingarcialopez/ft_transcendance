@@ -183,7 +183,7 @@ function InputMsg() {
 
 export function Chat() {
   const { arrayRoom } = useSelector((state: RootState) => state);
-
+  if (arrayRoom.length === 0) return <></>;
   return (
     <div>
       <div className="container">
