@@ -3,7 +3,7 @@ import { T_Room } from "../type/chat";
 import { bindActionCreators } from "redux";
 import * as actionCreators from "../redux/action-creators/Ac_room";
 import { useDispatch, useSelector } from "react-redux";
-import { E_CreateRoom, E_AllRoomInfos } from "./Event";
+import { E_CreateRoom } from "./Event";
 import "../styles/room.css";
 import { useState } from "react";
 import { Hidden } from "./Hidden";

@@ -20,15 +20,15 @@ import { bindActionCreators } from "redux";
 import { socket } from "./components/Event";
 import * as actionCreatorsRoom from "./redux/action-creators/Ac_room";
 import { T_Room } from "./type/chat";
+
 const App = () => {
   const dispatch = useDispatch();
+  const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
   useEffect(() => {
     checkAutoLogin(dispatch);
   }, [dispatch]);
 
-  const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
-
-  /* console.log("message:", message); */
+  /****************************************/
 
   socket.emit("allRoomInfos");
 
@@ -38,8 +38,10 @@ const App = () => {
         "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
     });
     console.log("test : ", receive);
-    ac_InitRoomArray([...receive]);
+    ac_InitRoomArray(receive);
   });
+
+  /****************************************/
 
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin

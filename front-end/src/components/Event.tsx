@@ -130,21 +130,16 @@ export function E_BlockUser(userId: number, blockUserId: number) {
   console.log("send event blockUserId: ", blockUserId);
 }
 
-export function E_AllRoomInfos(updateArrayRoom: any): T_Room[] {
-  let test: any;
-  socket.emit("allRoomInfos");
-
-  socket.on("allRoomInfosRes", (receive: T_Room[]) => {
-    receive.forEach((item: T_Room) => {
-      item.avatar =
-        "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
-    });
-
-    updateArrayRoom = receive;
-    test = receive;
-    console.log("test : ", test);
-    /* test = JSON.parse(JSON.stringify(receive)); */
-  });
-
-  return test;
-}
+/*
+ *
+ *
+ * export function E_AllRoomInfos(updateArrayRoom: Function) {
+ *   socket.emit("allRoomInfos");
+ *   socket.on("allRoomInfosRes", (receive: T_Room[]) => {
+ *     receive.forEach((item: T_Room) => {
+ *       item.avatar =
+ *         "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
+ *     });
+ *     updateArrayRoom(receive);
+ *   });
+ * } */
