@@ -30,7 +30,7 @@ export class RoomService {
 	private readonly participantService: ParticipantService;
 	constructor(
         @InjectRepository(Room) private readonly roomRepository: Repository<Room>,
-//		@InjectRepository(Participant) private readonly participantRepository: Repository<Participant>,
+		@InjectRepository(Participant) private readonly participantRepository: Repository<Participant>,
     ){}
 
 	/*
@@ -94,22 +94,65 @@ export class RoomService {
         await this.roomRepository.delete(id);
     }
 
+	async participant_already_exist(participantDto: ParticipantDto)
+	{
+		const userId : number = participantDto.userId;
+		const roomId: number = participantDto.roomId;
+		let res = await this.participantRepository.findOne({ userId: userId, roomId: roomId });
+		if (res)
+			return true;
+		return false;
+	}
+
 	async joinRoom(joinRoomDto: JoinRoomDto): Promise<boolean> {
 		console.log('joinRoomDto: ', joinRoomDto);
-		const room_Id: number = joinRoomDto.roomId;
-		const entered_pw : string = joinRoomDto.entered_pw;
 
-		const room_info = await this.roomRepository.createQueryBuilder("room")
-            .select(["room.typeRoom", "room.password"])
-			.where("room.id = :room_Id", { room_Id: room_Id })
-			.getOne();
-		if (room_info.typeRoom == 'public' || room_info.typeRoom == 'private')
-			return true;
-		console.log('room_type_pw ', room_info);
-		if (await bcrypt.compare(entered_pw, room_info['password']))
+		const typeRoom: string = joinRoomDto.typeRoom;
+		const userId : number = joinRoomDto.userId;
+		const roomId: number = joinRoomDto.roomId;
+		let existing_user = false;
+		if (typeRoom == 'public')
 		{
-			await this.participantService.createParticipant({'userId': joinRoomDto.userId, 'roomId': room_Id});
+			//if the person is already a number in the room
+			existing_user = await this.participant_already_exist({'userId': userId, 'roomId': roomId});
+			if (existing_user)
+				return false;
+			await this.participantService.createParticipant({'userId': userId, 'roomId': roomId});
 			return true;
+		}
+		else if (typeRoom == 'private')
+		{
+			console.log('enter in private room');
+			let is_admin = await this.userIsAdmin(userId, roomId);
+			if (is_admin == false)
+				return false;
+			const login: string = joinRoomDto.login;
+			console.log('login', login);
+			const invitee_info = await this.roomRepository.createQueryBuilder("user")
+				.select(["user.id"])
+				.where("user.login42 = :login", { login: login })
+				.getOne();
+			console.log(invitee_info);
+			const invite_id = invitee_info['id'];
+			existing_user = await this.participant_already_exist({'userId': invite_id, 'roomId': roomId});
+			if (existing_user || invite_id == userId)
+				return false;
+			await this.participantService.createParticipant({'userId': invite_id, 'roomId': roomId});
+            return true;
+		}
+		else if (typeRoom == 'protected')
+		{
+			const entered_pw : string = joinRoomDto.password;
+			const room_info = await this.roomRepository.createQueryBuilder("room")
+				.select(["room.password"])
+				.where("room.id = :room_Id", { room_Id: roomId })
+				.getOne();
+			console.log('room_type_pw ', room_info);
+			if (await bcrypt.compare(entered_pw, room_info['password']))
+			{
+				await this.participantService.createParticipant({'userId': joinRoomDto.userId, 'roomId': roomId});
+				return true;
+			}
 		}
 		return false;
 	}
@@ -200,7 +243,7 @@ export class RoomService {
 			admins.splice(index, 1);
 		}
 		else
-			return ;
+		return ;
 		await this.roomRepository
 			.createQueryBuilder()
 			.update(Room)
