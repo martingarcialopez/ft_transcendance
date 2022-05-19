@@ -2,18 +2,16 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link as LinkRoute, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Copyright from '../components/Copyright';
 import { FormEvent, useEffect, useState } from 'react';
-import { signupAction } from '../redux/actions/userActions';
+import { changePageAction, signupAction } from '../redux/actions/userActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux';
 import { UserState } from '../redux/reducers/userReducers';
@@ -29,6 +27,7 @@ const SignUp = () => {
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({ firstname: '', lastname: '', username: "", password: "" });
   const [open, setOpen] = useState(true);
+  const [errorFromBack, setErrorFromBack]: any = useState();
 
   const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -36,7 +35,10 @@ const SignUp = () => {
     (state: RootState) => state.userLogin
   )
   const { userInfo } = userLogin
+
   useEffect(() => {
+    console.log("signup userInfo :")
+    console.log(userInfo);
     if (userInfo !== undefined && userInfo.firstname) {
       navigate('/home');
     }
@@ -44,14 +46,10 @@ const SignUp = () => {
 
   const validate = () => {
     let temp = { ...errors }
-    if (username)
-      temp.username = username ? "" : "This field is required."
-    else
-      temp.username = "This field is required."
-    if (password)
-      temp.password = password ? "" : "This field is required."
-    else
-      temp.password = "This field is required."
+    temp.firstname = firstname ? "" : "This field is required."
+    temp.lastname = lastname ? "" : "This field is required."
+    temp.username = username ? "" : "This field is required."
+    temp.password = password ? "" : "This field is required."
     setErrors({
       ...temp
     })
@@ -62,15 +60,21 @@ const SignUp = () => {
     function2(value2);
   }
 
+  const handleChangePage = async () => {
+    dispatch(changePageAction())
+    navigate("/login")
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     validate();
     setOpen(true);
     if (!errors.firstname && !errors.lastname && !errors.password && !errors.username) {
-      dispatch(signupAction(firstname, lastname, username, password))
+      dispatch(signupAction(firstname, lastname, username, password, navigate))
+      setErrorFromBack()
 
-      console.log("signUp :" + {
+      console.log("signUp :", {
         firstname: firstname,
         lastname: lastname,
         username: username,
@@ -91,6 +95,11 @@ const SignUp = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("useEffect userLogin")
+    setErrorFromBack(userLogin.errorMessage)
+  }, [userLogin.errorMessage])
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -109,7 +118,7 @@ const SignUp = () => {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          {userLogin.errorMessage ?
+          {errorFromBack ?
             <Collapse in={open}>
               <Alert
                 variant="outlined"
@@ -128,13 +137,18 @@ const SignUp = () => {
                 }
                 sx={{ mb: 2 }}
               >
-                {userLogin.errorMessage}
+                {errorFromBack}
               </Alert>
             </Collapse>
             :
             null
           }
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 3 }}
+          >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -194,12 +208,6 @@ const SignUp = () => {
                   helperText={errors.password}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -211,9 +219,9 @@ const SignUp = () => {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <LinkRoute to="/login">
+                <Button onClick={handleChangePage}>
                   Already have an account? Sign in
-                </LinkRoute>
+                </Button>
               </Grid>
             </Grid>
           </Box>

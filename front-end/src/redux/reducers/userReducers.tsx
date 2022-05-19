@@ -1,4 +1,5 @@
 import {
+  CHANGE_PAGE_ACTION,
   LOADING_TOGGLE_ACTION,
   LOGIN_CONFIRMED_ACTION,
   LOGIN_FAILED_ACTION,
@@ -7,20 +8,31 @@ import {
   SIGNUP_FAILED_ACTION,
 } from "../constants/userConstants";
 
+export interface MatchInfo {
+  player1?: string,
+  player2?: string,
+  winner?: string,
+  scoreLoser?: number,
+  id?: number,
+}
+
+export interface UserInfo {
+  login42?: string,
+  username?: string,
+  firstname?: string,
+  lastname?: string,
+  password?: string,
+  avatar?: string,
+  expiresIn?: any
+  id?: any
+}
+
 export interface UserState {
   showLoading?: boolean;
   errorMessage?: string;
   successMessage?: string;
-  userInfo: {
-    login42?: string,
-    username?: string,
-    firstname?: string,
-    lastname?: string,
-    password?: string,
-    avatar?: string,
-    expiresIn?: any
-    id?: any
-  } //ADD other elements
+  userInfo: UserInfo,
+  MatchInfo: MatchInfo
 }
 
 interface Action {
@@ -41,6 +53,13 @@ export const userLoginReducer = (
       password: '',
       avatar: '',
       expiresIn: '',
+      id: 0,
+    },
+    MatchInfo: {
+      player1: 'unknown',
+      player2: 'unknown',
+      winner: 'unknown',
+      scoreLoser: 0,
       id: 0,
     }
   },
@@ -80,6 +99,11 @@ export const userLoginReducer = (
         ...state,
         userInfo: action.payload,
         successMessage: "Logout Successfully Completed",
+      };
+    case CHANGE_PAGE_ACTION:
+      return {
+        ...state,
+        errorMessage: '',
       };
     default:
       return state;

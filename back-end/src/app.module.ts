@@ -21,13 +21,16 @@ import { ParticipantGateway } from './gateway/participant.gateway';
 
 import { PongGateway } from './gateway/pong.gateway';
 import { PongService} from './services/pong.service';
-import { Pong} from './models/pong.entity';
+import { Matchmaking} from './models/matchmaking.entity';
 import { PongModule} from './modules/pong.module';
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
+
+import { ConfigModule } from '@nestjs/config';
 
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'container-postgres',
@@ -35,7 +38,7 @@ import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
       username: 'root',
       password: 'root',
       database: 'db',
-		entities: [User, Message, Room, Participant, Pong],
+		entities: [User, Message, Room, Participant, Matchmaking],
       synchronize: true,
     }),
     InMemoryDBModule.forRoot({}),

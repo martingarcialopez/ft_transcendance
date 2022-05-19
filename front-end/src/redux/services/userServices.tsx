@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { URL_test } from '../../constants/url';
 import { loginConfirmedAction, logout } from '../actions/userActions';
 
 
@@ -12,7 +13,7 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     };
 
     return axios.post(
-        `http://localhost:3000/user/sign-up`,
+        `${URL_test}/user/sign-up`,
         postData,
     );
 }
@@ -24,7 +25,7 @@ export function login(username: any, password: any) {
     };
 
     return axios.post(
-        `http://localhost:3000/auth/login`,
+        `${URL_test}/auth/login`,
         postData,
     );
 }
@@ -34,7 +35,7 @@ export function getInfo(access_token: any) {
         console.log(access_token)
     return axios({
         method: 'get',
-        url: `http://localhost:3000/user/current`,
+        url: `${URL_test}/user/current`,
         headers: { 'Authorization': `Bearer ${access_token}` }
     });
 }
@@ -56,7 +57,7 @@ export function formatError(errorResponse: any) {
         case 'ERR_BAD_REQUEST':
             return 'Username or password invalid';
         default:
-            return '';
+            return 'Fuck you !';
     }
 }
 

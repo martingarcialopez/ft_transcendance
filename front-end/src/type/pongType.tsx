@@ -28,3 +28,7 @@ export enum Direction {
   UP,
   DOWN,
 }
+
+export const BALL_RADIUS   = 10;
+export const PADDLE_WIDTH  = 20;
+export const PADDLE_HEIGTH = 70;
