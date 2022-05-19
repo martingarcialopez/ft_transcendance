@@ -16,6 +16,7 @@ import { Suspense, useEffect } from 'react';
 import { checkAutoLogin } from './redux/services/userServices';
 import { RootState } from './redux';
 import { UserState } from './redux/reducers/userReducers';
+import { Profile } from './screens/Profile';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -47,6 +48,7 @@ const App = () => {
     routes = (
       <Routes>
         <Route path="/chat" element={<Chat />} />
+        <Route path="/profile/:id" element={<Profile />} />
         <Route path="/profile" element={<ProfileContainer />} />
         <Route path="pong" element={<Pong />} />
         <Route path="/room" element={<Room />} />

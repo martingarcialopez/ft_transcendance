@@ -24,6 +24,7 @@ export interface UserInfo {
   password?: string,
   avatar?: string,
   expiresIn?: any
+  access_token: string,
   id?: any
 }
 
@@ -52,6 +53,7 @@ export const userLoginReducer = (
       lastname: '',
       password: '',
       avatar: '',
+      access_token: '',
       expiresIn: '',
       id: 0,
     },

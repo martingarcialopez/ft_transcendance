@@ -1,10 +1,11 @@
 import "../styles/profileContainerStyles.css";
-import { RiGroupLine } from "react-icons/ri";
 
 import RepoCard from "../components/RepoCard";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
+import { ListFriends } from "../components/ListFriends";
+
 
 const matchs = [
   {
@@ -56,33 +57,19 @@ export const ProfileContainer = () => {
           <h3 className="userNickName">{userLogin.userInfo.login42}</h3>
           <h5 className="userNickName">{userLogin.userInfo.firstname}</h5>
           <h5 className="userNickName">{userLogin.userInfo.lastname}</h5>
-          {/* <p className="userDescription">{userLogin.userInfo.description}</p> */}
-          <ul className="followers">
-            <li>
-              <RiGroupLine className="followerIcon" />
-              {/* <b>{userLogin.userInfo.followers}</b> */}
-              <b>143</b>
-              <p>followers</p>
-              <span>·</span>
-            </li>
-            <li>
-              {/* <b>{userLogin.userInfo.following}</b> */}
-              <b>52</b>
-              <p>following</p>
-            </li>
-          </ul>
+          <ListFriends />
         </aside>
         <div className="reposContainer">
           <p className="repoContainerTitle">Historique des matchs</p>
           <div className="repos">
             {matchs.map((item) => (
-              <RepoCard
-                key={item.id}
-                player1={item.player1}
-                player2={item.player2}
-                winner={item.winner}
-                scoreLoser={item.scoreLoser}
-              />
+                <RepoCard
+                  key={item.id}
+                  player1={item.player1}
+                  player2={item.player2}
+                  winner={item.winner}
+                  scoreLoser={item.scoreLoser}
+                />
             ))}
           </div>
         </div>

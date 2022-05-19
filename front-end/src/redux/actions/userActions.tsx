@@ -8,7 +8,7 @@ import {
   SIGNUP_FAILED_ACTION,
   CHANGE_PAGE_ACTION,
 } from '../constants/userConstants'
-import { formatError, getInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp } from '../services/userServices';
+import { formatError, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -32,7 +32,8 @@ export function getInfoAction(access_token: any) {
   return (dispatch: any) => {
     getInfo(access_token)
       .then((response) => {
-        saveTokenInLocalStorage(response.data);
+        console.log("getInfoAction response:", response)
+        saveTokenInLocalStorage(access_token, response.data);
         // tokenDetails.expiresIn
         runLogoutTimer(
           dispatch,
@@ -42,6 +43,19 @@ export function getInfoAction(access_token: any) {
         console.log(response)
         console.log("signupAction response data : ")
         console.log(response.data)
+        dispatch(loginConfirmedAction(response.data));
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(loginFailedAction(errorMessage));
+      });
+  };
+}
+
+export function getUserInfoAction(username: any, access_token: any) {
+  return (dispatch: any) => {
+    getUserInfo(username, access_token)
+      .then((response) => {
         dispatch(loginConfirmedAction(response.data));
       })
       .catch((error) => {

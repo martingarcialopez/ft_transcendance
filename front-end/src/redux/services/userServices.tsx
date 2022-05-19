@@ -32,7 +32,7 @@ export function login(username: any, password: any) {
 
 export function getInfo(access_token: any) {
     console.log("getInfo TOKEN :")
-        console.log(access_token)
+    console.log(access_token)
     return axios({
         method: 'get',
         url: `${URL_test}/user/current`,
@@ -40,6 +40,16 @@ export function getInfo(access_token: any) {
     });
 }
 
+export function getUserInfo(username: any, access_token: any) {
+    console.log("getUserInfo TOKEN :")
+    console.log(access_token)
+    console.log("getUserInfo USERNAME :", username)
+    return axios({
+        method: 'get',
+        url: `${URL_test}/user/:username`,
+        headers: { 'Authorization': `Bearer ${access_token}` }
+    });
+}
 
 export function formatError(errorResponse: any) {
     // TODO: FAIRE TOUTES LES ERRORS POUR LES CONNECTER CORRECTEMENT
@@ -61,15 +71,17 @@ export function formatError(errorResponse: any) {
     }
 }
 
-export function saveTokenInLocalStorage(tokenDetails: any) {
+export function saveTokenInLocalStorage(access_token: any, tokenDetails: any) {
     console.log("Dans saveToken le token :")
     console.log(tokenDetails)
     console.log("Dans saveToken le token expiresIn :")
     console.log(tokenDetails.expiresIn)
     // tokenDetails.expiresIn
-    tokenDetails.expireDate = new Date(
+    tokenDetails.access_token = access_token;
+        tokenDetails.expireDate = new Date(
         new Date().getTime() + 5000000000 * 1000,
     );
+    console.log("Dans saveToken apres expireDate add + tokenAdd token :")
     localStorage.setItem('userInfo', JSON.stringify(tokenDetails));
 }
 

@@ -92,30 +92,46 @@ export const Pong = () => {
     });
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
-        ctx.fillStyle = "blue";
-        // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
-        ctx.beginPath();
-        ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
-        ctx.closePath();
+        var img = new Image();
+        if (winner !== '') {
+            if (winner === 'leftPlayer')
+                img.src = "./avatar/left_win.jpeg"
+            else
+                img.src = "./avatar/right_win.jpeg"
 
-        ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI)
-        ctx.fillStyle = 'pink';
-        ctx.fill();
+            ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
+        }
+        else if (gameStarted === false) {
+            img.src = "./avatar/cyberpong.jpeg"
 
-        ctx.fillStyle = "green";
-        ctx.fillRect(0, (gameState.leftPaddle - (PADDLE_HEIGTH / 2)), PADDLE_WIDTH, PADDLE_HEIGTH)
+            ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
+        }
+        else {
+            ctx.fillStyle = "blue";
+            // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
+            ctx.beginPath();
+            ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
+            ctx.closePath();
 
-        ctx.fillStyle = "red";
-        ctx.fillRect((window_size.canvasWidth - PADDLE_WIDTH), (gameState.rightPaddle - (PADDLE_HEIGTH / 2)), PADDLE_WIDTH, PADDLE_HEIGTH)
+            ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI)
+            ctx.fillStyle = 'pink';
+            ctx.fill();
 
-        ctx.fillStyle = "black";
-        ctx.font = '16px Palantino';
-        ctx.fillText(gameState.rightScore.toString(), window_size.canvasWidth - 100, 50);
+            ctx.fillStyle = "green";
+            ctx.fillRect(0, (gameState.leftPaddle - (PADDLE_HEIGTH / 2)), PADDLE_WIDTH, PADDLE_HEIGTH)
 
-        ctx.fillStyle = "black";
-        ctx.fillText(gameState.leftScore.toString(), 100, 50);
+            ctx.fillStyle = "red";
+            ctx.fillRect((window_size.canvasWidth - PADDLE_WIDTH), (gameState.rightPaddle - (PADDLE_HEIGTH / 2)), PADDLE_WIDTH, PADDLE_HEIGTH)
 
-        ctx.stroke()
+            ctx.fillStyle = "black";
+            ctx.font = '16px Palantino';
+            ctx.fillText(gameState.rightScore.toString(), window_size.canvasWidth - 100, 50);
+
+            ctx.fillStyle = "black";
+            ctx.fillText(gameState.leftScore.toString(), 100, 50);
+
+            ctx.stroke()
+        }
     };
 
     return (
