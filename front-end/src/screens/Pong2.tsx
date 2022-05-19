@@ -4,9 +4,13 @@ import socketio from "socket.io-client";
 import { Button } from '@mui/material';
 import Canvas from '../components/Canvas';
 import { GameWrapper } from '../styles/gameStyle';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux';
+import { UserState } from '../redux/reducers/userReducers';
+import { URL_test } from '../constants/url';
 // import Canvas from '../components/Canvas';
 
-export const socket = socketio('http://localhost:3000')
+export const socket = socketio(`${URL_test}`)
 
 const window_size = {
     canvasWidth: 600,
@@ -27,17 +31,22 @@ export const Pong = () => {
     const [id, setId] = useState(0);
     const [gameStarted, setGameStarted] = useState(false);
     const [winner, setWinner] = useState('');
+    const userLogin = useSelector<RootState, UserState>(
+        (state: RootState) => state.userLogin
+    )
+    const [playerSide, setPlayerSide] = useState('');
+    const [roomId, setRoomId] = useState('');
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         // console.log("event code = ")
         // console.log(event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
-                socket.emit('move', id.toString(), "leftplayer", 1);
+                socket.emit('move', id.toString(), playerSide, roomId, 1);
                 setId(id + 1);
                 break;
             case 'KeyW' || 'ArrowUp':
-                socket.emit('move', id.toString(), "leftplayer", -1);
+                socket.emit('move', id.toString(), playerSide, roomId, -1);
                 setId(id + 1);
                 break;
         }
@@ -56,6 +65,7 @@ export const Pong = () => {
             // console.log(gameState);
         });
         socket.on('gameOver', (winnerPlayer) => {
+            console.log("winnerPlayer")
             console.log(winnerPlayer)
             setWinner(winnerPlayer);
             setGameStarted(false);
@@ -63,12 +73,23 @@ export const Pong = () => {
     }
 
     function handleClick() {
-        socket.emit('startGame');
+        socket.emit('lookingForplay', userLogin.userInfo.id);
+
         // console.log("HANDKE CKUC")
         setWinner('');
-        setGameStarted(true);
         receive_socket_info();
     }
+
+    socket.on('GameInfo', (...args) => {
+        console.log("roomId / side");
+        console.log(args);
+        console.log(args[0]);
+        console.log(args[1]);
+        // console.log(side);
+        setRoomId(args[0])
+        setPlayerSide(args[1])
+        setGameStarted(true);
+    });
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
         ctx.fillStyle = "blue";
@@ -103,7 +124,7 @@ export const Pong = () => {
                 <Button onClick={handleClick}>
                     {winner === '' ? (
                         <div>
-                            Start Game
+                            Find a game
                         </div>
                     ) : (
                         <div>

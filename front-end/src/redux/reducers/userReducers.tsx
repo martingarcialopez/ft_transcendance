@@ -1,4 +1,5 @@
 import {
+  CHANGE_PAGE_ACTION,
   LOADING_TOGGLE_ACTION,
   LOGIN_CONFIRMED_ACTION,
   LOGIN_FAILED_ACTION,
@@ -98,6 +99,11 @@ export const userLoginReducer = (
         ...state,
         userInfo: action.payload,
         successMessage: "Logout Successfully Completed",
+      };
+    case CHANGE_PAGE_ACTION:
+      return {
+        ...state,
+        errorMessage: '',
       };
     default:
       return state;
