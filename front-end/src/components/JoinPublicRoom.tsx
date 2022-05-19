@@ -3,6 +3,10 @@ import { BsPlusLg } from "react-icons/bs";
 import "../styles/room.css";
 
 import { TitleOptionRoom } from "./TitleOptionRoom";
+import { SetInfoUserRoom } from "./SetInfoUserRoom";
+import { RootState } from "../redux/store";
+import { UserState } from "../redux/reducers/userReducers";
+import { useSelector } from "react-redux";
 
 export type T_PropsRoomArray = {
   room: T_Room[];
@@ -13,6 +17,9 @@ export type T_PropsRoomArray = {
  */
 
 export function JoinPublicRoom({ room }: T_PropsRoomArray) {
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
   if (room.length === 0) return <></>;
   return (
     <>
@@ -24,6 +31,14 @@ export function JoinPublicRoom({ room }: T_PropsRoomArray) {
               className="btn-join-room"
               onClick={() => {
                 console.log("Public: ");
+                const info = SetInfoUserRoom(
+                  userLogin.userInfo.id,
+                  item.id,
+                  item.typeRoom,
+                  "",
+                  ""
+                );
+                E_JoinRoom(info);
               }}
             >
               <BsPlusLg />
