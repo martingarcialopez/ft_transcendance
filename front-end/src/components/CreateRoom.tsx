@@ -3,14 +3,14 @@ import { T_Room } from "../type/chat";
 import { bindActionCreators } from "redux";
 import * as actionCreators from "../redux/action-creators/Ac_room";
 import { useDispatch, useSelector } from "react-redux";
-import { E_CreateRoom, socket } from "./Event";
+import { E_CreateRoom, E_AllRoomInfos } from "./Event";
 import "../styles/room.css";
 import { useState } from "react";
 import { Hidden } from "./Hidden";
 import { TitleOptionRoom } from "./TitleOptionRoom";
 import { RootState } from "../redux/store";
 import { UserState } from "../redux/reducers/userReducers";
-import { color } from "@mui/system";
+//import { color } from "@mui/system";
 
 function createRoom(data: any): T_Room {
   let room: T_Room = {
@@ -36,6 +36,8 @@ export function CreateRoom() {
   );
 
   /* console.log("userLogin INFO", userLogin); */
+  E_AllRoomInfos();
+  console.log("userId : ", userLogin.userInfo.id);
   return (
     <>
       <br />
@@ -46,8 +48,8 @@ export function CreateRoom() {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
+          console.log("userId: ", userLogin.userInfo.id);
           E_CreateRoom(newRoom, userLogin.userInfo.id, ac_AddRoom);
-          console.log("userId : ", userLogin.userInfo.id, "newRoom:", newRoom);
         })}
       >
         <input

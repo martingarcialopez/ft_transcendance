@@ -12,7 +12,6 @@ export function E_CreateParticipant(userName: number, roomId: number) {
   socket.on("participantId", (receive: { id: number }) => {
     console.log("reponse createParticipant : ", receive);
   });
-
 }
 
 /*
@@ -45,7 +44,7 @@ export function E_CreateParticipant(userName: number, roomId: number) {
 export function E_CreateRoom(
   newRoom: T_Room,
   creatorId: number,
-  callback: Function
+  updateRoomArray: Function
 ) {
   socket.emit("createRoom", {
     name: newRoom.name,
@@ -54,9 +53,12 @@ export function E_CreateRoom(
     password: newRoom.password,
   });
   socket.on("idRoom", (receive: { id: number }) => {
-    console.log("reponse creation Room : ", receive);
+    console.log("reponse creationRoom 'idRoom': ", receive);
     newRoom.id = receive.id;
-    callback(newRoom);
+    updateRoomArray(newRoom);
+  });
+  socket.on("exception", (receive: { status: string; message: string }) => {
+    console.log("reponse creation 'exception': ", receive);
   });
 }
 
@@ -128,10 +130,18 @@ export function E_BlockUser(userId: number, blockUserId: number) {
   console.log("send event blockUserId: ", blockUserId);
 }
 
-export function E_allRoomInfos() {
+export function E_AllRoomInfos() {
   socket.emit("allRoomInfos");
-
-  socket.on("allRoomInfosRes", (receive: any) => {
-    console.log("reponse allRoomInfosRes : ", receive);
+  socket.on("allRoomInfosRes", (receive: T_Room[]) => {
+    receive.forEach((item: T_Room) => {
+      item.avatar =
+        "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
+    });
+    console.log(
+      "reponse allRoomInfosRes : ",
+      receive,
+      "type : ",
+      typeof receive
+    );
   });
 }
