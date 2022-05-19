@@ -97,9 +97,9 @@ export class PongService {
 
 			socket.emit('GameInfo', 'rightPlayer', opponent.roomName);
 			socket.join(opponent.roomName);
-			this.playGame(socket, opponent.roomName);
 			console.log(`second player arrived and joined room ${opponent.roomName}`);
 			console.log(`GAME STARTED in room ${opponent.roomName}`);	
+			this.playGame(socket, opponent.roomName);
 
 		}
 	}
@@ -129,7 +129,7 @@ export class PongService {
 			// const move : GameEntity[] = this.gameService.query((record) => record.room === socketRoom);
 			const move : GameEntity[] = this.gameService.getAll();
 
-			console.log(move);
+			//console.log(move);
 
 			let leftPlayerMove = 0;
 			let rightPlayerMove = 0;
