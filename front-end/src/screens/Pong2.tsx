@@ -83,9 +83,11 @@ export const Pong = () => {
     socket.on('GameInfo', (...args) => {
         console.log("roomId / side");
         console.log(args);
+        console.log(args[0]);
+        console.log(args[1]);
         // console.log(side);
-        // setRoomId(args)
-        // setPlayerSide(side)
+        setRoomId(args[0])
+        setPlayerSide(args[1])
         setGameStarted(true);
     });
 

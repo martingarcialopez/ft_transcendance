@@ -2,8 +2,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -50,7 +48,7 @@ const SignUp = () => {
     let temp = { ...errors }
     temp.firstname = firstname ? "" : "This field is required."
     temp.lastname = lastname ? "" : "This field is required."
-    temp.password = password ? "" : "This field is required."
+    temp.username = username ? "" : "This field is required."
     temp.password = password ? "" : "This field is required."
     setErrors({
       ...temp

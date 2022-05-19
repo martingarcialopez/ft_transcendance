@@ -2,8 +2,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -70,7 +68,6 @@ const SignIn = () => {
     setOpen(true);
     if (!errors.password && !errors.username) {
       dispatch(loginAction(username, password, navigate))
-      setErrorFromBack()
 
       console.log("signin TOUT MARCHE SUPER BIEN", {
         username: username,
@@ -93,6 +90,11 @@ const SignIn = () => {
     console.log("useEffect userLogin")
     setErrorFromBack(userLogin.errorMessage)
   }, [userLogin.errorMessage])
+
+  useEffect(() => {
+    if (!errors.password && !errors.username && !userLogin.errorMessage)
+      setErrorFromBack()
+    }, [userLogin, errors])
 
   return (
     <ThemeProvider theme={theme}>

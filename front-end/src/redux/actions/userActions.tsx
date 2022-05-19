@@ -16,9 +16,7 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
       .then((response) => {
         console.log("signupAction response : ")
         console.log(response)
-        dispatch(confirmedSignupAction(response)).then(() => {
-          dispatch(loginAction(username, password, navigate))
-        });
+        dispatch(loginAction(username, password, navigate))
       })
       .catch((error) => {
         console.log("ceci est une error dans signupAction :")
