@@ -42,11 +42,11 @@ export const Pong = () => {
         // console.log(event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
-                socket.emit('move', id.toString(), roomId, playerSide, 1);
+                socket.emit('move', id.toString(), playerSide, roomId, 1);
                 setId(id + 1);
                 break;
             case 'KeyW' || 'ArrowUp':
-                socket.emit('move', id.toString(), roomId, playerSide, -1);
+                socket.emit('move', id.toString(), playerSide, roomId, -1);
                 setId(id + 1);
                 break;
         }
