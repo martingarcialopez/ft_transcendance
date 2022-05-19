@@ -145,7 +145,6 @@ export class RoomGateway
 	@SubscribeMessage('allRoomInfos')
 	async allRoomInfos(socket: Socket) : Promise<void | undefined> {
 		let rooms  = await this.roomService.allRoomInfos();
-		console.log('allRoomInfos: ', rooms);
 		socket.emit('allRoomInfosRes', rooms);
 	}
 
