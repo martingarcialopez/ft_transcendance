@@ -2,7 +2,6 @@ import Typography from "@mui/material/Typography";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import "../styles/room.css";
 import { useForm } from "react-hook-form";
-import { E_JoinRoom } from "./Event";
 import { T_Room } from "../type/chat";
 import { BasicModal } from "./BasicModal";
 import { TitleOptionRoom } from "./TitleOptionRoom";
@@ -34,9 +33,6 @@ function IsProctect({ id: number }: T_Room) {
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
           console.log("protected: ", data.target);
-          {
-            /* E_JoinRoom(3, 29, data.pwd); */
-          }
         })}
       >
         <input

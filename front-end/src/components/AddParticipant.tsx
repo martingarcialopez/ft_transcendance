@@ -43,7 +43,7 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           const targetRoom = findId(room, data.roomName);
-          if (targetRoom.id != -1) {
+          if (targetRoom.id !== -1) {
             console.log("targetRoom:", targetRoom);
             const info = SetInfoUserRoom(
               userLogin.userInfo.id,

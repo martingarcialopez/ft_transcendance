@@ -1,7 +1,7 @@
 import { T_Room } from "../type/chat";
 import { BsPlusLg } from "react-icons/bs";
 import "../styles/room.css";
-import { E_JoinRoom } from "./Event";
+
 import { TitleOptionRoom } from "./TitleOptionRoom";
 
 export type T_PropsRoomArray = {
