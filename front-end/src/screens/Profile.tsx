@@ -7,7 +7,7 @@ import { UserState } from "../redux/reducers/userReducers";
 import { useParams } from "react-router-dom";
 import { ListFriends } from "../components/ListFriends";
 import { useEffect } from "react";
-import { getUserInfo } from "../redux/services/userServices";
+import { getUserInfoAction } from "../redux/actions/userActions";
 
 const matchs = [
     {
@@ -43,8 +43,8 @@ export const Profile = () => {
     )
 
     useEffect(() => {
-        dispatch(getUserInfo(id, userLogin.userInfo.access_token))
-    })
+        dispatch(getUserInfoAction(id, userLogin.userInfo.access_token))
+    }, [])
     console.log("Profile UserLogin :");
     console.log(userLogin);
 
