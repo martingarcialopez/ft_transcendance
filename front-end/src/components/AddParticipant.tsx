@@ -14,7 +14,16 @@ export type T_PropsRoomArray = {
 };
 
 function findId(room: T_Room[], occurence: string) {
-  let target: any;
+  let target: T_Room = {
+    name: "",
+    id: -1,
+    typeRoom: "",
+    password: "",
+    owner: [],
+    members: [],
+    avatar: "",
+  };
+
   room.forEach((item: T_Room) => {
     if (item.name === occurence) target = item;
   });
@@ -34,16 +43,18 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           const targetRoom = findId(room, data.roomName);
-          console.log("targetRoom:", targetRoom);
-          const info = SetInfoUserRoom(
-            userLogin.userInfo.id,
-            targetRoom.roomId,
-            targetRoom.typeRoom,
-            "",
-            data.userName
-          );
-          console.log("info:", info);
-          E_JoinRoom(info);
+          if (targetRoom.id != -1) {
+            console.log("targetRoom:", targetRoom);
+            const info = SetInfoUserRoom(
+              userLogin.userInfo.id,
+              targetRoom.id,
+              targetRoom.typeRoom,
+              "",
+              data.userName
+            );
+            console.log("info:", info);
+            E_JoinRoom(info);
+          }
         })}
       >
         <input

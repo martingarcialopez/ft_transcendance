@@ -42,7 +42,7 @@ export function Room() {
       <br />
       <AddParticipant room={arrayRoom} />
       <br />
-      <JoinPublicRoom room={publicRoom} />
+      <JoinPublicRoom room={pvRoom} />
       <br />
       <JoinProtectedRoom room={protectedRoom} />
       <br />
