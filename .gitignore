@@ -1,6 +1,9 @@
+back-end/.env
+.env
 node_modules
 *.log
 \#*\#
 .\#*\#
 *~
 .\#*
+.env

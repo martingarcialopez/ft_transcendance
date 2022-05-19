@@ -38,8 +38,8 @@ export const Pong = () => {
     const [roomId, setRoomId] = useState('');
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        // console.log("event code = ")
-        // console.log(event.code)
+        console.log("event code = ")
+        console.log(event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
                 socket.emit('move', id.toString(), playerSide, roomId, 1);

@@ -126,23 +126,21 @@ export class PongService {
 				return ;
 			}
 
+			// const move : GameEntity[] = this.gameService.query((record) => record.room === socketRoom);
+			const move : GameEntity[] = this.gameService.getAll();
 
-			const move : GameEntity[] = this.gameService.query((record) => record.room === socketRoom);
-
-			//console.log(move);
+			console.log(move);
 
 			let leftPlayerMove = 0;
 			let rightPlayerMove = 0;
 
 			if (move.length > lastMove) {
 
-
 				for (let i: number = lastMove; i < move.length ; i++) {
-					if (move[i].player === "leftplayer")
+					if (move[i].player === "leftPlayer")
 						leftPlayerMove += move[i].move;
-					else if (move[i].player === "rightplayer")
+					else if (move[i].player === "rightPlayer")
 						rightPlayerMove += move[i].move;
-
 				}
 			}
 			lastMove = move.length;
@@ -178,7 +176,6 @@ export class PongService {
 		// console.log(created);
 	}
 }
-
 
 
 
