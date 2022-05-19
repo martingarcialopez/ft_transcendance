@@ -7,9 +7,11 @@ import { T_Room, T_User } from "../type/chat";
 import { RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../redux/index";
+import { ac_InitRoomArray } from "../redux/action-creators/Ac_room";
 import { bindActionCreators } from "redux";
 import { useState, useEffect } from "react";
-import { socket } from "../components/Event";
+import { socket, E_AllRoomInfos } from "../components/Event";
+import * as actionCreatorsRoom from "../redux/action-creators/Ac_room";
 
 /**
  * this function get info on the one of item drawer has been click up
@@ -22,7 +24,7 @@ import { socket } from "../components/Event";
 
 function GetInfo(item: T_Room | T_User, state: any) {
   /* const dispatch = useDispatch();
-					  /* const { ac_getIdRoomMsg } = bindActionCreators(actionCreators, dispatch); */
+						/* const { ac_getIdRoomMsg } = bindActionCreators(actionCreators, dispatch); */
 
   state.ac_getIdRoomMsg(item.id);
   state.ac_getNameRoomMsg(item.name);
@@ -182,9 +184,10 @@ function InputMsg() {
 }
 
 export function Chat() {
+  const dispatch = useDispatch();
+
   const { arrayRoom, message } = useSelector((state: RootState) => state);
   console.log("message:", message);
-
   return (
     <div>
       <div className="container">

@@ -1,8 +1,6 @@
 import socketio from "socket.io-client";
-import { URL_test } from "../constants/url";
 import { T_Room } from "../type/chat";
-
-const ENDPOINT = URL_test;
+const ENDPOINT = "http://localhost:3000";
 export const socket = socketio(ENDPOINT); //connection to the server nestJs
 
 export function E_CreateParticipant(userName: number, roomId: number) {
@@ -132,18 +130,21 @@ export function E_BlockUser(userId: number, blockUserId: number) {
   console.log("send event blockUserId: ", blockUserId);
 }
 
-export function E_AllRoomInfos() {
+export function E_AllRoomInfos(updateArrayRoom: any): T_Room[] {
+  let test: any;
   socket.emit("allRoomInfos");
+
   socket.on("allRoomInfosRes", (receive: T_Room[]) => {
     receive.forEach((item: T_Room) => {
       item.avatar =
         "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
     });
-    console.log(
-      "reponse allRoomInfosRes : ",
-      receive,
-      "type : ",
-      typeof receive
-    );
+
+    updateArrayRoom = receive;
+    test = receive;
+    console.log("test : ", test);
+    /* test = JSON.parse(JSON.stringify(receive)); */
   });
+
+  return test;
 }

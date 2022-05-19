@@ -36,7 +36,7 @@ export function CreateRoom() {
   );
 
   /* console.log("userLogin INFO", userLogin); */
-  E_AllRoomInfos();
+
   console.log("userId : ", userLogin.userInfo.id);
   return (
     <>

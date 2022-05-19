@@ -23,7 +23,7 @@ let arrayRoom: T_Room[] = [
   {
     name: "PSG",
     id: 4,
-    typeRoom: "protected",
+    typeRoom: "private",
     password: "",
     owner: [],
     members: [],
@@ -46,8 +46,9 @@ export function roomReducer(state: T_Room[] = arrayRoom, action: T_Action) {
       return [...state, action.payload];
     }
     case E_ActionType.INIT_ROOM_ARRAY: {
-      return [action.payload];
+      return action.payload;
     }
+
     default:
       return state;
   }
