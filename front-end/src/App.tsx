@@ -37,7 +37,6 @@ const App = () => {
       item.avatar =
         "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
     });
-    console.log("test : ", receive);
     ac_InitRoomArray(receive);
   });
 
