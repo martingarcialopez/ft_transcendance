@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import {v4 as uuidv4} from 'uuid';
-import { Socket } from 'socket.io'
+import { Socket, Server } from 'socket.io'
 
 import { Matchmaking } from '../models/matchmaking.entity';
 import { PongDto } from '../dtos/in/pong.dto';
@@ -25,7 +25,7 @@ export class PongService {
 	/*check the player is already exist or not*/
 
 
-    // async managePlayer(socket: Socket, userId : number) :Promise<void> {
+    // async managePlayer(socket: Socket, server: Server, userId : number) :Promise<void> {
 
 	// 	let myuuid = uuidv4();
 
@@ -45,7 +45,7 @@ export class PongService {
 	// 		new_matchmaking.roomName = myuuid;
 	// 		await this.pongRepository.save(new_matchmaking);
 	// 		socket.join(myuuid);
-	// 		socket.to(socket.id).emit('GameInfo', 'leftPlayer', myuuid);
+	// 		server.to(socket.id).emit('GameInfo', 'leftPlayer', myuuid);
 	// 		console.log(`first player arrived and joined room ${myuuid}`);
 	// 	}
 	// 	else
@@ -67,17 +67,17 @@ export class PongService {
 	// 			.execute();
 
 	// 		socket.join(roomName);
-	// 		socket.to(socket.id).emit('GameInfo', 'rightPlayer', roomName);
+	// 		server.to(socket.id).emit('GameInfo', 'rightPlayer', roomName);
 	// 		console.log(`second player arrived and joined room ${roomName}`);
-	// 		this.playGame(socket, roomName);
+	// 		this.playGame(server, roomName);
 	// 		console.log('GAME STARTED');
 	// 	}
     // }
 
-	async managePlayer(socket: Socket, userId : number) :Promise<void> {
+	async managePlayer(socket: Socket, server: Server, userId : number) :Promise<void> {
 
 		let bbdd = await this.pongRepository.find();
-		
+
 		if (!bbdd.length) {
 
 			const player: Matchmaking = new Matchmaking();
@@ -86,8 +86,8 @@ export class PongService {
 			player.roomName = uuidv4();
 			await this.pongRepository.save(player);
 
-			socket.emit('GameInfo', 'leftPlayer', player.roomName);
 			socket.join(player.roomName);
+			server.to(socket.id).emit('GameInfo', 'leftPlayer', player.roomName);
 			console.log(`first player arrived and joined room ${player.roomName}`);
 
 		} else {
@@ -95,16 +95,16 @@ export class PongService {
 			let opponent: Matchmaking = bbdd.at(0);
 			this.pongRepository.delete( { userId: opponent.userId });
 
-			socket.emit('GameInfo', 'rightPlayer', opponent.roomName);
 			socket.join(opponent.roomName);
+			server.to(socket.id).emit('GameInfo', 'rightPlayer', opponent.roomName);
 			console.log(`second player arrived and joined room ${opponent.roomName}`);
-			console.log(`GAME STARTED in room ${opponent.roomName}`);	
-			this.playGame(socket, opponent.roomName);
+			console.log(`GAME STARTED in room ${opponent.roomName}`);
+			this.playGame(server, opponent.roomName);
 
 		}
 	}
 
-	async playGame(socket: Socket, socketRoom: string) {
+	async playGame(socket: Server, socketRoom: string) {
 
 		console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
 
