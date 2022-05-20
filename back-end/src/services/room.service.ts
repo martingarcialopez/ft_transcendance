@@ -151,6 +151,9 @@ export class RoomService {
 			console.log('room_type_pw ', room_info);
 			if (await bcrypt.compare(entered_pw, room_info['password']))
 			{
+				existing_user = await this.participant_already_exist({'userId': userId, 'roomId': roomId});
+				if (existing_user)
+					return false;
 				await this.participantService.createParticipant({'userId': joinRoomDto.userId, 'roomId': roomId});
 				return true;
 			}
