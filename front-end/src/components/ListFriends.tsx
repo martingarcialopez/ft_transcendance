@@ -22,9 +22,7 @@ const friends = [
 ];
 
 export const ListFriends = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-
     const userLogin = useSelector<RootState, UserState>(
         (state: RootState) => state.userLogin
     )
@@ -32,7 +30,6 @@ export const ListFriends = () => {
     
     const handleClick = (id: any) => {
         console.log("id :", id)
-        dispatch(getUserInfoAction(id, userLogin.access_token))
         navigate(`/profile/${id}`)
     }
 

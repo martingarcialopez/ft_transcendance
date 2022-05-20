@@ -7,7 +7,7 @@ import {
   LOGIN_FAILED_ACTION,
   SIGNUP_FAILED_ACTION,
   CHANGE_PAGE_ACTION,
-  SET_TOKEN_ACTION,
+  GET_FRIEND_INFOS_ACTION,
 } from '../constants/userConstants'
 import { formatError, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp } from '../services/userServices';
 
@@ -33,10 +33,9 @@ export function getInfoAction(access_token: any) {
   return (dispatch: any) => {
     getInfo(access_token)
       .then((response) => {
-        dispatch(setTokenAction(access_token));
         console.log("getInfoAction access_token:", access_token)
         console.log("getInfoAction response:", response)
-        saveTokenInLocalStorage(response.data);
+        saveTokenInLocalStorage(access_token, response.data);
         // tokenDetails.expiresIn
         runLogoutTimer(
           dispatch,
@@ -55,11 +54,11 @@ export function getInfoAction(access_token: any) {
   };
 }
 
-export function getUserInfoAction(username: any, access_token: any) {
+export function getUserInfoAction(username: any, access_token: any, navigate: NavigateFunction) {
   return (dispatch: any) => {
     getUserInfo(username, access_token)
       .then((response) => {
-        dispatch(loginConfirmedAction(response.data));
+        dispatch(getFriendInfosAction(response.data));
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);
@@ -98,18 +97,16 @@ export function loginAction(username: any, password: any, navigate: NavigateFunc
   };
 }
 
-export function setTokenAction(data: any) {
-  console.log("setToken :", data);
+export function loginFailedAction(data: any) {
   return {
-    type: SET_TOKEN_ACTION,
+    type: LOGIN_FAILED_ACTION,
     payload: data,
   };
 }
 
-
-export function loginFailedAction(data: any) {
+export function getFriendInfosAction(data: any) {
   return {
-    type: LOGIN_FAILED_ACTION,
+    type: GET_FRIEND_INFOS_ACTION,
     payload: data,
   };
 }

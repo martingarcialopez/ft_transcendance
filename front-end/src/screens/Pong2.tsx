@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { BALL_RADIUS, GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
-import { Button } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import Canvas from '../components/Canvas';
 import { GameWrapper } from '../styles/gameStyle';
 import { useSelector } from 'react-redux';
@@ -114,7 +114,7 @@ export const Pong = () => {
             ctx.closePath();
 
             ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI)
-            ctx.fillStyle = 'pink';
+            ctx.fillStyle = 'black';
             ctx.fill();
 
             ctx.fillStyle = "green";
@@ -135,34 +135,44 @@ export const Pong = () => {
     };
 
     return (
-        <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
+        <div >
             {gameStarted === false ?
-                <Button onClick={handleClick}>
+                    <Grid
+                        container
+                        spacing={0}
+                        direction="column"
+                        alignItems="center"
+                        justifyContent="center"
+                        style={{ minHeight: '100vh' }}
+                    >
+                        <Grid item xs={3}>
+                            <Button variant="outlined" onClick={handleClick}>
+                                {winner === '' ? (
+                                    <div>
+                                        Find a game
+                                    </div>
+                                ) : (
+                                    <div>
+                                        Restart Game
+                                    </div>
+                                )}
+                            </Button>
+                        </Grid>
+                    </Grid>
+                :
+                <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
+                    <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
                     {winner === '' ? (
                         <div>
-                            Find a game
+                            Partie en cours.
                         </div>
                     ) : (
                         <div>
-                            Restart Game
+                            {winner} a gagné la partie !
                         </div>
                     )}
-                </Button>
-                :
-                <div>
-                    PONG
-                </div>
+                </GameWrapper>
             }
-            <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
-            {winner === '' ? (
-                <div>
-                    Partie en cours.
-                </div>
-            ) : (
-                <div>
-                    {winner} a gagné la partie !
-                </div>
-            )}
-        </GameWrapper>
+        </div>
     );
 }
