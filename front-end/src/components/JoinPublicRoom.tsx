@@ -1,8 +1,13 @@
 import { T_Room } from "../type/chat";
 import { BsPlusLg } from "react-icons/bs";
 import "../styles/room.css";
-import { E_JoinRoom } from "./Event";
+
 import { TitleOptionRoom } from "./TitleOptionRoom";
+import { SetInfoUserRoom } from "./SetInfoUserRoom";
+import { RootState } from "../redux/store";
+import { UserState } from "../redux/reducers/userReducers";
+import { useSelector } from "react-redux";
+import { E_JoinRoom } from "./Event";
 
 export type T_PropsRoomArray = {
   room: T_Room[];
@@ -13,6 +18,9 @@ export type T_PropsRoomArray = {
  */
 
 export function JoinPublicRoom({ room }: T_PropsRoomArray) {
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
   if (room.length === 0) return <></>;
   return (
     <>
@@ -23,10 +31,14 @@ export function JoinPublicRoom({ room }: T_PropsRoomArray) {
             <span
               className="btn-join-room"
               onClick={() => {
-                console.log("Public: ");
-                {
-                  /* E_JoinRoom(3, 23, ""); */
-                }
+                const info = SetInfoUserRoom(
+                  userLogin.userInfo.id,
+                  item.id,
+                  item.typeRoom,
+                  "",
+                  ""
+                );
+                E_JoinRoom(info);
               }}
             >
               <BsPlusLg />

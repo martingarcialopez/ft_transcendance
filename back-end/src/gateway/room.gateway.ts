@@ -64,23 +64,10 @@ export class RoomGateway
 
 	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
 	@SubscribeMessage('JoinRoom')
-	//	async JoinRoom(body: JoinRoomDto): Promise<void> {
-	async JoinRoom(socket: Socket): Promise<void> {
-		console.log('in gateway of JoinRoom');
-		let body: JoinRoomDto = {userId: 19, roomId: 50, entered_pw: 'i am a cat'};
+	async JoinRoom(socket: Socket, body: JoinRoomDto): Promise<void> {
+		console.log('in gateway of JoinRoom', body);
 		const have_access = await this.roomService.joinRoom(body);
-//		this.server.emit('hasJoined', have_access);
 		socket.emit('hasJoined', have_access);
-	}
-
-
-	@SubscribeMessage('JoinPublicRoom')
-	async JoinPublicRoom(socket: Socket, body1: JoinRoomDto): Promise<void>
-	{
-		let body: JoinRoomDto = {'roomName' : 'cat room', 'userId' : 19};
-		let roomName: string = body.roomName;
-		let roomId: number = await this.roomService.getRoomId(roomName);
-
 	}
 
 
@@ -158,7 +145,6 @@ export class RoomGateway
 	@SubscribeMessage('allRoomInfos')
 	async allRoomInfos(socket: Socket) : Promise<void | undefined> {
 		let rooms  = await this.roomService.allRoomInfos();
-		console.log('allRoomInfos: ', rooms);
 		socket.emit('allRoomInfosRes', rooms);
 	}
 

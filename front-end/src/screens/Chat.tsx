@@ -8,7 +8,7 @@ import { RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../redux/index";
 import { bindActionCreators } from "redux";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { socket } from "../components/Event";
 
 /**
@@ -114,12 +114,16 @@ function ItemSelected() {
  * }
  *  */
 function PrintMsg() {
-  useEffect(() => {
-    socket.on("MsgToClient: ", (receive: any) => {
-      console.log("Msg received: ", receive);
-    });
-  }, [socket]);
-
+  /*
+   *
+   * 	useEffect(() => {
+   *     socket.on("MsgToClient: ", (receive: any) => {
+   *       console.log("Msg received: ", receive);
+   *     });
+   *   }, [socket]);
+   *
+   *
+   *  */
   return (
     <>
       <div className="row no-gutters">

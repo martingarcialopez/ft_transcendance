@@ -13,11 +13,21 @@ import { AddAdmin } from "../components/AddAdmin";
  *@typeOfRoom === "proctected" so the function will return room array of proctect room
  *@typeOfRoom === "public" so the function will return room array of public room
  */
+
+/*
+ *
+ * function CoypRoom(room: T_Room[], typeOfRoom: string): T_Room[] {
+ *   let newRoom = room.filter((item: T_Room) => {
+ *     if (item.typeRoom === typeOfRoom) return item;
+ *   });
+ *   return newRoom;
+ * }
+ *
+ *
+ *  */
+
 function CoypRoom(room: T_Room[], typeOfRoom: string): T_Room[] {
-  let newRoom = room.filter((item: T_Room) => {
-    if (item.typeRoom === typeOfRoom) return item;
-  });
-  return newRoom;
+  return room.filter((item: T_Room) => item.typeRoom === typeOfRoom);
 }
 
 /* function CoypRoom(room: T_Room[], id: number): T_Room[] {
@@ -34,8 +44,8 @@ export function Room() {
   const { arrayRoom } = useSelector((state: RootState) => state);
   const publicRoom = CoypRoom(arrayRoom, "public");
   const protectedRoom = CoypRoom(arrayRoom, "protected");
-  const pvRoom = CoypRoom(arrayRoom, "protected");
-
+  const pvRoom = CoypRoom(arrayRoom, "private");
+  console.log("private Room:", pvRoom);
   return (
     <>
       <CreateRoom />
