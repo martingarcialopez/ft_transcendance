@@ -99,9 +99,13 @@ export const Pong = () => {
         console.log(args[0]);
         console.log(args[1]);
         // console.log(side);
+        userLogin.userInfo.username = args[0];
         setOpponent(args[1])
         if (playerSide === 'leftPlayer')
+        {
+            userLogin.userInfo.username = args[1];
             setOpponent(args[0])
+        }
     });
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
@@ -186,7 +190,7 @@ export const Pong = () => {
                             </div>
                         )}
                     </GameWrapper>
-                    <ColumnGroupingTable username={userLogin.userInfo.username} opponent={opponent} />
+                    <ColumnGroupingTable side={playerSide} username={userLogin.userInfo.username} opponent={opponent} />
                 </div>
             }
         </div>

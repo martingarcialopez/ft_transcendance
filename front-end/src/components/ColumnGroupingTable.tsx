@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-export const ColumnGroupingTable = ({username, opponent}: any) => {
+export const ColumnGroupingTable = ({side, username, opponent}: any) => {
 
   return (
     <Paper sx={{ width: '100%' }}>
@@ -15,10 +15,10 @@ export const ColumnGroupingTable = ({username, opponent}: any) => {
           <TableHead>
             <TableRow>
               <TableCell align="center" colSpan={2}>
-                {username}
+                {side === 'leftPlayer' ? username : opponent}
               </TableCell>
               <TableCell align="center" colSpan={3}>
-                {opponent}
+                {side === 'leftPlayer' ? opponent : username}
               </TableCell>
             </TableRow>
           </TableHead>
