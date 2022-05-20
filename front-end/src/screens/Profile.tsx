@@ -53,6 +53,9 @@ export const Profile = () => {
     }
 
     const { friendInfo } = userLogin;
+    // const ref_default_img = "/game/test/test_42.jpg"
+    // const ref_default_img = "/shared/avatar/mgarcia-.png"
+    const ref_default_img = "/shared/avatar/avatar_chat.jpeg"
 
     return (
         <div className="backgroundProfile">
@@ -61,7 +64,7 @@ export const Profile = () => {
             </div>
             <div className="profileContainer">
                 <aside className="sideBar">
-                    <img src="/avatar/avatar_chat.jpeg"/*{friendInfo.avatar}*/ alt="" className="userImage" />
+                    <img src={ref_default_img}/*{friendInfo.avatar}*/ alt="" className="userImage" />
                     <h1 className="userName">{friendInfo.username}</h1>
                     <h3 className="userNickName">{friendInfo.login42}</h3>
                     <h5 className="userNickName">{friendInfo.firstname}</h5>

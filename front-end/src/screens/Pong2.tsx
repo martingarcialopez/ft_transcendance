@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux';
 import { UserState } from '../redux/reducers/userReducers';
 import { URL_test } from '../constants/url';
+import { ColumnGroupingTable } from '../components/ColumnGroupingTable';
 // import Canvas from '../components/Canvas';
 
 export const socket = socketio(`${URL_test}`)
@@ -36,6 +37,7 @@ export const Pong = () => {
     )
     const [playerSide, setPlayerSide] = useState('');
     const [roomId, setRoomId] = useState('');
+    const [opponent, setOpponent] = useState('');
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         console.log("event code = ")
@@ -91,18 +93,30 @@ export const Pong = () => {
         setGameStarted(true);
     });
 
+    socket.on('GamePlayerName', (...args) => {
+        console.log("GamePlayerName");
+        console.log(args);
+        console.log(args[0]);
+        console.log(args[1]);
+        // console.log(side);
+        setOpponent(args[1])
+        if (playerSide === 'leftPlayer')
+            setOpponent(args[0])
+        setGameStarted(true);
+    });
+
     const drawGame = (ctx: CanvasRenderingContext2D) => {
         var img = new Image();
         if (winner !== '') {
             if (winner === 'leftPlayer')
-                img.src = "./avatar/left_win.jpeg"
+                img.src = "./game/left_win.jpeg"
             else
-                img.src = "./avatar/right_win.jpeg"
+                img.src = "./game/right_win.jpeg"
 
             ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
         }
         else if (gameStarted === false) {
-            img.src = "./avatar/cyberpong.jpeg"
+            img.src = "./game/cyberpong.jpeg"
 
             ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
         }
@@ -136,42 +150,45 @@ export const Pong = () => {
 
     return (
         <div >
-            {gameStarted === false ?
-                    <Grid
-                        container
-                        spacing={0}
-                        direction="column"
-                        alignItems="center"
-                        justifyContent="center"
-                        style={{ minHeight: '100vh' }}
-                    >
-                        <Grid item xs={3}>
-                            <Button variant="outlined" onClick={handleClick}>
-                                {winner === '' ? (
-                                    <div>
-                                        Find a game
-                                    </div>
-                                ) : (
-                                    <div>
-                                        Restart Game
-                                    </div>
-                                )}
-                            </Button>
-                        </Grid>
+            {gameStarted === true ?
+                <Grid
+                    container
+                    spacing={0}
+                    direction="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ minHeight: '100vh' }}
+                >
+                    <Grid item xs={3}>
+                        <Button variant="outlined" onClick={handleClick}>
+                            {winner === '' ? (
+                                <div>
+                                    Find a game
+                                </div>
+                            ) : (
+                                <div>
+                                    Restart Game
+                                </div>
+                            )}
+                        </Button>
                     </Grid>
+                </Grid>
                 :
-                <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
-                    <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
-                    {winner === '' ? (
-                        <div>
-                            Partie en cours.
-                        </div>
-                    ) : (
-                        <div>
-                            {winner} a gagné la partie !
-                        </div>
-                    )}
-                </GameWrapper>
+                <div>
+                    <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
+                        <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
+                        {winner === '' ? (
+                            <div>
+                                Partie en cours.
+                            </div>
+                        ) : (
+                            <div>
+                                {winner} a gagné la partie !
+                            </div>
+                        )}
+                    </GameWrapper>
+                    <ColumnGroupingTable username={userLogin.userInfo.username} opponent={opponent} />
+                </div>
             }
         </div>
     );

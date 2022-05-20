@@ -43,7 +43,7 @@ export const ProfileContainer = () => {
     return <h1>Loading...</h1>;
   }
 
-  userLogin.userInfo.avatar = "./avatar/test_42.jpg"
+  userLogin.userInfo.avatar = "./game/test_42.jpg"
 
   return (
     <div className="backgroundProfile">
