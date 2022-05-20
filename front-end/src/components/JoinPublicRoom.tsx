@@ -31,7 +31,6 @@ export function JoinPublicRoom({ room }: T_PropsRoomArray) {
             <span
               className="btn-join-room"
               onClick={() => {
-                console.log("Public: ");
                 const info = SetInfoUserRoom(
                   userLogin.userInfo.id,
                   item.id,

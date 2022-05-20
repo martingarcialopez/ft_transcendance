@@ -7,6 +7,12 @@ import { E_UpdatePwd, E_LeaveRoom, E_DeleteRoomPw } from "./Event";
 import { BasicModal } from "./BasicModal";
 import { Hidden } from "./Hidden";
 import { TitleOptionRoom } from "./TitleOptionRoom";
+import { RootState } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { UserState } from "../redux/reducers/userReducers";
+import { bindActionCreators } from "redux";
+import { E_AllRoomInfos } from "../components/Event";
+import * as actionCreatorsRoom from "../redux/action-creators/Ac_room";
 
 function ChangePassWord() {
   const { register, handleSubmit } = useForm();
@@ -36,8 +42,13 @@ function ChangePassWord() {
   );
 }
 
-function Options({ id: number, typeRoom }: T_Room) {
+function Options({ id, typeRoom }: T_Room) {
   const [state, setSate] = useState<boolean>(false);
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
+  const dispatch = useDispatch();
+  const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
   console.log("typeRoom:", typeRoom);
   return (
     <>
@@ -51,13 +62,16 @@ function Options({ id: number, typeRoom }: T_Room) {
           className="btn1 opt1 btn-new-room"
           type="submit"
           value="Leave Room"
-          onClick={() => E_LeaveRoom(3, 29)}
+          onClick={() => E_LeaveRoom(userLogin.userInfo.id, id)}
         />
         <input
           className="btn1 opt2 btn-new-room"
           type="submit"
           value="Remove Password"
-          onClick={() => E_DeleteRoomPw(3, 29)}
+          onClick={() => {
+            E_DeleteRoomPw(userLogin.userInfo.id, id);
+            E_AllRoomInfos(ac_InitRoomArray); //to update
+          }}
         />
         <input
           className="btn1 opt3 btn-new-room"

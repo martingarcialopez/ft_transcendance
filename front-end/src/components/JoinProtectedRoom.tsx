@@ -41,7 +41,6 @@ function IsProctect({ id, typeRoom }: T_Room) {
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
-          console.log("protected: ", data.target);
           const info = SetInfoUserRoom(
             userLogin.userInfo.id,
             id,

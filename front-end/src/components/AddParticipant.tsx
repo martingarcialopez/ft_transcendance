@@ -56,7 +56,6 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
               "",
               data.userName
             );
-            console.log("info:", info);
             E_JoinRoom(info);
             setDisplay("none");
           } else setDisplay("inline");
