@@ -46,7 +46,7 @@ export function getUserInfo(username: any, access_token: any) {
     console.log("getUserInfo USERNAME :", username)
     return axios({
         method: 'get',
-        url: `${URL_test}/user/:username`,
+        url: `${URL_test}/user/${username}`,
         headers: { 'Authorization': `Bearer ${access_token}` }
     });
 }
@@ -67,21 +67,21 @@ export function formatError(errorResponse: any) {
         case 'ERR_BAD_REQUEST':
             return 'Username or password invalid';
         default:
-            return 'Fuck you !';
+            return 'An error arrived';
     }
 }
 
-export function saveTokenInLocalStorage(access_token: any, tokenDetails: any) {
+export function saveTokenInLocalStorage(tokenDetails: any) {
     console.log("Dans saveToken le token :")
     console.log(tokenDetails)
     console.log("Dans saveToken le token expiresIn :")
     console.log(tokenDetails.expiresIn)
     // tokenDetails.expiresIn
-    tokenDetails.access_token = access_token;
         tokenDetails.expireDate = new Date(
         new Date().getTime() + 5000000000 * 1000,
     );
-    console.log("Dans saveToken apres expireDate add + tokenAdd token :")
+    console.log("Dans saveToken apres expireDate add + tokenAdd token :", tokenDetails)
+    console.log("Dans saveToken JSON mode :", JSON.stringify(tokenDetails))
     localStorage.setItem('userInfo', JSON.stringify(tokenDetails));
 }
 

@@ -4,10 +4,14 @@ import { RiGroupLine } from "react-icons/ri";
 import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 import { StyledBadge } from "../styles/AvatarStyle";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserInfoAction } from "../redux/actions/userActions";
+import { RootState } from "../redux";
+import { UserState } from "../redux/reducers/userReducers";
 
 const friends = [
     {
-        username: 'aa',
+        username: 'Lillon1',
     },
     {
         username: 'q',
@@ -18,9 +22,17 @@ const friends = [
 ];
 
 export const ListFriends = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const userLogin = useSelector<RootState, UserState>(
+        (state: RootState) => state.userLogin
+    )
+    console.log("ListFriends userLogin:", userLogin);
+    
     const handleClick = (id: any) => {
         console.log("id :", id)
+        dispatch(getUserInfoAction(id, userLogin.access_token))
         navigate(`/profile/${id}`)
     }
 

@@ -162,11 +162,11 @@ const ResponsiveAppBar = () => {
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     {setting !== "Logout" ? (
                       <Link key={setting} to={setting.toLowerCase()}>
-                        <Typography textAlign="center">{setting}</Typography>
+                        <Typography key={setting} textAlign="center">{setting}</Typography>
                       </Link>
                     ) : (
                       <Link key={setting} onClick={logoutHandler} to={"/home"}>
-                        <Typography textAlign="center">{setting}</Typography>
+                        <Typography key={"/home"} textAlign="center">{setting}</Typography>
                       </Link>
                     )}
                   </MenuItem>

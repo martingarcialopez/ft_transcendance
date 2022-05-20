@@ -4,6 +4,7 @@ import {
   LOGIN_CONFIRMED_ACTION,
   LOGIN_FAILED_ACTION,
   LOGOUT_ACTION,
+  SET_TOKEN_ACTION,
   SIGNUP_CONFIRMED_ACTION,
   SIGNUP_FAILED_ACTION,
 } from "../constants/userConstants";
@@ -24,11 +25,11 @@ export interface UserInfo {
   password?: string,
   avatar?: string,
   expiresIn?: any
-  access_token: string,
   id?: any
 }
 
 export interface UserState {
+  access_token: string,
   showLoading?: boolean;
   errorMessage?: string;
   successMessage?: string;
@@ -46,6 +47,7 @@ export const userLoginReducer = (
     showLoading: false,
     errorMessage: "",
     successMessage: "",
+    access_token: '',
     userInfo: {
       login42: '',
       username: '',
@@ -53,7 +55,6 @@ export const userLoginReducer = (
       lastname: '',
       password: '',
       avatar: '',
-      access_token: '',
       expiresIn: '',
       id: 0,
     },
@@ -68,10 +69,18 @@ export const userLoginReducer = (
   action: Action
 ) => {
   switch (action.type) {
+
     case LOADING_TOGGLE_ACTION:
       return {
         ...state,
         showLoading: true,
+      };
+    case SET_TOKEN_ACTION:
+      console.log("SET_TOKEN_ACTION :", action.payload);
+
+      return {
+        ...state,
+        access_token: action.payload,
       };
     case LOGIN_CONFIRMED_ACTION:
       return {

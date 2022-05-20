@@ -7,7 +7,7 @@ import { UserState } from "../redux/reducers/userReducers";
 import { useParams } from "react-router-dom";
 import { ListFriends } from "../components/ListFriends";
 import { useEffect } from "react";
-import { getUserInfoAction } from "../redux/actions/userActions";
+import { getInfoAction } from "../redux/actions/userActions";
 
 const matchs = [
     {
@@ -37,14 +37,17 @@ export const Profile = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
 
+    console.log("id:", id)
     //   const userLogin = //Function from Martin to have all user informations
     const userLogin = useSelector<RootState, UserState>(
         (state: RootState) => state.userLogin
     )
 
     useEffect(() => {
-        dispatch(getUserInfoAction(id, userLogin.userInfo.access_token))
-    }, [])
+        console.log("access-token:", userLogin.access_token)
+        dispatch(getInfoAction(userLogin.access_token))
+    }, [dispatch, userLogin.access_token])
+
     console.log("Profile UserLogin :");
     console.log(userLogin);
 

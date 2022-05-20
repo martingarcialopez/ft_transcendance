@@ -7,6 +7,7 @@ import {
   LOGIN_FAILED_ACTION,
   SIGNUP_FAILED_ACTION,
   CHANGE_PAGE_ACTION,
+  SET_TOKEN_ACTION,
 } from '../constants/userConstants'
 import { formatError, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp } from '../services/userServices';
 
@@ -32,8 +33,10 @@ export function getInfoAction(access_token: any) {
   return (dispatch: any) => {
     getInfo(access_token)
       .then((response) => {
+        dispatch(setTokenAction(access_token));
+        console.log("getInfoAction access_token:", access_token)
         console.log("getInfoAction response:", response)
-        saveTokenInLocalStorage(access_token, response.data);
+        saveTokenInLocalStorage(response.data);
         // tokenDetails.expiresIn
         runLogoutTimer(
           dispatch,
@@ -82,9 +85,8 @@ export function loginAction(username: any, password: any, navigate: NavigateFunc
         console.log(response.data)
         console.log("loginAction data access qui fct :")
         console.log(response.data.access_token)
-        dispatch(getInfoAction(response.data.access_token)).then(
-          navigate('/home')
-        )
+        dispatch(getInfoAction(response.data.access_token));
+        navigate('/home')
       })
       .catch((error) => {
         console.log("ceci est une error dans loginAction :")
@@ -95,6 +97,15 @@ export function loginAction(username: any, password: any, navigate: NavigateFunc
       });
   };
 }
+
+export function setTokenAction(data: any) {
+  console.log("setToken :", data);
+  return {
+    type: SET_TOKEN_ACTION,
+    payload: data,
+  };
+}
+
 
 export function loginFailedAction(data: any) {
   return {
