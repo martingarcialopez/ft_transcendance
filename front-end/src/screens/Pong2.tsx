@@ -102,7 +102,6 @@ export const Pong = () => {
         setOpponent(args[1])
         if (playerSide === 'leftPlayer')
             setOpponent(args[0])
-        setGameStarted(true);
     });
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
@@ -150,7 +149,7 @@ export const Pong = () => {
 
     return (
         <div >
-            {gameStarted === true ?
+            {gameStarted === false ?
                 <Grid
                     container
                     spacing={0}
