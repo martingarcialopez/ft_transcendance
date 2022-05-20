@@ -10,6 +10,7 @@ import { PongDto } from '../dtos/in/pong.dto';
 import { moveDto } from 'src/dtos/in/move.dto';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { GameEntity } from '../models/game.entity';
+import { UserService } from './user.service';
 
 @Injectable()
 export class PongService {
@@ -18,7 +19,8 @@ export class PongService {
 	//  private readonly userService: UserService;
 	constructor(
 		@InjectRepository(Matchmaking) private readonly pongRepository: Repository<Matchmaking>,
-		private readonly gameService: InMemoryDBService<GameEntity>
+		private readonly gameService: InMemoryDBService<GameEntity>,
+		private readonly userService: UserService
 	) { }
 
 	//----------------------Matchmaking------------------------
@@ -51,13 +53,13 @@ export class PongService {
 		else
 		{
 			// GET INFOS FROM LOCKED PLAYER
-			let user_infos = await this.pongRepository
+			let opponent = await this.pongRepository
 				.createQueryBuilder('matchmaking')
 				.select(['matchmaking.userId', 'matchmaking.roomName'])
 				.where("matchmaking.lock = :lock", { lock: myuuid })
 				.execute();
-			let other_user_id = user_infos[0].matchmaking_userId;
-			let roomName = user_infos[0].matchmaking_roomName;
+			let other_user_id = opponent[0].matchmaking_userId;
+			let roomName = opponent[0].matchmaking_roomName;
 
 			// DELETE LOCKED PLAYER
 			await this.pongRepository
@@ -68,6 +70,10 @@ export class PongService {
 
 			socket.join(roomName);
 			server.to(socket.id).emit('GameInfo', 'rightPlayer', roomName);
+
+			const player = await this.userService.getUserById(userId.toString());
+
+			server.to(socket.id).emit("GamePlayerName", opponent.username, player.username);
 			console.log(`second player arrived and joined room ${roomName}`);
 			this.playGame(server, roomName);
 			console.log('GAME STARTED');
