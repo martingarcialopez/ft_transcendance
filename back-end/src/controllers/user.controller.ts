@@ -24,7 +24,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/:username')
-  getUser(@Param('username', ParseIntPipe) username: string) : Promise<User> {
+  getUser(@Param('username') username: string) : Promise<User> {
       return this.userService.getUser(username);
   }
 
