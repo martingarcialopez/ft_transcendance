@@ -124,6 +124,8 @@ export class PongService {
 				else if (state.rightScore >= 3)
 					winner = 'rightplayer';
 				socket.to(socketRoom).emit('gameOver', winner);
+				const move = this.gameService.getAll();
+				move.filter(elem => elem.room === socketRoom).forEach(elem => this.gameService.delete(elem.id));
 				return ;
 			}
 
