@@ -21,6 +21,7 @@ import { bindActionCreators } from "redux";
 import { socket } from "./components/Event";
 import * as actionCreatorsRoom from "./redux/action-creators/Ac_room";
 import { T_Room } from "./type/chat";
+import { LeaderBoard } from "./screens/LeaderBoard";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ const App = () => {
         <Route path="/profile" element={<ProfileContainer />} />
         <Route path="pong" element={<Pong />} />
         <Route path="/room" element={<Room />} />
+        <Route path="/leaderboard" element={<LeaderBoard />} />
         <Route path="/home" element={<HomeScreen />} />
         <Route path="/logout" element={<HomeScreen />} />
         <Route path="/" element={<HomeScreen />} />
