@@ -30,12 +30,13 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
   };
 }
 
-export function updateAction(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any) {
+export function updateAction(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any) {
   return (dispatch: any) => {
-    update(firstname, lastname, username, password, avatar, id)
+    update(firstname, lastname, username, password, avatar, id, access_token)
       .then((response) => {
         console.log("updateAction response : ")
         console.log(response)
+        saveTokenInLocalStorage(access_token, response.data);
         dispatch(loginConfirmedAction(response.data))
       })
       .catch((error) => {
@@ -74,7 +75,7 @@ export function getInfoAction(access_token: any) {
   };
 }
 
-export function getUserInfoAction(username: any, access_token: any, navigate: NavigateFunction) {
+export function getUserInfoAction(username: any, access_token: any) {
   return (dispatch: any) => {
     getUserInfo(username, access_token)
       .then((response) => {

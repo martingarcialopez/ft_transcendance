@@ -18,7 +18,7 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id :any) {
+export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id :any, access_token: any) {
     const postData = {
         firstname,
         lastname,
@@ -30,6 +30,9 @@ export function update(firstname: any, lastname: any, username: any, password: a
     return axios.post(
         `${URL_test}/user/update/${id}`,
         postData,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
     );
 }
 

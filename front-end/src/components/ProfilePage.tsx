@@ -51,7 +51,7 @@ export const ProfilePage = ({ userInfo }: any) => {
 
         setOpen(false);
         if (userInfo)
-            dispatch(updateAction(firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id))
+            dispatch(updateAction(firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token))
 
         console.log("signUp :", {
             firstname: firstname,
