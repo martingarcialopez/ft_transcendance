@@ -7,6 +7,7 @@ import {
   LOGOUT_ACTION,
   SIGNUP_CONFIRMED_ACTION,
   SIGNUP_FAILED_ACTION,
+  UPDATE_FAILED_ACTION,
 } from "../constants/userConstants";
 
 export interface MatchInfo {
@@ -111,7 +112,7 @@ export const userLoginReducer = (
         errorMessage: "",
         successMessage: "Signup Successfully Completed",
       };
-    case LOGIN_FAILED_ACTION || SIGNUP_FAILED_ACTION:
+    case LOGIN_FAILED_ACTION || SIGNUP_FAILED_ACTION || UPDATE_FAILED_ACTION:
       return {
         ...state,
         showLoading: false,

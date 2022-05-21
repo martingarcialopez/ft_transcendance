@@ -9,14 +9,14 @@ import { Chat } from "./screens/Chat";
 import { Pong } from "./screens/PongScreen";
 // import { NoMatch } from './screens/NoMatchScreen';
 import ResponsiveAppBar from './components/NavBar';
-import { ProfileContainer } from './screens/MyProfileScreen';
+import { MyProfileScreen } from './screens/MyProfileScreen';
 import { Room } from './screens/Room';
 import { useDispatch, useSelector } from 'react-redux';
 import { Suspense, useEffect } from 'react';
 import { checkAutoLogin } from './redux/services/userServices';
 import { RootState } from './redux';
 import { UserState } from './redux/reducers/userReducers';
-import { Profile } from './screens/OtherProfileScreen';
+import { OtherProfileScreen } from './screens/OtherProfileScreen';
 import { bindActionCreators } from "redux";
 import { socket } from "./components/Event";
 import * as actionCreatorsRoom from "./redux/action-creators/Ac_room";
@@ -65,8 +65,8 @@ const App = () => {
     routes = (
       <Routes>
         <Route path="/chat" element={<Chat />} />
-        <Route path="/profile/:id" element={<Profile />} />
-        <Route path="/profile" element={<ProfileContainer />} />
+        <Route path="/profile/:id" element={<OtherProfileScreen />} />
+        <Route path="/profile" element={<MyProfileScreen />} />
         <Route path="pong" element={<Pong />} />
         <Route path="/room" element={<Room />} />
         <Route path="/leaderboard" element={<LeaderBoard />} />

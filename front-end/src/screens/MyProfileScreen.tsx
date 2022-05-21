@@ -5,7 +5,7 @@ import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { ProfilePage } from "../components/ProfilePage";
 
-export const ProfileContainer = () => {
+export const MyProfileScreen = () => {
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   )
@@ -17,6 +17,8 @@ export const ProfileContainer = () => {
     return <h1>Loading...</h1>;
   }
   const { userInfo }: UserState = userLogin;
+
+  console.log("userInfo MyProfile:", userInfo)
 
   return (
     <ProfilePage userInfo={userInfo} />

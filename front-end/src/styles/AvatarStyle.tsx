@@ -1,7 +1,7 @@
 import { Badge } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-export const StyledBadge = styled(Badge)(({ theme }) => ({
+export const StyledBadgeGreen = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
       backgroundColor: '#44b700',
       color: '#44b700',
@@ -17,6 +17,41 @@ export const StyledBadge = styled(Badge)(({ theme }) => ({
         border: '1px solid currentColor',
         content: '""',
       },
+    },
+    '@keyframes ripple': {
+      '0%': {
+        transform: 'scale(.8)',
+        opacity: 1,
+      },
+      '100%': {
+        transform: 'scale(2.4)',
+        opacity: 0,
+      },
+    },
+  }));
+
+  export const StyledBadgeRed = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      backgroundColor: "red",
+      color: "red",
+    },
+    '@keyframes ripple': {
+      '0%': {
+        transform: 'scale(.8)',
+        opacity: 1,
+      },
+      '100%': {
+        transform: 'scale(2.4)',
+        opacity: 0,
+      },
+    },
+  }));
+
+  export const StyledBadgeGrey = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      backgroundColor: "grey",
+      color: "grey",
+
     },
     '@keyframes ripple': {
       '0%': {

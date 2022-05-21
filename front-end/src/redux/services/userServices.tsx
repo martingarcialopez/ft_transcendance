@@ -18,6 +18,21 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
+export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id :any) {
+    const postData = {
+        firstname,
+        lastname,
+        username,
+        password,
+        avatar,
+    };
+
+    return axios.post(
+        `${URL_test}/user/update/${id}`,
+        postData,
+    );
+}
+
 export function login(username: any, password: any) {
     const postData = {
         username,

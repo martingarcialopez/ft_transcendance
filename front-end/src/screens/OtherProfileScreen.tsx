@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { getUserInfoAction } from "../redux/actions/userActions";
 import { ProfilePage } from "../components/ProfilePage";
 
-export const Profile = () => {
+export const OtherProfileScreen = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
