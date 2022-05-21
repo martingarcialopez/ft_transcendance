@@ -38,6 +38,11 @@ export const Pong = () => {
     const [playerSide, setPlayerSide] = useState('');
     const [roomId, setRoomId] = useState('');
     const [opponent, setOpponent] = useState('');
+    const { userInfo }: UserState = userLogin;
+
+    if (!userInfo) {
+        return <h1>Loading...</h1>;
+    }
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         console.log("event code = ")
@@ -75,7 +80,8 @@ export const Pong = () => {
     }
 
     function handleClick() {
-        socket.emit('lookingForplay', userLogin.userInfo.id);
+        if (userInfo)
+            socket.emit('lookingForplay', userInfo.id);
 
         // console.log("HANDKE CKUC")
         setWinner('');
@@ -99,11 +105,10 @@ export const Pong = () => {
         console.log(args[0]);
         console.log(args[1]);
         // console.log(side);
-        userLogin.userInfo.username = args[0];
+        userInfo.username = args[0];
         setOpponent(args[1])
-        if (playerSide === 'leftPlayer')
-        {
-            userLogin.userInfo.username = args[1];
+        if (playerSide === 'leftPlayer') {
+            userInfo.username = args[1];
             setOpponent(args[0])
         }
     });
@@ -190,7 +195,7 @@ export const Pong = () => {
                             </div>
                         )}
                     </GameWrapper>
-                    <ColumnGroupingTable side={playerSide} username={userLogin.userInfo.username} opponent={opponent} />
+                    <ColumnGroupingTable side={playerSide} username={userInfo.username} opponent={opponent} />
                 </div>
             }
         </div>

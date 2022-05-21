@@ -23,6 +23,12 @@ function IsProctect({ id, typeRoom }: T_Room) {
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   );
+
+  const { userInfo }: UserState = userLogin;
+
+  if (!userInfo) {
+      return <h1>Loading...</h1>;
+  }
   return (
     <div>
       <Typography
@@ -42,7 +48,7 @@ function IsProctect({ id, typeRoom }: T_Room) {
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
           const info = SetInfoUserRoom(
-            userLogin.userInfo.id,
+            userInfo.id,
             id,
             typeRoom,
             data.pwd,

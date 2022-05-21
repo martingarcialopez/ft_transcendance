@@ -40,6 +40,13 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
   );
   const [display, setDisplay] = useState<string>("none");
   if (room.length < 1) return <></>;
+
+  const { userInfo }: UserState = userLogin;
+
+  if (!userInfo) {
+      return <h1>Loading...</h1>;
+  }
+
   return (
     <>
       <TitleOptionRoom title="Add user Into Private Room" />
@@ -50,7 +57,7 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
           if (targetRoom.id !== -1) {
             console.log("targetRoom:", targetRoom);
             const info = SetInfoUserRoom(
-              userLogin.userInfo.id,
+              userInfo.id,
               targetRoom.id,
               targetRoom.typeRoom,
               "",

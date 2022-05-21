@@ -25,7 +25,7 @@ export interface UserInfo {
   password?: string,
   avatar?: string,
   expiresIn?: any,
-  access_token: string,
+  access_token?: string,
   id?: any
 }
 
@@ -33,9 +33,9 @@ export interface UserState {
   showLoading?: boolean;
   errorMessage?: string;
   successMessage?: string;
-  userInfo: UserInfo,
-  friendInfo: UserInfo,
-  MatchInfo: MatchInfo
+  userInfo?: UserInfo,
+  friendInfo?: UserInfo,
+  MatchInfo?: MatchInfo
 }
 
 interface Action {

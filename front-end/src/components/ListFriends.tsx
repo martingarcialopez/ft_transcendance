@@ -4,8 +4,7 @@ import { RiGroupLine } from "react-icons/ri";
 import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 import { StyledBadge } from "../styles/AvatarStyle";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { getUserInfoAction } from "../redux/actions/userActions";
+import { useSelector } from "react-redux";
 import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
 
@@ -18,6 +17,9 @@ const friends = [
     },
     {
         username: 'a',
+    },
+    {
+        username: 'b',
     },
 ];
 

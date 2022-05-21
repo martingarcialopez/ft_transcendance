@@ -37,7 +37,13 @@ export function CreateRoom() {
 
   /* console.log("userLogin INFO", userLogin); */
 
-  /* console.log("userId : ", userLogin.userInfo.id); */
+  /* console.log("userId : ", userInfo.id); */
+  const { userInfo }: UserState = userLogin;
+
+  if (!userInfo) {
+      return <h1>Loading...</h1>;
+  }
+
   return (
     <>
       <br />
@@ -48,8 +54,8 @@ export function CreateRoom() {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          console.log("userId: ", userLogin.userInfo.id);
-          E_CreateRoom(newRoom, userLogin.userInfo.id, ac_AddRoom);
+          console.log("userId: ", userInfo.id);
+          E_CreateRoom(newRoom, userInfo.id, ac_AddRoom);
         })}
       >
         <input
