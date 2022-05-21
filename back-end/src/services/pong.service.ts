@@ -73,12 +73,18 @@ export class PongService {
 
 			const player = await this.userService.getUserById(userId.toString());
 
-			server.to(socket.id).emit("GamePlayerName", opponent.username, player.username);
+			// if (player) {
+			// 	server.to(socket.id).emit("GamePlayerName", "raph", "martin");//, opponent[0].username, player.username);
+			// 	//console.log(`emit GamePlayerName ${opponent[0].username}, ${player.username}`);
+			// }
+				server.to(socket.id).emit("GamePlayerName", "raph", "martin");//, opponent[0].username, player.username);
+
 			console.log(`second player arrived and joined room ${roomName}`);
 			this.playGame(server, roomName);
 			console.log('GAME STARTED');
 		}
     }
+
 
 	// async managePlayer(socket: Socket, server: Server, userId : number) :Promise<void> {
 

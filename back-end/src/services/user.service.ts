@@ -1,4 +1,4 @@
-import { HttpStatus, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, HttpException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
@@ -68,7 +68,10 @@ export class UserService {
             const saltOrRounds = 10;
             body.password = await bcrypt.hash(body.password, saltOrRounds);
         }
-        Object.assign(user, body);
+        if (!body.id)
+            Object.assign(user, body);
+        else
+            throw new BadRequestException('Cannot overwrite user id');
         return this.userRepository.save(user);
     }
 
