@@ -9,6 +9,7 @@ import { RootState } from '../redux';
 import { UserState } from '../redux/reducers/userReducers';
 import { URL_test } from '../constants/url';
 import { ColumnGroupingTable } from '../components/ColumnGroupingTable';
+import { ResponsiveDialog } from '../components/ResponsiveDialog';
 // import Canvas from '../components/Canvas';
 
 export const socket = socketio(`${URL_test}`)
@@ -159,28 +160,31 @@ export const Pong = () => {
     return (
         <div >
             {gameStarted === false ?
-                <Grid
-                    container
-                    spacing={0}
-                    direction="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    style={{ minHeight: '100vh' }}
-                >
-                    <Grid item xs={3}>
-                        <Button variant="outlined" onClick={handleClick}>
-                            {winner === '' ? (
-                                <div>
-                                    Find a game
-                                </div>
-                            ) : (
-                                <div>
-                                    Restart Game
-                                </div>
-                            )}
-                        </Button>
+                <div>
+                    <Grid
+                        container
+                        rowSpacing={10}
+                        direction="column"
+                        alignItems="center"
+                        justifyContent="space-around"
+                        style={{ minHeight: '100vh' }}
+                    >
+                        <Grid item xs={3}>
+                            <Button variant="outlined" onClick={handleClick}>
+                                {winner === '' ? (
+                                    <div>
+                                        Search an opponent
+                                    </div>
+                                ) : (
+                                    <div>
+                                        Restart Game
+                                    </div>
+                                )}
+                            </Button>
+                        </Grid>
+                        <ResponsiveDialog />
                     </Grid>
-                </Grid>
+                </div>
                 :
                 <div>
                     <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
