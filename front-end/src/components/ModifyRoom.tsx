@@ -61,7 +61,7 @@ function Options({ id, typeRoom }: T_Room) {
   );
   const dispatch = useDispatch();
   const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
-  console.log("typeRoom:", typeRoom);
+  /* console.log("typeRoom:", typeRoom); */
 
   const { userInfo }: UserState = userLogin;
 
