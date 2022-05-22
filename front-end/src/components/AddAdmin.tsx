@@ -4,7 +4,10 @@ import { T_Room } from "../type/chat";
 import { useForm } from "react-hook-form";
 import { E_ManageAdmin } from "./Event";
 import { BasicModal } from "./BasicModal";
-import { TitleOptionRoom } from "./TitleOptionRoom";
+import { TitleOptionRoom, TitleModal } from "./TitleOptionRoom";
+import { RootState } from "../redux/store";
+import { UserState } from "../redux/reducers/userReducers";
+import { useSelector } from "react-redux";
 
 export type T_PropsRoomArray = {
   room: T_Room[];
@@ -13,18 +16,31 @@ export type T_PropsRoomArray = {
 /**
  * the form to add a new admin into channel
  */
-function Adduser({ id: number }: T_Room) {
+function Adduser({ id }: T_Room) {
   const { register, handleSubmit } = useForm();
+  //  const dispatch = useDispatch();
+
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
+
+  /* console.log("userId : ", userInfo.id); */
+  const { userInfo }: UserState = userLogin;
+
+  if (!userInfo) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <div>
       <br />
-      <h3 style={{ fontSize: "calc(0.75em + 2vmin)" }}>Add another admin</h3>
-
+      {/* <h3 style={{ fontSize: "calc(0.75em + 2vmin)" }}>Add another admin</h3> */}
+      <TitleModal title="Add another admin" />
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
           //E_JoinRoom(3, 29, data.pwd);
-          E_ManageAdmin(3, 29, true);
+          E_ManageAdmin(userInfo.id, id, data.login, true);
         })}
       >
         <input
@@ -33,7 +49,7 @@ function Adduser({ id: number }: T_Room) {
           placeholder="user name"
           required
           autoComplete="on"
-          {...register("name")}
+          {...register("login")}
         />
         <input
           className="btn1 btn-new-room btn-Protected"
@@ -49,6 +65,7 @@ function Adduser({ id: number }: T_Room) {
  * add a new new user admin into a channel
  */
 export function AddAdmin({ room }: T_PropsRoomArray) {
+  if (room.length === 0) return <></>;
   return (
     <>
       {" "}

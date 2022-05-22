@@ -35,9 +35,7 @@ export function CreateRoom() {
     (state: RootState) => state.userLogin
   );
 
-  /* console.log("userId : ", userInfo.id); */
   const { userInfo }: UserState = userLogin;
-
   if (!userInfo) {
     return <h1>Loading...</h1>;
   }
@@ -48,11 +46,11 @@ export function CreateRoom() {
       <br />
 
       <TitleOptionRoom title="Create Channel" />
+
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          console.log("userId: ", userInfo.id);
           E_CreateRoom(newRoom, userInfo.id, ac_AddRoom);
         })}
       >
@@ -85,6 +83,7 @@ export function CreateRoom() {
           <option value="protected">Protected</option>
         </select>
         <br />
+
         <input type="submit" className="btn-new-room" value="New" />
       </form>
     </>

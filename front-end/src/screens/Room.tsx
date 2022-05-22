@@ -47,7 +47,8 @@ export function Room() {
   }
 
   const roomUserIsAdmin = GetRoomUserAdmin(arrayRoom, userInfo.id);
-  console.log("room  user is  admin:", roomUserIsAdmin);
+  console.log("room user is admin:", roomUserIsAdmin);
+  console.log("userId: ", userInfo.id);
   return (
     <>
       <CreateRoom />
@@ -60,7 +61,7 @@ export function Room() {
       <br />
       <ModifyRoom room={roomUserIsAdmin} />
       <br />
-      <AddAdmin room={publicRoom} />
+      <AddAdmin room={roomUserIsAdmin} />
     </>
   );
 }

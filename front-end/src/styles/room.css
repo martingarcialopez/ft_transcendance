@@ -176,5 +176,15 @@ input::placeholder {
 .TitleOptionRoom{
 		position: relative;
 		left: 25%;
-		width: 25%;
+		width: 50vw;
+	  font-size: calc(100% + 1vw + 1vh);
+
+
+}
+
+.TitleModal{
+		width: 25vw;
+		position: relative;
+		left: 25%;
+	  font-size: calc(100% + 1vw + 1vh);		
 }

@@ -19,6 +19,10 @@ type T_Props = {
   roomId: number;
 };
 
+type T_PropsRoomArray = {
+  room: T_Room[];
+};
+
 function ChangePassWord({ userId, roomId }: T_Props) {
   const { register, handleSubmit } = useForm();
   const [display, setDisplay] = useState<string>("none");
@@ -110,10 +114,6 @@ function Options({ id, typeRoom }: T_Room) {
     </>
   );
 }
-
-export type T_PropsRoomArray = {
-  room: T_Room[];
-};
 
 export function ModifyRoom({ room }: T_PropsRoomArray) {
   if (room.length === 0) return <></>;
