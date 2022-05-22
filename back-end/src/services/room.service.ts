@@ -133,7 +133,9 @@ export class RoomService {
 				.select(["user.id"])
 				.where("user.login42 = :login", { login: login })
 				.getOne();
-			console.log(invitee_info);
+//			console.log('invitee_info is ', invitee_info);
+			if (invitee_info == undefined)
+				return false;
 			const invite_id = invitee_info['id'];
 			existing_user = await this.participant_already_exist({'userId': invite_id, 'roomId': roomId});
 			if (existing_user || invite_id == userId)
@@ -184,18 +186,18 @@ export class RoomService {
 
 //NEED TO CHANGE VOID->BOOLEAN IF DELETE PASSWORD
 	async deleteRoomPw(body: RoomPwDto): Promise<boolean> {
-		console.log('in svc of deleteRoomPw');
-		let admin = await this.roomRepository.createQueryBuilder("room")
-            .select(["room.owner"])
-            .where("room.id = :room_Id", { room_Id: body.roomId })
-            .getOne();
-		console.log(admin, admin['owner'], body.userId);
-		//user does not have the right
-		if (admin['owner'].indexOf(body.userId) == -1)
-		{
-			console.log('il a pas le droit pour supprimer le pw');
-			return false;
-		}
+		// console.log('in svc of deleteRoomPw');
+		// let admin = await this.roomRepository.createQueryBuilder("room")
+        //     .select(["room.owner"])
+        //     .where("room.id = :room_Id", { room_Id: body.roomId })
+        //     .getOne();
+		// console.log(admin, admin['owner'], body.userId);
+		// //user does not have the right
+		// if (admin['owner'].indexOf(body.userId) == -1)
+		// {
+		// 	console.log('il a pas le droit pour supprimer le pw');
+		// 	return false;
+		//}
 		let room =  await this.roomRepository.createQueryBuilder("room")
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
