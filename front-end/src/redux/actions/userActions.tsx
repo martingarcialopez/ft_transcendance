@@ -7,8 +7,10 @@ import {
   LOGIN_FAILED_ACTION,
   SIGNUP_FAILED_ACTION,
   CHANGE_PAGE_ACTION,
+  GET_FRIEND_INFOS_ACTION,
+  UPDATE_FAILED_ACTION,
 } from '../constants/userConstants'
-import { formatError, getInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp } from '../services/userServices';
+import { formatError, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -28,11 +30,33 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
   };
 }
 
+export function updateAction(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any) {
+  return (dispatch: any) => {
+    update(firstname, lastname, username, password, avatar, id, access_token)
+      .then((response) => {
+        console.log("updateAction response : ")
+        console.log(response)
+        saveTokenInLocalStorage(access_token, response.data);
+        dispatch(loginConfirmedAction(response.data))
+      })
+      .catch((error) => {
+        console.log("ceci est une error dans signupAction :")
+        console.log(error);
+        const errorMessage = formatError(error.code);
+        //Check l erreur pour expliquer que les infos sont pas update.
+        console.log("ceci est une errorMessage return de formatError dans signupAction :" + errorMessage)
+        dispatch(updateFailedAction(errorMessage));
+      });
+  };
+}
+
 export function getInfoAction(access_token: any) {
   return (dispatch: any) => {
     getInfo(access_token)
       .then((response) => {
-        saveTokenInLocalStorage(response.data);
+        console.log("getInfoAction access_token:", access_token)
+        console.log("getInfoAction response:", response)
+        saveTokenInLocalStorage(access_token, response.data);
         // tokenDetails.expiresIn
         runLogoutTimer(
           dispatch,
@@ -43,6 +67,19 @@ export function getInfoAction(access_token: any) {
         console.log("signupAction response data : ")
         console.log(response.data)
         dispatch(loginConfirmedAction(response.data));
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(loginFailedAction(errorMessage));
+      });
+  };
+}
+
+export function getUserInfoAction(username: any, access_token: any) {
+  return (dispatch: any) => {
+    getUserInfo(username, access_token)
+      .then((response) => {
+        dispatch(getFriendInfosAction(response.data));
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);
@@ -68,9 +105,8 @@ export function loginAction(username: any, password: any, navigate: NavigateFunc
         console.log(response.data)
         console.log("loginAction data access qui fct :")
         console.log(response.data.access_token)
-        dispatch(getInfoAction(response.data.access_token)).then(
-          navigate('/home')
-        )
+        dispatch(getInfoAction(response.data.access_token));
+        navigate('/home')
       })
       .catch((error) => {
         console.log("ceci est une error dans loginAction :")
@@ -85,6 +121,20 @@ export function loginAction(username: any, password: any, navigate: NavigateFunc
 export function loginFailedAction(data: any) {
   return {
     type: LOGIN_FAILED_ACTION,
+    payload: data,
+  };
+}
+
+export function updateFailedAction(message: any) {
+  return {
+    type: UPDATE_FAILED_ACTION,
+    payload: message,
+  };
+}
+
+export function getFriendInfosAction(data: any) {
+  return {
+    type: GET_FRIEND_INFOS_ACTION,
     payload: data,
   };
 }

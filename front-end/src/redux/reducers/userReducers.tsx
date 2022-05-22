@@ -1,11 +1,13 @@
 import {
   CHANGE_PAGE_ACTION,
+  GET_FRIEND_INFOS_ACTION,
   LOADING_TOGGLE_ACTION,
   LOGIN_CONFIRMED_ACTION,
   LOGIN_FAILED_ACTION,
   LOGOUT_ACTION,
   SIGNUP_CONFIRMED_ACTION,
   SIGNUP_FAILED_ACTION,
+  UPDATE_FAILED_ACTION,
 } from "../constants/userConstants";
 
 export interface MatchInfo {
@@ -23,7 +25,8 @@ export interface UserInfo {
   lastname?: string,
   password?: string,
   avatar?: string,
-  expiresIn?: any
+  expiresIn?: any,
+  access_token?: string,
   id?: any
 }
 
@@ -31,8 +34,9 @@ export interface UserState {
   showLoading?: boolean;
   errorMessage?: string;
   successMessage?: string;
-  userInfo: UserInfo,
-  MatchInfo: MatchInfo
+  userInfo?: UserInfo,
+  friendInfo?: UserInfo,
+  MatchInfo?: MatchInfo
 }
 
 interface Action {
@@ -53,6 +57,18 @@ export const userLoginReducer = (
       password: '',
       avatar: '',
       expiresIn: '',
+      access_token: '',
+      id: 0,
+    },
+    friendInfo: {
+      login42: '',
+      username: '',
+      firstname: '',
+      lastname: '',
+      password: '',
+      avatar: '',
+      expiresIn: '',
+      access_token: '',
       id: 0,
     },
     MatchInfo: {
@@ -66,10 +82,19 @@ export const userLoginReducer = (
   action: Action
 ) => {
   switch (action.type) {
+
     case LOADING_TOGGLE_ACTION:
       return {
         ...state,
         showLoading: true,
+      };
+    case GET_FRIEND_INFOS_ACTION:
+      return {
+        ...state,
+        showLoading: false,
+        friendInfo: action.payload,
+        errorMessage: "",
+        successMessage: "Get Friend Infos Successfully Completed",
       };
     case LOGIN_CONFIRMED_ACTION:
       return {
@@ -87,7 +112,7 @@ export const userLoginReducer = (
         errorMessage: "",
         successMessage: "Signup Successfully Completed",
       };
-    case LOGIN_FAILED_ACTION || SIGNUP_FAILED_ACTION:
+    case LOGIN_FAILED_ACTION || SIGNUP_FAILED_ACTION || UPDATE_FAILED_ACTION:
       return {
         ...state,
         showLoading: false,

@@ -22,6 +22,13 @@ export function JoinPublicRoom({ room }: T_PropsRoomArray) {
     (state: RootState) => state.userLogin
   );
   if (room.length === 0) return <></>;
+
+  const { userInfo }: UserState = userLogin;
+
+  if (!userInfo) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <>
       <TitleOptionRoom title="Join Public Room" />
@@ -32,7 +39,7 @@ export function JoinPublicRoom({ room }: T_PropsRoomArray) {
               className="btn-join-room"
               onClick={() => {
                 const info = SetInfoUserRoom(
-                  userLogin.userInfo.id,
+                  userInfo.id,
                   item.id,
                   item.typeRoom,
                   "",

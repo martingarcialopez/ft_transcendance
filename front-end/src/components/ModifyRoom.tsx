@@ -50,6 +50,13 @@ function Options({ id, typeRoom }: T_Room) {
   const dispatch = useDispatch();
   const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
   console.log("typeRoom:", typeRoom);
+
+  const { userInfo }: UserState = userLogin;
+
+  if (!userInfo) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <>
       <form
@@ -62,14 +69,14 @@ function Options({ id, typeRoom }: T_Room) {
           className="btn1 opt1 btn-new-room"
           type="submit"
           value="Leave Room"
-          onClick={() => E_LeaveRoom(userLogin.userInfo.id, id)}
+          onClick={() => E_LeaveRoom(userInfo.id, id)}
         />
         <input
           className="btn1 opt2 btn-new-room"
           type="submit"
           value="Remove Password"
           onClick={() => {
-            E_DeleteRoomPw(userLogin.userInfo.id, id);
+            E_DeleteRoomPw(userInfo.id, id);
             E_AllRoomInfos(ac_InitRoomArray); //to update
           }}
         />

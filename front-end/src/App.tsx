@@ -6,20 +6,22 @@ import SignIn from "./screens/SigninScreen";
 import HomeScreen from "./screens/HomeScreen";
 import { Chat } from "./screens/Chat";
 // import { ChatTemplate } from './screens/ChatTemplate';
-import { Pong } from "./screens/Pong2";
+import { Pong } from "./screens/PongScreen";
 // import { NoMatch } from './screens/NoMatchScreen';
-import ResponsiveAppBar from "./components/NavBar";
-import { ProfileContainer } from "./screens/ProfileContainer";
-import { Room } from "./screens/Room";
-import { useDispatch, useSelector } from "react-redux";
-import { Suspense, useEffect } from "react";
-import { checkAutoLogin } from "./redux/services/userServices";
-import { RootState } from "./redux";
-import { UserState } from "./redux/reducers/userReducers";
+import ResponsiveAppBar from './components/NavBar';
+import { MyProfileScreen } from './screens/MyProfileScreen';
+import { Room } from './screens/Room';
+import { useDispatch, useSelector } from 'react-redux';
+import { Suspense, useEffect } from 'react';
+import { checkAutoLogin } from './redux/services/userServices';
+import { RootState } from './redux';
+import { UserState } from './redux/reducers/userReducers';
+import { OtherProfileScreen } from './screens/OtherProfileScreen';
 import { bindActionCreators } from "redux";
 import { socket } from "./components/Event";
 import * as actionCreatorsRoom from "./redux/action-creators/Ac_room";
 import { T_Room } from "./type/chat";
+import { LeaderBoard } from "./screens/LeaderBoard";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -63,9 +65,11 @@ const App = () => {
     routes = (
       <Routes>
         <Route path="/chat" element={<Chat />} />
-        <Route path="/profile" element={<ProfileContainer />} />
+        <Route path="/profile/:id" element={<OtherProfileScreen />} />
+        <Route path="/profile" element={<MyProfileScreen />} />
         <Route path="pong" element={<Pong />} />
         <Route path="/room" element={<Room />} />
+        <Route path="/leaderboard" element={<LeaderBoard />} />
         <Route path="/home" element={<HomeScreen />} />
         <Route path="/logout" element={<HomeScreen />} />
         <Route path="/" element={<HomeScreen />} />

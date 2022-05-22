@@ -17,7 +17,7 @@ import { UserState } from "../redux/reducers/userReducers";
 import { MouseEvent, SyntheticEvent, useState } from "react";
 import { logout } from "../redux/actions/userActions";
 
-const pages = ["Home", "Chat", "Room", "Pong"];
+const pages = ["Home", "Chat", "Room", "Pong", "Leaderboard"];
 const settings = ["Profile", "Account", "Logout"];
 
 const ResponsiveAppBar = () => {
@@ -162,11 +162,11 @@ const ResponsiveAppBar = () => {
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     {setting !== "Logout" ? (
                       <Link key={setting} to={setting.toLowerCase()}>
-                        <Typography textAlign="center">{setting}</Typography>
+                        <Typography key={setting} textAlign="center">{setting}</Typography>
                       </Link>
                     ) : (
                       <Link key={setting} onClick={logoutHandler} to={"/home"}>
-                        <Typography textAlign="center">{setting}</Typography>
+                        <Typography key={"/home"} textAlign="center">{setting}</Typography>
                       </Link>
                     )}
                   </MenuItem>
