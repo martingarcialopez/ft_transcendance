@@ -200,6 +200,8 @@ export class RoomService {
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
 		room['password'] = null;
+		if (room['typeRoom'] == 'protected')
+			room['typeRoom'] = 'public';
 		await this.roomRepository.save(room);
 		console.log('here room', room);
 		//TEST IS WORKING?
