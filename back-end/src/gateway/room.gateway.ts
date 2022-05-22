@@ -24,6 +24,7 @@ import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto
 import { PublicRoomDto } from '../dtos/in/publicRoom.dto';
 import { UserService } from '../services/user.service';
 import { MessageService } from '../services/message.service';
+import { ParticipantService } from '../services/participant.service';
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
@@ -44,6 +45,7 @@ export class RoomGateway
       private readonly roomService: RoomService,
 	  private readonly userService: UserService,
 	  private readonly messageService: MessageService,
+	  private readonly participantService: ParticipantService,
   ) {}
 
 	@SubscribeMessage('createRoom')
@@ -86,6 +88,7 @@ export class RoomGateway
 	@SubscribeMessage('updateRoomPw')
 	async updateRoomPw(socket: Socket, body: RoomPwDto): Promise<void> {
 		// const body: RoomPwDto = {'userName':'string', 'roomId':22, 'password': '999'};
+		console.log('in updateRoomPw ', body);
 		let res = await this.roomService.updateRoomPw(body);
 		console.log(res);
 		//		this.server.emit('UpdatePwRes', res);
@@ -129,16 +132,17 @@ export class RoomGateway
 	}
 
 	@SubscribeMessage('blockUser')
-	async blockUser(body: BlockUserDto) : Promise<void> {
+	async blockUser(@Body() body: BlockUserDto) : Promise<void> {
 //		const body: any = {userId:3, blockUserId:6};
 		await this.userService.blockUser(body);
 	}
 
 
 	@SubscribeMessage('leaveRoom')
-	async leaveRoom(body: ParticipantDto) {
+	async leaveRoom(@Body() body: ParticipantDto) {
         console.log('leaveRoom in room gw ', body);
-        await this.roomService.AdminleaveRoom(body);
+		await this.roomService.AdminleaveRoom(body);
+        await this.participantService.leaveRoom(body);
     }
 
 

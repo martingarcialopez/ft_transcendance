@@ -56,10 +56,11 @@ export class ParticipantGateway
     const rooms = await this.participantService.getUseridRooms(userId);
   }
 
+	// @SubscribeMessage('leaveRoom')
+	// async leaveRoom(@Body() body: ParticipantDto) {
+	// 	console.log('leaveRoom in gw participant', body);
+	// 	await this.roomService.AdminleaveRoom(body);
 
-	@SubscribeMessage('leaveRoom')
-	async leaveRoom(@Body() body: ParticipantDto) {
-		console.log('leaveRoom in gw participant', body);
-		await this.participantService.leaveRoom(body);
-	}
+	// 	await this.participantService.leaveRoom(body);
+	//}
 }
