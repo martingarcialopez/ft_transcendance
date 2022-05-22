@@ -240,27 +240,22 @@ export class RoomService {
 		let admins = await this.get_RoomAdmins(body.roomId);
 		if (admins == undefined)/*no admin in this chat*/
 			return false;
-		if (admins.indexOf(body.userId) != -1) /*userId is not admin*/
+		if (admins.indexOf(body.userId) == -1) /*userId is not admin*/
 			return false;
 		const login: string = body.login;
-		console.log('login', login);
 		const user_info = await this.userId_fromLogin(login);
 		if (user_info == undefined)
 			return false;
 		let other_userId: number = user_info['id'];
 		const other_user_is_admin = await this.userIsAdmin(body.roomId, other_userId);
 		if (body['toAdd'] == true && other_user_is_admin == false)
-		{
-			console.log('i am here', admins);
 			admins.push(other_userId);
-		}
 		//remove this admin
 		else if (body['toAdd'] == false && other_user_is_admin == true)
 		{
 			var index = admins.indexOf(other_userId);
 			admins.splice(index, 1);
 		}
-
 		await this.roomRepository
 			.createQueryBuilder()
 			.update(Room)
