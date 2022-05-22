@@ -284,7 +284,6 @@ export class RoomService {
         {
             var index = admins.indexOf(body.userId);
             admins.splice(index, 1);
-        }
 		console.log('delete admin');
         await this.roomRepository
             .createQueryBuilder()
@@ -292,6 +291,7 @@ export class RoomService {
             .set({ owner: admins })
             .where("id = :id", { id: body.roomId })
             .execute();
+		}
     }
 
 	async getRoomId(roomName: string): Promise<number> {
