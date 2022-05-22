@@ -35,13 +35,11 @@ export function CreateRoom() {
     (state: RootState) => state.userLogin
   );
 
-  /* console.log("userLogin INFO", userLogin); */
-
   /* console.log("userId : ", userInfo.id); */
   const { userInfo }: UserState = userLogin;
 
   if (!userInfo) {
-      return <h1>Loading...</h1>;
+    return <h1>Loading...</h1>;
   }
 
   return (

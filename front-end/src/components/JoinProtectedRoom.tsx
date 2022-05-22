@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { SetInfoUserRoom } from "./SetInfoUserRoom";
 import { E_JoinRoom } from "./Event";
 
-export type T_PropsRoomArray = {
+type T_PropsRoomArray = {
   room: T_Room[];
 };
 
@@ -27,7 +27,7 @@ function IsProctect({ id, typeRoom }: T_Room) {
   const { userInfo }: UserState = userLogin;
 
   if (!userInfo) {
-      return <h1>Loading...</h1>;
+    return <h1>Loading...</h1>;
   }
   return (
     <div>
@@ -47,13 +47,7 @@ function IsProctect({ id, typeRoom }: T_Room) {
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
-          const info = SetInfoUserRoom(
-            userInfo.id,
-            id,
-            typeRoom,
-            data.pwd,
-            ""
-          );
+          const info = SetInfoUserRoom(userInfo.id, id, typeRoom, data.pwd, "");
           E_JoinRoom(info);
         })}
       >
