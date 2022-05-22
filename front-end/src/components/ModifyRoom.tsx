@@ -14,14 +14,19 @@ import { bindActionCreators } from "redux";
 import { E_AllRoomInfos } from "../components/Event";
 import * as actionCreatorsRoom from "../redux/action-creators/Ac_room";
 
-function ChangePassWord() {
+type T_Props = {
+  userId: number;
+  roomId: number;
+};
+
+function ChangePassWord({ userId, roomId }: T_Props) {
   const { register, handleSubmit } = useForm();
   return (
     <>
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
-          E_UpdatePwd(3, 29, data.pwd);
+          E_UpdatePwd(userId, roomId, data.pwd);
         })}
       >
         <input
@@ -90,7 +95,11 @@ function Options({ id, typeRoom }: T_Room) {
           }}
         />
       </form>
-      {state === true ? <ChangePassWord /> : <></>}
+      {state === true ? (
+        <ChangePassWord userId={userInfo.id} roomId={id} />
+      ) : (
+        <></>
+      )}
     </>
   );
 }
