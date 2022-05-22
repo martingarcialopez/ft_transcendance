@@ -91,14 +91,17 @@ export function E_JoinRoom(info: T_AddUserRoom) {
   });
 }
 
-export function E_ManageAdmin(userId: number, roomId: number, state: boolean) {
+export function E_ManageAdmin(
+  userId: number,
+  roomId: number,
+  login: string,
+  state: boolean
+) {
   socket.emit("manageAdmin", {
     userId: userId,
     roomId: roomId,
+    login: login,
     toAdd: state,
-  });
-  socket.on("UpdatePwRes", (receive: { state: boolean }) => {
-    console.log("reponse manageAdmin : ", receive);
   });
 }
 
