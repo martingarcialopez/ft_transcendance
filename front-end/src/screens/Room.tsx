@@ -3,40 +3,31 @@ import { AddParticipant } from "../components/AddParticipant";
 import { JoinPublicRoom } from "../components/JoinPublicRoom";
 import { JoinProtectedRoom } from "../components/JoinProtectedRoom";
 import { RootState } from "../redux/store";
-import { useSelector } from "react-redux";
 import { T_Room } from "../type/chat";
 import { ModifyRoom } from "../components/ModifyRoom";
 import { AddAdmin } from "../components/AddAdmin";
+import { useSelector } from "react-redux";
+import { UserState } from "../redux/reducers/userReducers";
 
 /**
- *create a new room array depend on the @typeOfRoom
- *@typeOfRoom === "proctected" so the function will return room array of proctect room
- *@typeOfRoom === "public" so the function will return room array of public room
+ * create a new room array depend on the @typeOfRoom
+ * this function filter room depend typeOfRoom
+ * @typeOfRoom === "proctected" so the function will return room array of proctect room
+ * @typeOfRoom === "public" so the function will return room array of public room
  */
-
-/*
- *
- * function CoypRoom(room: T_Room[], typeOfRoom: string): T_Room[] {
- *   let newRoom = room.filter((item: T_Room) => {
- *     if (item.typeRoom === typeOfRoom) return item;
- *   });
- *   return newRoom;
- * }
- *
- *
- *  */
-
 function CoypRoom(room: T_Room[], typeOfRoom: string): T_Room[] {
   return room.filter((item: T_Room) => item.typeRoom === typeOfRoom);
 }
 
-/* function CoypRoom(room: T_Room[], id: number): T_Room[] {
- *   let newRoom = room.filter((item: T_Room) => {
- *     if (item.typeRoom === typeOfRoom) return item;
- *   });
- *   return newRoom;
- * }
- *  */
+/**
+ * this function filter room depend @userId
+ * create new room array which contain the userId inside  owener[]
+ * @userId of current user
+ */
+function GetRoomUserAdmin(room: T_Room[], userId: number): T_Room[] {
+  return room.filter((item: T_Room) => item.owner.includes(userId));
+}
+
 /**
  * this component  contain the setting room options
  */
@@ -45,7 +36,18 @@ export function Room() {
   const publicRoom = CoypRoom(arrayRoom, "public");
   const protectedRoom = CoypRoom(arrayRoom, "protected");
   const pvRoom = CoypRoom(arrayRoom, "private");
-  console.log("private Room:", pvRoom);
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
+
+  const { userInfo }: UserState = userLogin;
+
+  if (!userInfo) {
+    return <h1>Loading...</h1>;
+  }
+
+  const roomUserIsAdmin = GetRoomUserAdmin(arrayRoom, userInfo.id);
+  console.log("room  user is  admin:", roomUserIsAdmin);
   return (
     <>
       <CreateRoom />
@@ -56,7 +58,7 @@ export function Room() {
       <br />
       <JoinProtectedRoom room={protectedRoom} />
       <br />
-      <ModifyRoom room={arrayRoom} />
+      <ModifyRoom room={roomUserIsAdmin} />
       <br />
       <AddAdmin room={publicRoom} />
     </>

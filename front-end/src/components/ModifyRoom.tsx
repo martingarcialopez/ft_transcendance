@@ -21,12 +21,15 @@ type T_Props = {
 
 function ChangePassWord({ userId, roomId }: T_Props) {
   const { register, handleSubmit } = useForm();
+  const [display, setDisplay] = useState<string>("none");
   return (
     <>
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
           E_UpdatePwd(userId, roomId, data.pwd);
+          setDisplay("inline");
+          console.log("update");
         })}
       >
         <input
@@ -43,6 +46,10 @@ function ChangePassWord({ userId, roomId }: T_Props) {
           value="Enter"
         />
       </form>
+      <h4 style={{ display: display, color: "#4CAF50" }}>
+        {" "}
+        successfully changed the password
+      </h4>
     </>
   );
 }
