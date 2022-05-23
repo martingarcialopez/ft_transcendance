@@ -265,23 +265,6 @@ export class RoomService {
 		return true;
 	}
 
-	async getUserBlockList_and_message_history(body: any): Promise<newUser_In_Room_Message> {
-		let blockList: number[] = await this.userService.getBlockList(body['userId']);
-		/* if the userid is invalide, send an event to front */
-		if (blockList == null)
-		{
-	//		this.server.emit('request err', 'the user is not in database');
-			return ;
-		}
-		const message_history = await this.messageService.getRoomMessage(body['roomId']);
-		console.log('message history', message_history);
-		let new_participant_info = new newUser_In_Room_Message();
-		new_participant_info.blockList = blockList;
-		new_participant_info.message_history = message_history;
-
-		return new_participant_info;
-	}
-
 	async AdminleaveRoom(body: ParticipantDto): Promise<void> {
 		console.log('AdminleaveRoom');
         let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
