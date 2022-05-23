@@ -107,10 +107,11 @@ export class RoomGateway
 	}
 
 	@SubscribeMessage('manageAdmin')
-	//	async manageAdmin(body: UpdateAdminDto): Promise<void> {
-	async manageAdmin(): Promise<void> {
-		// const body: UpdateAdminDto = {'userId':3, 'roomId':22, 'toAdd': false};
-		//	await this.roomService.manageAdmin(body);
+	async manageAdmin(@Body() body: UpdateAdminDto): Promise<void> {
+//	async manageAdmin(): Promise<void> {
+		// const body: UpdateAdminDto = {'userId':3, 'roomId':22, 'login': 's', 'toAdd': false};
+		console.log("in gw ManageAdmin ", body);
+		await this.roomService.manageAdmin(body);
 	}
 
 

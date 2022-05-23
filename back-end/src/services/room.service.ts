@@ -123,16 +123,15 @@ export class RoomService {
 		}
 		else if (typeRoom == 'private')
 		{
-			console.log('enter in private room');
+			console.log('enter in private room', roomId, userId);
 			let is_admin = await this.userIsAdmin(roomId, userId);
+
+			console.log('is_admin? ', is_admin);
 			if (is_admin == false)
 				return false;
 			const login: string = joinRoomDto.login;
+			const invitee_info = await this.userId_fromLogin(login);
 			console.log('login', login);
-			const invitee_info = await this.userRepository.createQueryBuilder("user")
-				.select(["user.id"])
-				.where("user.login42 = :login", { login: login })
-				.getOne();
 //			console.log('invitee_info is ', invitee_info);
 			if (invitee_info == undefined)
 				return false;
@@ -150,7 +149,6 @@ export class RoomService {
 				.select(["room.password"])
 				.where("room.id = :room_Id", { room_Id: roomId })
 				.getOne();
-			console.log('room_type_pw ', room_info);
 			if (await bcrypt.compare(entered_pw, room_info['password']))
 			{
 				existing_user = await this.participant_already_exist({'userId': userId, 'roomId': roomId});
@@ -211,7 +209,7 @@ export class RoomService {
 //			.select(["room.password"])
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
-//		console.log('NOW room', room);
+		console.log('NOW room', room);
 		return true;
 	}
 
@@ -220,44 +218,51 @@ export class RoomService {
         return await bcrypt.hash(password, saltOrRounds);
 	}
 
-	async get_RoomAdmins(roomId: number): Promise<number[]> {
+	async get_RoomAdmins(roomId: number): Promise<number[] | undefined> {
 	let room = await this.roomRepository.createQueryBuilder("room")
             .select(["room.owner"])
             .where("room.id = :room_Id", { room_Id: roomId })
         .getOne();
+		console.log('in get_RoomAdmins ', room , room.owner);
 		return room.owner;
 	}
 
 	//change userName -> userId LATER
 	async userIsAdmin(roomId: number, userId: number) : Promise<boolean> {
 		let admins = await this.get_RoomAdmins(roomId);
-		console.log('admins is here ', admins.indexOf(userId));
+		console.log('admins is here ', admins, admins.indexOf(userId));
 		//return false;
 		return await admins.indexOf(userId) != -1;
 	}
 
-	async manageAdmin(body: UpdateAdminDto): Promise<void> {
+	async manageAdmin(body: UpdateAdminDto): Promise<boolean> {
 		let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
 		let admins = await this.get_RoomAdmins(body.roomId);
-		if (body['toAdd'] == true && is_already_admin == false)
-		{
-			console.log('i am here', admins);
-			admins.push(body.userId);
-		}
+		if (admins == undefined)/*no admin in this chat*/
+			return false;
+		if (admins.indexOf(body.userId) == -1) /*userId is not admin*/
+			return false;
+		const login: string = body.login;
+		const user_info = await this.userId_fromLogin(login);
+		if (user_info == undefined)
+			return false;
+		let other_userId: number = user_info['id'];
+		const other_user_is_admin = await this.userIsAdmin(body.roomId, other_userId);
+		if (body['toAdd'] == true && other_user_is_admin == false)
+			admins.push(other_userId);
 		//remove this admin
-		else if (body['toAdd'] == false && is_already_admin == true)
+		else if (body['toAdd'] == false && other_user_is_admin == true)
 		{
-			var index = admins.indexOf(body.userId);
+			var index = admins.indexOf(other_userId);
 			admins.splice(index, 1);
 		}
-		else
-		return ;
 		await this.roomRepository
 			.createQueryBuilder()
 			.update(Room)
 			.set({ owner: admins })
 			.where("id = :id", { id: body.roomId })
 			.execute();
+		return true;
 	}
 
 	async getUserBlockList_and_message_history(body: any): Promise<newUser_In_Room_Message> {
@@ -321,10 +326,24 @@ export class RoomService {
 
 	async allRoomInfos() : Promise<Room[] | undefined> {
 		let rooms: any = await this.roomRepository.createQueryBuilder("room")
+			.leftJoinAndSelect("room.participants", "participant")
             .getMany();
 		return rooms;
 
 	}
+
+	async userId_fromLogin(login : string) : Promise<User | undefined> {
+
+		console.log('login', login);
+		const user_info = await this.userRepository.createQueryBuilder("user")
+			.select(["user.id"])
+			.where("user.login42 = :login", { login: login })
+			.getOne();
+		return user_info;
+	}
+
+
+
 
 }
 
