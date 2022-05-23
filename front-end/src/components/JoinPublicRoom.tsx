@@ -22,7 +22,7 @@ export function JoinPublicRoom({ room }: T_PropsRoomArray) {
     (state: RootState) => state.userLogin
   );
   if (room.length === 0) return <></>;
-
+  console.log("publicRoom:", room);
   const { userInfo }: UserState = userLogin;
 
   if (!userInfo) {

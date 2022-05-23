@@ -20,7 +20,7 @@ function findId(room: T_Room[], occurence: string) {
     typeRoom: "",
     password: "",
     owner: [],
-    members: [],
+    participants: [],
     avatar: "",
   };
 
@@ -44,7 +44,7 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
   const { userInfo }: UserState = userLogin;
 
   if (!userInfo) {
-      return <h1>Loading...</h1>;
+    return <h1>Loading...</h1>;
   }
 
   return (

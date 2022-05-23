@@ -4,7 +4,8 @@ export type T_Room = {
   typeRoom: string;
   password: string;
   owner: number[];
-  members: number[];
+  /* members: number[]; */
+  participants: [];
   avatar: string;
 };
 

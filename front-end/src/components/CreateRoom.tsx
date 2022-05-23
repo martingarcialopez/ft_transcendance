@@ -19,7 +19,7 @@ function createRoom(data: any): T_Room {
     typeRoom: data.typeRoom,
     password: data.password,
     owner: [],
-    members: [],
+    participants: [],
     avatar: "https://avatars.dicebear.com/api/adventurer/" + data.name + ".svg",
   };
   return room;

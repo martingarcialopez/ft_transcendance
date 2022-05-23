@@ -29,6 +29,26 @@ function GetRoomUserAdmin(room: T_Room[], userId: number): T_Room[] {
 }
 
 /**
+ * tab it is a array of participants some room
+ */
+function CheckParticipant(tab: any[], userId: number) {
+  for (let i = 0; i < tab.length; i++) {
+    if (tab[i].userId === userId) return false;
+  }
+  return true;
+}
+
+/**
+ * this function return a roomArray where the current user is not participant
+ * @userId the current user
+ */
+function RoomUserNotParticipants(room: T_Room[], userId: number) {
+  return room.filter((item: T_Room) =>
+    CheckParticipant(item.participants, userId)
+  );
+}
+
+/**
  * this component  contain the setting room options
  */
 export function Room() {
@@ -45,19 +65,20 @@ export function Room() {
   if (!userInfo) {
     return <h1>Loading...</h1>;
   }
-
+  console.log("userId: ", userInfo.id);
   const roomUserIsAdmin = GetRoomUserAdmin(arrayRoom, userInfo.id);
-  console.log("room user is admin:", roomUserIsAdmin);
   console.log("userId: ", userInfo.id);
   return (
     <>
       <CreateRoom />
       <br />
-      <AddParticipant room={pvRoom} />
+      <AddParticipant room={RoomUserNotParticipants(pvRoom, userInfo.id)} />
       <br />
-      <JoinPublicRoom room={publicRoom} />
+      <JoinPublicRoom room={RoomUserNotParticipants(publicRoom, userInfo.id)} />
       <br />
-      <JoinProtectedRoom room={protectedRoom} />
+      <JoinProtectedRoom
+        room={RoomUserNotParticipants(protectedRoom, userInfo.id)}
+      />
       <br />
       <ModifyRoom room={roomUserIsAdmin} />
       <br />
