@@ -140,6 +140,7 @@ export function E_AllRoomInfos(updateArrayRoom: Function) {
       item.avatar =
         "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
     });
+    console.log("tab Room:", receive);
     updateArrayRoom(receive);
   });
 }

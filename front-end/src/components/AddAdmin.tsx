@@ -34,7 +34,6 @@ function Adduser({ id }: T_Room) {
   return (
     <div>
       <br />
-      {/* <h3 style={{ fontSize: "calc(0.75em + 2vmin)" }}>Add another admin</h3> */}
       <TitleModal title="Add another admin" />
       <form
         className="box-fom-procted"
