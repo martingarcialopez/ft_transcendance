@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../redux/index";
 import { bindActionCreators } from "redux";
 import { useState } from "react";
-import { socket, E_GetMessage } from "../components/Event";
+import {
+  E_GetMessage,
+  E_MsgToClient,
+  E_CreateMessage,
+} from "../components/Event";
 import { UserState } from "../redux/reducers/userReducers";
 
 /**
@@ -40,6 +44,7 @@ function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
 function FriendDrawer(item: T_Room | T_User, index: number) {
   const dispatch = useDispatch();
   const states = bindActionCreators(actionCreators, dispatch);
+
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   );
@@ -100,37 +105,56 @@ function ItemSelected() {
   );
 }
 
-/* function SendData() {
- *   const { message } = useSelector((state: RootState) => state);
- *
- * }
- *  */
-function PrintMsg() {
-  /*
-   *
-   * 	useEffect(() => {
-   *     socket.on("MsgToClient: ", (receive: any) => {
-   *       console.log("Msg received: ", receive);
-   *     });
-   *   }, [socket]);
-   *
-   *
-   *  */
+type T_Props = {
+  msg: any;
+};
+
+function BubbleMsg({ msg }: T_Props) {
   return (
     <>
       <div className="row no-gutters">
         <div className="col-md-3">
-          <div className="chat-bubble chat-bubble--left">Hello dude!</div>
-        </div>
-      </div>
-      <div className="row no-gutters">
-        <div className="col-md-3 offset-md-9">
-          <div className="chat-bubble chat-bubble--right">Hello dude!</div>
+          <div className="chat-bubble chat-bubble--left">
+            {" "}
+            JSON.stringify(msg)
+          </div>
         </div>
       </div>
     </>
   );
 }
+function PrintMsg() {
+  const [msg, SetMsg] = useState<any>([]);
+  E_MsgToClient(SetMsg);
+  return <>{msg.forEach(BubbleMsg)}</>;
+}
+
+/*
+ *
+ *
+ * function PrintMsg() {
+ *
+ * 		const [msg, SetMsg] = useState<any>([])
+ *
+ *   return (
+ *     <>
+ *       <div className="row no-gutters">
+ *         <div className="col-md-3">
+ *           <div className="chat-bubble chat-bubble--left">Hello dude!</div>
+ *         </div>
+ *       </div>
+ *       <div className="row no-gutters">
+ *         <div className="col-md-3 offset-md-9">
+ *           <div className="chat-bubble chat-bubble--right">Hello dude!</div>
+ *         </div>
+ *       </div>
+ *     </>
+ *   );
+ * }
+ *
+ *
+ *
+ *  */
 
 /**
  * handle the content to send
@@ -141,6 +165,17 @@ function InputMsg() {
   const state = bindActionCreators(actionCreators, dispatch);
   const [inputValue, setinputValue] = useState<string>("");
   const { message } = useSelector((state: RootState) => state);
+
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
+
+  const { userInfo }: UserState = userLogin;
+  if (!userInfo) {
+    return <h1>Loading...</h1>;
+  }
+
+  /* console.log("message:", message); */
   return (
     <>
       <div className="form-group">
@@ -159,16 +194,7 @@ function InputMsg() {
         onClick={() => {
           state.ac_getContentMsg(inputValue);
           setinputValue("");
-          socket.emit(
-            "createMessage",
-            {
-              fromUser: message.fromName,
-              contentToSend: message.content,
-              channelIdDst: message.roomId,
-              channelName: message.roomName,
-            },
-            message.content
-          );
+          E_CreateMessage(userInfo.id, message.roomId, message.content);
         }}
       >
         send

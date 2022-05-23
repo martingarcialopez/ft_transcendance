@@ -18,16 +18,19 @@ export function E_CreateParticipant(userName: number, roomId: number) {
 }
 
 export function E_GetMessage(userId: number, roomId: number) {
-  console.log("event getMessage:\n userId: ", userId, "\nroom id:", roomId);
+  console.log("event getMessage:\nuserId: ", userId, "\nroom id:", roomId);
   socket.emit("getMessage", {
     userId: userId,
     roomId: roomId,
   });
+}
 
+export function E_MsgToClient(setMsg: Function) {
   socket.on(
     "msgToClient",
     (received: { blockList: number[]; message_history: any }) => {
       console.log("reponse msgToclient  : ", received);
+      setMsg(received.message_history);
     }
   );
 }
@@ -148,3 +151,15 @@ export function E_AllRoomInfos(updateArrayRoom: Function) {
     updateArrayRoom(receive);
   });
 }
+
+/*
+ * export function E_(updateArrayRoom: Function) {
+ *   socket.emit( "createMessage",
+ *             {
+ * 				  fromUser: message.fromName,
+ * 				  contentToSend: message.content,
+ * 				  roomIdDst: message.roomId,
+ * 			  },
+ * 			  message.content
+ * 		  );
+ * } */
