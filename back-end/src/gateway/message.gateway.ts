@@ -47,6 +47,12 @@ export class MessageGateway {
     this.server
       .to(message[0].channelIdDst.toString())
 		.emit('MsgToClient: ', message[0].contentToSend);
-  }
+	}
+
+	@SubscribeMessage('getMessage')
+	async getMessage(message: Message) {
+		const all_message =  await this.messageService.getMessage();
+		this.server.emit('msgToClient', all_message);
+	}
 
 }
