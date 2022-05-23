@@ -4,7 +4,8 @@ export type T_Room = {
   typeRoom: string;
   password: string;
   owner: number[];
-  members: number[];
+  /* members: number[]; */
+  participants: [];
   avatar: string;
 };
 
@@ -25,4 +26,17 @@ export type T_User = {
 export type T_Action = {
   type: string;
   payload: any;
+};
+
+export type T_AddUserRoom = {
+  userId: number;
+  roomId: number;
+  typeRoom: string;
+  password: string;
+  login: string;
+};
+
+export type T_Participant = {
+  userId: number;
+  roomId: number;
 };

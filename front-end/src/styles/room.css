@@ -24,6 +24,7 @@ html
   border-radius: 4px;
   box-sizing: border-box;
 	text-align: center;
+
 }
 
 .btn-new-room {
@@ -37,7 +38,7 @@ html
   cursor: pointer;
 	font-size: 100%;
 	position: relative;
-	left: 10%;
+	/* left: 10%; */
 }
 
 input[type=submit]:hover {
@@ -45,8 +46,16 @@ input[type=submit]:hover {
 }
 
 .frm-add-room{
-		position: relative;
-		left: 25%;
+		/* position: relative; */
+		/* left: 25%; */
+		overflow: hidden;
+		/* background-color: black; */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+				
+
+
 }
 
 .box-btn{
@@ -64,7 +73,8 @@ input[type=submit]:hover {
 ul li {
 				font-size:2vw;
 				
-		}
+}
+
 .box-btn{
 		/* background-color: black; */
 		width: 50%;
@@ -102,6 +112,7 @@ input::placeholder {
 		padding: 10px;
 		background-color: #E8F8F5;
 		width: 50%;
+		cursor: pointer;
 }
 
 /* Set all odd list items to a different color (zebra-stripes) */
@@ -160,4 +171,20 @@ input::placeholder {
 .opt3
 {
 		  background-color:#FF7F50;
+}
+
+.TitleOptionRoom{
+		position: relative;
+		left: 25%;
+		width: 50vw;
+	  font-size: calc(100% + 1vw + 1vh);
+
+
+}
+
+.TitleModal{
+		width: 25vw;
+		position: relative;
+		left: 25%;
+	  font-size: calc(100% + 1vw + 1vh);		
 }

@@ -13,8 +13,8 @@ const app = new Vue({
     const message = {
     name: this.name,
 	content: this.content
-   }
-//   this.socket.emit('createRoom', message)
+	}
+   this.socket.emit('getMessage', message)
    this.content = ''
   }
  },
@@ -27,9 +27,9 @@ const app = new Vue({
  },
 	/*will be exe when front is created*/
  created() {
- // this.socket = io('http://localhost:3000')
+ this.socket = io('http://localhost:3000')
  /*add an event listener for event msgToClient*/
-   // 	 this.socket.on('idRoom', (message) => {
+	 // 	 this.socket.on('idRoom', (message) => {
    // 		 console.log(message);
    // this.receivedMessage(message)
  // })

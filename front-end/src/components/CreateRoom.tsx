@@ -2,9 +2,15 @@ import { useForm } from "react-hook-form";
 import { T_Room } from "../type/chat";
 import { bindActionCreators } from "redux";
 import * as actionCreators from "../redux/action-creators/Ac_room";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { E_CreateRoom } from "./Event";
 import "../styles/room.css";
+import { useState } from "react";
+import { Hidden } from "./Hidden";
+import { TitleOptionRoom } from "./TitleOptionRoom";
+import { RootState } from "../redux/store";
+import { UserState } from "../redux/reducers/userReducers";
+//import { color } from "@mui/system";
 
 function createRoom(data: any): T_Room {
   let room: T_Room = {
@@ -13,28 +19,39 @@ function createRoom(data: any): T_Room {
     typeRoom: data.typeRoom,
     password: data.password,
     owner: [],
-    members: [],
+    participants: [],
     avatar: "https://avatars.dicebear.com/api/adventurer/" + data.name + ".svg",
   };
   return room;
 }
 
-export function AddRoom() {
+export function CreateRoom() {
   const { register, handleSubmit } = useForm();
+  const [state, setSate] = useState<string>("none");
   const dispatch = useDispatch();
   const { ac_AddRoom } = bindActionCreators(actionCreators, dispatch);
+
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
+
+  const { userInfo }: UserState = userLogin;
+  if (!userInfo) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <>
       <br />
       <br />
-      <h3 style={{ position: "relative", left: "25%" }}>Create Channel</h3>
+
+      <TitleOptionRoom title="Create Channel" />
+
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          E_CreateRoom(newRoom);
-          console.log("newRoom:", newRoom);
-          ac_AddRoom(newRoom);
+          E_CreateRoom(newRoom, userInfo.id, ac_AddRoom);
         })}
       >
         <input
@@ -45,21 +62,28 @@ export function AddRoom() {
           autoComplete="on"
           {...register("name")}
         />
-        <br />
         <input
           className="inputRoom"
           type="password"
           placeholder="password (optionnal for private and public)"
           autoComplete="on"
           {...register("password")}
+          style={{ display: state }}
         />
-        <br />
-        <select className="inputRoom" id="pet-select" {...register("typeRoom")}>
+        <select
+          className="inputRoom"
+          id="pet-select"
+          {...register("typeRoom")}
+          onChange={(e) => {
+            setSate(Hidden(e.target.value));
+          }}
+        >
           <option value="public">Public</option>
           <option value="private">Private</option>
-          <option value="private">Protected</option>
+          <option value="protected">Protected</option>
         </select>
         <br />
+
         <input type="submit" className="btn-new-room" value="New" />
       </form>
     </>

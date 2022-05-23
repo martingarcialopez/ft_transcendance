@@ -8,7 +8,7 @@ let arrayRoom: T_Room[] = [
     typeRoom: "public",
     password: "",
     owner: [],
-    members: [],
+    participants: [],
     avatar: "https://avatars.dicebear.com/api/adventurer/KEISHA.svg",
   },
   {
@@ -17,26 +17,8 @@ let arrayRoom: T_Room[] = [
     typeRoom: "protected",
     password: "",
     owner: [],
-    members: [],
+    participants: [],
     avatar: "https://avatars.dicebear.com/api/human/:LENOX.svg",
-  },
-  {
-    name: "PSG",
-    id: 4,
-    typeRoom: "protected",
-    password: "",
-    owner: [],
-    members: [],
-    avatar: "https://avatars.dicebear.com/api/adventurer/PSG.svg",
-  },
-  {
-    name: "CITY",
-    id: 6,
-    typeRoom: "public",
-    password: "",
-    owner: [],
-    members: [],
-    avatar: "https://avatars.dicebear.com/api/adventurer/city.svg",
   },
 ];
 
@@ -45,6 +27,10 @@ export function roomReducer(state: T_Room[] = arrayRoom, action: T_Action) {
     case E_ActionType.ADD_NEW_ROOM: {
       return [...state, action.payload];
     }
+    case E_ActionType.INIT_ROOM_ARRAY: {
+      return action.payload;
+    }
+
     default:
       return state;
   }

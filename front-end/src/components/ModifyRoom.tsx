@@ -5,15 +5,35 @@ import { useState } from "react";
 import { FiSettings } from "react-icons/fi";
 import { E_UpdatePwd, E_LeaveRoom, E_DeleteRoomPw } from "./Event";
 import { BasicModal } from "./BasicModal";
+import { Hidden } from "./Hidden";
+import { TitleOptionRoom } from "./TitleOptionRoom";
+import { RootState } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { UserState } from "../redux/reducers/userReducers";
+import { bindActionCreators } from "redux";
+import { E_AllRoomInfos } from "../components/Event";
+import * as actionCreatorsRoom from "../redux/action-creators/Ac_room";
 
-function ChangePassWord() {
+type T_Props = {
+  userId: number;
+  roomId: number;
+};
+
+type T_PropsRoomArray = {
+  room: T_Room[];
+};
+
+function ChangePassWord({ userId, roomId }: T_Props) {
   const { register, handleSubmit } = useForm();
+  const [display, setDisplay] = useState<string>("none");
   return (
     <>
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
-          E_UpdatePwd(3, 29, data.pwd);
+          E_UpdatePwd(userId, roomId, data.pwd);
+          setDisplay("inline");
+          console.log("update");
         })}
       >
         <input
@@ -30,18 +50,29 @@ function ChangePassWord() {
           value="Enter"
         />
       </form>
+      <h4 style={{ display: display, color: "#4CAF50" }}>
+        {" "}
+        successfully changed the password
+      </h4>
     </>
   );
 }
 
-function Hidden(typeRoom: string) {
-  if (typeRoom === "protected") return "inline";
-  return "none";
-}
-
-function Options({ id: number, typeRoom }: T_Room) {
+function Options({ id, typeRoom }: T_Room) {
   const [state, setSate] = useState<boolean>(false);
-  console.log("typeRoom:", typeRoom);
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
+  const dispatch = useDispatch();
+  const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
+  /* console.log("typeRoom:", typeRoom); */
+
+  const { userInfo }: UserState = userLogin;
+
+  if (!userInfo) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <>
       <form
@@ -54,13 +85,16 @@ function Options({ id: number, typeRoom }: T_Room) {
           className="btn1 opt1 btn-new-room"
           type="submit"
           value="Leave Room"
-          onClick={() => E_LeaveRoom(3, 29)}
+          onClick={() => E_LeaveRoom(userInfo.id, id)}
         />
         <input
           className="btn1 opt2 btn-new-room"
           type="submit"
           value="Remove Password"
-          onClick={() => E_DeleteRoomPw(3, 29)}
+          onClick={() => {
+            E_DeleteRoomPw(userInfo.id, id);
+            E_AllRoomInfos(ac_InitRoomArray); //to update
+          }}
         />
         <input
           className="btn1 opt3 btn-new-room"
@@ -72,20 +106,21 @@ function Options({ id: number, typeRoom }: T_Room) {
           }}
         />
       </form>
-      {state === true ? <ChangePassWord /> : <></>}
+      {state === true ? (
+        <ChangePassWord userId={userInfo.id} roomId={id} />
+      ) : (
+        <></>
+      )}
     </>
   );
 }
 
-export type T_PropsRoomArray = {
-  room: T_Room[];
-};
-
 export function ModifyRoom({ room }: T_PropsRoomArray) {
+  if (room.length === 0) return <></>;
   return (
     <>
       {" "}
-      <h3 style={{ position: "relative", left: "25%" }}>Modify Room</h3>
+      <TitleOptionRoom title="Modify Room" />
       {room.map((item: T_Room, index: number) => {
         return (
           <BasicModal

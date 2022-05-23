@@ -1,15 +1,12 @@
-/* import { ChatTemplate } from "../chat/components/ChatTemplate"; */
-/* import { IndexChat } from "../chat/index";
- * export const Chat = () => IndexChat(); */
-
 import "../styles/ChatTemplate.css";
 import { T_Room, T_User } from "../type/chat";
 import { RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../redux/index";
 import { bindActionCreators } from "redux";
-import { useState, useEffect } from "react";
-import { socket } from "../components/Event";
+import { useState } from "react";
+import { socket, E_GetMessage } from "../components/Event";
+import { UserState } from "../redux/reducers/userReducers";
 
 /**
  * this function get info on the one of item drawer has been click up
@@ -22,7 +19,7 @@ import { socket } from "../components/Event";
 
 function GetInfo(item: T_Room | T_User, state: any) {
   /* const dispatch = useDispatch();
-					  /* const { ac_getIdRoomMsg } = bindActionCreators(actionCreators, dispatch); */
+						  /* const { ac_getIdRoomMsg } = bindActionCreators(actionCreators, dispatch); */
 
   state.ac_getIdRoomMsg(item.id);
   state.ac_getNameRoomMsg(item.name);
@@ -36,34 +33,29 @@ function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
   return tmp;
 }
 
-function GetMessage(userId: number, roomId: number) {
-  socket.emit("getMessage", {
-    userId: userId,
-    roomId: roomId,
-  });
-
-  socket.on(
-    "msgToClient",
-    (received: { blockList: number[]; message_history: any }) => {
-      console.log("reponse msgToclient  : ", received);
-    }
-  );
-}
-
 /**
  * list of item in the left side
  * item can be either or groupe (room)
  */
 function FriendDrawer(item: T_Room | T_User, index: number) {
   const dispatch = useDispatch();
-  const state = bindActionCreators(actionCreators, dispatch);
+  const states = bindActionCreators(actionCreators, dispatch);
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
+
+  const { userInfo }: UserState = userLogin;
+  if (!userInfo) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <div key={index}>
       <div
         className="friend-drawer friend-drawer--onhover"
         onClick={(e) => {
-          GetInfo(item, state);
-          GetMessage(1, 29); //1 is the user id and 29 roomId
+          GetInfo(item, states);
+          E_GetMessage(userInfo.id, item.id); //1 is the user id and 29 roomId
         }}
       >
         <img className="profile-image" src={item.avatar} alt="" />
@@ -114,12 +106,16 @@ function ItemSelected() {
  * }
  *  */
 function PrintMsg() {
-  useEffect(() => {
-    socket.on("MsgToClient: ", (receive: any) => {
-      console.log("Msg received: ", receive);
-    });
-  }, [socket]);
-
+  /*
+   *
+   * 	useEffect(() => {
+   *     socket.on("MsgToClient: ", (receive: any) => {
+   *       console.log("Msg received: ", receive);
+   *     });
+   *   }, [socket]);
+   *
+   *
+   *  */
   return (
     <>
       <div className="row no-gutters">
@@ -182,9 +178,8 @@ function InputMsg() {
 }
 
 export function Chat() {
-  const { arrayRoom, message } = useSelector((state: RootState) => state);
-  console.log("message:", message);
-
+  const { arrayRoom } = useSelector((state: RootState) => state);
+  if (arrayRoom.length === 0) return <></>;
   return (
     <div>
       <div className="container">

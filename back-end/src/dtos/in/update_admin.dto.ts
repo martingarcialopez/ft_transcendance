@@ -7,6 +7,9 @@ export class UpdateAdminDto {
 	@IsNumber()
     roomId: number;
 
+	@IsString()
+    login: string;
+
     @IsBoolean()
     toAdd: boolean;
 }

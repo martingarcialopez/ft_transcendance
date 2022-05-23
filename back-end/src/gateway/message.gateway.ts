@@ -22,6 +22,7 @@ import { Socket, Server } from 'socket.io';
 import { MessageDto } from '../dtos/in/message.dto';
 import { RoomDto } from '../dtos/in/room.dto';
 import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
+import { UserService } from '../services/user.service';
 
 
 /*this declarator gives us access to the socket.io functionality*/
@@ -34,7 +35,10 @@ export class MessageGateway {
   /*gives us access to the websockets server instance*/
   @WebSocketServer() server: Server;
 
-	constructor(private readonly messageService: MessageService,) {}
+	constructor
+	(private readonly messageService: MessageService,
+	private readonly userService: UserService,
+) {}
 
   @Bind(MessageBody(), ConnectedSocket()) // useful?
   @SubscribeMessage('createMessage')
@@ -47,6 +51,6 @@ export class MessageGateway {
     this.server
       .to(message[0].channelIdDst.toString())
 		.emit('MsgToClient: ', message[0].contentToSend);
-  }
+	}
 
 }

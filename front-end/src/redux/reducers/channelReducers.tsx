@@ -53,3 +53,21 @@ export function chanelReducer(
       return state;
   }
 }
+
+function initInfo(): t_info {
+  return {
+    titleOfPage: "",
+  };
+}
+
+/**
+ *
+ */
+export function infoReducer(state = initInfo(), action: t_ActionInfo): t_info {
+  switch (action.type) {
+    case e_actionType.NAME_OF_CURRENT_CHANNEL:
+      return { ...state, titleOfPage: action.payload };
+    default:
+      return state;
+  }
+}

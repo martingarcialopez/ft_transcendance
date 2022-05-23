@@ -1,5 +1,6 @@
 import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
+
 export class JoinRoomDto {
 
 	@IsNumber()
@@ -7,10 +8,18 @@ export class JoinRoomDto {
 	public userId: number;
 
 	@IsNumber()
-    @IsNotEmpty()
+	@IsNotEmpty()
     public roomId: number;
 
 	@IsString()
-    @IsNotEmpty()
-    public entered_pw: string;
+	@IsNotEmpty()
+	public typeRoom: string;
+
+	@IsString()
+	@IsOptional()
+	public password?: string;
+
+	@IsString()
+	@IsOptional()
+    public login?: string;
 }

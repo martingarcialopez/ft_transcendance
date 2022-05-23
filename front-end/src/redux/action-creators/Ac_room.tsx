@@ -10,3 +10,12 @@ export const ac_AddRoom = (room: T_Room) => {
     });
   };
 };
+
+export const ac_InitRoomArray = (room: T_Room[]) => {
+  return (dispatch: Dispatch<T_Action>) => {
+    dispatch({
+      type: E_ActionType.INIT_ROOM_ARRAY,
+      payload: room,
+    });
+  };
+};

@@ -28,7 +28,6 @@ export function BasicModal(props: T_Props) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  console.log("props:", props);
   return (
     <>
       <div className="roomList" onClick={handleOpen}>

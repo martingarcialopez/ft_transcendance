@@ -2,18 +2,33 @@ import Typography from "@mui/material/Typography";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import "../styles/room.css";
 import { useForm } from "react-hook-form";
-import { E_JoinRoom } from "./Event";
 import { T_Room } from "../type/chat";
 import { BasicModal } from "./BasicModal";
+import { TitleOptionRoom } from "./TitleOptionRoom";
 
-export type T_PropsRoomArray = {
+import { RootState } from "../redux/store";
+import { UserState } from "../redux/reducers/userReducers";
+import { useSelector } from "react-redux";
+import { SetInfoUserRoom } from "./SetInfoUserRoom";
+import { E_JoinRoom } from "./Event";
+
+type T_PropsRoomArray = {
   room: T_Room[];
 };
 
 /* function IsProctect({ roomId, setRoomId }: AppProps) { */
 
-function IsProctect({ id: number }: T_Room) {
+function IsProctect({ id, typeRoom }: T_Room) {
   const { register, handleSubmit } = useForm();
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
+
+  const { userInfo }: UserState = userLogin;
+
+  if (!userInfo) {
+    return <h1>Loading...</h1>;
+  }
   return (
     <div>
       <Typography
@@ -32,8 +47,8 @@ function IsProctect({ id: number }: T_Room) {
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
-          console.log("protected: ", data.target);
-          E_JoinRoom(3, 29, data.pwd);
+          const info = SetInfoUserRoom(userInfo.id, id, typeRoom, data.pwd, "");
+          E_JoinRoom(info);
         })}
       >
         <input
@@ -59,10 +74,11 @@ function IsProctect({ id: number }: T_Room) {
  * to Join a Protected Room  password is require
  */
 export function JoinProtectedRoom({ room }: T_PropsRoomArray) {
+  if (room.length === 0) return <></>;
   return (
     <>
       {" "}
-      <h3 style={{ position: "relative", left: "25%" }}>Join Protected Room</h3>
+      <TitleOptionRoom title="Join Protected Room" />
       {room.map((item: T_Room, index: number) => {
         return (
           <BasicModal
