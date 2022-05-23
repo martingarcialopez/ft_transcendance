@@ -126,6 +126,7 @@ export class RoomGateway
 	async getMessage(socket: Socket, body: ParticipantDto) : Promise<void>{
 //		const body: any = {roomId:1, userId:3};
 		//	const info = await this.roomService.getUserBlockList_and_message_history();
+		console.log('in gw getMessage ', body);
 		const info = await this.messageService.getRoomMessage(body);
 		console.log('in gate way, info is', info);
 		socket.emit('msgToClient', info);

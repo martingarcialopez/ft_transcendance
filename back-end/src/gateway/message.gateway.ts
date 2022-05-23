@@ -43,14 +43,15 @@ export class MessageGateway {
   @Bind(MessageBody(), ConnectedSocket()) // useful?
   @SubscribeMessage('createMessage')
 	async createMessage(@Body() message: MessageDto): Promise<void> {
-	    var value = await this.messageService.createMessage(message[0]);
+		console.log('in message gw ', message);
+	    var value = await this.messageService.createMessage(message);
 
     /*Send message_id to front
     this.server.emit('SendMsg', value);*/
     /*Send message infos to everyone in the same channel*/
     this.server
-      .to(message[0].channelIdDst.toString())
-		.emit('MsgtoChat', message[0].contentToSend);
+      .to(message.channelIdDst.toString())
+		.emit('MsgtoChat', message.contentToSend);
 	}
 
 }

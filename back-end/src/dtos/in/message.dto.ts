@@ -9,9 +9,10 @@ import {
 } from 'class-validator';
 
 export class MessageDto {
-  @IsString()
+
+  @IsNumber()
   @IsNotEmpty()
-  public fromUser: string;
+  public userId: number;
 
   @IsString()
   @IsNotEmpty()
@@ -21,7 +22,4 @@ export class MessageDto {
   @IsNotEmpty()
   public channelIdDst: number;
 
-  @IsString()
-  @IsNotEmpty()
-  public channelName: string;
 }

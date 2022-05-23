@@ -28,11 +28,9 @@ export class MessageService {
 	async createMessage(messageDto: MessageDto): Promise<MessageSnippetDto>
 	{
 		const new_message = new Message();
-		new_message.userId = 2;
+		new_message.userId = messageDto.userId;
 		new_message.roomId = messageDto.channelIdDst;
-		new_message.sender = messageDto.fromUser;
 		new_message.content = messageDto.contentToSend;
-		new_message.room_name = messageDto.channelName;
 		await this.messageRepository.save(new_message);
 		const dto = plainToClass(MessageSnippetDto, new_message);
 		return dto;

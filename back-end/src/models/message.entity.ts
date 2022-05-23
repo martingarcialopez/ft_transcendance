@@ -14,20 +14,14 @@ export class Message {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  sender: string;
-
   @Column('text')
   content: string;
 
-  @Column()
-  room_name: string;
 
   @ManyToOne((type) => User, (user) => user.messages)
   @JoinColumn({ name: 'userId' })
   user: User;
-  @Column({ nullable: true }) // THIS SHOULD BE DELETE
-  //@Column()
+  @Column()
   public userId: number;
 
   @ManyToOne((type) => Room, (room) => room.messages)
