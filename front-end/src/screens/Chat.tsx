@@ -5,11 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../redux/index";
 import { bindActionCreators } from "redux";
 import { useState } from "react";
-import {
-  E_GetMessage,
-  E_MsgToClient,
-  E_CreateMessage,
-} from "../components/Event";
+import { socket, E_GetMessage, E_MsgToClient } from "../components/Event";
 import { UserState } from "../redux/reducers/userReducers";
 
 /**
@@ -194,7 +190,12 @@ function InputMsg() {
         onClick={() => {
           state.ac_getContentMsg(inputValue);
           setinputValue("");
-          E_CreateMessage(userInfo.id, message.roomId, message.content);
+          /* E_CreateMessage(userInfo.id, message.roomId, message.content); */
+          socket.emit("createMessage", {
+            userId: userInfo.id,
+            contentToSend: message.content,
+            channelIdDst: message.roomId,
+          });
         }}
       >
         send
