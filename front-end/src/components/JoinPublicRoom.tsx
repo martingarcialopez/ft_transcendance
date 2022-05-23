@@ -9,7 +9,7 @@ import { UserState } from "../redux/reducers/userReducers";
 import { useSelector } from "react-redux";
 import { E_JoinRoom } from "./Event";
 
-export type T_PropsRoomArray = {
+type T_PropsRoomArray = {
   room: T_Room[];
 };
 

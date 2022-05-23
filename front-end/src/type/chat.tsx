@@ -35,3 +35,8 @@ export type T_AddUserRoom = {
   password: string;
   login: string;
 };
+
+export type T_Participant = {
+  userId: number;
+  roomId: number;
+};

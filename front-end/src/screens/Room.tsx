@@ -3,7 +3,7 @@ import { AddParticipant } from "../components/AddParticipant";
 import { JoinPublicRoom } from "../components/JoinPublicRoom";
 import { JoinProtectedRoom } from "../components/JoinProtectedRoom";
 import { RootState } from "../redux/store";
-import { T_Room } from "../type/chat";
+import { T_Room, T_Participant } from "../type/chat";
 import { ModifyRoom } from "../components/ModifyRoom";
 import { AddAdmin } from "../components/AddAdmin";
 import { useSelector } from "react-redux";
@@ -29,9 +29,9 @@ function GetRoomUserAdmin(room: T_Room[], userId: number): T_Room[] {
 }
 
 /**
- * tab it is a array of participants some room
+ * @tab it is a array of participants,
  */
-function CheckParticipant(tab: any[], userId: number) {
+function CheckParticipant(tab: T_Participant[], userId: number) {
   for (let i = 0; i < tab.length; i++) {
     if (tab[i].userId === userId) return false;
   }
@@ -39,6 +39,7 @@ function CheckParticipant(tab: any[], userId: number) {
 }
 
 /**
+ * filter  @room[] so that to have only room which @userID is not participant
  * this function return a roomArray where the current user is not participant
  * @userId the current user
  */
@@ -67,7 +68,7 @@ export function Room() {
   }
   console.log("userId: ", userInfo.id);
   const roomUserIsAdmin = GetRoomUserAdmin(arrayRoom, userInfo.id);
-  console.log("userId: ", userInfo.id);
+  /* console.log("userId: ", userInfo.id); */
   return (
     <>
       <CreateRoom />
