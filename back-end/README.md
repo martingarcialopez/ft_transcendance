@@ -90,15 +90,15 @@ Deletes an user of the database
 
 </br>
 
-### `POST /user/friends/:username`
-🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
-- Adds user with a matching :username to friends list of the user owning the token 
-
-</br>
-
 ### `GET /user/friends`
 🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
 - Returns a list of the friends of the user owning the token
+
+</br>
+
+### `POST /user/friends/:username`
+🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
+- Adds user with a matching :username to friends list of the user owning the token 
 
 </br>
 
