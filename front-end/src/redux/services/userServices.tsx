@@ -9,8 +9,10 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
         lastname,
         username,
         password,
+        avatar: '/shared/avatar/avatar_chat.jpeg',
         returnSecureToken: true,
     };
+    console.log("postData", postData)
 
     return axios.post(
         `${URL_test}/user/sign-up`,
