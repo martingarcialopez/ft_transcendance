@@ -25,12 +25,21 @@ export function E_GetMessage(userId: number, roomId: number) {
   });
 }
 
+type T_MsgHistory = {
+  content: string;
+  id: number;
+  roomId: number;
+  userId: number;
+};
+
 export function E_MsgToClient(setMsg: Function) {
   socket.on(
     "msgToClient",
-    (received: { blockList: number[]; message_history: any }) => {
-      console.log("reponse msgToclient  : ", received);
-      setMsg(received.message_history);
+    (received: { blockList: number[]; message_history: T_MsgHistory }) => {
+      console.log("reponse msgToclient  : ", received); //why this line show "message_history" ?
+      console.log("message_history : ", received.message_history); //why it is undefined ?
+      console.log("blockList : ", received.blockList); //why it is undefined ?
+      setMsg(received);
     }
   );
 }

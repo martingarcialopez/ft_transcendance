@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../redux/index";
 import { bindActionCreators } from "redux";
 import { useState } from "react";
-/* import * as actionCreatorsRoom from "../redux/action-creators/Ac_room"; */
 
 import {
   E_CreateMessage,
@@ -13,16 +12,8 @@ import {
   E_MsgToClient,
   /* E_AllRoomInfos, */
 } from "../components/Event";
-import { UserState } from "../redux/reducers/userReducers";
 
-/**
- * this function get info on the one of item drawer has been click up
- * the info got, help to fill the T_msg object
- * these info cam from item
- *
- */
-/* const ENDPOINT = "http://localhost:3000";
- * export const socket = socketio(ENDPOINT); //connection to the server nestJs */
+import { UserState } from "../redux/reducers/userReducers";
 
 function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
   let tmp = 0;
@@ -35,7 +26,8 @@ function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
 /**
  * list of item in the left side
  * item can be either user or room
- * thisfunction  manage the click on the left bar
+ * this function  manage the click on the left bar
+ * get id of room cliked and the userId
  */
 function FriendDrawer(item: T_Room | T_User, index: number) {
   const dispatch = useDispatch();
@@ -56,8 +48,8 @@ function FriendDrawer(item: T_Room | T_User, index: number) {
         className="friend-drawer friend-drawer--onhover"
         onClick={(e) => {
           E_GetMessage(userInfo.id, item.id);
-          states.ac_getIdRoomMsg(item.id);
-          states.ac_getUserId(userInfo.id);
+          states.ac_getIdRoomMsg(item.id); //room clicked
+          states.ac_getUserId(userInfo.id); //userId
         }}
       >
         <img className="profile-image" src={item.avatar} alt="" />
@@ -129,10 +121,26 @@ function ItemSelected() {
  *
  *
  *  */
+/*
+ *
+ * type T_MsgHistory = {
+ *   content: string;
+ *   id: number;
+ *   roomId: number;
+ *   userId: number;
+ * };
+ *
+ *  */
+/*
+ * function InitMgHistory(): T_MsgHistory {
+ *   return { content: "", id: 0, roomId: 0, userId: 0 };
+ * }
+ *  */
 function PrintMsg() {
-  const [msg, SetMsg] = useState([]);
+  const [msg, SetMsg] = useState<any>([]);
+
   E_MsgToClient(SetMsg);
-  /* return <>{msg.forEach(BubbleMsg)}</>; */
+  console.log("msg", msg);
   return <div>message_history:{JSON.stringify(msg)}</div>;
 }
 
@@ -140,6 +148,7 @@ function PrintMsg() {
  * handle the content to send
  * this function retrieve the input content, to set it into the object T_msg
  */
+
 function InputMsg() {
   const dispatch = useDispatch();
   const state = bindActionCreators(actionCreators, dispatch);
@@ -182,12 +191,22 @@ function InputMsg() {
     </>
   );
 }
-
+/**
+ * inputMsg
+ * printMsg
+ * ItemSelected
+ * FriendDrawer
+ */
 export function Chat() {
   const { arrayRoom } = useSelector((state: RootState) => state);
+  /* const [infoMsg, setInfoMsg] = useReducer(ReducerInfoMsg, initStateMsg()); */
+
   /* const dispatch = useDispatch();
    * const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
    * E_AllRoomInfos(ac_InitRoomArray); //to update */
+
+  //  setInfoMsg({ type: E_ActionType.GET_CONTENT_MSG, payload: 243 });
+  /* console.log("infoMsg:", infoMsg); */
   if (arrayRoom.length === 0) return <></>;
   return (
     <div>
