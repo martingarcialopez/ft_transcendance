@@ -1,14 +1,16 @@
-import { e_actionType, t_ActionMsg, t_msgToSend } from "../constants/channelConstants";
+import { E_ActionType } from "../../type/Enum";
+import { T_Action, T_Msg } from "../../type/chat";
 
 /**
  * this function going to init the state, with the default propriety value
  */
-function initStateMsg(): t_msgToSend {
+function initStateMsg(): T_Msg {
   return {
-    fromUser: "unknow",
-    contentToSend: "",
-    channelIdDst: -1,
-    channelName: "",
+    fromName: "",
+    fromId: -1,
+    roomId: -1,
+    roomName: "",
+    content: "",
   };
 }
 
@@ -24,43 +26,24 @@ function initStateMsg(): t_msgToSend {
  * @param action{proprity : ENUME , proprity:any}
  * @returns
  */
-export function msgReducer(
-  state: t_msgToSend = initStateMsg(),
-  action: t_ActionMsg
-) {
+export function msgReducer(state: T_Msg = initStateMsg(), action: T_Action) {
   switch (action.type) {
-    case e_actionType.MSG_RECEIVED: {
-      return { ...state, contentReceived: action.payload };
+    /* case E_ActionType.MSG_RECEIVED: {
+     *   return { ...state, contentReceived: action.payload };
+     * }
+     * case E_ActionType.CHANEL_RECIPIENT: {
+     *   return { ...state, destChannel: action.payload };
+     * } */
+    case E_ActionType.ID_CURRENT_USER: {
+      return { ...state, fromId: action.payload };
     }
-    case e_actionType.CHANEL_RECIPIENT: {
-      return { ...state, destChannel: action.payload };
+    case E_ActionType.GET_CONTENT_MSG: {
+      return { ...state, content: action.payload };
     }
-    case e_actionType.MSG_TO_SEND: {
-      return { ...state, contentToSend: action.payload };
+    case E_ActionType.GET_ROOM_ID: {
+      return { ...state, roomId: action.payload };
     }
-    case e_actionType.SET_ID_CHANNEL: {
-      return { ...state, channelIdDst: action.payload };
-    }
-    case e_actionType.SET_NAME_CHANNEL: {
-      return { ...state, channelName: action.payload };
-    }
-    default:
-      return state;
-  }
-}
-/**
- * added new t_msgToSend into the array
- * @state[t_msgToSend, t_msgToSend, t_msgToSend...]
- * @param action{proprity : ENUME , proprity:any}
- */
-export function arrayMsgReducer(
-  state: t_msgToSend[] = [],
-  action: t_ActionMsg
-) {
-  switch (action.type) {
-    case e_actionType.ADD_NEW_MSG: {
-      return [...state, action.payload];
-    }
+
     default:
       return state;
   }

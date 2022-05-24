@@ -37,13 +37,16 @@ export function E_MsgToClient(setMsg: Function) {
 
 export function E_CreateMessage(
   userId: number,
-  roomId: number,
-  content: string
+  contentToSend: string,
+  channelIdDst: number
 ) {
+  console.log("event 'createMessage':\nUserId:", userId);
+  console.log("content:", contentToSend);
+  console.log("roomId:", channelIdDst);
   socket.emit("createMessage", {
     userId: userId,
-    roomId: roomId,
-    content: content,
+    contentToSend: contentToSend,
+    channelIdDst: channelIdDst,
   });
 }
 
@@ -147,7 +150,7 @@ export function E_AllRoomInfos(updateArrayRoom: Function) {
       item.avatar =
         "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
     });
-    console.log("tab Room:", receive);
+    /* console.log("tab Room:", receive); */
     updateArrayRoom(receive);
   });
 }

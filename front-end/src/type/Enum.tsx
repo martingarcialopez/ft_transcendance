@@ -5,5 +5,5 @@ export enum E_ActionType {
   ADD_NEW_ROOM = "addnew room in the array RoomArray",
   ADD_CONTENT_MSG = "add new content value of msg into  object T_Msg",
   INIT_ROOM_ARRAY = "init room array wiht data came from database",
-  TEST = "",
+  ID_CURRENT_USER = "get the id of current user",
 }

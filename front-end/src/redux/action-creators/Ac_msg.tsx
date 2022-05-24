@@ -43,20 +43,31 @@ export const ac_getIdRoomMsg = (id: number) => {
   };
 };
 
-export const ac_getNameRoomMsg = (name: string) => {
-  return (dispatch: Dispatch<T_Action>) => {
-    dispatch({
-      type: E_ActionType.GET_ROOM_NAME,
-      payload: name,
-    });
-  };
-};
+/*
+ * export const ac_getNameRoomMsg = (name: string) => {
+ *   return (dispatch: Dispatch<T_Action>) => {
+ *     dispatch({
+ *       type: E_ActionType.GET_ROOM_NAME,
+ *       payload: name,
+ *     });
+ *   };
+ * };
+ *  */
 
 export const ac_getContentMsg = (content: string) => {
   return (dispatch: Dispatch<T_Action>) => {
     dispatch({
       type: E_ActionType.GET_CONTENT_MSG,
       payload: content,
+    });
+  };
+};
+
+export const ac_getUserId = (id: number) => {
+  return (dispatch: Dispatch<T_Action>) => {
+    dispatch({
+      type: E_ActionType.ID_CURRENT_USER,
+      payload: id,
     });
   };
 };

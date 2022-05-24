@@ -5,7 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../redux/index";
 import { bindActionCreators } from "redux";
 import { useState } from "react";
-import { socket, E_GetMessage, E_MsgToClient } from "../components/Event";
+/* import * as actionCreatorsRoom from "../redux/action-creators/Ac_room"; */
+
+import {
+  E_CreateMessage,
+  E_GetMessage,
+  E_MsgToClient,
+  /* E_AllRoomInfos, */
+} from "../components/Event";
 import { UserState } from "../redux/reducers/userReducers";
 
 /**
@@ -17,14 +24,6 @@ import { UserState } from "../redux/reducers/userReducers";
 /* const ENDPOINT = "http://localhost:3000";
  * export const socket = socketio(ENDPOINT); //connection to the server nestJs */
 
-function GetInfo(item: T_Room | T_User, state: any) {
-  /* const dispatch = useDispatch();
-						  /* const { ac_getIdRoomMsg } = bindActionCreators(actionCreators, dispatch); */
-
-  state.ac_getIdRoomMsg(item.id);
-  state.ac_getNameRoomMsg(item.name);
-}
-
 function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
   let tmp = 0;
   item.forEach((data, index: number) => {
@@ -35,7 +34,8 @@ function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
 
 /**
  * list of item in the left side
- * item can be either or groupe (room)
+ * item can be either user or room
+ * thisfunction  manage the click on the left bar
  */
 function FriendDrawer(item: T_Room | T_User, index: number) {
   const dispatch = useDispatch();
@@ -55,8 +55,9 @@ function FriendDrawer(item: T_Room | T_User, index: number) {
       <div
         className="friend-drawer friend-drawer--onhover"
         onClick={(e) => {
-          GetInfo(item, states);
-          E_GetMessage(userInfo.id, item.id); //1 is the user id and 29 roomId
+          E_GetMessage(userInfo.id, item.id);
+          states.ac_getIdRoomMsg(item.id);
+          states.ac_getUserId(userInfo.id);
         }}
       >
         <img className="profile-image" src={item.avatar} alt="" />
@@ -101,47 +102,25 @@ function ItemSelected() {
   );
 }
 
-type T_Props = {
-  msg: any;
-};
-
-function BubbleMsg({ msg }: T_Props) {
-  return (
-    <>
-      <div className="row no-gutters">
-        <div className="col-md-3">
-          <div className="chat-bubble chat-bubble--left">
-            {" "}
-            JSON.stringify(msg)
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-function PrintMsg() {
-  const [msg, SetMsg] = useState<any>([]);
-  E_MsgToClient(SetMsg);
-  return <>{msg.forEach(BubbleMsg)}</>;
-}
-
 /*
  *
+ * type T_Props = {
+ *   msg: any;
+ * };
  *
- * function PrintMsg() {
  *
- * 		const [msg, SetMsg] = useState<any>([])
+ *  */
+/*
  *
+ * function BubbleMsg({ msg }: T_Props) {
  *   return (
  *     <>
  *       <div className="row no-gutters">
  *         <div className="col-md-3">
- *           <div className="chat-bubble chat-bubble--left">Hello dude!</div>
- *         </div>
- *       </div>
- *       <div className="row no-gutters">
- *         <div className="col-md-3 offset-md-9">
- *           <div className="chat-bubble chat-bubble--right">Hello dude!</div>
+ *           <div className="chat-bubble chat-bubble--left">
+ *             {" "}
+ *             JSON.stringify(msg)
+ *           </div>
  *         </div>
  *       </div>
  *     </>
@@ -149,8 +128,13 @@ function PrintMsg() {
  * }
  *
  *
- *
  *  */
+function PrintMsg() {
+  const [msg, SetMsg] = useState([]);
+  E_MsgToClient(SetMsg);
+  /* return <>{msg.forEach(BubbleMsg)}</>; */
+  return <div>message_history:{JSON.stringify(msg)}</div>;
+}
 
 /**
  * handle the content to send
@@ -171,7 +155,6 @@ function InputMsg() {
     return <h1>Loading...</h1>;
   }
 
-  /* console.log("message:", message); */
   return (
     <>
       <div className="form-group">
@@ -190,12 +173,8 @@ function InputMsg() {
         onClick={() => {
           state.ac_getContentMsg(inputValue);
           setinputValue("");
-          /* E_CreateMessage(userInfo.id, message.roomId, message.content); */
-          socket.emit("createMessage", {
-            userId: userInfo.id,
-            contentToSend: message.content,
-            channelIdDst: message.roomId,
-          });
+          console.log("message:", message);
+          E_CreateMessage(userInfo.id, inputValue, message.roomId);
         }}
       >
         send
@@ -206,6 +185,9 @@ function InputMsg() {
 
 export function Chat() {
   const { arrayRoom } = useSelector((state: RootState) => state);
+  /* const dispatch = useDispatch();
+   * const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
+   * E_AllRoomInfos(ac_InitRoomArray); //to update */
   if (arrayRoom.length === 0) return <></>;
   return (
     <div>
