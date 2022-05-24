@@ -92,7 +92,7 @@ Deletes an user of the database
 
 ### `GET /user/friends`
 🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
-- Returns a list of the friends of the user owning the token
+- Returns the friends list of the user owning the token
 
 </br>
 
