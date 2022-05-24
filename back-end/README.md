@@ -90,7 +90,7 @@ Deletes an user of the database
 
 </br>
 
-### `GET /user/addfriend/:username`
+### `POST /user/friends/:username`
 🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
 - Adds user with a matching :username as a friend of the user owning the token 
 
@@ -99,5 +99,11 @@ Deletes an user of the database
 ### `GET /user/friends`
 🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
 - Returns a list of the friends of the user owning the token
+
+</br>
+
+### `DELETE /user/friends/:username`
+🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
+- Remove user with a matching :username from the list of friends of the user owning the token
 
 </br>
