@@ -23,6 +23,24 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/friends')
+  getUserFriends(@Request() req) {
+      return this.userService.getUserFriends(req.user.userId);
+  }
+  
+  @UseGuards(JwtAuthGuard)
+  @Post('/friends/:username')
+  addFriend (@Request() req, @Param('username') username: string) {
+      return this.userService.addFriend(req.user.userId, username);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/friends/:username')
+  deleteFriend (@Request() req, @Param('username') username: string) {
+      return this.userService.deleteFriend(req.user.userId, username);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('/:username')
   getUser(@Param('username') username: string) : Promise<User> {
       return this.userService.getUser(username);
@@ -39,5 +57,6 @@ export class UserController {
   deleteUser( @Param('id', ParseIntPipe) id: string): Promise <void> {
       return this.userService.deleteUser(id);
   }
+
 
 }
