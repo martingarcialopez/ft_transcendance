@@ -33,21 +33,17 @@ type T_MsgHistory = {
 };
 
 export function E_MsgToClient(setMsg: Function) {
-  socket.on(
-    "msgToClient",
-    (received: { blockList: number[]; message_history: T_MsgHistory }) => {
-      console.log("reponse msgToclient  : ", received); //why this line show "message_history" ?
-      console.log("message_history : ", received.message_history); //why it is undefined ?
-      console.log("blockList : ", received.blockList); //why it is undefined ?
-      setMsg(received);
-    }
-  );
+  socket.on("msgToClient", (received: T_MsgHistory[]) => {
+    //  console.log("reponse msgToclient  : ", received); //why this line show "message_history" ?
+    setMsg(received);
+  });
 }
 
 export function E_CreateMessage(
   userId: number,
   contentToSend: string,
-  channelIdDst: number
+  channelIdDst: number,
+  sender: string | undefined
 ) {
   console.log("event 'createMessage':\nUserId:", userId);
   console.log("content:", contentToSend);
@@ -56,6 +52,7 @@ export function E_CreateMessage(
     userId: userId,
     contentToSend: contentToSend,
     channelIdDst: channelIdDst,
+    sender: sender,
   });
 }
 
