@@ -92,7 +92,7 @@ Deletes an user of the database
 
 ### `POST /user/friends/:username`
 🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
-- Adds user with a matching :username to the friends list of the user owning the token 
+- Adds user with a matching :username to friends list of the user owning the token 
 
 </br>
 
