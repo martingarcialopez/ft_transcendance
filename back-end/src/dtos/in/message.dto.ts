@@ -14,6 +14,10 @@ export class MessageDto {
   @IsNotEmpty()
   public userId: number;
 
+	@IsString()
+	@IsNotEmpty()
+  public sender: string;
+
   @IsString()
   @IsNotEmpty()
   public contentToSend: string;

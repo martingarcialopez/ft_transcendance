@@ -1,10 +1,11 @@
 import { HttpStatus, HttpException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { RelationId, Repository } from 'typeorm';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { BlockUserDto } from '../dtos/in/blockUser.dto';
 import { User } from '../models/user.entity';
+import { Relationship } from '../models/friends.entity';
 import { unlinkSync } from 'fs';
 import * as bcrypt from 'bcrypt';
 
@@ -14,6 +15,8 @@ export class UserService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
+        @InjectRepository(Relationship)
+        private friendsRepository: Repository<Relationship>
     ) { }
 
     async createUser(payload: CreateUserDto): Promise<any> {
@@ -91,6 +94,51 @@ export class UserService {
             }
         }
         await this.userRepository.delete(id);
+    }
+
+    async addFriend(userId: string, friendUsername: string) {
+
+        const relation : Relationship = new Relationship();
+
+        console.log(`userID is ${userId}`);
+        console.log(`friendUsername is ${friendUsername}`);
+
+        const member1: User =  await this.getUserById(userId);
+
+        if (!member1)
+            throw new NotFoundException();
+
+        //relation.member1_id= userId;
+        relation.member_username = member1.username;
+        relation.friend_username = friendUsername;
+
+        await this.friendsRepository.save(relation);
+
+    }
+
+    async deleteFriend(userId: string, friendUsername: string) {
+
+        const relation : Relationship = new Relationship();
+
+        const user: User =  await this.getUserById(userId);
+
+        if (!user)
+            throw new NotFoundException();
+
+        console.log(`deleting relation where user is ${user.username} and friend is ${friendUsername}`);
+
+        await this.friendsRepository.delete({ member_username: user.username, friend_username: friendUsername });
+
+    }
+
+    async getUserFriends(userId: string) {
+
+        const user: User = await this.getUserById(userId);
+        
+        if (!user)
+            throw new NotFoundException();
+
+        return await this.userRepository.find({ where: { member_username: user.username } });
     }
 
 	async getBlockList(userId: number): Promise<number[]> | null {

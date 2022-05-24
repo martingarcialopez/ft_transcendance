@@ -29,6 +29,7 @@ export class MessageService {
 	{
 		const new_message = new Message();
 		new_message.userId = messageDto.userId;
+		new_message.sender = messageDto.sender;
 		new_message.roomId = messageDto.channelIdDst;
 		new_message.content = messageDto.contentToSend;
 		await this.messageRepository.save(new_message);
@@ -58,6 +59,7 @@ export class MessageService {
 			.createQueryBuilder("message")
 			.where("message.roomId = :id and message.userId != all (:blockList)", { id: roomId, blockList: blockList })
             .getMany();
+		console.log(messages_in_room);
 		return messages_in_room;
 	}
 /*
