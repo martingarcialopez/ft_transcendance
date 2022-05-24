@@ -26,6 +26,7 @@ import { PongModule} from './modules/pong.module';
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 
 import { ConfigModule } from '@nestjs/config';
+import { Relationship } from './models/friends.entity';
 
 
 @Module({
@@ -38,7 +39,7 @@ import { ConfigModule } from '@nestjs/config';
       username: 'root',
       password: 'root',
       database: 'db',
-		entities: [User, Message, Room, Participant, Matchmaking],
+		entities: [User, Message, Room, Participant, Matchmaking, Relationship],
       synchronize: true,
     }),
     InMemoryDBModule.forRoot({}),

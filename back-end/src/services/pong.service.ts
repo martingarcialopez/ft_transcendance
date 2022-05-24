@@ -85,7 +85,6 @@ export class PongService {
 		}
     }
 
-
 	// async managePlayer(socket: Socket, server: Server, userId : number) :Promise<void> {
 
 	// 	let bbdd = await this.pongRepository.find();
