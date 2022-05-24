@@ -58,9 +58,9 @@ $ {"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxlbyIs
 
 </br>
 
-### `GET /user/:id`
+### `GET /user/:username`
 🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
-- Returns user information of the user with a matching userId
+- Returns user information of the user with a matching username
 
 </br>
 
@@ -87,3 +87,17 @@ Update user information stocked on the database
 Deletes an user of the database
 
 - returns 200 upon successful completion
+
+</br>
+
+### `GET /user/addfriend/:username`
+🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
+- Adds user with a matching :username as a friend of the user owning the token 
+
+</br>
+
+### `GET /user/friends`
+🛡️ PROTECTED ENDPOINT 🛡️ - Valid session token required
+- Returns a list of the friends of the user owning the token
+
+</br>
