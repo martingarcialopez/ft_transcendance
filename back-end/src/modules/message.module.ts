@@ -4,9 +4,10 @@ import { Message } from '../models/message.entity';
 import { MessageService } from '../services/message.service';
 import { UserService } from '../services/user.service';
 import { User } from '../models/user.entity';
+import { Relationship } from 'src/models/friends.entity';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Message, User]), ],
+	imports: [TypeOrmModule.forFeature([Message, User, Relationship]), ],
 	providers: [MessageService, UserService],
   exports: [MessageService],
 })
