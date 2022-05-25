@@ -39,6 +39,7 @@ export function E_CreateMessage(
   channelIdDst: number,
   sender: string | undefined
 ) {
+  if (typeof sender === "undefined") sender = "wsh";
   console.log("event 'createMessage':\nUserId:", userId);
   console.log("content:", contentToSend);
   console.log("roomId:", channelIdDst);
@@ -46,7 +47,7 @@ export function E_CreateMessage(
     userId: userId,
     contentToSend: contentToSend,
     channelIdDst: channelIdDst,
-    sender: sender,
+    sender: typeof sender === "undefined" ? "wsh" : sender,
   });
 }
 
