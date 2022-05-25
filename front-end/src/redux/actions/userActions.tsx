@@ -9,8 +9,9 @@ import {
   CHANGE_PAGE_ACTION,
   GET_FRIEND_INFOS_ACTION,
   UPDATE_FAILED_ACTION,
+  GET_FRIENDS_LIST_ACTION,
 } from '../constants/userConstants'
-import { formatError, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -70,7 +71,7 @@ export function getInfoAction(access_token: any) {
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);
-        dispatch(loginFailedAction(errorMessage));
+        dispatch(ActionFailed(errorMessage));
       });
   };
 }
@@ -83,11 +84,49 @@ export function getUserInfoAction(username: any, access_token: any) {
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);
-        dispatch(loginFailedAction(errorMessage));
+        dispatch(ActionFailed(errorMessage));
       });
   };
 }
 
+export function getFriendListAction(access_token: any) {
+  return (dispatch: any) => {
+    getFriendList(access_token)
+      .then((response) => {
+        dispatch(getFriendListConfirmedAction(response.data));
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
+export function addFriendAction(username: any, access_token: any) {
+  return (dispatch: any) => {
+    addFriend(username, access_token)
+      .then(() => {
+        dispatch(getFriendListAction(access_token));
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
+export function removeFriendAction(username: any, access_token: any) {
+  return (dispatch: any) => {
+    removeFriend(username, access_token)
+      .then(() => {
+        dispatch(getFriendListAction(access_token));
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
 export function logout() {
   localStorage.removeItem('userInfo');
   return {
@@ -113,12 +152,12 @@ export function loginAction(username: any, password: any, navigate: NavigateFunc
         console.log(error);
         const errorMessage = formatError(error.code);
         console.log("ceci est une errorMessage return de formatError dans loginAction :" + errorMessage)
-        dispatch(loginFailedAction(errorMessage));
+        dispatch(ActionFailed(errorMessage));
       });
   };
 }
 
-export function loginFailedAction(data: any) {
+export function ActionFailed(data: any) {
   return {
     type: LOGIN_FAILED_ACTION,
     payload: data,
@@ -131,6 +170,14 @@ export function updateFailedAction(message: any) {
     payload: message,
   };
 }
+
+export function getFriendListConfirmedAction(friendList: any) {
+  return {
+    type: GET_FRIENDS_LIST_ACTION,
+    payload: friendList,
+  };
+}
+
 
 export function getFriendInfosAction(data: any) {
   return {

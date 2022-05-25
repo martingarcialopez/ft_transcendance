@@ -1,5 +1,6 @@
 import {
   CHANGE_PAGE_ACTION,
+  GET_FRIENDS_LIST_ACTION,
   GET_FRIEND_INFOS_ACTION,
   LOADING_TOGGLE_ACTION,
   LOGIN_CONFIRMED_ACTION,
@@ -27,6 +28,7 @@ export interface UserInfo {
   avatar?: string,
   expiresIn?: any,
   access_token?: string,
+  friends?: string[],
   id?: any
 }
 
@@ -58,6 +60,7 @@ export const userLoginReducer = (
       avatar: '',
       expiresIn: '',
       access_token: '',
+      friends: [],
       id: 0,
     },
     friendInfo: {
@@ -69,6 +72,7 @@ export const userLoginReducer = (
       avatar: '',
       expiresIn: '',
       access_token: '',
+      friends: [],
       id: 0,
     },
     MatchInfo: {
@@ -87,6 +91,12 @@ export const userLoginReducer = (
       return {
         ...state,
         showLoading: true,
+      };
+    case GET_FRIENDS_LIST_ACTION:
+      return {
+        ...state,
+        showLoading: false,
+        userInfo: { friend: action.payload },
       };
     case GET_FRIEND_INFOS_ACTION:
       return {

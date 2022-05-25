@@ -20,7 +20,7 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id :any, access_token: any) {
+export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any) {
     const postData = {
         firstname,
         lastname,
@@ -69,6 +69,38 @@ export function getUserInfo(username: any, access_token: any) {
         url: `${URL_test}/user/${username}`,
         headers: { 'Authorization': `Bearer ${access_token}` }
     });
+}
+
+export function getFriendList(access_token: any) {
+    console.log("getFriendList TOKEN :")
+    console.log(access_token)
+    return axios({
+        method: 'get',
+        url: `${URL_test}/friends`,
+        headers: { 'Authorization': `Bearer ${access_token}` }
+    });
+}
+
+export function addFriend(username: any, access_token: any) {
+    console.log("addFriend TOKEN :", access_token)
+    console.log("addFriend USERNAME :", username)
+    return axios.post(
+        `${URL_test}/friends/${username}`,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
+
+export function removeFriend(username: any, access_token: any) {
+    console.log("removeFriend TOKEN :", access_token)
+    console.log("removeFriend USERNAME :", username)
+    return axios.delete(
+        `${URL_test}/friends/${username}`,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
 }
 
 export function formatError(errorResponse: any) {

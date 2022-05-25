@@ -27,9 +27,10 @@ export const UpdateProfile = ({ userInfo }: any) => {
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
             dispatch(updateAction(firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token))
+            setStatusError(false);
         }
         else {
-
+            setStatusError(true);
         }
         console.log("signUp :", {
             firstname: firstname,
