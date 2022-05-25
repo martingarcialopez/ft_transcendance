@@ -156,14 +156,13 @@ export function E_AllRoomInfos(updateArrayRoom: Function) {
   });
 }
 
-/*
- * export function E_(updateArrayRoom: Function) {
- *   socket.emit( "createMessage",
- *             {
- * 				  fromUser: message.fromName,
- * 				  contentToSend: message.content,
- * 				  roomIdDst: message.roomId,
- * 			  },
- * 			  message.content
- * 		  );
- * } */
+export function E_MsgtoChat(
+  msgOtherUsers: T_MsgHistory[],
+  setMsgOtherUsers: Function
+) {
+  socket.emit("MsgtoChat");
+  socket.on("MsgtoChat", (received: T_MsgHistory) => {
+    /* console.log("event MsgtoChat:", received); */
+    setMsgOtherUsers([...msgOtherUsers, received]);
+  });
+}

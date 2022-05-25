@@ -6,28 +6,10 @@ import { E_CreateMessage } from "../components/Event";
 import { T_MsgHistory } from "../type/chat";
 
 type T_PropsMsg = {
-  content: any[]; //it is @currentMsg from chat
+  currentMsg: T_MsgHistory[]; //it is @currentMsg from chat
   setContent: Function;
   roomId: number;
 };
-/*
- * function MsgFromInput(
- *   content: string,
- *   msgId: number,
- *   roomId: number,
- *   userId: number,
- *   sender: string | undefined
- * ) {
- *   return {
- *     content: content,
- *     id: msgId,
- *     roomId: roomId,
- *     userId: userId,
- *     sender: sender,
- *   };
- * }
- *
- *  */
 
 /**
  * the current message came from the input, it will be store in array to be printed later
@@ -53,7 +35,7 @@ function MsgFromInput(
  * handle the content to send
  * this function retrieve the input content, to set it into the object T_msg
  */
-export function InputMsg({ content, setContent, roomId }: T_PropsMsg) {
+export function InputMsg({ currentMsg, setContent, roomId }: T_PropsMsg) {
   const [inputValue, setinputValue] = useState<string>("");
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
@@ -90,7 +72,7 @@ export function InputMsg({ content, setContent, roomId }: T_PropsMsg) {
             userInfo.username
           );
           /* console.log("newMsg:", newMsg); */
-          setContent([...content, newMsg]);
+          setContent([...currentMsg, newMsg]);
         }}
       >
         send
