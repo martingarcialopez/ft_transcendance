@@ -25,7 +25,7 @@ export class MessageService {
 **create a new obj  of Message entity, store it in the repository
 **return: dto that contains messageId
 */
-	async createMessage(messageDto: MessageDto): Promise<MessageSnippetDto>
+	async createMessage(messageDto: MessageDto): Promise<Message>
 	{
 		const new_message = new Message();
 		new_message.userId = messageDto.userId;
@@ -33,8 +33,9 @@ export class MessageService {
 		new_message.roomId = messageDto.channelIdDst;
 		new_message.content = messageDto.contentToSend;
 		await this.messageRepository.save(new_message);
-		const dto = plainToClass(MessageSnippetDto, new_message);
-		return dto;
+//		const dto = plainToClass(MessageSnippetDto, new_message);
+		//		return dto;
+		return new_message;
 	}
 
 /*
