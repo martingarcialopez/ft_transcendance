@@ -138,7 +138,11 @@ export class UserService {
         if (!user)
             throw new NotFoundException();
 
-        return await this.userRepository.find({ where: { member_username: user.username } });
+        const reponse = await this.friendsRepository.find({ where: { member_username: user.username } });
+
+        if (!reponse)
+            throw new NotFoundException();
+        return reponse;
     }
 
 	async getBlockList(userId: number): Promise<number[]> | null {
