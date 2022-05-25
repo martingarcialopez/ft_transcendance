@@ -39,7 +39,7 @@ export const ProfilePage = ({ userInfo }: any) => {
             <div className="profileContainer">
                 <aside className="sideBar">
                     <UpdateProfile userInfo={userInfo} />
-                    <ListFriends />
+                    <ListFriends userPageInfo={userInfo} />
                 </aside>
                 <div className="reposContainer">
                     <p className="repoContainerTitle">Historique des matchs</p>

@@ -31,9 +31,9 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
   };
 }
 
-export function updateAction(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any) {
+export function updateAction(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any) {
   return (dispatch: any) => {
-    update(firstname, lastname, username, password, avatar, id, access_token)
+    update(firstname, lastname, username, password, avatar, id, access_token, friends)
       .then((response) => {
         console.log("updateAction response : ")
         console.log(response)
@@ -89,11 +89,12 @@ export function getUserInfoAction(username: any, access_token: any) {
   };
 }
 
-export function getFriendListAction(access_token: any) {
+export function getFriendListAction(userInfo: any) {
   return (dispatch: any) => {
-    getFriendList(access_token)
+    getFriendList(userInfo.access_token)
       .then((response) => {
-        dispatch(getFriendListConfirmedAction(response.data));
+        dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, response.data));
+        // dispatch(getFriendListConfirmedAction(response.data));
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);
@@ -102,11 +103,13 @@ export function getFriendListAction(access_token: any) {
   };
 }
 
-export function addFriendAction(username: any, access_token: any) {
+export function addFriendAction(username: any, userInfo: any) {
   return (dispatch: any) => {
-    addFriend(username, access_token)
+    console.log("addFriendAction username", username)
+    console.log("addFriendAction userInfo", userInfo)
+    addFriend(username, userInfo.access_token)
       .then(() => {
-        dispatch(getFriendListAction(access_token));
+        dispatch(getFriendListAction(userInfo));
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);

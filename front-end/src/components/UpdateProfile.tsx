@@ -5,13 +5,16 @@ import { Box } from "@mui/system";
 import { updateAction } from "../redux/actions/userActions";
 import { useDispatch } from "react-redux";
 import { CustomizedSnackbars } from "./CustomizedSnackbars";
+import { useParams } from "react-router-dom";
 
 export const UpdateProfile = ({ userInfo }: any) => {
     const [firstname, setFirstname] = useState(userInfo.firstname)
     const [lastname, setLastname] = useState(userInfo.lastname)
     const [username, setUsername] = useState(userInfo.username)
     const [open, setOpen] = useState(false);
+    const [snackbars, setSnackbars] = useState(false);
     const [statusError, setStatusError] = useState(false);
+    const { id } = useParams();
 
     const dispatch = useDispatch()
     // const ref_default_img = "/game/test/test_42.jpg"
@@ -19,6 +22,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
 
     const handleClickOpen = () => {
         setOpen(true);
+        setSnackbars(false);
     };
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -26,11 +30,12 @@ export const UpdateProfile = ({ userInfo }: any) => {
 
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
-            dispatch(updateAction(firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token))
-            setStatusError(false);
+            dispatch(updateAction(firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, userInfo.friends))
+            setStatusError(true);
+            setSnackbars(true);
         }
         else {
-            setStatusError(true);
+            setStatusError(false);
         }
         console.log("signUp :", {
             firstname: firstname,
@@ -52,15 +57,25 @@ export const UpdateProfile = ({ userInfo }: any) => {
     return (
         !open ?
             <div>
-                <CustomizedSnackbars status={statusError} />
+                {snackbars ?
+                    <CustomizedSnackbars status={statusError} />
+                    :
+                    null
+                }
                 <img src={userInfo.avatar}/*{userInfo.avatar}*/ alt="" className="userImage" />
                 <h1 className="userName">{userInfo.username}</h1>
                 <h3 className="userNickName">{userInfo.login42}</h3>
                 <h5 className="userNickName">{userInfo.firstname}</h5>
                 <h5 className="userNickName">{userInfo.lastname}</h5>
-                <Button onClick={handleClickOpen} >
-                    Edit Profile
-                </Button>
+                {!id ?
+                    <div>
+                        <Button onClick={handleClickOpen} >
+                            Edit Profile
+                        </Button>
+                    </div>
+                    :
+                    null
+                }
             </div>
             :
             <div>

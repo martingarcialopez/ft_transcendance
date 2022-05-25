@@ -4,11 +4,11 @@ import { RiGroupLine } from "react-icons/ri";
 import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 import { StyledBadgeRed, StyledBadgeGreen, StyledBadgeGrey } from "../styles/AvatarStyle";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { useEffect, useState } from "react";
-import { getFriendInfosAction, addFriendAction, removeFriendAction } from "../redux/actions/userActions";
+import { addFriendAction, removeFriendAction } from "../redux/actions/userActions";
 
 // const friends = [
 //     {
@@ -28,9 +28,9 @@ import { getFriendInfosAction, addFriendAction, removeFriendAction } from "../re
 //     },
 // ];
 
-export const ListFriends = () => {
+export const ListFriends = ({ userPageInfo }: any) => {
     const { id } = useParams();
-
+    const dispatch = useDispatch()
     const [buttonFriend, setButtonFriend] = useState('')
 
     const navigate = useNavigate();
@@ -38,18 +38,20 @@ export const ListFriends = () => {
         (state: RootState) => state.userLogin
     )
     console.log("ListFriends userLogin:", userLogin);
-
+    console.log("ListFriends userPageInfo.friends.length:", userPageInfo.friends.length);
+    
     const { userInfo } = userLogin;
 
     useEffect(() => {
-        getFriendInfosAction(userLogin.userInfo?.access_token)
+        // if (userInfo)
+        //     getFriendInfosAction(userInfo.access_token)
         if (userInfo && userInfo.friends && userInfo.friends.find(friend => friend === userInfo.username)) {
             setButtonFriend("REMOVE FRIEND")
         }
         else {
             setButtonFriend("ADD FRIEND")
         }
-    }, [userLogin, userInfo])
+    }, [userInfo])
 
     const handleClick = (id: any) => {
         console.log("id :", id)
@@ -62,12 +64,20 @@ export const ListFriends = () => {
         return <h1>Loading...</h1>;
 
     const AddFriend = () => {
-        if (userInfo && userInfo.friends && userInfo.friends.find(friend => friend === userInfo.username)) {
-            addFriendAction(userLogin.friendInfo?.username, userInfo.access_token)
+        console.log("addFriend button clicked")
+        console.log("userInfo :", userInfo)
+        console.log("userPageInfo :", userPageInfo)
+        console.log("buttonFriend :", buttonFriend)
+        if (userInfo && buttonFriend === "ADD FRIEND") {
+            console.log("case 111")
+            dispatch(addFriendAction(userPageInfo.username, userInfo))
             setButtonFriend("REMOVE FRIEND")
         }
+        // console.log("userInfo.friends :", userInfo.friends)
+        // && userInfo.friends && userInfo.friends.find(friend => friend === userInfo.username)
         else if (userInfo) {
-            removeFriendAction(userLogin.friendInfo?.username, userInfo.access_token)
+            console.log("case 222")
+            dispatch(removeFriendAction(userPageInfo.username, userInfo.access_token))
             setButtonFriend("ADD FRIEND")
         }
         // console.log("ADD FRIEND")
@@ -78,7 +88,7 @@ export const ListFriends = () => {
             {/* <p className="userDescription">{userLogin.userInfo.description}</p> */}
             <RiGroupLine className="followerIcon" />
             {/* <b>{userLogin.userInfo.followers}</b> */}
-            <b>143 followers -
+            <b>{userPageInfo.friends.length} followers -
                 {id ?
                     <Button onClick={AddFriend} >{buttonFriend}</Button>
                     :
@@ -86,12 +96,12 @@ export const ListFriends = () => {
                 }
             </b>
             <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-                Friend
+                List of friends
             </Typography>
             <List>
-                {userLogin && userLogin.userInfo && userLogin.userInfo.friends && userLogin.userInfo?.friends.map((item: any) => (
-                    <ListItem key={item.username}>
-                        <Button onClick={() => handleClick(item.username)} >
+                {userPageInfo && userPageInfo.friends && userPageInfo.friends.map((item: any) => (
+                    <ListItem key={item.id}>
+                        <Button onClick={() => handleClick(item.friend_username)} >
                             <ListItemAvatar>
                                 {item.connected === "true" ?
                                     <StyledBadgeGreen
@@ -100,7 +110,7 @@ export const ListFriends = () => {
                                         variant="dot"
                                     >
                                         <Avatar>
-                                            {item.username[0]}
+                                            {item.friend_username[0]}
                                         </Avatar>
                                     </StyledBadgeGreen>
                                     :
@@ -112,7 +122,7 @@ export const ListFriends = () => {
                                             variant="dot"
                                         >
                                             <Avatar>
-                                                {item.username[0]}
+                                                {item.friend_username[0]}
                                             </Avatar>
                                         </StyledBadgeRed>
                                         :
@@ -122,13 +132,13 @@ export const ListFriends = () => {
                                             variant="dot"
                                         >
                                             <Avatar>
-                                                {item.username[0]}
+                                                {item.friend_username[0]}
                                             </Avatar>
                                         </StyledBadgeGrey>
                                 }
                             </ListItemAvatar>
                             <ListItemText
-                                primary={item.username}
+                                primary={item.friend_username}
                             />
                         </Button>
                     </ListItem>
@@ -136,7 +146,7 @@ export const ListFriends = () => {
             </List>
             {/* {.map((follower) => {
                   <Button onClick={handleChangePage}>
-                  {follower.username}
+                  {follower.friend_username}
                 </Button>
               })} */}
         </div>

@@ -1,5 +1,4 @@
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { forwardRef, SyntheticEvent, useState } from 'react';
@@ -12,12 +11,9 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 export const CustomizedSnackbars = (status?: any) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
+  console.log("CustomizedSnackbars status", status)
   const handleClose = (event?: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
@@ -28,11 +24,8 @@ export const CustomizedSnackbars = (status?: any) => {
 
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>
-      <Button variant="outlined" onClick={handleClick}>
-        Open success snackbar
-      </Button>
       {
-        status === false ?
+        status ?
           <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
             <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
               This is a success message!

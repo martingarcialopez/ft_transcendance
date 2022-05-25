@@ -96,7 +96,7 @@ export const userLoginReducer = (
       return {
         ...state,
         showLoading: false,
-        userInfo: { friend: action.payload },
+        userInfo: { ...state.userInfo, friends: action.payload },
       };
     case GET_FRIEND_INFOS_ACTION:
       return {
@@ -133,6 +133,7 @@ export const userLoginReducer = (
       return {
         ...state,
         userInfo: action.payload,
+        errorMessage: "",
         successMessage: "Logout Successfully Completed",
       };
     case CHANGE_PAGE_ACTION:
