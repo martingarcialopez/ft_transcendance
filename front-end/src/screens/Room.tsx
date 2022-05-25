@@ -8,6 +8,7 @@ import { ModifyRoom } from "../components/ModifyRoom";
 import { AddAdmin } from "../components/AddAdmin";
 import { useSelector } from "react-redux";
 import { UserState } from "../redux/reducers/userReducers";
+import { BlockUSer } from "../components/BlockUser";
 
 /**
  * create a new room array depend on the @typeOfRoom
@@ -84,6 +85,7 @@ export function Room() {
       <ModifyRoom room={roomUserIsAdmin} />
       <br />
       <AddAdmin room={roomUserIsAdmin} />
+      <BlockUSer />
     </>
   );
 }

@@ -1,13 +1,13 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, combineReducers, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
-import { msgReducer } from "./reducers/msgReducer";
-import { composeWithDevTools } from 'redux-devtools-extension';
-import { userLoginReducer } from './reducers/userReducers'
+/* import { msgReducer } from "./reducers/msgReducer"; */
+import { composeWithDevTools } from "redux-devtools-extension";
+import { userLoginReducer } from "./reducers/userReducers";
 import { roomReducer } from "./reducers/roomReducer";
 
 const reducers = combineReducers({
   userLogin: userLoginReducer,
-  message: msgReducer,
+  /* message: msgReducer, */
   arrayRoom: roomReducer,
 });
 
@@ -27,6 +27,6 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(...middleware))
 );
 
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof store.getState>;
 
 export default store;

@@ -40,3 +40,11 @@ export type T_Participant = {
   userId: number;
   roomId: number;
 };
+
+export type T_MsgHistory = {
+  content: string;
+  id: number;
+  roomId: number;
+  sender: string | undefined;
+  userId: number;
+};
