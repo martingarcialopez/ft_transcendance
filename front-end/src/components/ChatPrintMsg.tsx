@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { E_MsgToClient } from "../components/Event";
+import { T_Msg } from "../type/chat";
 
 import { T_MsgHistory } from "../type/chat";
 
 type Props_ArrayMsg = {
-  contentMsg: any[];
+  currentMsg: any[];
+  infoMsg: T_Msg;
 };
 
 function Print({ userId, content, sender }: T_MsgHistory, index: number) {
@@ -18,15 +20,23 @@ function Print({ userId, content, sender }: T_MsgHistory, index: number) {
   );
 }
 
-export function PrintMsg({ contentMsg }: Props_ArrayMsg) {
-  const [msgHistory, SetMsg] = useState<any>([]);
+function FilterRoom(room: T_Msg | any, roomId: number) {
+  return room.filter((item: any) => item.roomId === roomId);
+}
 
+export function PrintMsg({ currentMsg, infoMsg }: Props_ArrayMsg) {
+  const [msgHistory, SetMsg] = useState<any>([]);
   E_MsgToClient(SetMsg);
-  //if (msgHistory.length === 0) return <></>;
+  const msgHistoryFilter = FilterRoom(msgHistory, infoMsg.roomId);
+  const currentMsgFilter = FilterRoom(currentMsg, infoMsg.roomId);
+  /* console.log("roomId:", infoMsg.roomId);
+   * console.log("msgHistoryFilter:", msgHistoryFilter);
+   * console.log("currentMsgFilter:", currentMsgFilter); */
   return (
     <>
-      {msgHistory.map(Print)}
-      {contentMsg.map(Print)}
+      {/* {msgHistory.map(Print)} */}
+      {msgHistoryFilter.map(Print)}
+      {currentMsgFilter.map(Print)}
     </>
   );
 }

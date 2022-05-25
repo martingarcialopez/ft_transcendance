@@ -76,7 +76,7 @@ export function Chat() {
             <ChatHeader infoMsg={infoMsg} />
 
             <div className="chat-panel">
-              <PrintMsg contentMsg={currentMsg} />
+              <PrintMsg currentMsg={currentMsg} infoMsg={infoMsg} />
 
               <div className="row">
                 <div className="col-12">
