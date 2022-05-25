@@ -42,26 +42,25 @@ export class RoomService {
 	{
 		// console.log('throw err after');
 
+		console.log('roomDto ', roomDto);
         const new_room = new Room();
 		new_room.name = roomDto.name;
 		new_room.typeRoom = roomDto.typeRoom;
-
-		if (roomDto.password != null && roomDto.typeRoom == 'protected')
+		console.log('roomDto.password |', roomDto.password, '|');
+		if (roomDto.password)
 		{
+			console.log('createRoom password');
+			new_room.is_protected = true;
 			const password = roomDto.password;
 			const saltOrRounds = 10;
 			const hash = await bcrypt.hash(password, saltOrRounds);
 			new_room.password = hash;
 		}
-		else
-			new_room.password = null;
-		if(new_room.owner == null)
-			new_room.owner = [];
-		new_room.owner.push(roomDto.creatorId);
+		new_room.owner = roomDto.creatorId;
+		if(new_room.admin == null)
+            new_room.admin = [];
+		new_room.admin.push(roomDto.creatorId);
 		await this.roomRepository.save(new_room);
-
-		/*the creator is the first participant to be created*/
-		//console.log(roomDto.creatorId, ' ',  new_room.id, new_room.password);
 		await this.participantService.createParticipant({'userId': roomDto.creatorId, 'roomId':  new_room.id});
 		const dto = plainToClass(RoomSnippetDto, new_room);
 		return dto;
@@ -163,11 +162,11 @@ export class RoomService {
 
 	async updateRoomPw(body: RoomPwDto): Promise<boolean> {
 		console.log(body);
-		let admin = await this.roomRepository.createQueryBuilder("room")
-            .select(["room.owner"])
+		let room = await this.roomRepository.createQueryBuilder("room")
+            .select(["room.admin"])
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
-		if (admin && admin['owner'].indexOf(body.userId) != -1)
+		if (room && room['admin'].indexOf(body.userId) != -1)
 		{
 			let room =  await this.roomRepository.createQueryBuilder("room")
 			    .where("room.id = :room_Id", { room_Id: body.roomId })
@@ -200,8 +199,7 @@ export class RoomService {
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
 		room['password'] = null;
-		if (room['typeRoom'] == 'protected')
-			room['typeRoom'] = 'public';
+		room['is_protected'] = false;
 		await this.roomRepository.save(room);
 		console.log('here room', room);
 		//TEST IS WORKING?
@@ -220,11 +218,11 @@ export class RoomService {
 
 	async get_RoomAdmins(roomId: number): Promise<number[] | undefined> {
 	let room = await this.roomRepository.createQueryBuilder("room")
-            .select(["room.owner"])
+            .select(["room.admin"])
             .where("room.id = :room_Id", { room_Id: roomId })
         .getOne();
-		console.log('in get_RoomAdmins ', room , room.owner);
-		return room.owner;
+		console.log('in get_RoomAdmins ', room , room.admin);
+		return room.admin;
 	}
 
 	//change userName -> userId LATER
@@ -259,7 +257,7 @@ export class RoomService {
 		await this.roomRepository
 			.createQueryBuilder()
 			.update(Room)
-			.set({ owner: admins })
+			.set({ admin: admins })
 			.where("id = :id", { id: body.roomId })
 			.execute();
 		return true;
@@ -278,7 +276,7 @@ export class RoomService {
         await this.roomRepository
             .createQueryBuilder()
             .update(Room)
-            .set({ owner: admins })
+            .set({ admin: admins })
             .where("id = :id", { id: body.roomId })
             .execute();
 		}
@@ -296,7 +294,6 @@ export class RoomService {
 	}
 
 	async IsRoomName_Unique(roomName: string): Promise<boolean> {
-		console.log(roomName);
 		let names: any = await this.roomRepository.createQueryBuilder("room")
 			.select("room.id")
 			.where("room.name = :room_name", { room_name: roomName })
@@ -328,6 +325,47 @@ export class RoomService {
 
 
 
+
+
+
+	/****get a list of userId block the user*****/
+	async Blocklist_to_user(userId: number) : Promise<number[]> {
+		let block_list: number[] = [];
+		let rooms: Room[] = await this.roomRepository.createQueryBuilder("room")
+			.select(["room.owner"])
+			.getMany();
+		for(var i = 0; i<rooms.length; i++) {
+			if (rooms[i].owner != userId){
+				let owner_block_list: number[] = await this.userService.getBlockList(rooms[i].owner);
+				if (owner_block_list.includes(userId))
+					block_list.push(rooms[i].owner);
+			}
+		}
+		return block_list;
+	}
+
+	async Mutual_blocklist(userId: number) : Promise<number[]> {
+		let block_list_to_user : number[] = await this.Blocklist_to_user(userId);
+		let user_block_list_to_other: number[]  = await this.userService.getBlockList(userId);
+		let list_block : number[] = [...block_list_to_user, ...user_block_list_to_other];
+		let unique_block_list : number[] = [...new Set(list_block)];
+		console.log('nique :', unique_block_list);
+		return unique_block_list;
+
+	}
+	async F_getRooms(userId:number) : Promise<Room[]> {
+		userId = 1;
+		let blockList: number[] = await this.Mutual_blocklist(userId);
+		console.log('blockList:', blockList, '|');
+
+		let dispo_rooms: Room[] = await this.roomRepository.createQueryBuilder("room")
+			.select(["room.id"])
+			.where("room.typeRoom = :typeRoom", {typeRoom: 'public'})
+			.andWhere("room.owner NOT IN (:...names)", { names : blockList })
+			.getMany();
+		console.log('----------------------\n', dispo_rooms, '--------------------------');
+		return dispo_rooms;
+		}
 }
 
 

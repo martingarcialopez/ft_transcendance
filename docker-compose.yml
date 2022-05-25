@@ -3,42 +3,42 @@ version: "3.7"
 services:
 
 # ####################### React #########################
-  ft_react:
+  ft_react1:
     depends_on:
-      - ft_nestjs
+      - ft_nestjs1
     build:
       context: ./front-end
       dockerfile: ./Dockerfile
-    container_name: "container-front-end"
+    container_name: "container-front-end1"
     env_file:
       - "./.env"
     ports:
-      - "8080:3000"
+      - "8081:3000"
     networks:
       - webnet
     volumes:
       - ./front-end:/usr/src/app
       - /usr/src/app/node_modules
       - ./shared:/usr/src/app/public/shared/
-       
+
     restart: always
 
 # ####################### NestJS #########################
 
-  ft_nestjs:
+  ft_nestjs1:
     depends_on:
-      - ft_postgres
+      - ft_postgres1
     build:
       context: ./back-end
       target: development
       # dockerfile: ./Dockerfile
-    container_name: "container-nestjs"
+    container_name: "container-nestjs1"
     env_file:
       - ./.env
     networks:
       - webnet
     ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
+      - 3001:3000
     volumes:
        - ./back-end:/usr/src/app
        - /usr/src/app/node_modules
@@ -47,9 +47,9 @@ services:
     restart: always
 
 # ####################### postgres #########################
-  ft_postgres:
+  ft_postgres1:
     image: postgres:alpine
-    container_name: "container-postgres"
+    container_name: "container-postgres1"
     # env_file:
     #  - .env
     environment:
@@ -59,27 +59,27 @@ services:
       PG_DATA: /var/lib/postgresql/data
       # POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     ports:
-      - 5432:5432
+      - 5433:5432
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata2:/var/lib/postgresql/data
     networks:
       - webnet
     restart: always
 
 # ####################### pgadmin #########################
   pgadmin:
-    container_name: "container-pgadmin4"
+    container_name: "container-pgadmin41"
     image: dpage/pgadmin4
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
-      - "5050:80"
+      - "5051:80"
     networks:
       - webnet
 
 networks:
   webnet:
 volumes:
-  pgdata:
+  pgdata2:

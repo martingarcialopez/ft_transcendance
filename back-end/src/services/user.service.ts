@@ -134,7 +134,7 @@ export class UserService {
     async getUserFriends(userId: string) {
 
         const user: User = await this.getUserById(userId);
-        
+
         if (!user)
             throw new NotFoundException();
 
@@ -143,7 +143,6 @@ export class UserService {
 
 	async getBlockList(userId: number): Promise<number[]> | null {
 
-		console.log('id isss ', userId);
 		let user : User = await this.userRepository.createQueryBuilder("user")
             .select(["user.blockList"])
             .where("user.id = :user_Id", { user_Id: userId})
@@ -158,7 +157,6 @@ export class UserService {
 		if (body.userId == body.blockUserId)
 			return ;
 		let blockList : number[] | null = await this.getBlockList(body.userId);
-		console.log('blockList: ', blockList );
 		if (blockList == null)// the user is invalid
 			return ;
 		blockList.push(body.blockUserId);

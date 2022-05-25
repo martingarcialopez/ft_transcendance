@@ -34,11 +34,11 @@ import { Relationship } from './models/friends.entity';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'container-postgres',
+      host: 'container-postgres1',
       port: 5432,
       username: 'root',
       password: 'root',
-      database: 'db',
+      database: 'db1',
 		entities: [User, Message, Room, Participant, Matchmaking, Relationship],
       synchronize: true,
     }),

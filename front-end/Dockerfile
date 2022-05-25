@@ -8,6 +8,6 @@ RUN npm install
 
 RUN mkdir node_modules/.cache && chmod -R 777 node_modules/.cache
 
-EXPOSE 8080
+EXPOSE 8081
 
 CMD ["npm", "start"]

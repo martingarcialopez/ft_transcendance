@@ -15,16 +15,18 @@ export class Room {
 	@Column()
 	typeRoom: string;
 
+	@Column({ default: false })
+	is_protected: boolean;
+
 	@Column({nullable:true})
     password?: string;
 
-	@Column({nullable:true})
-    avatar: string;
-
+	@Column()
+	owner : number;
 
 	@Column("int",  { nullable:true, array: true, default: "{}" })
 	//owner: number[] = [];
-	owner: number[];
+	admin: number[];
 
 	@OneToMany((type) => Message, (message) => message.room)
     messages: Message[];

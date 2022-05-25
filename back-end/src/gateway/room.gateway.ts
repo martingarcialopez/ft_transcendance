@@ -61,7 +61,7 @@ export class RoomGateway
 		}
 		const value = await this.roomService.createRoom(body);
 		console.log('return value of roomId is ', value);
-		socket.emit('idRoom', value); //sending to sender-client only
+		socket.emit('B_createRoom', value); //sending to sender-client only
 	}
 
 	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
@@ -120,7 +120,7 @@ export class RoomGateway
 	  it is the preparation for event `createMessage`, FRONT need to filter the messages
 	  so that user will not receive message from blocked ppl*/
 	/*
-	 **return: BlockList + message_history
+	 **return: message_history after filtre each message from blocked user
 	 */
 	  @SubscribeMessage('getMessage')
 	async getMessage(socket: Socket, body: ParticipantDto) : Promise<void>{
@@ -153,6 +153,11 @@ export class RoomGateway
 	async allRoomInfos(socket: Socket) : Promise<void | undefined> {
 		let rooms  = await this.roomService.allRoomInfos();
 		socket.emit('allRoomInfosRes', rooms);
+	}
+
+	@SubscribeMessage('F_getRooms')
+	async F_getRooms(socket: Socket, userId : number) : Promise<any> {
+		let rooms = await this.roomService.F_getRooms(userId);
 	}
 
 
