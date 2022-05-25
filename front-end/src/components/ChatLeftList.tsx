@@ -42,7 +42,6 @@ export function LeftBar({ setInfoMsg }: Props) {
                   type: E_ActionType.ID_CURRENT_USER,
                   payload: userInfo.id,
                 });
-                console.log("userInfo:", userInfo);
               }}
             >
               <img className="profile-image" src={item.avatar} alt="" />
