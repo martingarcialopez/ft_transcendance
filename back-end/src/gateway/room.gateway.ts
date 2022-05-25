@@ -155,9 +155,9 @@ export class RoomGateway
 		socket.emit('allRoomInfosRes', rooms);
 	}
 
-	@SubscribeMessage('F_getRooms')
-	async F_getRooms(socket: Socket, userId : number) : Promise<any> {
-		let rooms = await this.roomService.F_getRooms(userId);
+	@SubscribeMessage('F_getRoomsDisoi')
+	async F_getRoomsDispo(socket: Socket, userId : number) : Promise<any> {
+		let rooms = await this.roomService.F_getRoomsDispo(userId);
 	}
 
 

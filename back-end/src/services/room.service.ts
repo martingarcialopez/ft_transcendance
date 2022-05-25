@@ -350,19 +350,25 @@ export class RoomService {
 		let list_block : number[] = [...block_list_to_user, ...user_block_list_to_other];
 		let unique_block_list : number[] = [...new Set(list_block)];
 		console.log('nique :', unique_block_list);
+		if (unique_block_list.length == 0) {
+			unique_block_list.push(-1);
+		}
 		return unique_block_list;
 
 	}
-	async F_getRooms(userId:number) : Promise<Room[]> {
-		userId = 1;
+	async F_getRoomsDispo(userId:number) : Promise<Room[]> {
+		userId = 3;
 		let blockList: number[] = await this.Mutual_blocklist(userId);
 		console.log('blockList:', blockList, '|');
 
 		let dispo_rooms: Room[] = await this.roomRepository.createQueryBuilder("room")
 			.select(["room.id"])
+			.leftJoin("room.participants", "participant")
 			.where("room.typeRoom = :typeRoom", {typeRoom: 'public'})
-			.andWhere("room.owner NOT IN (:...names)", { names : blockList })
+			.andWhere("room.owner NOT IN (:...names) ", { names : blockList })
+			.andWhere("participant.userId != :id", { id: userId })
 			.getMany();
+
 		console.log('----------------------\n', dispo_rooms, '--------------------------');
 		return dispo_rooms;
 		}
