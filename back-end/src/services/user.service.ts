@@ -8,6 +8,7 @@ import { User } from '../models/user.entity';
 import { Relationship } from '../models/friends.entity';
 import { unlinkSync } from 'fs';
 import * as bcrypt from 'bcrypt';
+import { GameHistory } from '../models/gamehistory.entity';
 
 @Injectable()
 export class UserService {
@@ -16,7 +17,9 @@ export class UserService {
         @InjectRepository(User)
         private userRepository: Repository<User>,
         @InjectRepository(Relationship)
-        private friendsRepository: Repository<Relationship>
+        private friendsRepository: Repository<Relationship>,
+        @InjectRepository(GameHistory)
+        private GameHistoryRepository: Repository<GameHistory>
     ) { }
 
     async createUser(payload: CreateUserDto): Promise<any> {
@@ -100,15 +103,16 @@ export class UserService {
     async addFriend(userId: string, friendUsername: string) {
 
         const member: User = await this.getUserById(userId);
+        const friend: User = await this.getUser(friendUsername);
 
-        if (!member)
+        if (!member || !friend)
             throw new NotFoundException();
 
-        const existingRelation = this.friendsRepository.find(
+        const existingRelation = await this.friendsRepository.find(
             { where: { member_username: member.username, friend_username: friendUsername } });
 
-        if (existingRelation)
-            return ;
+        // if (existingRelation.length)
+        //     return ;
 
         const relation: Relationship = new Relationship();
 
@@ -147,6 +151,25 @@ export class UserService {
             throw new NotFoundException();
 
         return reponse;
+    }
+
+    async getUserGames(username: string) {
+
+        const user: User = await this.getUser(username);
+
+        if (!user)
+            throw new NotFoundException();
+
+        const games = await this.GameHistoryRepository.find(
+            { where : [{ leftPlayer: username }, { rightPlayer: username }] } );
+
+        return games;
+
+    }
+
+    async getAllGames() {
+
+        return await this.GameHistoryRepository.
     }
 
     async getBlockList(userId: number): Promise<number[]> | null {
