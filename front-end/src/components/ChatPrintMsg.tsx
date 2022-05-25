@@ -1,22 +1,17 @@
 import { useState } from "react";
 import { E_MsgToClient } from "../components/Event";
 
-type T_Props = {
-  content: string;
-  id: number;
-  roomId: number;
-  userId: number;
-};
+import { T_MsgHistory } from "../type/chat";
 
 type Props_ArrayMsg = {
   contentMsg: any[];
 };
 
-function Print({ userId, content }: T_Props, index: number) {
+function Print({ userId, content, sender }: T_MsgHistory, index: number) {
   return (
     <div key={index}>
       <ul>
-        userID:{userId}
+        userID:{userId} name:{sender}
         <li>{content}</li>
       </ul>
     </div>

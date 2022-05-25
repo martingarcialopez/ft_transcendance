@@ -1,6 +1,7 @@
 import socketio from "socket.io-client";
 import { URL_test } from "../constants/url";
 import { T_AddUserRoom, T_Room } from "../type/chat";
+import { T_MsgHistory } from "../type/chat";
 
 const ENDPOINT = URL_test;
 
@@ -25,16 +26,9 @@ export function E_GetMessage(userId: number, roomId: number) {
   });
 }
 
-type T_MsgHistory = {
-  content: string;
-  id: number;
-  roomId: number;
-  userId: number;
-};
-
 export function E_MsgToClient(setMsg: Function) {
   socket.on("msgToClient", (received: T_MsgHistory[]) => {
-    //  console.log("reponse msgToclient  : ", received); //why this line show "message_history" ?
+    /* console.log("reponse msgToclient  : ", received); */
     setMsg(received);
   });
 }
@@ -45,6 +39,7 @@ export function E_CreateMessage(
   channelIdDst: number,
   sender: string | undefined
 ) {
+  if (typeof sender === "undefined") sender = "wsh";
   console.log("event 'createMessage':\nUserId:", userId);
   console.log("content:", contentToSend);
   console.log("roomId:", channelIdDst);
@@ -52,7 +47,7 @@ export function E_CreateMessage(
     userId: userId,
     contentToSend: contentToSend,
     channelIdDst: channelIdDst,
-    sender: sender,
+    sender: typeof sender === "undefined" ? "wsh" : sender,
   });
 }
 

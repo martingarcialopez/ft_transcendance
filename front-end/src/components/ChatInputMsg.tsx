@@ -3,24 +3,49 @@ import { UserState } from "../redux/reducers/userReducers";
 import { RootState } from "../redux/store";
 import { useState } from "react";
 import { E_CreateMessage } from "../components/Event";
+import { T_MsgHistory } from "../type/chat";
 
 type T_PropsMsg = {
   content: any[]; //it is @currentMsg from chat
   setContent: Function;
   roomId: number;
 };
+/*
+ * function MsgFromInput(
+ *   content: string,
+ *   msgId: number,
+ *   roomId: number,
+ *   userId: number,
+ *   sender: string | undefined
+ * ) {
+ *   return {
+ *     content: content,
+ *     id: msgId,
+ *     roomId: roomId,
+ *     userId: userId,
+ *     sender: sender,
+ *   };
+ * }
+ *
+ *  */
 
-function MsgToPrint(
+/**
+ * the current message came from the input, it will be store in array to be printed later
+ * it is the message of current user
+ */
+function MsgFromInput(
   content: string,
-  msgId: number,
+  id: number,
   roomId: number,
-  userId: number
-) {
+  userId: number,
+  sender: string | undefined
+): T_MsgHistory {
   return {
     content: content,
-    id: msgId,
+    id: id,
     roomId: roomId,
     userId: userId,
+    sender: sender,
   };
 }
 
@@ -57,7 +82,13 @@ export function InputMsg({ content, setContent, roomId }: T_PropsMsg) {
         onClick={() => {
           setinputValue("");
           E_CreateMessage(userInfo.id, inputValue, roomId, userInfo.username);
-          let newMsg = MsgToPrint(inputValue, 0, roomId, userInfo.id);
+          let newMsg = MsgFromInput(
+            inputValue,
+            0,
+            roomId,
+            userInfo.id,
+            userInfo.username
+          );
           /* console.log("newMsg:", newMsg); */
           setContent([...content, newMsg]);
         }}
