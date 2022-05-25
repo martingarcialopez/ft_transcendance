@@ -34,7 +34,6 @@ export function PrintMsg({ currentMsg, infoMsg }: Props_ArrayMsg) {
    * console.log("currentMsgFilter:", currentMsgFilter); */
   return (
     <>
-      {/* {msgHistory.map(Print)} */}
       {msgHistoryFilter.map(Print)}
       {currentMsgFilter.map(Print)}
     </>
