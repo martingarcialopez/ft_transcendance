@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -11,6 +11,8 @@ import { moveDto } from 'src/dtos/in/move.dto';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { GameEntity } from '../models/game.entity';
 import { UserService } from './user.service';
+import { GameHistory } from 'src/models/gamehistory.entity';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class PongService {
@@ -19,6 +21,7 @@ export class PongService {
 	//  private readonly userService: UserService;
 	constructor(
 		@InjectRepository(Matchmaking) private readonly pongRepository: Repository<Matchmaking>,
+		@InjectRepository(GameHistory) private gameHistoryRepository: Repository<GameHistory>,
 		private readonly gameService: InMemoryDBService<GameEntity>,
 		private readonly userService: UserService
 	) { }
@@ -27,94 +30,107 @@ export class PongService {
 	/*check the player is already exist or not*/
 
 
-    async managePlayer(socket: Socket, server: Server, userId : number) :Promise<void> {
+    // async managePlayer(socket: Socket, server: Server, userId : number) :Promise<void> {
 
-		let myuuid = uuidv4();
+	// 	let myuuid = uuidv4();
 
-		// CHECK IF AT LEAST A PLAYER IS ALSO WAITING FOR A GAME
-		// AND IF SO LOCK HIM
-		let res = await this.pongRepository
-			.createQueryBuilder()
-			.update(Matchmaking)
-            .set({ lock:myuuid })
-			.where("id in (select id from matchmaking where lock is null limit 1)")
-			.execute();
+	// 	// CHECK IF AT LEAST A PLAYER IS ALSO WAITING FOR A GAME
+	// 	// AND IF SO LOCK HIM
+	// 	let res = await this.pongRepository
+	// 		.createQueryBuilder()
+	// 		.update(Matchmaking)
+    //         .set({ lock:myuuid })
+	// 		.where("id in (select id from matchmaking where lock is null limit 1)")
+	// 		.execute();
 
-		// IF NO PLAYER WAITING, WE ADD CURRENT ONE
-		if (res.affected == 0){
-			const new_matchmaking = new Matchmaking();
-			new_matchmaking.userId = userId;
-			new_matchmaking.roomName = myuuid;
-			await this.pongRepository.save(new_matchmaking);
-			socket.join(myuuid);
-			server.to(socket.id).emit('GameInfo', 'leftPlayer', myuuid);
-			console.log(`first player arrived and joined room ${myuuid}`);
-		}
-		else
-		{
-			// GET INFOS FROM LOCKED PLAYER
-			let opponent = await this.pongRepository
-				.createQueryBuilder('matchmaking')
-				.select(['matchmaking.userId', 'matchmaking.roomName'])
-				.where("matchmaking.lock = :lock", { lock: myuuid })
-				.execute();
-			let other_user_id = opponent[0].matchmaking_userId;
-			let roomName = opponent[0].matchmaking_roomName;
-
-			// DELETE LOCKED PLAYER
-			await this.pongRepository
-				.createQueryBuilder('matchmaking')
-				.delete()
-				.where("matchmaking.lock = :lock", { lock: myuuid })
-				.execute();
-
-			socket.join(roomName);
-			server.to(socket.id).emit('GameInfo', 'rightPlayer', roomName);
-
-			const player = await this.userService.getUserById(userId.toString());
-
-			// if (player) {
-			// 	server.to(socket.id).emit("GamePlayerName", "raph", "martin");//, opponent[0].username, player.username);
-			// 	//console.log(`emit GamePlayerName ${opponent[0].username}, ${player.username}`);
-			// }
-				server.to(socket.id).emit("GamePlayerName", "raph", "martin");//, opponent[0].username, player.username);
-
-			console.log(`second player arrived and joined room ${roomName}`);
-			this.playGame(server, roomName);
-			console.log('GAME STARTED');
-		}
-    }
-
-	// async managePlayer(socket: Socket, server: Server, userId : number) :Promise<void> {
-
-	// 	let bbdd = await this.pongRepository.find();
-
-	// 	if (!bbdd.length) {
-
-	// 		const player: Matchmaking = new Matchmaking();
-
-	// 		player.userId = userId;
-	// 		player.roomName = uuidv4();
-	// 		await this.pongRepository.save(player);
-
-	// 		socket.join(player.roomName);
-	// 		server.to(socket.id).emit('GameInfo', 'leftPlayer', player.roomName);
-	// 		console.log(`first player arrived and joined room ${player.roomName}`);
-
-	// 	} else {
-
-	// 		let opponent: Matchmaking = bbdd.at(0);
-	// 		this.pongRepository.delete( { userId: opponent.userId });
-
-	// 		socket.join(opponent.roomName);
-	// 		server.to(socket.id).emit('GameInfo', 'rightPlayer', opponent.roomName);
-	// 		console.log(`second player arrived and joined room ${opponent.roomName}`);
-	// 		console.log(`GAME STARTED in room ${opponent.roomName}`);
-	// 		this.playGame(server, opponent.roomName);
-
+	// 	// IF NO PLAYER WAITING, WE ADD CURRENT ONE
+	// 	if (res.affected == 0){
+	// 		const new_matchmaking = new Matchmaking();
+	// 		new_matchmaking.userId = userId;
+	// 		new_matchmaking.roomName = myuuid;
+	// 		await this.pongRepository.save(new_matchmaking);
+	// 		socket.join(myuuid);
+	// 		server.to(socket.id).emit('GameInfo', 'leftPlayer', myuuid);
+	// 		console.log(`first player arrived and joined room ${myuuid}`);
 	// 	}
-	// }
+	// 	else
+	// 	{
+	// 		// GET INFOS FROM LOCKED PLAYER
+	// 		let opponent = await this.pongRepository
+	// 			.createQueryBuilder('matchmaking')
+	// 			.select(['matchmaking.userId', 'matchmaking.roomName'])
+	// 			.where("matchmaking.lock = :lock", { lock: myuuid })
+	// 			.execute();
+	// 		let other_user_id = opponent[0].matchmaking_userId;
+	// 		let roomName = opponent[0].matchmaking_roomName;
+
+	// 		// DELETE LOCKED PLAYER
+	// 		await this.pongRepository
+	// 			.createQueryBuilder('matchmaking')
+	// 			.delete()
+	// 			.where("matchmaking.lock = :lock", { lock: myuuid })
+	// 			.execute();
+
+	// 		socket.join(roomName);
+	// 		server.to(socket.id).emit('GameInfo', 'rightPlayer', roomName);
+
+	// 		const player = await this.userService.getUserById(userId.toString());
+
+	// 		// if (player) {
+	// 		// 	server.to(socket.id).emit("GamePlayerName", "raph", "martin");//, opponent[0].username, player.username);
+	// 		// 	//console.log(`emit GamePlayerName ${opponent[0].username}, ${player.username}`);
+	// 		// }
+	// 			server.to(socket.id).emit("GamePlayerName", "raph", "martin");//, opponent[0].username, player.username);
+
+	// 		console.log(`second player arrived and joined room ${roomName}`);
+	// 		this.playGame(server, roomName);
+	// 		console.log('GAME STARTED');
+	// 	}
+    // }
+
+	async managePlayer(socket: Socket, server: Server, userId : number) :Promise<void> {
+
+		let bbdd = await this.pongRepository.find();
+
+		if (!bbdd.length) {
+
+			const player: Matchmaking = new Matchmaking();
+
+			player.userId = userId;
+			player.roomName = uuidv4();
+			await this.pongRepository.save(player);
+
+			socket.join(player.roomName);
+			server.to(socket.id).emit('GameInfo', 'leftPlayer', player.roomName);
+			console.log(`first player arrived and joined room ${player.roomName}`);
+
+		} else {
+
+			let opponent: Matchmaking = bbdd.at(0);
+			this.pongRepository.delete( { userId: opponent.userId });
+
+			socket.join(opponent.roomName);
+			server.to(socket.id).emit('GameInfo', 'rightPlayer', opponent.roomName);
+			console.log(`second player arrived and joined room ${opponent.roomName}`);
+			console.log(`GAME STARTED in room ${opponent.roomName}`);
+
+
+			const gameResult: GameHistory = new GameHistory();
+
+			gameResult.id = opponent.roomName;
+			gameResult.leftPlayer = (await this.userService.getUserById(opponent.userId.toString())).username;
+			gameResult.rightPlayer = (await this.userService.getUserById(userId.toString())).username;
+
+			this.gameHistoryRepository.save(gameResult);
+
+			server.to(socket.id).emit("GamePlayerName", gameResult.leftPlayer, gameResult.rightPlayer);
+			
+			this.playGame(server, opponent.roomName);
+
+		}
+	}
 	
+
 
 	async playGame(socket: Server, socketRoom: string) {
 
@@ -137,8 +153,28 @@ export class PongService {
 				socket.to(socketRoom).emit('gameOver', winner);
 				const move = this.gameService.getAll();
 				move.filter(elem => elem.room === socketRoom).forEach(elem => this.gameService.delete(elem.id));
+
+				const gameResult: GameHistory = (await this.gameHistoryRepository.find( { where : { id: socketRoom } } )).at(0) ;
+
+				if (!gameResult)
+					throw new InternalServerErrorException();
+
+				gameResult.leftPlayerScore = state.leftScore;
+				gameResult.rightPlayerScore = state.rightScore;
+				gameResult.winner = (winner === 'rightplayer') ? gameResult.rightPlayer : gameResult.leftPlayer ;
+				gameResult.losser = (winner === 'rightplayer') ? gameResult.leftPlayer : gameResult.rightPlayer ;
+
+				console.log("saving this");
+				console.log(gameResult);
+
+				const updateResult = await this.gameHistoryRepository.save(gameResult);
+
+				console.log('result is');
+				console.log(updateResult);
+
 				return ;
 			}
+
 
 			// const move : GameEntity[] = this.gameService.query((record) => record.room === socketRoom);
 			const move : GameEntity[] = this.gameService.getAll();

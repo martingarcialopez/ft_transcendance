@@ -27,6 +27,7 @@ import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 
 import { ConfigModule } from '@nestjs/config';
 import { Relationship } from './models/friends.entity';
+import { GameHistory } from './models/gamehistory.entity';
 
 
 @Module({
@@ -39,7 +40,7 @@ import { Relationship } from './models/friends.entity';
       username: 'root',
       password: 'root',
       database: 'db',
-		entities: [User, Message, Room, Participant, Matchmaking, Relationship],
+		entities: [User, Message, Room, Participant, Matchmaking, Relationship, GameHistory],
       synchronize: true,
     }),
     InMemoryDBModule.forRoot({}),
