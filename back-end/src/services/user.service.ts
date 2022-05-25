@@ -1,4 +1,4 @@
-import { HttpStatus, HttpException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { HttpStatus, HttpException, Injectable, NotFoundException, BadRequestException, HttpCode } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RelationId, Repository } from 'typeorm';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
@@ -96,20 +96,23 @@ export class UserService {
         await this.userRepository.delete(id);
     }
 
+    @HttpCode(200)
     async addFriend(userId: string, friendUsername: string) {
 
-        const relation : Relationship = new Relationship();
+        const member: User = await this.getUserById(userId);
 
-        console.log(`userID is ${userId}`);
-        console.log(`friendUsername is ${friendUsername}`);
-
-        const member1: User =  await this.getUserById(userId);
-
-        if (!member1)
+        if (!member)
             throw new NotFoundException();
 
-        //relation.member1_id= userId;
-        relation.member_username = member1.username;
+        const existingRelation = this.friendsRepository.find(
+            { where: { member_username: member.username, friend_username: friendUsername } });
+
+        if (existingRelation)
+            return ;
+
+        const relation: Relationship = new Relationship();
+
+        relation.member_username = member.username;
         relation.friend_username = friendUsername;
 
         await this.friendsRepository.save(relation);
@@ -118,9 +121,9 @@ export class UserService {
 
     async deleteFriend(userId: string, friendUsername: string) {
 
-        const relation : Relationship = new Relationship();
+        const relation: Relationship = new Relationship();
 
-        const user: User =  await this.getUserById(userId);
+        const user: User = await this.getUserById(userId);
 
         if (!user)
             throw new NotFoundException();
@@ -134,7 +137,7 @@ export class UserService {
     async getUserFriends(userId: string) {
 
         const user: User = await this.getUserById(userId);
-        
+
         if (!user)
             throw new NotFoundException();
 
@@ -142,37 +145,37 @@ export class UserService {
 
         if (!reponse)
             throw new NotFoundException();
+
         return reponse;
     }
 
-	async getBlockList(userId: number): Promise<number[]> | null {
+    async getBlockList(userId: number): Promise<number[]> | null {
 
-		console.log('id isss ', userId);
-		let user : User = await this.userRepository.createQueryBuilder("user")
+        console.log('id isss ', userId);
+        let user: User = await this.userRepository.createQueryBuilder("user")
             .select(["user.blockList"])
-            .where("user.id = :user_Id", { user_Id: userId})
-			.getOne();
-		if (user == null)
-			return null;
-		return user['blockList'];
-	}
+            .where("user.id = :user_Id", { user_Id: userId })
+            .getOne();
+        if (user == null)
+            return null;
+        return user['blockList'];
+    }
 
-	async blockUser(body: BlockUserDto) : Promise<void>
-	{
-		if (body.userId == body.blockUserId)
-			return ;
-		let blockList : number[] | null = await this.getBlockList(body.userId);
-		console.log('blockList: ', blockList );
-		if (blockList == null)// the user is invalid
-			return ;
-		blockList.push(body.blockUserId);
-		await this.userRepository
+    async blockUser(body: BlockUserDto): Promise<void> {
+        if (body.userId == body.blockUserId)
+            return;
+        let blockList: number[] | null = await this.getBlockList(body.userId);
+        console.log('blockList: ', blockList);
+        if (blockList == null)// the user is invalid
+            return;
+        blockList.push(body.blockUserId);
+        await this.userRepository
             .createQueryBuilder()
             .update("User")
             .set({ blockList: blockList })
             .where("id = :id", { id: body.userId })
             .execute();
-	}
+    }
 
 
 }
