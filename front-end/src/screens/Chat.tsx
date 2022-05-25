@@ -36,10 +36,8 @@ export function infoMsgReducer(state: T_Msg = initInfoMsg(), action: T_Action) {
 }
 
 /**
- * inputMsg
- * printMsg
- * ChatHeader
- * FriendDrawer
+ * @currentMsg will contains the message from input
+ * @infoMsg will contain informaabout the message
  */
 export function Chat() {
   const { arrayRoom } = useSelector((state: RootState) => state);
