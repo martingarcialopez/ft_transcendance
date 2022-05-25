@@ -22,7 +22,7 @@ export function PrintMsg({ contentMsg }: Props_ArrayMsg) {
   const [msgHistory, SetMsg] = useState<any>([]);
 
   E_MsgToClient(SetMsg);
-  if (msgHistory.length === 0) return <></>;
+  //if (msgHistory.length === 0) return <></>;
   return (
     <>
       {msgHistory.map(Print)}
