@@ -51,7 +51,7 @@ export class MessageGateway {
     /*Send message infos to everyone in the same channel*/
     this.server
       .to(message.channelIdDst.toString())
-		.emit('MsgtoChat', message.contentToSend);
+		.emit('MsgtoChat', value);
 	}
 
 }
