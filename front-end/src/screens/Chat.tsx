@@ -1,5 +1,5 @@
 import "../styles/ChatTemplate.css";
-import { T_Msg, T_Action } from "../type/chat";
+import { T_Msg, T_Action, T_MsgHistory } from "../type/chat";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useState, useReducer } from "react";
@@ -41,7 +41,7 @@ export function infoMsgReducer(state: T_Msg = initInfoMsg(), action: T_Action) {
  */
 export function Chat() {
   const { arrayRoom } = useSelector((state: RootState) => state);
-  const [currentMsg, setCurrentMsg] = useState([]);
+  const [currentMsg, setCurrentMsg] = useState<T_MsgHistory[]>([]);
   const [infoMsg, setInfoMsg] = useReducer(infoMsgReducer, initInfoMsg());
 
   if (arrayRoom.length === 0) return <></>;
@@ -76,7 +76,7 @@ export function Chat() {
             <ChatHeader infoMsg={infoMsg} />
 
             <div className="chat-panel">
-              <PrintMsg contentMsg={currentMsg} />
+              <PrintMsg currentMsg={currentMsg} infoMsg={infoMsg} />
 
               <div className="row">
                 <div className="col-12">
@@ -84,7 +84,7 @@ export function Chat() {
                     <i className="material-icons">sentiment_very_satisfied</i>
 
                     <InputMsg
-                      content={currentMsg}
+                      currentMsg={currentMsg}
                       setContent={setCurrentMsg}
                       roomId={infoMsg.roomId}
                     />

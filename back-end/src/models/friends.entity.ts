@@ -9,13 +9,12 @@ export class Relationship {
     id: number;
 
     // @ManyToOne(() => User, (user) => user.friends)
-    // member1_id: string;
+    // user: string;
 
-    // @ManyToOne(() => User, (user) => user.friends)
     @Column()
     member_username: string;
 
-    // @ManyToOne(() => User, (user) => user.friends)
     @Column()
     friend_username: string;
+
 }
