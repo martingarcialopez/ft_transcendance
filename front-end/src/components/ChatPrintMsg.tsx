@@ -35,16 +35,15 @@ export function PrintMsg({ currentMsg, infoMsg }: Props_ArrayMsg) {
   /* console.log("roomId:", infoMsg.roomId);
    * console.log("msgHistoryFilter:", msgHistoryFilter);
    * console.log("currentMsgFilter:", currentMsgFilter); */
-  E_MsgtoChat(msgOtherUsers, setMsgOtherUsers);
-  const msgOtherUsersFilter = msgOtherUsers.filter(
-    (item: T_MsgHistory) => item.roomId !== infoMsg.roomId
-  );
+  E_MsgtoChat(msgOtherUsers, setMsgOtherUsers, infoMsg.roomId);
+
+  //setMsgOtherUsers(msgOtherUsersFilter);
   //console.log("msgOtherUsers:", msgOtherUsersFilter);
   return (
     <>
       {msgHistoryFilter.map(Print)}
-      {currentMsgFilter.map(Print)}
-      {msgOtherUsersFilter.map(Print)}
+      //{currentMsgFilter.map(Print)}
+      {msgOtherUsers.map(Print)}
     </>
   );
 }

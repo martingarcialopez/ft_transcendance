@@ -158,11 +158,13 @@ export function E_AllRoomInfos(updateArrayRoom: Function) {
 
 export function E_MsgtoChat(
   msgOtherUsers: T_MsgHistory[],
-  setMsgOtherUsers: Function
+  setMsgOtherUsers: Function,
+  roomId: number
 ) {
   socket.emit("MsgtoChat");
   socket.on("MsgtoChat", (received: T_MsgHistory) => {
     /* console.log("event MsgtoChat:", received); */
-    setMsgOtherUsers([...msgOtherUsers, received]);
+    if (roomId !== received.roomId)
+      setMsgOtherUsers([...msgOtherUsers, received]);
   });
 }
