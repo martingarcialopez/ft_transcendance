@@ -36,7 +36,10 @@ export class User {
   messages: Message[];
 
   @OneToMany((type) => Participant, (participant) => participant.user)
-  participants: Participant[];
+	participants: Participant[];
+
+	@OneToMany((type) => Relationship, (friend) => friend.user)
+	friends: Relationship[];
 
   // @OneToMany(() => Relationship, (relations) => relations.user)
   // friends: Relationship[];

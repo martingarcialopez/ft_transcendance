@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, OneToMany } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, OneToMany, JoinColumn } from "typeorm"
 import { User } from "../models/user.entity";
 
 @Entity()
@@ -17,4 +17,10 @@ export class Relationship {
     @Column()
     friend_username: string;
 
+
+	@ManyToOne((type) => User, (user) => user.friends)
+	@JoinColumn({ name: 'userId' })
+    user: User;
+	@Column()
+    public userId: number;
 }
