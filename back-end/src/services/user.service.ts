@@ -47,21 +47,21 @@ export class UserService {
         return result;
     }
 
-    create42User(user: User): Promise<User> {
+    async create42User(user: User): Promise<User> {
 
-        return this.userRepository.save(user);
+        return await this.userRepository.save(user);
     }
 
-    getUser(user: string): Promise<User> {
-        return this.userRepository.findOne({ username: user });
+    async getUser(user: string): Promise<User> {
+        return await this.userRepository.findOne({ username: user });
     }
 
-    getUserById(id: string): Promise<User> {
-        return this.userRepository.findOne(id);
+    async getUserById(id: string): Promise<User> {
+        return await this.userRepository.findOne(id);
     }
 
-    getUserBy42Login(user: string): Promise<User> {
-        return this.userRepository.findOne({ login42: user });
+    async getUserBy42Login(user: string): Promise<User> {
+        return await this.userRepository.findOne({ login42: user });
     }
 
     async updateUser(body: Partial<User>, id: string): Promise<User> {
@@ -105,14 +105,14 @@ export class UserService {
         const member: User = await this.getUserById(userId);
         const friend: User = await this.getUser(friendUsername);
 
-        if (!member || !friend)
-            throw new NotFoundException();
+         if (!member || !friend)
+             throw new NotFoundException();
 
         const existingRelation = await this.friendsRepository.find(
             { where: { member_username: member.username, friend_username: friendUsername } });
 
-        // if (existingRelation.length)
-        //     return ;
+         if (existingRelation.length)
+             return ;
 
         const relation: Relationship = new Relationship();
 
@@ -169,7 +169,7 @@ export class UserService {
 
     async getAllGames() {
 
-        return await this.GameHistoryRepository.
+        return await this.GameHistoryRepository.find();
     }
 
     async getBlockList(userId: number): Promise<number[]> | null {
