@@ -28,14 +28,15 @@ function Print({ userId, content, sender }: T_MsgHistory, index: number) {
 
 export function PrintMsg({ currentMsg, infoMsg }: Props_ArrayMsg) {
   const [msgHistory, setMsgHistory] = useState<any>([]);
+
   /* const [msgOtherUsers, setMsgOtherUsers] = useState<T_MsgHistory[]>([]); */
   E_MsgToClient(setMsgHistory);
-
   /* const currentMsgFilter = FilterRoom(currentMsg, infoMsg.roomId); */
 
   /* E_MsgtoChat(msgOtherUsers, setMsgOtherUsers, infoMsg); */
   E_MsgtoChat(msgHistory, setMsgHistory, infoMsg);
   /* {msgOtherUsers.map(Print)} */
   /* {currentMsgFilter.map(Print)} */
+
   return <>{msgHistory.map(Print)}</>;
 }

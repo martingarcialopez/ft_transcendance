@@ -5,6 +5,7 @@ import { E_GetMessage } from "../components/Event";
 import { UserState } from "../redux/reducers/userReducers";
 import { E_ActionType } from "../type/Enum";
 
+export let test = 0;
 /**
  * list of item in the left side
  * item can be either user or room
@@ -49,6 +50,7 @@ export function LeftBar({ setInfoMsg, setCurrentMsg }: Props) {
                 });
                 setCurrentMsg([]);
                 console.log("selected room:", item.name, "id:", item.id);
+                test = item.id;
               }}
             >
               <img className="profile-image" src={item.avatar} alt="" />

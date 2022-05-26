@@ -2,6 +2,7 @@ import socketio from "socket.io-client";
 import { URL_test } from "../constants/url";
 import { T_AddUserRoom, T_Room, T_Msg } from "../type/chat";
 import { T_MsgHistory } from "../type/chat";
+import { test } from "../components/ChatLeftList";
 
 const ENDPOINT = URL_test;
 
@@ -28,7 +29,7 @@ export function E_GetMessage(userId: number, roomId: number) {
 
 export function E_MsgToClient(setMsg: Function) {
   socket.on("msgToClient", (received: T_MsgHistory[]) => {
-    console.log("reponse msgToclient  : ", received);
+    //    console.log("reponse msgToclient  : ", received);
     setMsg(received);
   });
 }
@@ -163,9 +164,9 @@ export function E_MsgtoChat(
 ) {
   //  socket.emit("MsgtoChat");
   socket.on("MsgtoChat", (received: T_MsgHistory) => {
-    if (received.roomId === infoMsg.roomId) {
-      console.log("event MsgtoChat:", received);
-      console.log("infoMsg:", infoMsg);
+    if (received.roomId === test) {
+      console.log("RoomId MsgtoChat:", received.roomId);
+      console.log("infoRoomId:", infoMsg.roomId);
       setMsgOtherUsers([...msgOtherUsers, received]);
     }
   });
