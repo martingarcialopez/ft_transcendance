@@ -15,6 +15,9 @@ export class UserController {
       return this.userService.createUser(body);
   }
 
+//   @Post('/update/avatar')
+//   updateUserAvatar(@)
+
   @UseGuards(JwtAuthGuard)
   @Get('/current')
   getCurrentUser(@Request() req) {
@@ -43,6 +46,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('/:username')
   getUser(@Param('username') username: string) : Promise<User> {
+      console.log('in get user');
       return this.userService.getUser(username);
   }
 
@@ -58,5 +62,16 @@ export class UserController {
       return this.userService.deleteUser(id);
   }
 
+
+//   @UseGuards(JwtAuthGuard)
+  @Get('/games/:username')
+  getUserGames(@Param('username') username: string) {
+      return this.userService.getUserGames(username);
+  }
+  
+  @Get('/games/all')
+  getAllGames() {
+      return this.userService.getAllGames();
+  }
 
 }

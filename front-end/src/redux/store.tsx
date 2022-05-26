@@ -2,11 +2,12 @@ import { createStore, combineReducers, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 /* import { msgReducer } from "./reducers/msgReducer"; */
 import { composeWithDevTools } from "redux-devtools-extension";
-import { userLoginReducer } from "./reducers/userReducers";
+import { allMatchReducer, userLoginReducer } from "./reducers/userReducers";
 import { roomReducer } from "./reducers/roomReducer";
 
 const reducers = combineReducers({
   userLogin: userLoginReducer,
+  allMatch: allMatchReducer,
   /* message: msgReducer, */
   arrayRoom: roomReducer,
 });

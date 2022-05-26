@@ -16,12 +16,14 @@ export const OtherProfileScreen = () => {
     const userLogin = useSelector<RootState, UserState>(
         (state: RootState) => state.userLogin
     )
-    console.log("userLogin Profile:", userLogin )
+    console.log("userLogin Profile:", userLogin)
+
+    const { userInfo } = userLogin;
 
     useEffect(() => {
-        if (userLogin && userLogin.userInfo )
-        dispatch(getUserInfoAction(id, userLogin.userInfo.access_token))
-    }, [dispatch, id, userLogin])
+        if (userInfo)
+            dispatch(getUserInfoAction(id, userInfo.access_token))
+    }, [userInfo, id, dispatch])
 
     const { friendInfo }: UserState = userLogin;
 
@@ -30,6 +32,6 @@ export const OtherProfileScreen = () => {
     }
 
     return (
-        <ProfilePage userInfo={friendInfo}/>
+        <ProfilePage userInfo={friendInfo} />
     );
 };

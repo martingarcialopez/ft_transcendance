@@ -13,16 +13,16 @@ export class GameHistory {
     @Column()
     rightPlayer: string;
 
-    @Column()
+    @Column( { nullable: true } )
     leftPlayerScore: number;
 
-    @Column()
+    @Column( { nullable: true } )
     rightPlayerScore: number;
 
-    @Column()
+    @Column( { nullable: true } )
     winner: string;
 
-    @Column()
+    @Column( { nullable: true } )
     losser: string;
 
 }

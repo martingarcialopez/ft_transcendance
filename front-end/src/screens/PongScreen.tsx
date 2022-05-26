@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BALL_RADIUS, GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
-import { Button, Grid } from '@mui/material';
+import { Button, CircularProgress, Grid } from '@mui/material';
 import Canvas from '../components/Canvas';
 import { GameWrapper } from '../styles/gameStyle';
 import { useSelector } from 'react-redux';
@@ -20,6 +20,8 @@ const window_size = {
 }
 
 export const Pong = () => {
+    const [progress, setProgress] = useState(10);
+    const [searchOpponent, setSearchOpponent] = useState("Waiting for an opponent");
     // Use a ref to access the Canvas
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [gameState, setGameState] = useState<GameState>({
@@ -41,13 +43,27 @@ export const Pong = () => {
     const [opponent, setOpponent] = useState('');
     const { userInfo }: UserState = userLogin;
 
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setProgress((prevProgress) => (prevProgress >= 30 ? 0 : prevProgress + 10));
+            if (progress === 0)
+                setSearchOpponent("Waiting for an opponent")
+            else
+                setSearchOpponent((prevProgress) => prevProgress + '.')
+
+        }, 800);
+        return () => {
+            clearInterval(timer);
+        };
+    }, [progress]);
+
     if (!userInfo) {
         return <h1>Loading...</h1>;
     }
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        console.log("event code = ")
-        console.log(event.code)
+        // console.log("event code = ")
+        // console.log(event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
                 socket.emit('move', id.toString(), playerSide, roomId, 1);
@@ -98,6 +114,7 @@ export const Pong = () => {
         setRoomId(args[0])
         setPlayerSide(args[1])
         setGameStarted(true);
+        endGame();
     });
 
     socket.on('GamePlayerName', (...args) => {
@@ -113,6 +130,13 @@ export const Pong = () => {
             setOpponent(args[0])
         }
     });
+
+    const endGame = () => {
+        socket.removeAllListeners('gameState')
+        socket.removeAllListeners('gameOver')
+        socket.removeAllListeners('GameInfo')
+        socket.removeAllListeners('GamePlayerName')
+    }
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
         var img = new Image();
@@ -159,7 +183,7 @@ export const Pong = () => {
 
     return (
         <div >
-            {gameStarted === false ?
+            {!gameStarted ?
                 <div>
                     <Grid
                         container
@@ -187,19 +211,30 @@ export const Pong = () => {
                 </div>
                 :
                 <div>
-                    <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
-                        <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
-                        {winner === '' ? (
-                            <div>
-                                Partie en cours.
-                            </div>
-                        ) : (
-                            <div>
-                                {winner} a gagné la partie !
-                            </div>
-                        )}
-                    </GameWrapper>
-                    <ColumnGroupingTable side={playerSide} username={userInfo.username} opponent={opponent} />
+                    {winner === '' ? (
+                        <Grid
+                            container
+                            rowSpacing={10}
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            style={{ minHeight: '100vh' }}
+                        >
+                            <CircularProgress size={window_size.canvasWidth / 6} />
+                            <Grid item xs={3}>
+                                {searchOpponent}
+                            </Grid>
+                        </Grid>
+                    ) : (
+                        <div>
+                            <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
+                                <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
+
+                            </GameWrapper>
+                            <ColumnGroupingTable side={playerSide} username={userInfo.username} opponent={opponent} />
+                        </div>
+
+                    )}
                 </div>
             }
         </div>
