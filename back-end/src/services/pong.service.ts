@@ -116,6 +116,9 @@ export class PongService {
 
 			const gameResult: GameHistory = new GameHistory();
 
+			console.log(`opponent id is ${opponent.userId}`);
+			console.log(`my user id is ${userId}`);
+
 			gameResult.id = opponent.roomName;
 			gameResult.leftPlayer = (await this.userService.getUserById(opponent.userId.toString())).username;
 			gameResult.rightPlayer = (await this.userService.getUserById(userId.toString())).username;

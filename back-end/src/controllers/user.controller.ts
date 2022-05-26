@@ -15,7 +15,8 @@ export class UserController {
       return this.userService.createUser(body);
   }
 
-  @Post('/update/avatar')
+//   @Post('/update/avatar')
+//   updateUserAvatar(@)
 
   @UseGuards(JwtAuthGuard)
   @Get('/current')
@@ -45,6 +46,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('/:username')
   getUser(@Param('username') username: string) : Promise<User> {
+      console.log('in get user');
       return this.userService.getUser(username);
   }
 
