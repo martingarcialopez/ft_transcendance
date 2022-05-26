@@ -59,4 +59,15 @@ export class UserController {
   }
 
 
+//   @UseGuards(JwtAuthGuard)
+  @Get('/games/:username')
+  getUserGames(@Param('username') username: string) {
+      return this.userService.getUserGames(username);
+  }
+  
+  @Get('/games/all')
+  getAllGames() {
+      return this.userService.getAllGames();
+  }
+
 }
