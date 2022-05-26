@@ -2,7 +2,6 @@ import axios from 'axios';
 import { URL_test } from '../../constants/url';
 import { loginConfirmedAction, logout } from '../actions/userActions';
 
-
 export function signUp(firstname: any, lastname: any, username: any, password: any) {
     const postData = {
         firstname,

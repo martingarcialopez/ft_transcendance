@@ -28,7 +28,7 @@ export interface UserInfo {
   avatar?: string,
   expiresIn?: any,
   access_token?: string,
-  friends?: string[],
+  friends: string[],
   id?: any
 }
 

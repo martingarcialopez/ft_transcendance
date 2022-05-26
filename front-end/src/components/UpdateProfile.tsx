@@ -48,6 +48,10 @@ export const UpdateProfile = ({ userInfo }: any) => {
         const { files } = event.target;
 
         console.log("files:", files);
+        if (files && files[0]) {
+            var img: any = document.querySelector('img');
+            img.src = URL.createObjectURL(files[0]); // set src to blob url
+        }
         // Or if you don't prefer Object destructuring assignment...
         // const files = event.target.files;
 

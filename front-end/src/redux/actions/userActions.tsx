@@ -93,6 +93,7 @@ export function getFriendListAction(userInfo: any) {
   return (dispatch: any) => {
     getFriendList(userInfo.access_token)
       .then((response) => {
+        console.log("getFriendListAction response", response)
         dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, response.data));
         // dispatch(getFriendListConfirmedAction(response.data));
       })

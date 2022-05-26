@@ -38,7 +38,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
         (state: RootState) => state.userLogin
     )
     console.log("ListFriends userLogin:", userLogin);
-    console.log("ListFriends userPageInfo.friends.length:", userPageInfo.friends.length);
+    // console.log("ListFriends userPageInfo.friends.length:", userPageInfo.friends.length);
     
     const { userInfo } = userLogin;
 
@@ -88,7 +88,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
             {/* <p className="userDescription">{userLogin.userInfo.description}</p> */}
             <RiGroupLine className="followerIcon" />
             {/* <b>{userLogin.userInfo.followers}</b> */}
-            <b>{userPageInfo.friends.length} followers -
+            <b>{!userPageInfo.friends ? 0 : userPageInfo.friends.length} friends -
                 {id ?
                     <Button onClick={AddFriend} >{buttonFriend}</Button>
                     :
