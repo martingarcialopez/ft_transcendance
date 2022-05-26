@@ -5,9 +5,7 @@ import SignUp from "./screens/SignUpScreen";
 import SignIn from "./screens/SigninScreen";
 import HomeScreen from "./screens/HomeScreen";
 import { Chat } from "./screens/Chat";
-// import { ChatTemplate } from './screens/ChatTemplate';
 import { Pong } from "./screens/PongScreen";
-// import { NoMatch } from './screens/NoMatchScreen';
 import ResponsiveAppBar from "./components/NavBar";
 import { MyProfileScreen } from "./screens/MyProfileScreen";
 import { Room } from "./screens/Room";
@@ -18,10 +16,9 @@ import { RootState } from "./redux";
 import { UserState } from "./redux/reducers/userReducers";
 import { OtherProfileScreen } from "./screens/OtherProfileScreen";
 import { bindActionCreators } from "redux";
-import { socket } from "./components/Event";
 import * as actionCreatorsRoom from "./redux/action-creators/Ac_room";
-import { T_Room } from "./type/chat";
 import { LeaderBoard } from "./screens/LeaderBoard";
+import { E_AllRoomInfos } from "./components/Event";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -31,17 +28,10 @@ const App = () => {
   }, [dispatch]);
 
   /****************************************/
-
-  socket.emit("allRoomInfos");
-
-  socket.on("allRoomInfosRes", (receive: T_Room[]) => {
-    receive.forEach((item: T_Room) => {
-      item.avatar =
-        "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
-    });
-    ac_InitRoomArray(receive);
-  });
-
+  /*
+   *cette function permet d'initialisé le tableau de rooms
+   */
+  E_AllRoomInfos(ac_InitRoomArray);
   /****************************************/
 
   const userLogin = useSelector<RootState, UserState>(

@@ -1,8 +1,8 @@
 import socketio from "socket.io-client";
 import { URL_test } from "../constants/url";
-import { T_AddUserRoom, T_Room, T_Msg } from "../type/chat";
-import { T_MsgHistory } from "../type/chat";
-import { test } from "../components/ChatLeftList";
+import { T_AddUserRoom, T_Room } from "../type/chat";
+import { T_MsgHistory, objInfoMsg } from "../type/chat";
+//import { test } from "../components/ChatLeftList";
 
 const ENDPOINT = URL_test;
 
@@ -150,7 +150,8 @@ export function E_AllRoomInfos(updateArrayRoom: Function) {
   socket.on("allRoomInfosRes", (receive: T_Room[]) => {
     receive.forEach((item: T_Room) => {
       item.avatar =
-        "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg";
+        "https://www.pngkit.com/png/detail/131-1318731_group-of-people-in-a-formation-free-icon.png";
+      /* "https://avatars.dicebear.com/api/adventurer/" + item.name + ".svg"; */
     });
     /* console.log("tab Room:", receive); */
     updateArrayRoom(receive);
@@ -159,14 +160,12 @@ export function E_AllRoomInfos(updateArrayRoom: Function) {
 
 export function E_MsgtoChat(
   msgOtherUsers: T_MsgHistory[],
-  setMsgOtherUsers: Function,
-  infoMsg: T_Msg
+  setMsgOtherUsers: Function
 ) {
-  //  socket.emit("MsgtoChat");
   socket.on("MsgtoChat", (received: T_MsgHistory) => {
-    if (received.roomId === test) {
+    if (received.roomId === objInfoMsg.roomId) {
       console.log("RoomId MsgtoChat:", received.roomId);
-      console.log("infoRoomId:", infoMsg.roomId);
+      console.log("objInfoMsg.roomId:", objInfoMsg.roomId);
       setMsgOtherUsers([...msgOtherUsers, received]);
     }
   });

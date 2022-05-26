@@ -48,3 +48,11 @@ export type T_MsgHistory = {
   sender: string | undefined;
   userId: number;
 };
+
+export let objInfoMsg: T_Msg = {
+  fromName: "",
+  fromId: 0,
+  roomId: 0,
+  roomName: "",
+  content: "",
+};

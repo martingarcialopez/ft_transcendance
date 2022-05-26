@@ -1,10 +1,10 @@
 import "../styles/ChatTemplate.css";
-import { T_Room, T_User, T_Msg } from "../type/chat";
+import { T_Room, T_User } from "../type/chat";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 
 type Props = {
-  infoMsg: T_Msg;
+  roomSelectedId: number;
 };
 
 function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
@@ -16,12 +16,13 @@ function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
 }
 
 /**
- *  this function represent the header with the avatar of  message recipients
+ * this function represent the header with the avatar of  message recipients
  * item is user either a group
+ * @roomSelectedId it is the room id which was selected on the left bar side
  */
-export function ChatHeader({ infoMsg }: Props) {
+export function ChatHeader({ roomSelectedId }: Props) {
   const { arrayRoom } = useSelector((state: RootState) => state);
-  const index = findIndexItem(arrayRoom, infoMsg.roomId);
+  const index = findIndexItem(arrayRoom, roomSelectedId);
   let item: T_Room | T_User = arrayRoom[index];
   return (
     <>

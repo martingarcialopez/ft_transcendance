@@ -1,50 +1,25 @@
 import "../styles/ChatTemplate.css";
-import { T_Msg, T_Action, T_MsgHistory } from "../type/chat";
 import { RootState } from "../redux/store";
-import { useSelector } from "react-redux";
-import { useState, useReducer } from "react";
 import { LeftBar } from "../components/ChatLeftList";
-import { E_ActionType } from "../type/Enum";
 import { PrintMsg } from "../components/ChatPrintMsg";
 import { InputMsg } from "../components/ChatInputMsg";
 import { ChatHeader } from "../components/ChatHeader";
-
-function initInfoMsg(): T_Msg {
-  return {
-    fromName: "",
-    fromId: 0,
-    roomId: 0,
-    roomName: "",
-    content: "",
-  };
-}
-
-export function infoMsgReducer(state: T_Msg = initInfoMsg(), action: T_Action) {
-  switch (action.type) {
-    case E_ActionType.GET_ROOM_NAME: {
-      return { ...state, roomName: action.payload };
-    }
-    case E_ActionType.GET_ROOM_ID: {
-      return { ...state, roomId: action.payload };
-    }
-    case E_ActionType.ID_CURRENT_USER: {
-      return { ...state, fromId: action.payload };
-    }
-
-    default:
-      return state;
-  }
-}
+//import { E_AllRoomInfos } from "../components/Event";
+//import { bindActionCreators } from "redux";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+//import * as actionCreatorsRoom from "../redux/action-creators/Ac_room";
 
 /**
  * @currentMsg will contains the message from input
  * @infoMsg will contain informaabout the message
  */
 export function Chat() {
+  /**********************************************************************************/
   const { arrayRoom } = useSelector((state: RootState) => state);
-  const [currentMsg, setCurrentMsg] = useState<T_MsgHistory[]>([]);
-  const [infoMsg, setInfoMsg] = useReducer(infoMsgReducer, initInfoMsg());
+  const [roomSelectedId, setRoomSelectedId] = useState<number>(0);
 
+  /**********************************************************************************/
   if (arrayRoom.length === 0) return <></>;
   //  console.log("infoMsg:", infoMsg);
   return (
@@ -70,25 +45,20 @@ export function Chat() {
                 <input placeholder="Search here" type="text" />
               </div>
             </div>
-
-            <LeftBar setInfoMsg={setInfoMsg} setCurrentMsg={setCurrentMsg} />
+            <LeftBar setRoomSelectedId={setRoomSelectedId} />
           </div>
           <div className="col-md-8">
-            <ChatHeader infoMsg={infoMsg} />
+            <ChatHeader roomSelectedId={roomSelectedId} />
 
             <div className="chat-panel">
-              <PrintMsg currentMsg={currentMsg} infoMsg={infoMsg} />
+              <PrintMsg />
 
               <div className="row">
                 <div className="col-12">
                   <div className="chat-box-tray">
                     <i className="material-icons">sentiment_very_satisfied</i>
 
-                    <InputMsg
-                      currentMsg={currentMsg}
-                      setCurrentMsg={setCurrentMsg}
-                      roomId={infoMsg.roomId}
-                    />
+                    <InputMsg />
                     {/* <i className="material-icons">mic</i> */}
                     {/* <i className="material-icons">send</i> */}
                   </div>

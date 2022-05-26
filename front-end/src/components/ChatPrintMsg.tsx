@@ -1,12 +1,7 @@
 import { useState } from "react";
 import { E_MsgToClient, E_MsgtoChat } from "../components/Event";
-import { T_Msg } from "../type/chat";
+//import { T_Msg } from "../type/chat";
 import { T_MsgHistory } from "../type/chat";
-
-type Props_ArrayMsg = {
-  currentMsg: T_MsgHistory[];
-  infoMsg: T_Msg;
-};
 
 function Print({ userId, content, sender }: T_MsgHistory, index: number) {
   return (
@@ -26,7 +21,7 @@ function Print({ userId, content, sender }: T_MsgHistory, index: number) {
  *   return room.filter((item: any) => item.roomId === roomId);
  * } */
 
-export function PrintMsg({ currentMsg, infoMsg }: Props_ArrayMsg) {
+export function PrintMsg() {
   const [msgHistory, setMsgHistory] = useState<any>([]);
 
   /* const [msgOtherUsers, setMsgOtherUsers] = useState<T_MsgHistory[]>([]); */
@@ -34,7 +29,7 @@ export function PrintMsg({ currentMsg, infoMsg }: Props_ArrayMsg) {
   /* const currentMsgFilter = FilterRoom(currentMsg, infoMsg.roomId); */
 
   /* E_MsgtoChat(msgOtherUsers, setMsgOtherUsers, infoMsg); */
-  E_MsgtoChat(msgHistory, setMsgHistory, infoMsg);
+  E_MsgtoChat(msgHistory, setMsgHistory);
   /* {msgOtherUsers.map(Print)} */
   /* {currentMsgFilter.map(Print)} */
 

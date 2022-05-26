@@ -1,11 +1,12 @@
 import { useSelector } from "react-redux";
-import { T_Room, T_User } from "../type/chat";
+import { T_Room, T_User, objInfoMsg } from "../type/chat";
 import { RootState } from "../redux/store";
 import { E_GetMessage } from "../components/Event";
 import { UserState } from "../redux/reducers/userReducers";
-import { E_ActionType } from "../type/Enum";
 
-export let test = 0;
+type Props = {
+  setRoomSelectedId: Function;
+};
 /**
  * list of item in the left side
  * item can be either user or room
@@ -13,12 +14,7 @@ export let test = 0;
  * get id of room cliked and the userId
  */
 
-type Props = {
-  setInfoMsg: Function;
-  setCurrentMsg: Function;
-};
-
-export function LeftBar({ setInfoMsg, setCurrentMsg }: Props) {
+export function LeftBar({ setRoomSelectedId }: Props) {
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   );
@@ -36,21 +32,12 @@ export function LeftBar({ setInfoMsg, setCurrentMsg }: Props) {
               className="friend-drawer friend-drawer--onhover"
               onClick={(e) => {
                 E_GetMessage(userInfo.id, item.id);
-                setInfoMsg({
-                  type: E_ActionType.GET_ROOM_ID,
-                  payload: item.id,
-                });
-                setInfoMsg({
-                  type: E_ActionType.ID_CURRENT_USER,
-                  payload: userInfo.id,
-                });
-                setInfoMsg({
-                  type: E_ActionType.GET_ROOM_NAME,
-                  payload: item.name,
-                });
-                setCurrentMsg([]);
+
                 console.log("selected room:", item.name, "id:", item.id);
-                test = item.id;
+                objInfoMsg.roomId = item.id;
+                objInfoMsg.fromId = userInfo.id;
+                objInfoMsg.fromName = item.name;
+                setRoomSelectedId(item.id);
               }}
             >
               <img className="profile-image" src={item.avatar} alt="" />
