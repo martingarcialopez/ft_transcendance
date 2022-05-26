@@ -14,9 +14,10 @@ import { E_ActionType } from "../type/Enum";
 
 type Props = {
   setInfoMsg: Function;
+  setCurrentMsg: Function;
 };
 
-export function LeftBar({ setInfoMsg }: Props) {
+export function LeftBar({ setInfoMsg, setCurrentMsg }: Props) {
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   );
@@ -42,6 +43,12 @@ export function LeftBar({ setInfoMsg }: Props) {
                   type: E_ActionType.ID_CURRENT_USER,
                   payload: userInfo.id,
                 });
+                setInfoMsg({
+                  type: E_ActionType.GET_ROOM_NAME,
+                  payload: item.name,
+                });
+                setCurrentMsg([]);
+                console.log("selected room:", item.name, "id:", item.id);
               }}
             >
               <img className="profile-image" src={item.avatar} alt="" />

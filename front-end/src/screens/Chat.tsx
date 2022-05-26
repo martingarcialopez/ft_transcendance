@@ -30,6 +30,7 @@ export function infoMsgReducer(state: T_Msg = initInfoMsg(), action: T_Action) {
     case E_ActionType.ID_CURRENT_USER: {
       return { ...state, fromId: action.payload };
     }
+
     default:
       return state;
   }
@@ -70,7 +71,7 @@ export function Chat() {
               </div>
             </div>
 
-            <LeftBar setInfoMsg={setInfoMsg} />
+            <LeftBar setInfoMsg={setInfoMsg} setCurrentMsg={setCurrentMsg} />
           </div>
           <div className="col-md-8">
             <ChatHeader infoMsg={infoMsg} />
@@ -85,7 +86,7 @@ export function Chat() {
 
                     <InputMsg
                       currentMsg={currentMsg}
-                      setContent={setCurrentMsg}
+                      setCurrentMsg={setCurrentMsg}
                       roomId={infoMsg.roomId}
                     />
                     {/* <i className="material-icons">mic</i> */}

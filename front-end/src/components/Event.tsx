@@ -1,6 +1,6 @@
 import socketio from "socket.io-client";
 import { URL_test } from "../constants/url";
-import { T_AddUserRoom, T_Room } from "../type/chat";
+import { T_AddUserRoom, T_Room, T_Msg } from "../type/chat";
 import { T_MsgHistory } from "../type/chat";
 
 const ENDPOINT = URL_test;
@@ -19,7 +19,7 @@ export function E_CreateParticipant(userName: number, roomId: number) {
 }
 
 export function E_GetMessage(userId: number, roomId: number) {
-  console.log("event getMessage:\nuserId: ", userId, "\nroom id:", roomId);
+  //console.log("event getMessage:\nuserId: ", userId, "\nroom id:", roomId);
   socket.emit("getMessage", {
     userId: userId,
     roomId: roomId,
@@ -28,7 +28,7 @@ export function E_GetMessage(userId: number, roomId: number) {
 
 export function E_MsgToClient(setMsg: Function) {
   socket.on("msgToClient", (received: T_MsgHistory[]) => {
-    /* console.log("reponse msgToclient  : ", received); */
+    console.log("reponse msgToclient  : ", received);
     setMsg(received);
   });
 }
@@ -40,9 +40,9 @@ export function E_CreateMessage(
   sender: string | undefined
 ) {
   if (typeof sender === "undefined") sender = "wsh";
-  console.log("event 'createMessage':\nUserId:", userId);
-  console.log("content:", contentToSend);
-  console.log("roomId:", channelIdDst);
+  /* console.log("event 'createMessage':\nUserId:", userId);
+   * console.log("content:", contentToSend);
+   * console.log("roomId:", channelIdDst); */
   socket.emit("createMessage", {
     userId: userId,
     contentToSend: contentToSend,
@@ -159,12 +159,14 @@ export function E_AllRoomInfos(updateArrayRoom: Function) {
 export function E_MsgtoChat(
   msgOtherUsers: T_MsgHistory[],
   setMsgOtherUsers: Function,
-  roomId: number
+  infoMsg: T_Msg
 ) {
-  socket.emit("MsgtoChat");
+  //  socket.emit("MsgtoChat");
   socket.on("MsgtoChat", (received: T_MsgHistory) => {
-    /* console.log("event MsgtoChat:", received); */
-    if (roomId !== received.roomId)
+    if (received.roomId === infoMsg.roomId) {
+      console.log("event MsgtoChat:", received);
+      console.log("infoMsg:", infoMsg);
       setMsgOtherUsers([...msgOtherUsers, received]);
+    }
   });
 }

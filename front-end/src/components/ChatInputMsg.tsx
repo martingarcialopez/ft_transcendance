@@ -7,7 +7,7 @@ import { T_MsgHistory } from "../type/chat";
 
 type T_PropsMsg = {
   currentMsg: T_MsgHistory[]; //it is @currentMsg from chat
-  setContent: Function;
+  setCurrentMsg: Function;
   roomId: number;
 };
 
@@ -35,7 +35,7 @@ function MsgFromInput(
  * handle the content to send
  * this function retrieve the input content, to set it into the object T_msg
  */
-export function InputMsg({ currentMsg, setContent, roomId }: T_PropsMsg) {
+export function InputMsg({ currentMsg, setCurrentMsg, roomId }: T_PropsMsg) {
   const [inputValue, setinputValue] = useState<string>("");
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
@@ -45,7 +45,6 @@ export function InputMsg({ currentMsg, setContent, roomId }: T_PropsMsg) {
   if (!userInfo) {
     return <h1>Loading...</h1>;
   }
-
   return (
     <>
       <div className="form-group">
@@ -72,7 +71,7 @@ export function InputMsg({ currentMsg, setContent, roomId }: T_PropsMsg) {
             userInfo.username
           );
           /* console.log("newMsg:", newMsg); */
-          setContent([...currentMsg, newMsg]);
+          setCurrentMsg([...currentMsg, newMsg]);
         }}
       >
         send

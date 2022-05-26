@@ -4,7 +4,7 @@ import { T_Msg } from "../type/chat";
 import { T_MsgHistory } from "../type/chat";
 
 type Props_ArrayMsg = {
-  currentMsg: any[];
+  currentMsg: T_MsgHistory[];
   infoMsg: T_Msg;
 };
 
@@ -22,28 +22,20 @@ function Print({ userId, content, sender }: T_MsgHistory, index: number) {
 /**
  *
  */
-function FilterRoom(room: T_Msg | any, roomId: number) {
-  return room.filter((item: any) => item.roomId === roomId);
-}
+/* function FilterRoom(room: T_Msg | any, roomId: number) {
+ *   return room.filter((item: any) => item.roomId === roomId);
+ * } */
 
 export function PrintMsg({ currentMsg, infoMsg }: Props_ArrayMsg) {
-  const [msgHistory, setMsg] = useState<any>([]);
-  const [msgOtherUsers, setMsgOtherUsers] = useState<T_MsgHistory[]>([]);
-  E_MsgToClient(setMsg);
-  const msgHistoryFilter = FilterRoom(msgHistory, infoMsg.roomId);
-  const currentMsgFilter = FilterRoom(currentMsg, infoMsg.roomId);
-  /* console.log("roomId:", infoMsg.roomId);
-   * console.log("msgHistoryFilter:", msgHistoryFilter);
-   * console.log("currentMsgFilter:", currentMsgFilter); */
-  E_MsgtoChat(msgOtherUsers, setMsgOtherUsers, infoMsg.roomId);
+  const [msgHistory, setMsgHistory] = useState<any>([]);
+  /* const [msgOtherUsers, setMsgOtherUsers] = useState<T_MsgHistory[]>([]); */
+  E_MsgToClient(setMsgHistory);
 
-  //setMsgOtherUsers(msgOtherUsersFilter);
-  //console.log("msgOtherUsers:", msgOtherUsersFilter);
-  return (
-    <>
-      {msgHistoryFilter.map(Print)}
-      //{currentMsgFilter.map(Print)}
-      {msgOtherUsers.map(Print)}
-    </>
-  );
+  /* const currentMsgFilter = FilterRoom(currentMsg, infoMsg.roomId); */
+
+  /* E_MsgtoChat(msgOtherUsers, setMsgOtherUsers, infoMsg); */
+  E_MsgtoChat(msgHistory, setMsgHistory, infoMsg);
+  /* {msgOtherUsers.map(Print)} */
+  /* {currentMsgFilter.map(Print)} */
+  return <>{msgHistory.map(Print)}</>;
 }
