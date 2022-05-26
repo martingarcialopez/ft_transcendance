@@ -1,6 +1,7 @@
 import socketio from "socket.io-client";
 import { URL_test } from "../constants/url";
 import { T_AddUserRoom, T_Room } from "../type/chat";
+import { T_MsgHistory } from "../type/chat";
 
 const ENDPOINT = URL_test;
 
@@ -25,30 +26,20 @@ export function E_GetMessage(userId: number, roomId: number) {
   });
 }
 
-type T_MsgHistory = {
-  content: string;
-  id: number;
-  roomId: number;
-  userId: number;
-};
-
 export function E_MsgToClient(setMsg: Function) {
-  socket.on(
-    "msgToClient",
-    (received: { blockList: number[]; message_history: T_MsgHistory }) => {
-      console.log("reponse msgToclient  : ", received); //why this line show "message_history" ?
-      console.log("message_history : ", received.message_history); //why it is undefined ?
-      console.log("blockList : ", received.blockList); //why it is undefined ?
-      setMsg(received);
-    }
-  );
+  socket.on("msgToClient", (received: T_MsgHistory[]) => {
+    /* console.log("reponse msgToclient  : ", received); */
+    setMsg(received);
+  });
 }
 
 export function E_CreateMessage(
   userId: number,
   contentToSend: string,
-  channelIdDst: number
+  channelIdDst: number,
+  sender: string | undefined
 ) {
+  if (typeof sender === "undefined") sender = "wsh";
   console.log("event 'createMessage':\nUserId:", userId);
   console.log("content:", contentToSend);
   console.log("roomId:", channelIdDst);
@@ -56,6 +47,7 @@ export function E_CreateMessage(
     userId: userId,
     contentToSend: contentToSend,
     channelIdDst: channelIdDst,
+    sender: typeof sender === "undefined" ? "wsh" : sender,
   });
 }
 
@@ -164,14 +156,15 @@ export function E_AllRoomInfos(updateArrayRoom: Function) {
   });
 }
 
-/*
- * export function E_(updateArrayRoom: Function) {
- *   socket.emit( "createMessage",
- *             {
- * 				  fromUser: message.fromName,
- * 				  contentToSend: message.content,
- * 				  roomIdDst: message.roomId,
- * 			  },
- * 			  message.content
- * 		  );
- * } */
+export function E_MsgtoChat(
+  msgOtherUsers: T_MsgHistory[],
+  setMsgOtherUsers: Function,
+  roomId: number
+) {
+  socket.emit("MsgtoChat");
+  socket.on("MsgtoChat", (received: T_MsgHistory) => {
+    /* console.log("event MsgtoChat:", received); */
+    if (roomId !== received.roomId)
+      setMsgOtherUsers([...msgOtherUsers, received]);
+  });
+}

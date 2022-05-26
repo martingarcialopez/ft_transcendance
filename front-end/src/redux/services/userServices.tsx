@@ -2,15 +2,16 @@ import axios from 'axios';
 import { URL_test } from '../../constants/url';
 import { loginConfirmedAction, logout } from '../actions/userActions';
 
-
 export function signUp(firstname: any, lastname: any, username: any, password: any) {
     const postData = {
         firstname,
         lastname,
         username,
         password,
+        avatar: '/shared/avatar/avatar_chat.jpeg',
         returnSecureToken: true,
     };
+    console.log("postData", postData)
 
     return axios.post(
         `${URL_test}/user/sign-up`,
@@ -18,13 +19,14 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id :any, access_token: any) {
+export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any) {
     const postData = {
         firstname,
         lastname,
         username,
         password,
         avatar,
+        friends,
     };
 
     return axios.post(
@@ -67,6 +69,50 @@ export function getUserInfo(username: any, access_token: any) {
         url: `${URL_test}/user/${username}`,
         headers: { 'Authorization': `Bearer ${access_token}` }
     });
+}
+
+export function getFriendList(access_token: any) {
+    console.log("getFriendList TOKEN :")
+    console.log(access_token)
+    return axios({
+        method: 'get',
+        url: `${URL_test}/user/friends`,
+        headers: { 'Authorization': `Bearer ${access_token}` }
+    });
+}
+
+export function getAllGames(access_token: any) {
+    console.log("getAllGames TOKEN :")
+    console.log(access_token)
+    return axios({
+        method: 'get',
+        url: `${URL_test}/user/games/all`,
+        headers: { 'Authorization': `Bearer ${access_token}` }
+    });
+}
+
+export function addFriend(username: any, access_token: any) {
+    console.log("addFriend TOKEN :", access_token)
+    console.log("addFriend USERNAME :", username)
+    console.log("addFriend URL_test :", URL_test)
+    return axios.post(
+        `${URL_test}/user/friends/${username}`,
+        username,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
+
+export function removeFriend(username: any, access_token: any) {
+    console.log("removeFriend TOKEN :", access_token)
+    console.log("removeFriend USERNAME :", username)
+    return axios.delete(
+        `${URL_test}/user/friends/${username}`,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
 }
 
 export function formatError(errorResponse: any) {

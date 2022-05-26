@@ -1,7 +1,10 @@
 import "../styles/leaderboardStyles.css";
 
 export const LeaderboardProfiles = ({ Leaderboard }: any) => {
+    console.log("LeaderboardProfiles Leaderboard", Leaderboard)
     const Item = (data: any) => {
+        console.log("LeaderboardProfiles data", data)
+
         return (
             <>
                 {data.map((value: any, index: any) => (
