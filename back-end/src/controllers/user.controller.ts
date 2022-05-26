@@ -15,6 +15,8 @@ export class UserController {
       return this.userService.createUser(body);
   }
 
+  @Post('/update/avatar')
+
   @UseGuards(JwtAuthGuard)
   @Get('/current')
   getCurrentUser(@Request() req) {

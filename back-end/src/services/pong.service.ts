@@ -114,7 +114,6 @@ export class PongService {
 			console.log(`second player arrived and joined room ${opponent.roomName}`);
 			console.log(`GAME STARTED in room ${opponent.roomName}`);
 
-
 			const gameResult: GameHistory = new GameHistory();
 
 			gameResult.id = opponent.roomName;

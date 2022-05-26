@@ -1,4 +1,5 @@
 back-end/.env
+front-end/src/constants/url.tsx
 .env
 node_modules
 *.log
