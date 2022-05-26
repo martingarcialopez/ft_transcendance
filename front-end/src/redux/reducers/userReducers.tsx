@@ -1,5 +1,6 @@
 import {
   CHANGE_PAGE_ACTION,
+  GET_ALL_GAMES_ACTION,
   GET_FRIENDS_LIST_ACTION,
   GET_FRIEND_INFOS_ACTION,
   LOADING_TOGGLE_ACTION,
@@ -41,10 +42,59 @@ export interface UserState {
   MatchInfo?: MatchInfo
 }
 
+export interface AllMatchState {
+  MatchInfo?: MatchInfo[]
+}
+
 interface Action {
   type: string;
   payload?: string;
 }
+
+export const allMatchReducer = (
+  state: AllMatchState = {
+    MatchInfo: [{
+      player1: 'player1',
+      player2: 'player2',
+      winner: 'player1',
+      scoreLoser: 0,
+      id: 0,
+    },
+    {
+      player1: 'player3',
+      player2: 'player4',
+      winner: 'player3',
+      scoreLoser: 0,
+      id: 0,
+    },
+    {
+      player1: 'player3',
+      player2: 'player4',
+      winner: 'player3',
+      scoreLoser: 0,
+      id: 0,
+    },
+    {
+      player1: 'player3',
+      player2: 'player4',
+      winner: 'player3',
+      scoreLoser: 0,
+      id: 0,
+    },
+    ]
+  },
+  action: Action
+) => {
+  switch (action.type) {
+    case GET_ALL_GAMES_ACTION:
+      return {
+        ...state,
+        MatchInfo: action.payload
+      };
+    default:
+      return state;
+  }
+};
 
 export const userLoginReducer = (
   state: UserState = {

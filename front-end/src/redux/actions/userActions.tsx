@@ -10,8 +10,9 @@ import {
   GET_FRIEND_INFOS_ACTION,
   UPDATE_FAILED_ACTION,
   GET_FRIENDS_LIST_ACTION,
+  GET_ALL_GAMES_ACTION,
 } from '../constants/userConstants'
-import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update, getAllGames } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -89,6 +90,20 @@ export function getUserInfoAction(username: any, access_token: any) {
   };
 }
 
+export function getAllGamesAction(access_token: any) {
+  return (dispatch: any) => {
+    getAllGames(access_token)
+      .then((response) => {
+        console.log("getAllGamesAction response", response)
+        dispatch(getAllMatch(response.data));
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
 export function getFriendListAction(userInfo: any) {
   return (dispatch: any) => {
     getFriendList(userInfo.access_token)
@@ -158,6 +173,13 @@ export function loginAction(username: any, password: any, navigate: NavigateFunc
         console.log("ceci est une errorMessage return de formatError dans loginAction :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
+  };
+}
+
+export function getAllMatch(data: any) {
+  return {
+    type: GET_ALL_GAMES_ACTION,
+    payload: data,
   };
 }
 
