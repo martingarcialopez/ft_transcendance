@@ -1,27 +1,25 @@
 import "../styles/ChatTemplate.css";
-import { RootState } from "../redux/store";
+//import { RootState } from "../redux/store";
 import { LeftBar } from "../components/ChatLeftList";
 import { PrintMsg } from "../components/ChatPrintMsg";
 import { InputMsg } from "../components/ChatInputMsg";
 import { ChatHeader } from "../components/ChatHeader";
-//import { E_AllRoomInfos } from "../components/Event";
-//import { bindActionCreators } from "redux";
-import { useSelector } from "react-redux";
 import { useState } from "react";
-//import * as actionCreatorsRoom from "../redux/action-creators/Ac_room";
+//import { useSelector } from "react-redux";
+//import { T_Room } from "../type/chat";
+//import { GetUserInfo } from "../components/GetUserInfo";
 
+/* type Props = {
+ *   userRoom: T_Room[];
+ * };
+ *  */
 /**
  * @currentMsg will contains the message from input
  * @infoMsg will contain informaabout the message
  */
-export function Chat() {
-  /**********************************************************************************/
-  const { arrayRoom } = useSelector((state: RootState) => state);
+export function ChatTempate() {
   const [roomSelectedId, setRoomSelectedId] = useState<number>(0);
 
-  /**********************************************************************************/
-  if (arrayRoom.length === 0) return <></>;
-  //  console.log("infoMsg:", infoMsg);
   return (
     <div>
       <div className="container">
@@ -69,5 +67,32 @@ export function Chat() {
         </div>
       </div>
     </div>
+  );
+}
+
+/*
+ * export function Chat() {
+ *   const dispatch = useDispatch();
+ *   const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
+ *   E_AllRoomInfos(ac_InitRoomArray);
+ *   return (
+ *     <>
+ *       <Hat />
+ *     </>
+ *   );
+ * } */
+
+export function Chat() {
+  //  const { arrayRoom } = useSelector((state: RootState) => state);
+  /* const userInfo = GetUserInfo();
+   * if (!userInfo) return <h1>Loading...</h1>; */
+  /* const userRoom = arrayRoom.filter((item: T_Room) =>
+   *   CheckParticipant(item.participants, userInfo.id)
+   * ); */
+
+  return (
+    <>
+      <ChatTempate />
+    </>
   );
 }

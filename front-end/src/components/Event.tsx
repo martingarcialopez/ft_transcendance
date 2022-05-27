@@ -137,14 +137,6 @@ export function E_LeaveRoom(userId: number, roomId: number) {
    * }); */
 }
 
-export function E_BlockUser(userId: number, blockUserId: number) {
-  socket.emit("blockUser", {
-    userId: userId,
-    blockUserId: blockUserId,
-  });
-  console.log("send event blockUserId: ", blockUserId);
-}
-
 export function E_AllRoomInfos(updateArrayRoom: Function) {
   socket.emit("allRoomInfos");
   socket.on("allRoomInfosRes", (receive: T_Room[]) => {
@@ -169,4 +161,18 @@ export function E_MsgtoChat(
       setMsgOtherUsers([...msgOtherUsers, received]);
     }
   });
+}
+
+export function E_BanUser(
+  userId: number,
+  userIdToMute: string,
+  roomId: number
+) {
+  socket.emit("banUser", {
+    userId: userId,
+    userIdToMute: userIdToMute,
+    roomId: roomId,
+    time: 0,
+  });
+  //	console.log("send event blockUserId: ", blockUserId);
 }

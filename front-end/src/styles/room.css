@@ -188,3 +188,8 @@ input::placeholder {
 		left: 25%;
 	  font-size: calc(100% + 1vw + 1vh);		
 }
+
+.MsgError{
+		position: relative;
+		left: 25%;		
+}
