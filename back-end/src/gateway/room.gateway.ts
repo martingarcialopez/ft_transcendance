@@ -21,6 +21,7 @@ import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { BlockUserDto } from '../dtos/in/blockUser.dto';
 import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto';
+import { ReturnStatusDto } from '../dtos/out/return_status.dto';
 import { PublicRoomDto } from '../dtos/in/publicRoom.dto';
 import { UserService } from '../services/user.service';
 import { MessageService } from '../services/message.service';
@@ -49,22 +50,28 @@ export class RoomGateway
   ) {}
 
 	@SubscribeMessage('createRoom')
-	async createRoom(socket: Socket, body: RoomDto): Promise<void> {
+	async createRoom(socket: Socket, body: RoomDto): Promise<ReturnStatusDto> {
 		console.log('in the gateway of event createRoom');
-		const name_exist = await this.roomService.IsRoomName_Unique(body.name);
-		if (name_exist == false) {
-			socket.emit('exception', {
-				status: 'error',
-				message: 'name is already exist'
-			});
-			return ;
+		try {
+			var value = await this.roomService.createRoom(body);
 		}
-		const value = await this.roomService.createRoom(body);
+		catch(error){
+			return {
+				'status': 'KO',
+				'msg': 'Something went wrong'
+			}
+		}
 		console.log('return value of roomId is ', value);
 		socket.emit('B_createRoom', value); //sending to sender-client only
+		return {
+            'status': 'OK',
+			'msg': ''
+        }
 	}
 
-	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
+
+
+/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
 	@SubscribeMessage('JoinRoom')
 	async JoinRoom(socket: Socket, body: JoinRoomDto): Promise<void> {
 		console.log('in gateway of JoinRoom', body);
