@@ -42,6 +42,7 @@ export function JoinPublicRoom({ room }: T_PropsRoomArray) {
           </div>
         ))}
       </div>
+      <br />
     </>
   );
 }

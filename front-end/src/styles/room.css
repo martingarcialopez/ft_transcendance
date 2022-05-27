@@ -129,6 +129,7 @@ input::placeholder {
 		position: relative;
 		margin-right: 35%;
 		left: 30%;
+
 		cursor: pointer;
 }
 
@@ -176,8 +177,11 @@ input::placeholder {
 .TitleOptionRoom{
 		position: relative;
 		left: 25%;
+		text-align: center;
 		width: 50vw;
-	  font-size: calc(100% + 1vw + 1vh);
+	  font-size: calc(70% + 1vw + 1vh);
+		text-transform: uppercase; 
+
 
 
 }

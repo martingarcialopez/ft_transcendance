@@ -89,6 +89,7 @@ export function JoinProtectedRoom({ room }: T_PropsRoomArray) {
           />
         );
       })}
+      <br />
     </>
   );
 }

@@ -7,5 +7,5 @@ export function TitleOptionRoom(props: T_props) {
 }
 
 export function TitleModal(props: T_props) {
-  return <h3 className="TitleModal">{props.title}</h3>;
+  return <h4 className="TitleModal">{props.title}</h4>;
 }
