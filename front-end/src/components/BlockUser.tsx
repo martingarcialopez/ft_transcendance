@@ -44,7 +44,10 @@ export function BlockUSer() {
           );
           let roomId = getRoomId(arrayRoom, data.roomName, userInfo.id);
           if (roomId === 0) setDisplay("inline");
-          else E_BanUser(userInfo.id, data.userName, roomId);
+          else {
+            E_BanUser(userInfo.id, data.userName, roomId);
+            setDisplay("none");
+          }
         })}
       >
         <input
