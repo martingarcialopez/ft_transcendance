@@ -16,6 +16,7 @@ import { RoomPwDto } from '../dtos/in/room_password.dto';
 import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto';
+import { BanUserDto } from '../dtos/in/banUser.dto';
 import { UserService } from './user.service';
 import { MessageService } from './message.service';
 import { ParticipantService } from './participant.service';
@@ -227,7 +228,6 @@ export class RoomService {
 		return room.owner;
 	}
 
-	//change userName -> userId LATER
 	async userIsAdmin(roomId: number, userId: number) : Promise<boolean> {
 		let admins = await this.get_RoomAdmins(roomId);
 		console.log('admins is here ', admins, admins.indexOf(userId));
@@ -326,6 +326,28 @@ export class RoomService {
 	}
 
 
+	async get_Room_banList(roomId: number): Promise<number[]> {
+	let room = await this.roomRepository.createQueryBuilder("room")
+            .select(["room.banList"])
+        .where("room.id = :room_Id", { room_Id: roomId })
+        .getOne();
+		console.log('in get_RoomAdmins ', room , room.owner);
+		return room.banList;
+	}
+
+
+	async banUser(body: BanUserDto) : Promise<void> {
+		let roomId : number = body.roomId;
+		let user: User = await this.userId_fromLogin(body.userIdToMute);
+		let userIdToBan : number = user['id'];
+		let userId : number = body.userId;
+		//user does not have right OR baned person is admin/owner
+		if (await this.userIsAdmin(roomId, userId) == false || await this.userIsAdmin(roomId, userIdToBan) == true)
+			throw 'no right to ban';
+		await this.participantService.leaveRoom({'userId': userIdToBan, 'roomId': roomId})
+		let banList: number[] = await this.get_Room_banList(roomId);
+		banList.push(userIdToBan);
+	}
 
 
 }

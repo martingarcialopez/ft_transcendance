@@ -18,13 +18,13 @@ export class Room {
 	@Column({nullable:true})
     password?: string;
 
-	@Column({nullable:true})
-    avatar: string;
-
-
 	@Column("int",  { nullable:true, array: true, default: "{}" })
 	//owner: number[] = [];
 	owner: number[];
+
+	@Column("int",  { nullable:true, array: true, default: "{}" })
+	banList: number[];
+
 
 	@OneToMany((type) => Message, (message) => message.room)
     messages: Message[];
