@@ -22,6 +22,8 @@ import { ParticipantDto } from '../dtos/in/participant.dto';
 import { BlockUserDto } from '../dtos/in/blockUser.dto';
 import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto';
 import { PublicRoomDto } from '../dtos/in/publicRoom.dto';
+import { BanUserDto } from '../dtos/in/banUser.dto';
+import { ReturnStatusDto } from '../dtos/out/return_status.dto';
 import { UserService } from '../services/user.service';
 import { MessageService } from '../services/message.service';
 import { ParticipantService } from '../services/participant.service';
@@ -155,6 +157,19 @@ export class RoomGateway
 		socket.emit('allRoomInfosRes', rooms);
 	}
 
-
-
+	@SubscribeMessage('banUser')
+	async banUser(socket: Socket, body: BanUserDto) : Promise<ReturnStatusDto> {
+		console.log('-----------', body, '-----------');
+		try {
+			await this.roomService.banUser(body);
+		}
+		catch(e)
+		{
+			console.log('------------&&&&&----------', e);
+			return {status: 'KO', msg: 'Something went wrong'};
+		}
+		return {status: 'OK',
+				 msg: 'Successfully baned the user'
+			   };
+	}
 }
