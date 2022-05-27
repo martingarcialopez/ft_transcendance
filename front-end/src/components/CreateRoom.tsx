@@ -1,16 +1,14 @@
 import { useForm } from "react-hook-form";
 import { T_Room } from "../type/chat";
-import { bindActionCreators } from "redux";
-import * as actionCreators from "../redux/action-creators/Ac_room";
-import { useDispatch, useSelector } from "react-redux";
 import { E_CreateRoom } from "./Event";
 import "../styles/room.css";
 import { useState } from "react";
 import { Hidden } from "./Hidden";
 import { TitleOptionRoom } from "./TitleOptionRoom";
-import { RootState } from "../redux/store";
-import { UserState } from "../redux/reducers/userReducers";
-//import { color } from "@mui/system";
+import { GetUserInfo } from "./GetUserInfo";
+import { bindActionCreators } from "redux";
+import * as actionCreators from "../redux/action-creators/Ac_room";
+import { useDispatch } from "react-redux";
 
 function createRoom(data: any): T_Room {
   let room: T_Room = {
@@ -20,7 +18,8 @@ function createRoom(data: any): T_Room {
     password: data.password,
     owner: [],
     participants: [],
-    avatar: "https://avatars.dicebear.com/api/adventurer/" + data.name + ".svg",
+    avatar:
+      "https://www.pngkit.com/png/detail/131-1318731_group-of-people-in-a-formation-free-icon.png",
   };
   return room;
 }
@@ -28,30 +27,30 @@ function createRoom(data: any): T_Room {
 export function CreateRoom() {
   const { register, handleSubmit } = useForm();
   const [state, setSate] = useState<string>("none");
+  const [msgError, setMsgError] = useState<string>("none");
   const dispatch = useDispatch();
-  const { ac_AddRoom } = bindActionCreators(actionCreators, dispatch);
-
-  const userLogin = useSelector<RootState, UserState>(
-    (state: RootState) => state.userLogin
-  );
-
-  const { userInfo }: UserState = userLogin;
-  if (!userInfo) {
-    return <h1>Loading...</h1>;
-  }
-
+  const { ac_InitRoomArray } = bindActionCreators(actionCreators, dispatch);
+  /**********************************/
+  const userInfo = GetUserInfo();
+  if (!userInfo) return <h1>Loading...</h1>;
   return (
     <>
-      <br />
-      <br />
-
+      <br /> <br />
       <TitleOptionRoom title="Create Channel" />
-
+      <h4 className="MsgError" style={{ display: msgError, color: "#FF0F00" }}>
+        this name is already exist
+      </h4>
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          E_CreateRoom(newRoom, userInfo.id, ac_AddRoom);
+          {
+            /* E_CreateRoom(newRoom, userInfo.id, ac_AddRoom, setMsgError); */
+          }
+          E_CreateRoom(newRoom, userInfo.id, ac_InitRoomArray, setMsgError);
+          {
+            /* E_AllRoomInfos(ac_InitRoomArray); */
+          }
         })}
       >
         <input
@@ -83,9 +82,9 @@ export function CreateRoom() {
           <option value="protected">Protected</option>
         </select>
         <br />
-
         <input type="submit" className="btn-new-room" value="New" />
       </form>
+      <br />
     </>
   );
 }

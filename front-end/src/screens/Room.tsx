@@ -73,7 +73,6 @@ export function Room() {
   return (
     <>
       <CreateRoom />
-      <br />
       <AddParticipant room={RoomUserNotParticipants(pvRoom, userInfo.id)} />
       <br />
       <JoinPublicRoom room={RoomUserNotParticipants(publicRoom, userInfo.id)} />

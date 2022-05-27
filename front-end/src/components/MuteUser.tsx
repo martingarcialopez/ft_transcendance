@@ -50,7 +50,7 @@ export function MuteUser() {
           required
           autoComplete="on"
           {...register("roomName")}
-        />
+        />{" "}
         <br />
         <input
           className="time"
@@ -59,10 +59,10 @@ export function MuteUser() {
           max="18:00"
           required
           {...register("time")}
-        />
+        />{" "}
         <br />
-        <input type="submit" className="btn-new-room" value="Ban" />
-      </form>
+        <input type="submit" className="btn-new-room" value="Mute" />
+      </form>{" "}
       <br />
     </>
   );
