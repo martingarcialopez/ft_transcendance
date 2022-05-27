@@ -193,3 +193,8 @@ input::placeholder {
 		position: relative;
 		left: 25%;		
 }
+
+.time{
+
+		width:8%;
+}

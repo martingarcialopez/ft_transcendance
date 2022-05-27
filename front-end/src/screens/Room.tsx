@@ -9,7 +9,7 @@ import { AddAdmin } from "../components/AddAdmin";
 import { useSelector } from "react-redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { BlockUSer } from "../components/BlockUser";
-
+import { MuteUser } from "../components/MuteUser";
 /**
  * create a new room array depend on the @typeOfRoom
  * this function filter room depend typeOfRoom
@@ -86,6 +86,7 @@ export function Room() {
       <br />
       <AddAdmin room={roomUserIsAdmin} />
       <BlockUSer />
+      <MuteUser />
     </>
   );
 }

@@ -2,15 +2,11 @@ import { useForm } from "react-hook-form";
 import { TitleOptionRoom } from "./TitleOptionRoom";
 import "../styles/room.css";
 import { GetUserInfo } from "./GetUserInfo";
-import { E_BanUser } from "./Event";
 import { T_Room } from "../type/chat";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useState } from "react";
 
-/**
- * find the id of @roomName in the array @room
- */
 function getRoomId(room: T_Room[], roomName: string, userId: number): number {
   let roomId = 0;
   room.forEach((item: T_Room) => {
@@ -19,7 +15,7 @@ function getRoomId(room: T_Room[], roomName: string, userId: number): number {
   return roomId;
 }
 
-export function BlockUSer() {
+export function MuteUser() {
   const { register, handleSubmit } = useForm();
   const userInfo = GetUserInfo();
   const { arrayRoom } = useSelector((state: RootState) => state);
@@ -27,24 +23,16 @@ export function BlockUSer() {
   if (!userInfo) return <h1>Loading...</h1>;
   return (
     <>
-      <TitleOptionRoom title="Ban User" />
+      <TitleOptionRoom title="Mute User" />
       <h4 className="MsgError" style={{ display: display, color: "#FF0F00" }}>
-        user name or room name is wrong
+        user name or room name is wrong or property problem
       </h4>
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
-          console.log(
-            "user to ban:",
-            data,
-            "userInfo id : ",
-            userInfo.id,
-            "roomId",
-            getRoomId(arrayRoom, data.roomName, userInfo.id)
-          );
+          console.log("data :", data);
           let roomId = getRoomId(arrayRoom, data.roomName, userInfo.id);
           if (roomId === 0) setDisplay("inline");
-          else E_BanUser(userInfo.id, data.userName, roomId);
         })}
       >
         <input
@@ -63,10 +51,19 @@ export function BlockUSer() {
           autoComplete="on"
           {...register("roomName")}
         />
-
+        <br />
+        <input
+          className="time"
+          type="time"
+          min="09:00"
+          max="18:00"
+          required
+          {...register("time")}
+        />
         <br />
         <input type="submit" className="btn-new-room" value="Ban" />
       </form>
+      <br />
     </>
   );
 }
