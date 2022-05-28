@@ -308,3 +308,20 @@ hasJoined
 ```
 boolean
 ```
+
+# banUser
+
+## description
+
+```
+Ban user at a room, he/she can anymore see the message caming into that room
+```
+## request data
+```
+muteUser (front to back) {
+  userId: number,
+  userIdToMute: string,
+  roomId: number,
+  time: number
+}
+```
