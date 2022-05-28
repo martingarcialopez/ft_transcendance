@@ -364,7 +364,26 @@ user send message to user/room, it go through the back-end then the back broadca
   content: string;
   id: number;
   roomId: number;
-  sender: string | undefined;
+  sender: string;
   userId: number;
 };
 ```
+
+
+# getMessage
+```
+font-send send it when user click on one of item (user/room) on the left bar chat 
+the data send back from the back-end it is a array contain all the message history
+```
+## event send back && response data
+```
+msgToClient
+[
+	{
+		content: string;
+  		id: number;
+  		roomId: number;
+  		sender: string;
+  		userId: number;
+	}
+]
