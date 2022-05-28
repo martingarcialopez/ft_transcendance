@@ -337,29 +337,35 @@ back-end send all room informations inside a array object
 ```
 [
 	{
-	  name: string;
-	  id: number;
-	  typeRoom: string;
-	  password: string;
-	  owner: number[];
-	  participants: number[];
-	  avatar: string;
+	  name: string,
+	  id: number,
+	  typeRoom: string,
+	  password: string,
+	  owner: number[],
+	  participants: number[],
+	  avatar: string,
 	};
 ]
 ```
-# MsgtoChat
 
-## description
-
+# createMessage
 ```
-this event it received by the front-end
-
-when message send via input , it go first to the back-end, then back-end relay it to the room destinate into front-end 
-
+the message send to a room:
+it go first to the back-end, then back-end relay it to the room destinate
 user send message to user/room, it go through the back-end then the back broadcast that message to the room.
 ```
 ##request data
 ```
+ {
+    userId: number,
+    contentToSend: string,
+    channelIdDst: string,
+    sender: string,
+  }
+```
+## event send back && response data
+```
+##MsgtoChat
 {
   content: string;
   id: number;
