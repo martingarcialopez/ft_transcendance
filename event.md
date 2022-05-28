@@ -402,18 +402,23 @@ msgToClient
 	}
 ]
 
+
+```
 # manageAdmin
+```
+A admin add another admin into a room
+```
 
 ```
-a admin add another admin into a room
-```
-
 request data
-```
 {
   userId: number,
   roomId: number,
   login: string,
   state: boolean,
 };
+```
+## event send back && response data
+```
+void
 ```
