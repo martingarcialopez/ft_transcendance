@@ -365,7 +365,7 @@ user send message to user/room, it go through the back-end then the back broadca
 ```
 ## event send back && response data
 ```
-##MsgtoChat
+MsgtoChat
 {
   content: string;
   id: number;
@@ -381,7 +381,8 @@ user send message to user/room, it go through the back-end then the back broadca
 font-send send it when user click on one of item (user/room) on the left bar chat 
 the data send back from the back-end it is a array contain all the message history
 ```
-##request data
+
+request data
 ```
 {
   userId: number;
@@ -400,3 +401,19 @@ msgToClient
   		userId: number;
 	}
 ]
+
+# manageAdmin
+
+```
+a admin add another admin into a room
+```
+
+request data
+```
+{
+  userId: number,
+  roomId: number,
+  login: string,
+  state: boolean,
+};
+```
