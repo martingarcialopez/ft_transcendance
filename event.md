@@ -325,3 +325,25 @@ muteUser (front to back) {
   time: number
 }
 ```
+# allRoomInfosRes
+
+## description
+
+```
+back-end send all room informations inside a array object
+```
+
+##request data
+```
+[
+	{
+	  name: string;
+	  id: number;
+	  typeRoom: string;
+	  password: string;
+	  owner: number[];
+	  participants: number[];
+	  avatar: string;
+	};
+]
+```
