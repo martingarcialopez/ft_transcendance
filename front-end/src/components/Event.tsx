@@ -179,5 +179,18 @@ export function E_BanUser(
     roomId: roomId,
     time: 0,
   });
-  //	console.log("send event blockUserId: ", blockUserId);
+}
+
+export function E_MuteUser(
+  userId: number,
+  userIdToMute: string,
+  roomId: number,
+  time: string
+) {
+  socket.emit("muteUser", {
+    userId: userId,
+    userIdToMute: userIdToMute,
+    roomId: roomId,
+    time: time,
+  });
 }

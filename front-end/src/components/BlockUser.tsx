@@ -34,14 +34,6 @@ export function BlockUSer() {
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
-          console.log(
-            "user to ban:",
-            data,
-            "userInfo id : ",
-            userInfo.id,
-            "roomId",
-            getRoomId(arrayRoom, data.roomName, userInfo.id)
-          );
           let roomId = getRoomId(arrayRoom, data.roomName, userInfo.id);
           if (roomId === 0) setDisplay("inline");
           else {
