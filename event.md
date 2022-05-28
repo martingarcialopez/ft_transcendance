@@ -347,3 +347,24 @@ back-end send all room informations inside a array object
 	};
 ]
 ```
+# MsgtoChat
+
+## description
+
+```
+this event it received by the front-end
+
+when message send via input , it go first to the back-end, then back-end relay it to the room destinate into front-end 
+
+user send message to user/room, it go through the back-end then the back broadcast that message to the room.
+```
+##request data
+```
+{
+  content: string;
+  id: number;
+  roomId: number;
+  sender: string | undefined;
+  userId: number;
+};
+```
