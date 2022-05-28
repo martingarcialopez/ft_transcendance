@@ -21,11 +21,12 @@ import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { BlockUserDto } from '../dtos/in/blockUser.dto';
 import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto';
-import { ReturnStatusDto } from '../dtos/out/return_status.dto';
 import { PublicRoomDto } from '../dtos/in/publicRoom.dto';
 import { UserService } from '../services/user.service';
 import { MessageService } from '../services/message.service';
 import { ParticipantService } from '../services/participant.service';
+import { BanUserDto } from '../dtos/in/banUser.dto';
+import { ReturnStatusDto } from '../dtos/out/return_status.dto';
 
 /*this declarator gives us access to the socket.io functionality*/
 @WebSocketGateway({
@@ -73,13 +74,22 @@ export class RoomGateway
 
 /*pour qu'un utilisateur puisse rejoindre une room deja existante*/
 	@SubscribeMessage('JoinRoom')
-	async JoinRoom(socket: Socket, body: JoinRoomDto): Promise<void> {
+	async JoinRoom(socket: Socket, body: JoinRoomDto): Promise<ReturnStatusDto> {
 		console.log('in gateway of JoinRoom', body);
-		const have_access = await this.roomService.joinRoom(body);
-		socket.emit('hasJoined', have_access);
+		try {
+			const have_access = await this.roomService.joinRoom(body);
+		}
+		catch(error) {
+			return {
+				'status': 'KO',
+				'msg': 'Something went wrong'
+			}
+		}
+		return {
+            'status': 'OK',
+			'msg': ''
+        }
 	}
-
-
 
 	/*already a member in the room*/
   @SubscribeMessage('getRoom')
@@ -167,6 +177,21 @@ export class RoomGateway
 		let rooms = await this.roomService.F_getRoomsDispo(userId);
 	}
 
+	@SubscribeMessage('F_banUser')
+	async banUser(@Body() body: BanUserDto) : Promise<ReturnStatusDto> {
+		console.log('F_banUser -----------', body, '-----------');
+		try {
+			await this.roomService.banUser(body);
+		}
+		catch(e)
+		{
+			console.log('------------&&&&&----------', e);
+			return {status: 'KO', msg: 'Something went wrong'};
+		}
+		return {status: 'OK',
+				 msg: 'Successfully baned the user'
+			   };
+	}
 
 
 }

@@ -19,6 +19,7 @@ import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto
 import { UserService } from './user.service';
 import { MessageService } from './message.service';
 import { ParticipantService } from './participant.service';
+import { BanUserDto } from '../dtos/in/banUser.dto';
 
 @Injectable()
 export class RoomService {
@@ -216,23 +217,6 @@ export class RoomService {
         return await bcrypt.hash(password, saltOrRounds);
 	}
 
-	async get_RoomAdmins(roomId: number): Promise<number[] | undefined> {
-	let room = await this.roomRepository.createQueryBuilder("room")
-            .select(["room.admin"])
-            .where("room.id = :room_Id", { room_Id: roomId })
-        .getOne();
-		console.log('in get_RoomAdmins ', room , room.admin);
-		return room.admin;
-	}
-
-	//change userName -> userId LATER
-	async userIsAdmin(roomId: number, userId: number) : Promise<boolean> {
-		let admins = await this.get_RoomAdmins(roomId);
-		console.log('admins is here ', admins, admins.indexOf(userId));
-		//return false;
-		return await admins.indexOf(userId) != -1;
-	}
-
 	async manageAdmin(body: UpdateAdminDto): Promise<boolean> {
 		let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
 		let admins = await this.get_RoomAdmins(body.roomId);
@@ -371,7 +355,96 @@ export class RoomService {
 
 		console.log('----------------------\n', dispo_rooms, '--------------------------');
 		return dispo_rooms;
+	}
+
+	async banUser(body: BanUserDto) : Promise<void> {
+//		console.log(await this.findOne(2));
+
+		let roomId : number = 2;//body.roomId;
+		let userId : number = 5;//body.userId;
+		let userIdToBan : number = 3;//body.userIdToBan;
+		let ownerId : number = await this.get_Room_Owner(roomId);
+		let res = await this.participantRepository.findOne({ userId: userIdToBan, roomId: roomId });
+		console.log('res ', res);
+		if (res == undefined)
+		{
+			throw 'This user is not in the room';
+			return ;
 		}
+		//user does not have right OR baned person is admin/owner
+		if (userIdToBan == ownerId)
+		{
+			throw 'Cannot ban owner of the room';
+			return ;
+		}
+		if (await this.userIsAdmin(roomId, userId) == false)
+		{
+			throw 'You are not admin, so you cannot ban';
+			return ;
+		}
+		await this.participantService.leaveRoom({'userId': userIdToBan, 'roomId': roomId})
+		let banList: number[] = await this.get_Room_banList(roomId);
+		if (await this.userIsAdmin(roomId, userIdToBan) == true)/*remove admin of column if the user is baned*/
+		{
+			var admins: number[] = await this.get_RoomAdmins(roomId);
+			var index = admins.indexOf(userIdToBan);
+            admins.splice(index, 1);
+			this.roomRepository.update({id: roomId}, {
+			 	admin: admins})
+		}
+		if (banList.indexOf(userIdToBan) == -1)/*add userid in ban_list*/
+			banList.push(userIdToBan);
+		await this.roomRepository
+            .createQueryBuilder()
+            .update(Room)
+            .set({ banList: banList })
+            .where("id = :id", { id: roomId })
+            .execute();
+//		console.log(await this.findOne(2));
+	}
+
+	/*----------------------------FUNCTION-----------------------*/
+
+	async findOne(id: number): Promise<Room> {
+		return this.roomRepository.findOne(id);
+	}
+
+	async get_Room_banList(roomId: number): Promise<number[]> {
+	let room = await this.roomRepository.createQueryBuilder("room")
+        .select(["room.banList"])
+        .where("room.id = :room_Id", { room_Id: roomId })
+        .getOne();
+		console.log('in get_Room_banList ', room , room.banList);
+		return room.banList;
+	}
+
+	async get_Room_Owner(roomId: number): Promise<number> {
+	let room = await this.roomRepository.createQueryBuilder("room")
+        .select(["room.owner"])
+        .where("room.id = :room_Id", { room_Id: roomId })
+        .getOne();
+		console.log('in get_RoomOwner ', room , room.owner);
+		return room.owner;
+	}
+
+    //change userName -> userId LATER
+    async userIsAdmin(roomId: number, userId: number) : Promise<boolean> {
+		let admins = await this.get_RoomAdmins(roomId);
+        return await admins.indexOf(userId) != -1;
+    }
+
+	async get_RoomAdmins(roomId: number): Promise<number[] | undefined> {
+		let room = await this.roomRepository.createQueryBuilder("room")
+            .select(["room.admin"])
+            .where("room.id = :room_Id", { room_Id: roomId })
+			.getOne();
+        return room.admin;
+    }
+
+
+
+
+
 }
 
 

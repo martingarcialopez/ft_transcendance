@@ -28,6 +28,9 @@ export class Room {
 	//owner: number[] = [];
 	admin: number[];
 
+	@Column("int",  { nullable:true, array: true, default: "{}" })
+	banList: number[];
+
 	@OneToMany((type) => Message, (message) => message.room)
     messages: Message[];
 

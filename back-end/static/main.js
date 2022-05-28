@@ -14,7 +14,7 @@ const app = new Vue({
     name: this.name,
 	content: this.content
 	}
-   this.socket.emit('F_getRooms', message)
+   this.socket.emit('F_banUser', message)
    this.content = ''
   }
  },
