@@ -310,6 +310,7 @@ export class RoomService {
 	async allRoomInfos() : Promise<Room[] | undefined> {
 		let rooms: any = await this.roomRepository.createQueryBuilder("room")
 			.leftJoinAndSelect("room.participants", "participant")
+		    .leftJoinAndSelect("participant.user", "user")
             .getMany();
 		return rooms;
 
