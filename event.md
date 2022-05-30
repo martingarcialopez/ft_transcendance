@@ -308,3 +308,125 @@ hasJoined
 ```
 boolean
 ```
+
+# banUser
+
+## description
+
+```
+Ban user at a room, he/she can anymore see the message caming into that room
+```
+## request data
+```
+muteUser (front to back) {
+  userId: number,
+  userIdToMute: string,
+  roomId: number,
+  time: number
+}
+```
+# allRoomInfosRes
+
+## description
+
+```
+back-end send all room informations inside a array object
+```
+
+##request data
+```
+[
+	{
+	  name: string,
+	  id: number,
+	  typeRoom: string,
+	  password: string,
+	  owner: number[],
+	  participants: user
+	  [
+	  	{
+	  		id: number,
+			roomId: number,
+			userId: 1
+	  	}
+		...
+	  ],
+	  avatar: string,
+	};
+]
+```
+
+# createMessage
+```
+the message send to a room:
+it go first to the back-end, then back-end relay it to the room destinate
+user send message to user/room, it go through the back-end then the back broadcast that message to the room.
+```
+##request data
+```
+ {
+    userId: number,
+    contentToSend: string,
+    channelIdDst: string,
+    sender: string,
+  }
+```
+## event send back && response data
+```
+MsgtoChat
+{
+  content: string;
+  id: number;
+  roomId: number;
+  sender: string;
+  userId: number;
+};
+```
+
+
+# getMessage
+```
+font-send send it when user click on one of item (user/room) on the left bar chat 
+the data send back from the back-end it is a array contain all the message history
+```
+
+request data
+```
+{
+  userId: number;
+  roomId: number;
+};
+```
+## event send back && response data
+```
+msgToClient
+[
+	{
+		content: string;
+  		id: number;
+  		roomId: number;
+  		sender: string;
+  		userId: number;
+	}
+]
+
+
+```
+# manageAdmin
+```
+A admin add another admin into a room
+```
+
+```
+request data
+{
+  userId: number,
+  roomId: number,
+  login: string,
+  state: boolean,
+};
+```
+## event send back && response data
+```
+void
+```
