@@ -1,34 +1,22 @@
 import { T_Room } from "../type/chat";
 import { BsPlusLg } from "react-icons/bs";
 import "../styles/room.css";
-
 import { TitleOptionRoom } from "./TitleOptionRoom";
 import { SetInfoUserRoom } from "./SetInfoUserRoom";
-import { RootState } from "../redux/store";
-import { UserState } from "../redux/reducers/userReducers";
-import { useSelector } from "react-redux";
 import { E_JoinRoom } from "./Event";
+import { GetUserInfo } from "./GetUserInfo";
 
 type T_PropsRoomArray = {
   room: T_Room[];
 };
 
 /*
- * display all chanel with option to join it or leave it
+ * join public room
  */
-
 export function JoinPublicRoom({ room }: T_PropsRoomArray) {
-  const userLogin = useSelector<RootState, UserState>(
-    (state: RootState) => state.userLogin
-  );
+  const userInfo = GetUserInfo();
   if (room.length === 0) return <></>;
-  //  console.log("publicRoom:", room);
-  const { userInfo }: UserState = userLogin;
-
-  if (!userInfo) {
-    return <h1>Loading...</h1>;
-  }
-
+  if (!userInfo) return <h1>Loading...</h1>;
   return (
     <>
       <TitleOptionRoom title="Join Public Room" />
@@ -54,6 +42,7 @@ export function JoinPublicRoom({ room }: T_PropsRoomArray) {
           </div>
         ))}
       </div>
+      <br />
     </>
   );
 }

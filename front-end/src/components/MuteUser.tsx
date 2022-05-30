@@ -6,6 +6,7 @@ import { T_Room } from "../type/chat";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useState } from "react";
+import { E_MuteUser } from "./Event";
 
 function getRoomId(room: T_Room[], roomName: string, userId: number): number {
   let roomId = 0;
@@ -30,9 +31,12 @@ export function MuteUser() {
       <form
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
-          console.log("data :", data);
           let roomId = getRoomId(arrayRoom, data.roomName, userInfo.id);
           if (roomId === 0) setDisplay("inline");
+          else {
+            E_MuteUser(userInfo.id, data.userName, roomId, data.time);
+            setDisplay("none");
+          }
         })}
       >
         <input
@@ -50,7 +54,7 @@ export function MuteUser() {
           required
           autoComplete="on"
           {...register("roomName")}
-        />
+        />{" "}
         <br />
         <input
           className="time"
@@ -59,10 +63,10 @@ export function MuteUser() {
           max="18:00"
           required
           {...register("time")}
-        />
+        />{" "}
         <br />
-        <input type="submit" className="btn-new-room" value="Ban" />
-      </form>
+        <input type="submit" className="btn-new-room" value="Mute" />
+      </form>{" "}
       <br />
     </>
   );

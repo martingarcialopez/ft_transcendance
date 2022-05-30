@@ -59,7 +59,8 @@ export function E_CreateMessage(
 export function E_CreateRoom(
   newRoom: T_Room,
   creatorId: number,
-  updateRoomArray: Function
+  updateRoomArray: Function,
+  setMsgError: Function
 ) {
   socket.emit("createRoom", {
     name: newRoom.name,
@@ -70,10 +71,14 @@ export function E_CreateRoom(
   socket.on("idRoom", (receive: { id: number }) => {
     console.log("reponse creationRoom 'idRoom': ", receive);
     newRoom.id = receive.id;
-    updateRoomArray(newRoom);
+    /* newRoom.owner.push(creatorId);
+     * updateRoomArray(newRoom); */
+    E_AllRoomInfos(updateRoomArray);
+    setMsgError("none");
   });
   socket.on("exception", (receive: { status: string; message: string }) => {
     console.log("reponse creation 'exception': ", receive);
+    setMsgError("inline");
   });
 }
 
@@ -174,5 +179,18 @@ export function E_BanUser(
     roomId: roomId,
     time: 0,
   });
-  //	console.log("send event blockUserId: ", blockUserId);
+}
+
+export function E_MuteUser(
+  userId: number,
+  userIdToMute: string,
+  roomId: number,
+  time: string
+) {
+  socket.emit("muteUser", {
+    userId: userId,
+    userIdToMute: userIdToMute,
+    roomId: roomId,
+    time: time,
+  });
 }

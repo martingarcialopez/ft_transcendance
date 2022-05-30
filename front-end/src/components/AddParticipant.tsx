@@ -92,6 +92,7 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
         {/* <input className="btn2 btn-new-room" type="submit" value="Remove" /> */}
         {/* </div> */}
       </form>
+      <br />
     </>
   );
 }
