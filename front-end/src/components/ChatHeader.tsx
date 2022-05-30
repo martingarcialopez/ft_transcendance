@@ -1,5 +1,5 @@
 import "../styles/ChatTemplate.css";
-import { T_Room, T_User } from "../type/chat";
+import { T_Room, T_Participant } from "../type/chat";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 
@@ -7,13 +7,15 @@ type Props = {
   roomSelectedId: number;
 };
 
-function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
+function findIndexItem(item: T_Room[], occurence: number): number {
   let tmp = 0;
   item.forEach((data, index: number) => {
     if (data.id === occurence) tmp = index;
   });
   return tmp;
 }
+
+//function PrintParticipants() {}
 
 /**
  * this function represent the header with the avatar of  message recipients
@@ -24,7 +26,8 @@ export function ChatHeader({ roomSelectedId }: Props) {
   const { arrayRoom } = useSelector((state: RootState) => state);
   const index = findIndexItem(arrayRoom, roomSelectedId);
   let item: T_Room = arrayRoom[index];
-  console.log("participant:", item.participants);
+  let participant: T_Participant[] = item.participants;
+  /* console.log("participant:", participant); */
   return (
     <>
       <div className="settings-tray">

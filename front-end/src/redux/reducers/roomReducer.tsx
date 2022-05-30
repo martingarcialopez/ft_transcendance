@@ -1,5 +1,32 @@
-import { T_Room, T_Action } from "../../type/chat";
+import { T_Room, T_Action, T_Participant, T_User } from "../../type/chat";
 import { E_ActionType } from "../../type/Enum";
+
+/*
+ *
+ *
+ *
+ * let user: T_User = {
+ *   avatar: "",
+ *   blockList: [],
+ *   firstname: "",
+ *   id: "",
+ *   isActive: true,
+ *   lastname: "",
+ *   login42: "",
+ *   password: "",
+ *   username: "",
+ * };
+ *
+ *
+ * let participant: T_User = {
+ * 	id: 0,
+ * 	roomId: 0,
+ * 	user: user,
+ *   userId: 0,
+ * };
+ *
+ *
+ *  */
 
 let arrayRoom: T_Room[] = [
   {

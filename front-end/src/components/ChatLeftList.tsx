@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { T_Room, T_User, objInfoMsg } from "../type/chat";
+import { T_Room, objInfoMsg } from "../type/chat";
 import { RootState } from "../redux/store";
 import { E_GetMessage } from "../components/Event";
 import { UserState } from "../redux/reducers/userReducers";
@@ -26,7 +26,7 @@ export function LeftBar({ setRoomSelectedId }: Props) {
 
   return (
     <>
-      {arrayRoom.map((item: T_Room | T_User, index: number) => {
+      {arrayRoom.map((item: T_Room, index: number) => {
         return (
           <div key={index}>
             <div

@@ -2,7 +2,6 @@ import socketio from "socket.io-client";
 import { URL_test } from "../constants/url";
 import { T_AddUserRoom, T_Room } from "../type/chat";
 import { T_MsgHistory, objInfoMsg } from "../type/chat";
-//import { test } from "../components/ChatLeftList";
 
 const ENDPOINT = URL_test;
 
@@ -91,15 +90,6 @@ export function E_UpdatePwd(userId: number, roomId: number, pwd: string) {
   console.log("send event : updatePwd");
 }
 
-export function E_SendEvent(userId: number, roomId: number, eventName: string) {
-  socket.emit(eventName, {
-    userId: userId,
-    roomId: roomId,
-  });
-  console.log("send event : ", eventName);
-}
-
-/* export function E_JoinRoom(userId: number, roomId: number, pwd: string) { */
 export function E_JoinRoom(info: T_AddUserRoom) {
   socket.emit("JoinRoom", info);
   console.log("Event 'JoinRoom' :", info);

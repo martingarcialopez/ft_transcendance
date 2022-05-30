@@ -1,3 +1,22 @@
+export type T_User = {
+  avatar: string;
+  blockList: [];
+  firstname: string;
+  id: number;
+  isActive: boolean;
+  lastname: string;
+  login42: string;
+  password: string;
+  username: string;
+};
+
+export type T_Participant = {
+  id: number;
+  roomId: number;
+  user: T_User[];
+  userId: number;
+};
+
 export type T_Room = {
   name: string;
   id: number;
@@ -5,7 +24,8 @@ export type T_Room = {
   password: string;
   owner: number[];
   /* members: number[]; */
-  participants: [];
+  /* participants: []; */
+  participants: T_Participant[];
   avatar: string;
 };
 
@@ -16,13 +36,13 @@ export type T_Msg = {
   roomName: string;
   content: string;
 };
-
-export type T_User = {
-  name: string;
-  id: number;
-  avatar: string;
-};
-
+/*
+ * export type T_User = {
+ *   name: string;
+ *   id: number;
+ *   avatar: string;
+ * };
+ *  */
 export type T_Action = {
   type: string;
   payload: any;
@@ -36,11 +56,15 @@ export type T_AddUserRoom = {
   login: string;
 };
 
-export type T_Participant = {
-  userId: number;
-  roomId: number;
-};
-
+/*
+ *
+ * export type T_Participant = {
+ *   userId: number;
+ *   roomId: number;
+ * };
+ *
+ *
+ *  */
 export type T_MsgHistory = {
   content: string;
   id: number;
