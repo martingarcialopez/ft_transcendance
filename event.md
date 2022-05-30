@@ -342,7 +342,15 @@ back-end send all room informations inside a array object
 	  typeRoom: string,
 	  password: string,
 	  owner: number[],
-	  participants: number[],
+	  participants: user
+	  [
+	  	{
+	  		id: number,
+			roomId: number,
+			userId: 1
+	  	}
+		...
+	  ],
 	  avatar: string,
 	};
 ]
