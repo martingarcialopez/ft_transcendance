@@ -413,6 +413,7 @@ msgToClient
 
 ```
 # manageAdmin
+## description
 ```
 A admin add another admin into a room
 ```
@@ -430,3 +431,23 @@ request data
 ```
 void
 ```
+
+# deleteRoomPw
+
+## description
+```
+delete password of proctected room
+```
+
+```
+request data
+{
+  userId: number,
+  roomId: number,
+
+};
+```
+
+## event send back && response data
+```
+void
