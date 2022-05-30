@@ -9,14 +9,6 @@ import * as actionCreatorsRoom from "../redux/action-creators/Ac_room";
 import { E_AllRoomInfos } from "../components/Event";
 import { useDispatch } from "react-redux";
 
-/* type Props = {
- *   userRoom: T_Room[];
- * };
- *  */
-/**
- * @currentMsg will contains the message from input
- * @infoMsg will contain informaabout the message
- */
 export function ChatTempate() {
   const [roomSelectedId, setRoomSelectedId] = useState<number>(0);
 
@@ -24,7 +16,7 @@ export function ChatTempate() {
     <div>
       <div className="container">
         <div className="row no-gutters ">
-          <div className="col-md-4 border-right">
+          <div className="col-md-4 border-right ">
             <div className="settings-tray">
               <img
                 className="profile-image"
@@ -37,12 +29,7 @@ export function ChatTempate() {
                 <i className="material-icons">menu</i>
               </span>
             </div>
-            <div className="search-box">
-              <div className="input-wrapper">
-                <i className="material-icons">search</i>
-                <input placeholder="Search here" type="text" />
-              </div>
-            </div>
+
             <LeftBar setRoomSelectedId={setRoomSelectedId} />
           </div>
           <div className="col-md-8">
@@ -57,8 +44,6 @@ export function ChatTempate() {
                     <i className="material-icons">sentiment_very_satisfied</i>
 
                     <InputMsg />
-                    {/* <i className="material-icons">mic</i> */}
-                    {/* <i className="material-icons">send</i> */}
                   </div>
                 </div>
               </div>
@@ -70,17 +55,6 @@ export function ChatTempate() {
   );
 }
 
-/*
- * export function Chat() {
- *   const dispatch = useDispatch();
- *   const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
- *   E_AllRoomInfos(ac_InitRoomArray);
- *   return (
- *     <>
- *       <Hat />
- *     </>
- *   );
- * } */
 export function Chat() {
   /****************************************/
   /*

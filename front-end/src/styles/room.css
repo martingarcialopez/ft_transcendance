@@ -156,6 +156,7 @@ input::placeholder {
 
 }
 
+
 .opt1, .opt2, .opt3{
 		width: 20vw;
 }
@@ -186,6 +187,7 @@ input::placeholder {
 
 }
 
+
 .TitleModal{
 		width: 25vw;
 		position: relative;
@@ -193,11 +195,13 @@ input::placeholder {
 	  font-size: calc(100% + 1vw + 1vh);		
 }
 
+/*message when user fill the form*/
 .MsgError{
 		position: relative;
 		left: 25%;		
 }
 
+/*time to mute user*/
 .time{
 
 		width:8%;
@@ -207,4 +211,11 @@ input::placeholder {
 .userName{
 	  font-weight: bold;
 
+}
+.search-box{
+		display: none;
+}
+.col-md-4{
+		    overflow: auto;
+    height: 100vh;
 }

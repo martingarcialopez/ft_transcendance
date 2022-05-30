@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { SetInfoUserRoom } from "./SetInfoUserRoom";
 import { E_JoinRoom } from "./Event";
 import { useState } from "react";
+import { E_HasJoined } from "./Event";
 
 export type T_PropsRoomArray = {
   room: T_Room[];
@@ -32,7 +33,6 @@ function findId(room: T_Room[], occurence: string) {
 /**
  *add user into private room
  */
-
 export function AddParticipant({ room }: T_PropsRoomArray) {
   const { register, handleSubmit } = useForm();
   const userLogin = useSelector<RootState, UserState>(
@@ -54,18 +54,16 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           const targetRoom = findId(room, data.roomName);
-          if (targetRoom.id !== -1) {
-            console.log("targetRoom:", targetRoom);
-            const info = SetInfoUserRoom(
-              userInfo.id,
-              targetRoom.id,
-              targetRoom.typeRoom,
-              "",
-              data.userName
-            );
-            E_JoinRoom(info);
-            setDisplay("none");
-          } else setDisplay("inline");
+          console.log("targetRoom:", targetRoom);
+          const info = SetInfoUserRoom(
+            userInfo.id,
+            targetRoom.id,
+            targetRoom.typeRoom,
+            "",
+            data.userName
+          );
+          E_JoinRoom(info);
+          E_HasJoined(setDisplay);
         })}
       >
         <input

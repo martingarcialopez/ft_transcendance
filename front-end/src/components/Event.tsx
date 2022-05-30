@@ -98,6 +98,14 @@ export function E_JoinRoom(info: T_AddUserRoom) {
   });
 }
 
+export function E_HasJoined(setMsgError: Function) {
+  socket.on("hasJoined", (receive: { state: boolean }) => {
+    if (receive.state === true) setMsgError("inline");
+    else setMsgError("none");
+    console.log("reponse hasJoined Room : ", receive);
+  });
+}
+
 export function E_ManageAdmin(
   userId: number,
   roomId: number,

@@ -1,10 +1,14 @@
 import "../styles/ChatTemplate.css";
-import { T_Room, T_Participant } from "../type/chat";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
+import { T_Room, T_Participant } from "../type/chat";
 
 type Props = {
   roomSelectedId: number;
+};
+
+type PropsParticipant = {
+  participant: T_Participant[];
 };
 
 function findIndexItem(item: T_Room[], occurence: number): number {
@@ -15,7 +19,15 @@ function findIndexItem(item: T_Room[], occurence: number): number {
   return tmp;
 }
 
-//function PrintParticipants() {}
+function PrintParticipants({ participant }: PropsParticipant) {
+  return (
+    <>
+      {participant.map((item: any, index: number) => {
+        return <span key={index}>{item.user.username}, </span>;
+      })}
+    </>
+  );
+}
 
 /**
  * this function represent the header with the avatar of  message recipients
@@ -26,8 +38,6 @@ export function ChatHeader({ roomSelectedId }: Props) {
   const { arrayRoom } = useSelector((state: RootState) => state);
   const index = findIndexItem(arrayRoom, roomSelectedId);
   let item: T_Room = arrayRoom[index];
-  let participant: T_Participant[] = item.participants;
-  /* console.log("participant:", participant); */
   return (
     <>
       <div className="settings-tray">
@@ -36,7 +46,7 @@ export function ChatHeader({ roomSelectedId }: Props) {
           <div className="text">
             <h6>{item.name}</h6>
             <p className="text-muted">
-              Layin' down the law since like before Christ...
+              <PrintParticipants participant={item.participants} />
             </p>
           </div>
           <span className="settings-tray--right">

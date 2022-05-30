@@ -3,17 +3,17 @@ import { T_Room, objInfoMsg } from "../type/chat";
 import { RootState } from "../redux/store";
 import { E_GetMessage } from "../components/Event";
 import { UserState } from "../redux/reducers/userReducers";
-
+import { FilterParticipant } from "./FilterRoom";
 type Props = {
   setRoomSelectedId: Function;
 };
+
 /**
  * list of item in the left side
  * item can be either user or room
  * this function  manage the click on the left bar
  * get id of room cliked and the userId
  */
-
 export function LeftBar({ setRoomSelectedId }: Props) {
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
@@ -23,10 +23,10 @@ export function LeftBar({ setRoomSelectedId }: Props) {
   if (!userInfo) {
     return <h1>Loading...</h1>;
   }
-
+  const roomParticipant = FilterParticipant(arrayRoom, userInfo.id, true);
   return (
     <>
-      {arrayRoom.map((item: T_Room, index: number) => {
+      {roomParticipant.map((item: T_Room, index: number) => {
         return (
           <div key={index}>
             <div
@@ -43,9 +43,7 @@ export function LeftBar({ setRoomSelectedId }: Props) {
               <img className="profile-image" src={item.avatar} alt="" />
               <div key={index} className="text">
                 <h6>{item.name}</h6>
-                <p className="text-muted">Hey, you're arrested!</p>
               </div>
-              <span className="time text-muted small">13:21</span>
             </div>
             <hr />
           </div>
