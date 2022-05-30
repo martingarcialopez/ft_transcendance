@@ -357,6 +357,8 @@ back-end send all room informations inside a array object
 ```
 
 # createMessage
+## description
+
 ```
 the message send to a room:
 it go first to the back-end, then back-end relay it to the room destinate
@@ -385,6 +387,7 @@ MsgtoChat
 
 
 # getMessage
+## description
 ```
 font-send send it when user click on one of item (user/room) on the left bar chat 
 the data send back from the back-end it is a array contain all the message history
@@ -436,7 +439,7 @@ void
 
 ## description
 ```
-delete password of proctected room
+front-end send  to back-end the room to delete password 
 ```
 
 ```
@@ -451,3 +454,4 @@ request data
 ## event send back && response data
 ```
 void
+```
