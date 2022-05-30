@@ -202,3 +202,9 @@ input::placeholder {
 
 		width:8%;
 }
+
+/*name of user in the chat message*/
+.userName{
+	  font-weight: bold;
+
+}

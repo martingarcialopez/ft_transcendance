@@ -10,6 +10,12 @@ import { useSelector } from "react-redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { BlockUSer } from "../components/BlockUser";
 import { MuteUser } from "../components/MuteUser";
+
+import { bindActionCreators } from "redux";
+import * as actionCreatorsRoom from "../redux/action-creators/Ac_room";
+import { E_AllRoomInfos } from "../components/Event";
+import { useDispatch } from "react-redux";
+
 /**
  * create a new room array depend on the @typeOfRoom
  * this function filter room depend typeOfRoom
@@ -50,10 +56,7 @@ function RoomUserNotParticipants(room: T_Room[], userId: number) {
   );
 }
 
-/**
- * this component  contain the setting room options
- */
-export function Room() {
+function SettingRoom() {
   const { arrayRoom } = useSelector((state: RootState) => state);
   const publicRoom = CoypRoom(arrayRoom, "public");
   const protectedRoom = CoypRoom(arrayRoom, "protected");
@@ -84,6 +87,21 @@ export function Room() {
       <AddAdmin room={roomUserIsAdmin} />
       <BlockUSer />
       <MuteUser />
+    </>
+  );
+}
+
+/**
+ * this component  contain the setting room options
+ */
+
+export function Room() {
+  const dispatch = useDispatch();
+  const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
+  E_AllRoomInfos(ac_InitRoomArray);
+  return (
+    <>
+      <SettingRoom />
     </>
   );
 }

@@ -5,11 +5,11 @@ import { T_MsgHistory } from "../type/chat";
 
 function Print({ userId, content, sender }: T_MsgHistory, index: number) {
   return (
-    <div key={index}>
-      <ul>
+    <div key={index} className="chat-bubble chat-bubble--left">
+      <div className="userName">
         userID:{userId} name:{sender}
-        <li>{content}</li>
-      </ul>
+      </div>
+      <p>{content}</p>
     </div>
   );
 }

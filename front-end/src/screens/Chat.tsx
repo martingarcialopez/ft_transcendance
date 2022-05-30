@@ -1,13 +1,13 @@
 import "../styles/ChatTemplate.css";
-//import { RootState } from "../redux/store";
 import { LeftBar } from "../components/ChatLeftList";
 import { PrintMsg } from "../components/ChatPrintMsg";
 import { InputMsg } from "../components/ChatInputMsg";
 import { ChatHeader } from "../components/ChatHeader";
 import { useState } from "react";
-//import { useSelector } from "react-redux";
-//import { T_Room } from "../type/chat";
-//import { GetUserInfo } from "../components/GetUserInfo";
+import { bindActionCreators } from "redux";
+import * as actionCreatorsRoom from "../redux/action-creators/Ac_room";
+import { E_AllRoomInfos } from "../components/Event";
+import { useDispatch } from "react-redux";
 
 /* type Props = {
  *   userRoom: T_Room[];
@@ -23,7 +23,7 @@ export function ChatTempate() {
   return (
     <div>
       <div className="container">
-        <div className="row no-gutters">
+        <div className="row no-gutters ">
           <div className="col-md-4 border-right">
             <div className="settings-tray">
               <img
@@ -81,15 +81,15 @@ export function ChatTempate() {
  *     </>
  *   );
  * } */
-
 export function Chat() {
-  //  const { arrayRoom } = useSelector((state: RootState) => state);
-  /* const userInfo = GetUserInfo();
-   * if (!userInfo) return <h1>Loading...</h1>; */
-  /* const userRoom = arrayRoom.filter((item: T_Room) =>
-   *   CheckParticipant(item.participants, userInfo.id)
-   * ); */
-
+  /****************************************/
+  /*
+   *cette function permet d'initialisé le tableau de rooms
+   */
+  const dispatch = useDispatch();
+  const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
+  E_AllRoomInfos(ac_InitRoomArray);
+  /****************************************/
   return (
     <>
       <ChatTempate />

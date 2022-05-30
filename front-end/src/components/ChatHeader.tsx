@@ -23,7 +23,8 @@ function findIndexItem(item: T_Room[] | T_User[], occurence: number): number {
 export function ChatHeader({ roomSelectedId }: Props) {
   const { arrayRoom } = useSelector((state: RootState) => state);
   const index = findIndexItem(arrayRoom, roomSelectedId);
-  let item: T_Room | T_User = arrayRoom[index];
+  let item: T_Room = arrayRoom[index];
+  console.log("participant:", item.participants);
   return (
     <>
       <div className="settings-tray">

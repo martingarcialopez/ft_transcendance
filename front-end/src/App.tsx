@@ -15,24 +15,13 @@ import { checkAutoLogin } from "./redux/services/userServices";
 import { RootState } from "./redux";
 import { UserState } from "./redux/reducers/userReducers";
 import { OtherProfileScreen } from "./screens/OtherProfileScreen";
-import { bindActionCreators } from "redux";
-import * as actionCreatorsRoom from "./redux/action-creators/Ac_room";
 import { LeaderBoard } from "./screens/LeaderBoard";
-import { E_AllRoomInfos } from "./components/Event";
 
 const App = () => {
   const dispatch = useDispatch();
-  const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
   useEffect(() => {
     checkAutoLogin(dispatch);
   }, [dispatch]);
-
-  /****************************************/
-  /*
-   *cette function permet d'initialisé le tableau de rooms
-   */
-  E_AllRoomInfos(ac_InitRoomArray);
-  /****************************************/
 
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
