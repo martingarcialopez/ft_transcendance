@@ -193,5 +193,19 @@ export class RoomGateway
 			   };
 	}
 
-
+	@SubscribeMessage('F_muteUser')
+    async muteUser(@Body() body: BanUserDto) : Promise<ReturnStatusDto> {
+		console.log('F_muteUser -----------', body, '-----------');
+		try {
+            await this.participantService.muteUser(body);
+		}
+        catch(e)
+        {
+            console.log('------------&&&&&----------', e);
+            return {status: 'KO', msg: 'Something went wrong'};
+        }
+        return {status: 'OK',
+                msg: 'Successfully baned the user'
+			   };
+	}
 }

@@ -1,20 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { Participant } from '../models/participant.entity';
 import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
 import { plainToClass } from 'class-transformer';
-
+import { BanUserDto } from '../dtos/in/banUser.dto';
+import { RoomService } from './room.service';
 
 @Injectable()
 export class ParticipantService {
+	@Inject(forwardRef(() => RoomService))
+    private roomService: RoomService;
 
 	constructor(
 		@InjectRepository(Participant)
-        private readonly participantRepository: Repository<Participant>,
+		private readonly participantRepository: Repository<Participant>,
+	){}
 
-    ){}
+// export class ParticipantService {
+// 	@Inject(RoomService)
+//     private readonly roomService: RoomService;
+
+// 	constructor(
+// 		@InjectRepository(Participant)
+//         private readonly participantRepository: Repository<Participant>,
+
+//     ){}
 
 /*
 ** Create a new obj of participant and store in the table
@@ -73,6 +85,43 @@ export class ParticipantService {
 		if (id != undefined)
 			await this.participantRepository.delete(id);
 	}
+
+	async muteUser(body: BanUserDto) : Promise<void> {
+		let roomId : number = 1;//body.roomId;
+		let userId : number = 1;//body.userId;
+		let userIdToMute : number = 5;//body.userIdToBan;
+		let ownerId : number = await this.roomService.get_Room_Owner(roomId);
+		let time: number = 65;//body.time;
+
+		let res = await this.participantRepository.findOne({ userId: userIdToMute, roomId: roomId });
+		console.log('res ', res);
+		if (res == undefined)
+		{
+			throw 'This user is not in the room';
+			return ;
+		}
+		if (userIdToMute == ownerId)
+		{
+			throw 'Cannot mute owner of the room';
+			return ;
+		}
+		if (await this.roomService.userIsAdmin(roomId, userId) == false)
+		{
+			throw 'You are not admin, so you cannot mute';
+            return ;
+		}
+		var current_time = new Date();
+		var time_until_mute = new Date();
+		time_until_mute.setTime(current_time.getTime() + (time * 60 * 1000));
+		this.participantRepository.update({id: res['id']}, {
+            mute_until: time_until_mute});
+
+
+	}
+
+
+
+
 
 
 }

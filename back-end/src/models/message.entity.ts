@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
-  ManyToOne,
+  ManyToOne,CreateDateColumn
 } from 'typeorm';
 import { User } from './user.entity';
 import { Room } from './room.entity';
@@ -19,6 +19,9 @@ export class Message {
 
 	@Column('text')
 	content: string;
+
+	@CreateDateColumn()
+    createdDate: Date;
 
 	@ManyToOne((type) => User, (user) => user.messages)
 	@JoinColumn({ name: 'userId' })

@@ -11,4 +11,8 @@ export class BanUserDto {
 	@IsNumber()
 	roomId: number;
 
+	@IsNumber()
+	@IsOptional()
+	time?: number;
+
 }
