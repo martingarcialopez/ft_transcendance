@@ -17,7 +17,9 @@ import { RoomGateway } from './gateway/room.gateway';
 import { Participant } from './models/participant.entity';
 import { ParticipantModule } from './modules/participant.module';
 import { ParticipantService} from './services/participant.service';
-import { ParticipantGateway } from './gateway/participant.gateway';
+import { ParticipantGateway} from './gateway/participant.gateway';
+
+import { MaobeChatGateway }  from './gateway/maobe_chat.gateway';
 
 import { PongGateway } from './gateway/pong.gateway';
 import { PongService} from './services/pong.service';
@@ -52,7 +54,7 @@ import { GameHistory } from './models/gamehistory.entity';
 	  PongModule
   ],
   controllers: [],
-	providers: [MessageGateway, RoomGateway, ParticipantGateway, PongGateway],
+	providers: [MessageGateway, RoomGateway, ParticipantGateway, PongGateway, MaobeChatGateway],
 })
 export class AppModule {}
 

@@ -1,0 +1,470 @@
+import {
+	SubscribeMessage,
+	WebSocketGateway,
+	OnGatewayInit,
+	WebSocketServer,
+	OnGatewayConnection,
+	OnGatewayDisconnect,
+} from '@nestjs/websockets';
+import { Logger } from '@nestjs/common';
+import { Socket, Server } from 'socket.io';
+
+const ROOMS_LIST = [
+	{
+		'roomName': 'Cat ambassy',
+		'roomId': 42,
+		'roomType': 'public',
+		'image': 'https://img.freepik.com/free-vector/pink-cat-head-with-angry-face-with-revenge-vector-illustration-carton-emoticon-doodle-icon-drawing_10606-1569.jpg?w=200-',
+		'participants': [
+			{
+				'userId': 100,
+				'userName': 'Meilv',
+				'avatar': 'https://cdn2.iconfinder.com/data/icons/halloween-horror-1/512/35-black-cat-curse-mystery-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 200,
+				'userName': 'Sesame',
+				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Tiger_Leopard-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 300,
+				'userName': 'Maobe',
+				'avatar': 'https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 400,
+				'userName': 'Xibao',
+				'avatar': 'https://cdn2.iconfinder.com/data/icons/japan-flat-2/340/japan_monk_asia_religion_buddhist_zen_japanese_traditional-512.png',
+				'mute' : false ,
+				'block' : false,
+
+			},
+		]
+	},
+	{
+		'roomName': 'Blue team',
+		'roomId': 888,
+		'roomType': 'private',
+		'image': 'https://stickershop.line-scdn.net/stickershop/v1/product/7594755/LINEStorePC/main.png;compress=true',
+		'participants': [
+			{
+				'userId': 100,
+				'userName': 'Meilv',
+				'avatar': 'https://cdn2.iconfinder.com/data/icons/halloween-horror-1/512/35-black-cat-curse-mystery-512.png',
+				'mute' : false,
+				'block' : false,
+			},
+			{
+				'userId': 400,
+				'userName': 'Xibao',
+				'avatar': 'https://cdn2.iconfinder.com/data/icons/japan-flat-2/340/japan_monk_asia_religion_buddhist_zen_japanese_traditional-512.png',
+				'mute' : false,
+				'block' : false,
+			},
+		]
+	},
+	{
+		'roomName': 'Yellow team',
+		'roomId': 666,
+		'roomType': 'private',
+		'image': 'https://c8.alamy.com/comp/2H5Y6BE/smile-yellow-kitten-head-2H5Y6BE.jpg',
+		'participants': [
+			{
+				'userId': 200,
+				'userName': 'Sesame',
+				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Tiger_Leopard-512.png',
+				'mute' : false,
+				'block' : false,
+			},
+			{
+				'userId': 300,
+				'userName': 'Maobe',
+				'avatar': 'https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png',
+				'mute' : false,
+				'block' : false,
+			},
+		]
+	},
+]
+
+@WebSocketGateway({
+	cors: {
+		origin: '*',
+	},
+})
+export class MaobeChatGateway {
+
+	@WebSocketServer() server: Server;
+
+	@SubscribeMessage('F_getRooms')
+	handleMessage(client: Socket, payload: string): boolean {
+		console.log('Message received')
+		this.server.emit('B_getRooms', ROOMS_LIST);
+		return true;
+	}
+
+	@SubscribeMessage('F_deleteMessage')
+	deleteRoom(socket: Socket, roomId: number): boolean {
+		console.log(`Deleting room ${roomId}`);
+		return (true);
+	}
+
+	@SubscribeMessage('F_banUser')
+	banUser(socket: Socket, infos: any): boolean {
+		console.log(`Baning ${infos}`);
+		return (true);
+	}
+
+	@SubscribeMessage('F_getAvailableUsers')
+	getUsers(socket: Socket, userId: number): boolean {
+		console.log(`Getting ${userId}`);
+		const users = [
+			{
+				'userId': 100,
+				'userName': 'Meilv',
+				'avatar': 'https://cdn2.iconfinder.com/data/icons/halloween-horror-1/512/35-black-cat-curse-mystery-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 200,
+				'userName': 'Sesame',
+				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Tiger_Leopard-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 300,
+				'userName': 'Maobe',
+				'avatar': 'https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 400,
+				'userName': 'Xibao',
+				'avatar': 'https://cdn2.iconfinder.com/data/icons/japan-flat-2/340/japan_monk_asia_religion_buddhist_zen_japanese_traditional-512.png',
+				'mute' : false ,
+				'block' : false,
+
+			},
+
+			{
+				'userId': 3,
+				'userName': 'Tito',
+				'avatar': 'https://cdn3.iconfinder.com/data/icons/future-pack/64/010-emotional-robotics-robot-emotion-ai-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 4,
+				'userName': 'Monkey king',
+				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Monkey-128.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 5,
+				'userName': 'Koala bao',
+				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Koala-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 10,
+				'userName': 'Krak3n',
+				'avatar': 'https://cdn4.iconfinder.com/data/icons/supernatural-blush-vol-2/128/Kraken-256.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 11,
+				'userName': 'Shrek',
+				'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/shrek_character_animation_movie_ogre_cartoon-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 12,
+				'userName': 'Wulia bird',
+				'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/angry_bird_gaming_game_character_movie-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+
+		]
+		this.server.emit('B_getAvailableUsers', users);
+		return true;
+	}
+
+	@SubscribeMessage('F_getRoomAvailableUsers')
+	getRoomUsers(socket: Socket, userId: number): boolean {
+		console.log(`Getting ${userId}`);
+		const users = [
+			{
+				'userId': 100,
+				'userName': 'Meilv',
+				'avatar': 'https://cdn2.iconfinder.com/data/icons/halloween-horror-1/512/35-black-cat-curse-mystery-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 200,
+				'userName': 'Sesame',
+				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Tiger_Leopard-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 300,
+				'userName': 'Maobe',
+				'avatar': 'https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 400,
+				'userName': 'Xibao',
+				'avatar': 'https://cdn2.iconfinder.com/data/icons/japan-flat-2/340/japan_monk_asia_religion_buddhist_zen_japanese_traditional-512.png',
+				'mute' : false ,
+				'block' : false,
+
+			},
+
+			{
+				'userId': 3,
+				'userName': 'Tito',
+				'avatar': 'https://cdn3.iconfinder.com/data/icons/future-pack/64/010-emotional-robotics-robot-emotion-ai-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 4,
+				'userName': 'Monkey king',
+				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Monkey-128.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 5,
+				'userName': 'Koala bao',
+				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Koala-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 10,
+				'userName': 'Krak3n',
+				'avatar': 'https://cdn4.iconfinder.com/data/icons/supernatural-blush-vol-2/128/Kraken-256.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 11,
+				'userName': 'Shrek',
+				'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/shrek_character_animation_movie_ogre_cartoon-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+			{
+				'userId': 12,
+				'userName': 'Wulia bird',
+				'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/angry_bird_gaming_game_character_movie-512.png',
+				'mute' : false ,
+				'block' : false,
+			},
+
+		]
+		this.server.emit('B_getRoomAvailableUsers', users);
+		return true;
+	}
+
+	@SubscribeMessage('F_muteUser')
+	muteUser(socket: Socket, infos: any): boolean {
+		console.log(`Muting ${infos}`);
+		return (true);
+	}
+
+	@SubscribeMessage('F_blockUser')
+	blockUser(socket: Socket, infos: any): boolean {
+		console.log(`Blocking ${infos}`);
+		return (true);
+	}
+
+	@SubscribeMessage('F_directMessage')
+	directMessage(socket: Socket, infos: any): boolean {
+		console.log(`directMessage ${infos}`);
+		console.log('i am here!!!!!')
+		return (true);
+	}
+
+	@SubscribeMessage('F_createMessage')
+	createMessage(socket: Socket, message: any): any {
+		const roomId = message.roomId;
+		const content = message.content;
+		const userId = message.userId;
+		console.log(`Creating message ${content} in ${roomId} for ${userId}`);
+		if (true) {
+			this.server.emit('B_createMessage',  {'roomId': roomId,
+												  'message': {
+													  'userId': userId,
+													  'content': content,
+													  'date': '11/05/2020',
+												  }
+												 });
+			return true;
+		}
+		return ({
+			'status': 'KO',
+			'msg': 'Something went wrong.'
+		});
+	}
+
+	@SubscribeMessage('F_createRoom')
+	createRoom(socket: Socket, room: any): any {
+		console.log(`Creating room ${room}`);
+		if (true) {
+			this.server.emit('B_createRoom',  {
+				'roomName': room.roomName,
+				'roomId': 8686,
+				'image': 'https://cdn3.iconfinder.com/data/icons/future-pack/64/023-artificial-heart-cyber-electronic-512.png',
+				'roomType': room.roomType,
+				'participants': room.users
+			});
+			console.log('Returning stuuff');
+			return true;
+		}
+		return ({
+			'status': 'KO',
+			'msg': 'Something went wrong.'
+		});
+	}
+
+	@SubscribeMessage('F_updateRoom')
+	updateRoom(socket: Socket, roomInfos: any): boolean {
+		console.log(`Updating room with: ${roomInfos}`);
+		const currRoom = ROOMS_LIST.filter((obj) => obj.roomId === roomInfos.roomId)[0];
+		currRoom.participants = [...currRoom.participants, ...roomInfos.newParticipants];
+		if (true) {
+			this.server.emit('B_updateRoom',  {
+				'roomName': roomInfos.roomName,
+				'roomId': roomInfos.roomId,
+				'image': currRoom.image,
+				'roomType': roomInfos.roomType,
+				'participants': currRoom.participants
+			});
+			console.log('Returning stuuff');
+			return true;
+		}
+		return (false);
+	}
+
+	@SubscribeMessage('F_getMessages')
+	updateMessage(socket: Socket, roomId: number): boolean {
+		console.log(`Getting message for ${roomId}`);
+		const firstRoomId = 42;
+		if (roomId === -1) {
+			roomId = firstRoomId;
+		}
+		const allMessages = {
+			42: [
+				{
+					'userId': 100,
+					'content': 'Coucou je suis Meilv !! <3',
+					'date': '11/05/2020',
+				},
+				{
+					'userId': 300,
+					'content': '<3 Ai ni <3',
+					'date': '11/05/2020',
+				},
+				{
+					'userId': 200,
+					'content': 'J\'ai faim :(',
+					'date': '11/05/2020',
+				},
+				{
+					'userId': 400,
+					'content': 'Time to chi!',
+					'date': '11/05/2020',
+				},
+			],
+			666: [
+				{
+					'userId': 200,
+					'content': 'Meilv bully me :\'(',
+					'date': '09/05/2020',
+				},
+				{
+					'userId': 300,
+					'content': 'You can hiss her, she\'ll run away petit bao',
+					'date': '09/05/2020',
+				},
+				{
+					'userId': 200,
+					'content': 'I\'m still a bao, she should not treat me as a dog!!!',
+					'date': '09/05/2020',
+				},
+				{
+					'userId': 300,
+					'content': 'kekelianlian <3',
+					'date': '09/05/2020',
+				},
+			],
+			888: [
+				{
+					'userId': 100,
+					'content': 'Xiao di really like to bother me when I eat...',
+					'date': '09/05/2020',
+				},
+				{
+					'userId': 400,
+					'content': 'nigama is the same with me',
+					'date': '09/05/2020',
+				},
+				{
+					'userId': 100,
+					'content': 'still love them tho',
+					'date': '09/05/2020',
+				},
+				{
+					'userId': 400,
+					'content': 'so much <3',
+					'date': '09/05/2020',
+				},
+				{
+					'userId': 100,
+					'content': 'miss mama and youuuu. When will you come back ?',
+					'date': '13/05/2020',
+				},
+				{
+					'userId': 400,
+					'content': 'very soon, we are in the train',
+					'date': '13/05/2020',
+				},
+				{
+					'userId': 100,
+					'content': 'don\'t forger to buy some petit faims 66666666666',
+					'date': '13/05/2020',
+				},
+			]
+		}
+		this.server.emit('B_getMessages', {'roomId': roomId,
+										   'messages': allMessages[roomId]});
+		return (true);
+	}
+}
+
+interface I_Room {
+	roomName: string,
+	roomId: number,
+	image: string,
+	roomType: string,
+	participants: any[];
+}
