@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Menu, SubMenu, MenuButton, ControlledMenu, MenuItem, useMenuState, FocusableItem } from '@szhsin/react-menu';
+import '@szhsin/react-menu/dist/core.css';
+
 import './Maobe_Chat.css';
+
 import socketio from "socket.io-client";
 import add from '../styles/assets/add.svg';
 import call from '../styles/assets/call.svg';
@@ -20,8 +24,7 @@ import caixaEntrada from '../styles/assets/caixaEntrada.svg';
 import emote from '../styles/assets/emote.svg';
 import gift from '../styles/assets/gift.svg';
 import microfoneMuted from '../styles/assets/microfoneMuted.svg';
-import { Menu, SubMenu, MenuButton, ControlledMenu, MenuItem, useMenuState, FocusableItem } from '@szhsin/react-menu';
-import '@szhsin/react-menu/dist/core.css';
+import { GetUserInfo } from "./GetUserInfo";
 
 
 function CreateRoomMenu(props: any) {
@@ -980,11 +983,27 @@ function Chat(props: any) {
 }
 
 function Maobe_Chat() {
-	const socket = socketio('http://localhost:3000');
+	const userInfo = GetUserInfo();
+	if (userInfo === undefined) {
+		return (<div></div>);
+	}
+	const socket = socketio('http://localhost:3000',
+							{
+								extraHeaders: {
+									'Authorization':  `Bearer ${userInfo.access_token}`
+								}}
+						   );
+
+	const connectedUser = {
+		'userId': userInfo.id,
+		'username': userInfo.username,
+		'avatar': userInfo.avatar
+	}
 
 	return (
 		<div className="App">
-			<Chat appSocket={ socket } />
+			<Chat appSocket={ socket }
+				  connectedUser={ connectedUser } />
 		</div>
 	);
 }
