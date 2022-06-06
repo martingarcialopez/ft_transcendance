@@ -990,7 +990,8 @@ function Maobe_Chat() {
 	const socket = socketio('http://localhost:3000',
 							{
 								extraHeaders: {
-									'Authorization':  `Bearer ${userInfo.access_token}`
+									'Authorization':  `Bearer ${userInfo.access_token}`,
+									'userId': userInfo.id,
 								}}
 						   );
 

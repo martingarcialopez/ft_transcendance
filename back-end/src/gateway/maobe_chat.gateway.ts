@@ -9,6 +9,7 @@ import {
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 
+
 const ROOMS_LIST = [
 	{
 		'roomName': 'Cat ambassy',
@@ -104,7 +105,7 @@ export class MaobeChatGateway {
 
 	@SubscribeMessage('F_getRooms')
 	handleMessage(client: Socket, payload: string): boolean {
-		console.log('Message received')
+		console.log('Message received for user: ', client.handshake.headers.userid);
 		this.server.emit('B_getRooms', ROOMS_LIST);
 		return true;
 	}
