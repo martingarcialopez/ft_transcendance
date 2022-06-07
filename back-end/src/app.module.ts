@@ -10,16 +10,17 @@ import { Message } from './models/message.entity';
 import { MessageModule } from './modules/message.module';
 import {MessageService} from './services/message.service';
 import { MessageGateway } from './gateway/message.gateway';
+
 import { Room } from './models/room.entity';
 import { RoomModule } from './modules/room.module';
 import { RoomService} from './services/room.service';
 import { RoomGateway } from './gateway/room.gateway';
+
 import { Participant } from './models/participant.entity';
 import { ParticipantModule } from './modules/participant.module';
 import { ParticipantService} from './services/participant.service';
 import { ParticipantGateway} from './gateway/participant.gateway';
 
-import { MaobeChatGateway }  from './gateway/maobe_chat.gateway';
 
 import { PongGateway } from './gateway/pong.gateway';
 import { PongService} from './services/pong.service';
@@ -30,6 +31,21 @@ import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 import { ConfigModule } from '@nestjs/config';
 import { Relationship } from './models/friends.entity';
 import { GameHistory } from './models/gamehistory.entity';
+
+//MAOBE VERSION
+import { MaobeChatGateway }  from './gateway/maobe_chat.gateway';
+
+import { MaobeMessage } from './models/maobe_message.entity';
+import { MaobeMessageModule } from './modules/maobe_message.module';
+import { MaobeMessageService } from './services/maobe_message.service';
+
+import { MaobeRoom } from './models/maobe_room.entity';
+import { MaobeRoomModule } from './modules/maobe_room.module';
+import { MaobeRoomService} from './services/maobe_room.service';
+
+import { MaobeParticipant } from './models/maobe_participant.entity';
+import { MaobeParticipantModule } from './modules/maobe_participant.module';
+import { MaobeParticipantService} from './services/maobe_participant.service';
 
 
 @Module({
@@ -42,15 +58,16 @@ import { GameHistory } from './models/gamehistory.entity';
       username: 'root',
       password: 'root',
       database: 'db',
-		entities: [User, Message, Room, Participant, Matchmaking, Relationship, GameHistory],
+		entities: [User, Message, MaobeMessage, Room, MaobeRoom, Participant, MaobeParticipant, Matchmaking, Relationship, GameHistory],
       synchronize: true,
     }),
     InMemoryDBModule.forRoot({}),
     HttpModule,
     UserModule,
-    MessageModule,
+    MessageModule, MaobeMessageModule,
       AuthModule,
 	  RoomModule, ParticipantModule,
+	  MaobeRoomModule, MaobeParticipantModule,
 	  PongModule
   ],
   controllers: [],

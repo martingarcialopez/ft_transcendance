@@ -6,8 +6,14 @@ import {
 	OnGatewayConnection,
 	OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { Logger, Body } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
+import { NestGateway } from '@nestjs/websockets/interfaces/nest-gateway.interface';
+import { Bind, UseInterceptors } from '@nestjs/common';
+
+import { MaobeRoomService } from '../services/maobe_room.service';
+import { MaobeParticipantService } from '../services/maobe_participant.service';
+
 
 
 const ROOMS_LIST = [
@@ -103,10 +109,24 @@ export class MaobeChatGateway {
 
 	@WebSocketServer() server: Server;
 
+	constructor(
+		private readonly participantService: MaobeParticipantService,
+		private readonly roomService: MaobeRoomService,
+	) {}
+
+
 	@SubscribeMessage('F_getRooms')
-	handleMessage(client: Socket, payload: string): boolean {
+	async handleMessage(client: Socket, payload: string): Promise<boolean> {
 		console.log('Message received for user: ', client.handshake.headers.userid);
-		this.server.emit('B_getRooms', ROOMS_LIST);
+		let userId : number = Number(client.handshake.headers.userid);
+		try{
+			const rooms = await this.roomService.maobe_getJoinRooms(userId);
+			console.log('---', rooms);
+			this.server.emit('B_getRooms', rooms);
+		}
+		catch(e) {
+			return false;
+		}
 		return true;
 	}
 
