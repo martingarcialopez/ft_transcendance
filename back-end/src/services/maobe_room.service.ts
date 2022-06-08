@@ -1,8 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RoomDto } from '../dtos/in/room.dto';
-import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
 
 import { User } from '../models/user.entity';
 import { MaobeRoom } from '../models/maobe_room.entity';
@@ -10,7 +8,9 @@ import { MaobeParticipant } from '../models/maobe_participant.entity';
 import { MaobeMessage } from '../models/maobe_message.entity';
 import { classToPlain, Exclude } from 'class-transformer';
 import { plainToClass } from 'class-transformer';
+
 import * as bcrypt from 'bcrypt';
+import { RoomDto } from '../dtos/in/maobe_room.dto';
 import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
 import { RoomPwDto } from '../dtos/in/room_password.dto';
 import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
@@ -40,27 +40,27 @@ export class MaobeRoomService {
 		let rooms: any = await this.roomRepository.createQueryBuilder("room")
 		    .leftJoinAndSelect("room.participants", "participant")
             .leftJoinAndSelect("participant.user", "user")
-			// .select(["room.id","room.typeRoom","room.image", "room.name"])
+//			.select(["room.id","room.typeRoom","room.image", "room.name"])
 			.where("participant.userId = :id", { id: userId })
             .getMany();
 		return rooms;
 	}
 
-
-
 	/*
 	** Create a new channel(room)
 	** :param(RoomDto) the infos of the channel given by front
 	** :return (RoomSnippetDto) dto contains new channel id and its name
-	*/	async createRoom(roomDto: RoomDto): Promise<RoomSnippetDto>
+	*/	async maobe_createRoom(userId: number, roomDto: RoomDto): Promise<MaobeRoom| undefined>
 	{
-		// console.log('throw err after');
-		console.log('roomDto ', roomDto);
+		console.log('roomDto:', roomDto, '---------------');
+		console.log(roomDto.password == null);
         const new_room = new MaobeRoom();
-		new_room.name = roomDto.name;
+		/***CHANGE IMAGE***/
+		new_room.image = '';
+		new_room.name = roomDto.roomName;
 		new_room.typeRoom = roomDto.typeRoom;
 		console.log('roomDto.password |', roomDto.password, '|');
-		if (roomDto.password)
+		if (roomDto.password.length > 0)
 		{
 			console.log('createRoom password');
 			new_room.is_protected = true;
@@ -69,14 +69,24 @@ export class MaobeRoomService {
 			const hash = await bcrypt.hash(password, saltOrRounds);
 			new_room.password = hash;
 		}
-		new_room.owner = roomDto.creatorId;
+		new_room.owner = userId;
 		if(new_room.admin == null)
             new_room.admin = [];
-		new_room.admin.push(roomDto.creatorId);
+		new_room.admin.push(userId);
 		await this.roomRepository.save(new_room);
-		await this.participantService.createParticipant({'userId': roomDto.creatorId, 'roomId':  new_room.id});
-		const dto = plainToClass(RoomSnippetDto, new_room);
-		return dto;
+		console.log('---------BOID0----------');
+		await this.participantService.createParticipant({'userId': userId, 'roomId':  new_room.id});
+		console.log('---------BOID1----------');
+		let userIds: User[] = roomDto.users;
+		console.log('---------BOID2----------');
+		if (userIds.length > 0)
+		{
+			console.log('----------BOID3-------userIds: ', userIds);
+			userIds.forEach(async element => await this.participantService.createParticipant({'userId': element['userId'], 'roomId': new_room.id}));
+
+		}
+		console.log('-----------\n\n' , 'new_room', new_room , '\n\n');
+		return new_room;
 	}
 
 

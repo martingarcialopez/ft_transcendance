@@ -8,7 +8,7 @@ export class MaobeRoom {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({unique: true})
+	@Column()
 	name: string;
 
 	@Column()
