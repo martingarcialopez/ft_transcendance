@@ -38,10 +38,9 @@ export class MaobeRoomService {
 	async maobe_getJoinRooms(userId: number): Promise<any[]>
 	{
 		let rooms: any = await this.roomRepository.createQueryBuilder("room")
-            .leftJoinAndSelect("room.participants", "participant")
+		    .leftJoinAndSelect("room.participants", "participant")
             .leftJoinAndSelect("participant.user", "user")
-			.select(["room.id",
-					 "participant.roomId", "room.name"])
+			// .select(["room.id","room.typeRoom","room.image", "room.name"])
 			.where("participant.userId = :id", { id: userId })
             .getMany();
 		return rooms;
