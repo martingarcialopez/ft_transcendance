@@ -21,6 +21,9 @@ export class MaobeRoom {
     password?: string;
 
 	@Column()
+	image: string;
+
+	@Column()
 	owner : number;
 
 	@Column("int",  { nullable:true, array: true, default: "{}" })
