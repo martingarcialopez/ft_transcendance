@@ -37,19 +37,13 @@ export class MaobeRoomService {
 
 	async maobe_getJoinRooms(userId: number): Promise<any[]>
 	{
-		let rooms: any = await this.roomRepository.createQueryBuilder("maobe_room")
-            .leftJoinAndSelect("maobe_room.participants", "maobe_participant")
-            .leftJoinAndSelect("maobe_participant.user", "user")
-			.where("maobe_participant.userId = :id", { id: userId })
+		let rooms: any = await this.roomRepository.createQueryBuilder("room")
+            .leftJoinAndSelect("room.participants", "participant")
+            .leftJoinAndSelect("participant.user", "user")
+			.select(["room.id",
+					 "participant.roomId", "room.name"])
+			.where("participant.userId = :id", { id: userId })
             .getMany();
-
-
-		// const roomIds = await this.participantRepository
-		// 	.createQueryBuilder("maobe_participant")
-		// 	.leftJoinAndSelect("maobe_participant.room", "maobe_room")
-		// 	.select(["participant.roomId", "room.name"])
-		// 	.where("maobe_participant.userId = :id", { id: userId })
-		// 	.getRawMany();
 		return rooms;
 	}
 
