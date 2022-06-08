@@ -37,13 +37,55 @@ export class MaobeRoomService {
 
 	async maobe_getJoinRooms(userId: number): Promise<any[]>
 	{
-		let rooms: any = await this.roomRepository.createQueryBuilder("room")
-		    .leftJoinAndSelect("room.participants", "participant")
-            .leftJoinAndSelect("participant.user", "user")
-			// .select(["room.id","room.typeRoom","room.image", "room.name"])
+		const roomIds_obj: any[] = await this.roomRepository.createQueryBuilder()
+			.select(["MaobeRoom.id"])
+			.innerJoin(MaobeParticipant, "participant", `participant.roomId = MaobeRoom.id`)
 			.where("participant.userId = :id", { id: userId })
-            .getMany();
-		return rooms;
+			.getMany();
+
+		const roomIds: number[] = []
+		roomIds_obj.forEach((obj) => {
+			roomIds.push(obj.id);
+		})
+
+		let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
+			.select(["MaobeRoom", "u"])
+			.leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)
+			.leftJoin(User, "u", `p.userId = u.id`)
+			.where("MaobeRoom.id IN (:...ids)", { ids: roomIds })
+			.getRawMany();
+
+		let managedIndex: any[] = [];
+		let ret: any[] = [];
+
+		rooms.forEach((obj: any) => {
+			if (managedIndex.indexOf(obj.MaobeRoom_id) === -1) {
+				managedIndex.push(obj.MaobeRoom_id);
+
+				const users = rooms.filter((obj2: any) => obj2.MaobeRoom_id === obj.MaobeRoom_id);
+				const tmp_participants: any[] = [];
+
+				users.forEach((obj2) => {
+					tmp_participants.push({
+						'userId': obj2.u_id,
+						'userName': obj2.u_username,
+						'avatar': obj2.u_avatar,
+					});
+				})
+				ret.push(
+					{
+						'id': obj.MaobeRoom_id,
+						'name': obj.MaobeRoom_name,
+						'typeRoom': obj.MaobeRoom_typeRoom,
+						'image': obj.MaobeRoom_image,
+						'owner': obj.MaobeRoom_owner,
+						'admin': obj.MaobeRoom_admin,
+						'participants': tmp_participants
+					}
+				);
+			}
+		});
+		return ret;
 	}
 
 
