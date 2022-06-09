@@ -149,9 +149,9 @@ function EditRoomMenu(props: any) {
 	const [isOpen, setOpen] = useState(false);
 	const [disablePassword, setDisablePassword] = useState(true);
 
-	const Html_AvailableUser =<div></div>;
+	let Html_AvailableUser =<div></div>;
 	if (props.roomAvailableUsers !== undefined) {
-		const Html_AvailableUser = props.roomAvailableUsers.map((user: any, i: any) => {
+		Html_AvailableUser = props.roomAvailableUsers.map((user: any, i: any) => {
 			return (
 				<div key={i} id="messages">
 					<input type="checkbox"
@@ -428,15 +428,14 @@ function ChannelPanel(props: any) {
 	);
 }
 
-function StatusBar() {
+function StatusBar(props: any) {
 	return (
 		<div id="status">
 			<div className="content-status">
-				<img src="https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png" alt="ProfilePhoto" />
+				<img src={ props.connectedUser.avatar } alt="ProfilePhoto" />
 
 				<div id="name-id">
-					<a> Maobe</a>
-					<a> #8686</a>
+					<a> { props.connectedUser.username }</a>
 				</div>
 
 				<div id="icons">
@@ -979,7 +978,7 @@ function Chat(props: any) {
 								roomAvailableUsers={ roomAvailableUsers }
 								onChange_selectRoomParticipant={onChange_selectRoomParticipant}
 					/>
-					<StatusBar />
+					<StatusBar connectedUser={ props.connectedUser } />
 				</div>
 
 				<div id="main">
