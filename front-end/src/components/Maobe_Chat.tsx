@@ -785,7 +785,7 @@ function Chat(props: any) {
 	/*          Update Room            */
 	/* ------------------------------- */
 	const [updateRoomName, setUpdateRoomName] = useState("");
-	const [updateTypeRoom, setUpdateTypeRoom] = useState("");
+	const [updateTypeRoom, setUpdateTypeRoom] = useState("public");
 	const [updatePassWord, setUpdatePassword] = useState("");
 	const onClick_updateRoom = (currRoom: I_Room) => {
 		props.appSocket.emit('F_getRoomAvailableUsers', currRoom.id);
@@ -810,14 +810,15 @@ function Chat(props: any) {
 		setRoomAvailableUsers(userList);
 	}
 	const onSubmit_updateRoom = () => {
+		const tmpRoomInfos = {
+			'name': updateRoomName,
+			'roomId': currRoomId,
+			'roomType': updateTypeRoom !== undefined ? updateTypeRoom : "public",
+			'password': updatePassWord,
+			'newParticipants': selectedNewRoomParticipants,
+		}
 		props.appSocket.emit('F_updateRoom',
-							 {
-								 'name': updateRoomName,
-								 'roomId': currRoomId,
-								 'roomType': updateTypeRoom,
-								 'password': updatePassWord,
-								 'newParticipants': selectedNewRoomParticipants,
-							 },
+							 tmpRoomInfos,
 							 (isUpdated: boolean) => {
 								 if (isUpdated !== true) {
 									 alert('Something went wrong');
