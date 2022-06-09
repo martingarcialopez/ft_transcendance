@@ -144,10 +144,14 @@ function CreateRoomMenu(props: any) {
 }
 
 function EditRoomMenu(props: any) {
-
 	const ref = useRef(null);
 	const [isOpen, setOpen] = useState(false);
 	const [disablePassword, setDisablePassword] = useState(true);
+
+	if (props.currRoom.owner !== props.connectedUser.userId &&
+		props.currRoom.admin.indexOf(props.connectedUser.userId) === -1) {
+		return (<div></div>);
+	}
 
 	let Html_AvailableUser =<div></div>;
 	if (props.roomAvailableUsers !== undefined) {
@@ -955,6 +959,7 @@ function Chat(props: any) {
 				<div id="middle-box">
 					<RoomsPanel roomsList={ rooms }
 								onClick={ onClick_Room }
+								connectedUser={ props.connectedUser }
 
 								onSubmit_createRoom={ onSubmit_createRoom }
 								newRoomName={ newRoomName }
