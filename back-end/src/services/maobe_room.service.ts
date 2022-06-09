@@ -158,7 +158,7 @@ export class MaobeRoomService {
 			.select(["participant.userId"])
 			.where("participant.roomId = :room_Id", { room_Id: roomId })
 			.getMany();
-		deja_member.forEach(element => blockList.push(element[0]));
+		deja_member.forEach(element => blockList.push(element.userId));
 
         let users: User[] = await this.userRepository.createQueryBuilder("user")
 		    .where("user.id NOT IN (:...list) ", { list : blockList })
@@ -296,9 +296,10 @@ export class MaobeRoomService {
 			}
 		}
 		return false;
-	}
+	} */
 
-	async updateRoomPw(body: RoomPwDto): Promise<boolean> {
+/*	NO NEED
+async updateRoomPw(body: RoomPwDto): Promise<boolean> {
 		console.log(body);
 		let room = await this.roomRepository.createQueryBuilder("room")
             .select(["room.admin"])
