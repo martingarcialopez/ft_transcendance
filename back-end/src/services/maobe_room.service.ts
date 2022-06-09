@@ -69,7 +69,7 @@ export class MaobeRoomService {
 				users.forEach((obj2) => {
 					tmp_participants.push({
 						'userId': obj2.u_id,
-						'userName': obj2.u_username,
+						'username': obj2.u_username,
 						'avatar': obj2.u_avatar,
 					});
 				})
