@@ -192,6 +192,8 @@ export class MaobeRoomService {
 				   password: password})
             .where("id = :id", { id: roomInfos.roomId })
             .execute();
+		/*add new participants*/
+		const new_participants : MaobeParticipant[] = roomInfos.newParticipants.forEach(async element => await this.participantService.createParticipant({'userId': element['id'], 'roomId': roomInfos.roomId}));
 	const update_room = await this.roomRepository.findOne(roomInfos.roomId);
 		return {
 			'id': update_room['id'],
