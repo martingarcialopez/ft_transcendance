@@ -243,7 +243,7 @@ export class MaobeChatGateway {
 	async updateRoom(socket: Socket, roomInfos: any): Promise<boolean> {
 		try {
             const update_room = await this.roomService.maobe_updateRoom(roomInfos);
-            socket.emit('B_createRoom', update_room);
+            socket.emit('B_updateRoom', update_room);
         }
          catch(e) {
              return false;
