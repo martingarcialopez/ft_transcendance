@@ -162,7 +162,7 @@ export class MaobeChatGateway {
 		let userId : number = Number(socket.handshake.headers.userid);
 		console.log(`Getting ${userId}`);
 		try {
-			const users = await this.roomService.getAvailableUsers(userId);
+			const users = await this.roomService.get_AvailableUsers(userId);
 			socket.emit('B_getAvailableUsers', users);
 		}
 		catch(e)
@@ -173,9 +173,15 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_getRoomAvailableUsers')
-	getRoomUsers(socket: Socket, userId: number): boolean {
-		console.log(`Getting ${userId}`);
-		this.server.emit('B_getRoomAvailableUsers', false);
+	async getRoomUsers(socket: Socket, roomId: number): Promise<boolean> {
+		const userId: number = Number(socket.handshake.headers.userid);
+		try{
+			const users = await this.roomService.getRoom_AvailableUsers(userId, roomId);
+			this.server.emit('B_getRoomAvailableUsers', users);
+		}
+		catch(e){
+			return false;
+		}
 		return true;
 	}
 

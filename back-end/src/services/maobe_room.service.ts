@@ -137,15 +137,27 @@ export class MaobeRoomService {
 	}
 
 
-	async getAvailableUsers(userId: number) : Promise<User[]> {
+	async get_AvailableUsers(userId: number) : Promise<User[]> {
 		let blockList: number[] = await this.Mutual_blocklist(userId);
         let dispo_users: User[] = await this.userRepository.createQueryBuilder("user")
             .where("user.id NOT IN (:...list) ", { list : blockList })
             .getMany();
-
-        console.log('dispo_users----------------------\n', dispo_users, '--------------------------');
         return dispo_users;
+	}
 
+	/*get potentials users who are not in the room yet*/
+	async getRoom_AvailableUsers(userId: number, roomId: number) :  Promise<User[] | any> {
+		let blockList: number[] = await this.Mutual_blocklist(userId);
+		let deja_member : MaobeParticipant[] = await this.participantRepository.createQueryBuilder("participant")
+			.select(["participant.userId"])
+			.where("participant.roomId = :room_Id", { room_Id: roomId })
+			.getMany();
+		deja_member.forEach(element => blockList.push(element[0]));
+
+        let users: User[] = await this.userRepository.createQueryBuilder("user")
+		    .where("user.id NOT IN (:...list) ", { list : blockList })
+			.getMany();
+		return users;
 	}
 
 	async maobe_updateRoom(roomInfos: any) : Promise<any> {
@@ -158,29 +170,23 @@ export class MaobeRoomService {
 			return ;
 		}
 
-		if (roomInfos['password'].length == 0)
+		var is_protected = false;
+		var password = null;
+		if (roomInfos['password'].length !== 0)
 		{
-			await this.roomRepository
-                .createQueryBuilder()
-                .update(MaobeRoom)
-                .set( {name: roomInfos.name, typeRoom: roomInfos.roomType,
-					   is_protected: false,
-					   password: null})
-                .where("id = :id", { id: roomInfos.roomId })
-                .execute();
+			is_protected = true;
+			password = await bcrypt.hash(roomInfos.password, 10);
 		}
-		else
-		{
-			await this.roomRepository
-				.createQueryBuilder()
-			    .update(MaobeRoom)
-				.set( {name: roomInfos.name, typeRoom: roomInfos.roomType,
-					   is_protected: true,
-					   password: await bcrypt.hash(roomInfos.password, 10)})
-				.where("id = :id", { id: roomInfos.roomId })
-				.execute();
-		}
-		const update_room = await this.roomRepository.findOne(roomInfos.roomId);
+
+		await this.roomRepository
+            .createQueryBuilder()
+            .update(MaobeRoom)
+            .set( {name: roomInfos.name, typeRoom: roomInfos.roomType,
+				   is_protected: is_protected,
+				   password: password})
+            .where("id = :id", { id: roomInfos.roomId })
+            .execute();
+	const update_room = await this.roomRepository.findOne(roomInfos.roomId);
 		return {
 			'id': update_room['id'],
 			'name': update_room['name'],
