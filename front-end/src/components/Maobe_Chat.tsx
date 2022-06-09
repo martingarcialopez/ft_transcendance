@@ -309,6 +309,37 @@ function CreateRoomForm(props: any) {
 	);
 }
 
+function ParticipantAdminContextMenu(props: any) {
+	if (props.currentRoom.owner !== props.connectedUser.userId &&
+		props.currentRoom.admin.indexOf(props.connectedUser.userId) === -1) {
+		return (<div></div>);
+	}
+	return (
+		<div>
+				{ /* ----- KICK ----- */ }
+                <MenuItem onClick={
+							  () => props.onClick_kick(props.currentUser.userId, props.currRoomId) }>
+					Kick { props.currentUser.username }
+				</MenuItem>
+				<hr />
+
+				{ /* ----- BAN ----- */ }
+                <MenuItem onClick={
+							  () => props.onClick_ban(props.currentUser.userId, props.currRoomId) }>
+					Ban { props.currentUser.username }
+				</MenuItem>
+				<hr />
+
+				{ /* ----- MUTE ----- */ }
+                <MenuItem onClick={
+							  () => props.onClick_mute(props.currentUser.userId, props.currRoomId) }>
+					Mute { props.currentUser.username }
+				</MenuItem>
+				<hr />
+		</div>
+	);
+}
+
 function ParticipantContextMenu(props: any) {
     const [menuProps, toggleMenu] = useMenuState();
     const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
@@ -330,26 +361,7 @@ function ParticipantContextMenu(props: any) {
 
             <ControlledMenu {...menuProps} anchorPoint={anchorPoint}
                             onClose={() => toggleMenu(false)}>
-				{ /* ----- KICK ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_kick(props.currentUser.userId, props.currRoomId) }>
-					Kick { props.currentUser.username }
-				</MenuItem>
-				<hr />
-
-				{ /* ----- BAN ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_ban(props.currentUser.userId, props.currRoomId) }>
-					Ban { props.currentUser.username }
-				</MenuItem>
-				<hr />
-
-				{ /* ----- MUTE ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_mute(props.currentUser.userId, props.currRoomId) }>
-					Mute { props.currentUser.username }
-				</MenuItem>
-				<hr />
+				<ParticipantAdminContextMenu {...props} />
 
 				{ /* ----- BLOCK ----- */ }
                 <MenuItem onClick={
@@ -386,6 +398,7 @@ function ParticipantsPanel(props: any) {
 		return (
 			<div key={i}>
 				<ParticipantContextMenu currentUser={ currentUser }
+										currentRoom={ currentRoom }
 										{...props} />
 			</div>
 		)
@@ -1005,6 +1018,7 @@ function Chat(props: any) {
 					<div className="content">
 						<ParticipantsPanel roomsList={ rooms }
 										   currRoomId={ currRoomId }
+										   connectedUser={ props.connectedUser }
 										   onClick_kick={ onClick_kick  }
 										   onClick_ban={ onClick_ban  }
 										   onClick_mute={ onClick_mute  }
