@@ -118,11 +118,9 @@ export class MaobeChatGateway {
 
 	@SubscribeMessage('F_getRooms')
 	async handleMessage(client: Socket, payload: string): Promise<boolean> {
-		console.log('Message received for user: ', client.handshake.headers.userid);
 		let userId : number = Number(client.handshake.headers.userid);
 		try{
 			const rooms = await this.roomService.maobe_getJoinRooms(userId);
-			console.log('---', rooms);
 			client.emit('B_getRooms', rooms);
 		}
 		catch(e) {
@@ -147,20 +145,17 @@ export class MaobeChatGateway {
 
 	@SubscribeMessage('F_deleteMessage')
 	deleteRoom(socket: Socket, roomId: number): boolean {
-		console.log(`Deleting room ${roomId}`);
 		return (true);
 	}
 
 	@SubscribeMessage('F_banUser')
 	banUser(socket: Socket, infos: any): boolean {
-		console.log(`Baning ${infos}`);
 		return (true);
 	}
 
 	@SubscribeMessage('F_getAvailableUsers')
 	async getUsers(socket: Socket): Promise<boolean> {
 		let userId : number = Number(socket.handshake.headers.userid);
-		console.log(`Getting ${userId}`);
 		try {
 			const users = await this.roomService.get_AvailableUsers(userId);
 			socket.emit('B_getAvailableUsers', users);
@@ -187,13 +182,11 @@ export class MaobeChatGateway {
 
 	@SubscribeMessage('F_muteUser')
 	muteUser(socket: Socket, infos: any): boolean {
-		console.log(`Muting ${infos}`);
 		return (true);
 	}
 
 	@SubscribeMessage('F_blockUser')
 	blockUser(socket: Socket, infos: any): boolean {
-		console.log(`Blocking ${infos}`);
 		return (true);
 	}
 
@@ -248,7 +241,6 @@ export class MaobeChatGateway {
 
 	@SubscribeMessage('F_updateRoom')
 	async updateRoom(socket: Socket, roomInfos: any): Promise<boolean> {
-		console.log(`Updating room with: ${roomInfos}`);
 		try {
             const update_room = await this.roomService.maobe_updateRoom(roomInfos);
             socket.emit('B_createRoom', update_room);
@@ -261,7 +253,6 @@ export class MaobeChatGateway {
 
 	@SubscribeMessage('F_getMessages')
 	updateMessage(socket: Socket, roomId: number): boolean {
-		console.log(`Getting message for ${roomId}`);
 		const firstRoomId = 42;
 		if (roomId === -1) {
 			roomId = firstRoomId;
