@@ -831,9 +831,11 @@ function Chat(props: any) {
 							 });
 	}
 	const updateRoom_listener = (updatedRoom: I_Room) => {
-		const newRooms = rooms.filter((obj: any) => obj.id !== updatedRoom.id);
+		let newRooms = rooms.filter((obj: any) => obj.id !== updatedRoom.id);
+		let oldRoom = rooms.filter((obj: any) => obj.id === updatedRoom.id)[0];
+
+		updatedRoom.participants = [...oldRoom.participants, ...updatedRoom.participants]
 		newRooms.unshift(updatedRoom);
-		console.log('newROOOOM: ', newRooms);
 		setRooms(newRooms);
 	}
 
