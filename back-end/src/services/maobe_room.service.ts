@@ -148,6 +148,53 @@ export class MaobeRoomService {
 
 	}
 
+	async updateRoom(roomInfos: any) : Promise<any> {
+		let room = await this.roomRepository.createQueryBuilder("room")
+            .where("room.id = :room_Id", { room_Id: roomInfos.roomId })
+            .getOne();
+
+		if (room != undefined){
+			throw 'cannot find this room';
+			return ;
+		}
+
+		if (roomInfos['password'].length == 0)
+		{
+			await this.roomRepository
+                .createQueryBuilder()
+                .update(MaobeRoom)
+                .set( {name: roomInfos.name, typeRoom: roomInfos.roomType,
+					   is_protected: false,
+					   password: null})
+                .where("id = :id", { id: roomInfos.roomId })
+                .execute();
+		}
+		else
+		{
+			await this.roomRepository
+				.createQueryBuilder()
+			    .update(MaobeRoom)
+				.set( {name: roomInfos.name, typeRoom: roomInfos.roomType,
+					   is_protected: true,
+					   password: await bcrypt.hash(roomInfos.password, 10)})
+				.where("id = :id", { id: roomInfos.roomId })
+				.execute();
+		}
+		const update_room = await this.roomRepository.findOne(roomInfos.roomId);
+		return {
+			'id': update_room['id'],
+			'name': update_room['name'],
+			'typeRoom': update_room['typeRoom'],
+			'is_protected': update_room['is_protected'],
+			'image': update_room['image'],
+			'owner': update_room['owner'],
+			'admin': update_room['admin'],
+			'participants': roomInfos.newParticipants,
+			}
+
+		}
+
+
 
 	/*
 	** Get all user in the given id room
