@@ -73,6 +73,20 @@ function CreateRoomMenu(props: any) {
 				<hr />
 
 				{ /* ---------- */ }
+				<label> Room Image </label>
+				<FocusableItem>
+					{({ ref }) => (
+						<input ref={ref}
+							   required
+							   type="text"
+							   placeholder="Put an image url here"
+							   value={ props.roomImage }
+							   onChange={e => props.setRoomImage(e.target.value)} />
+					)}
+				</FocusableItem>
+				<hr />
+
+				{ /* ---------- */ }
 				<label> Room Type </label>
 				<FocusableItem>
 					{({ ref }) => (
@@ -704,8 +718,9 @@ function Chat(props: any) {
 	/*        Create new room          */
 	/* ------------------------------- */
 	const [newRoomName, setNewRoomName ] = useState("");
-	const [typeRoom, setTypeRoom ] = useState("public");
-	const [passWord, setPassword ] = useState("");
+	const [typeRoom, setTypeRoom] = useState("public");
+	const [passWord, setPassword] = useState("");
+	const [roomImage, setRoomImage] = useState("");
 	const [availableUsers, setAvailableUsers] = useState<any[]>([]);
 	const onClick_getAvailableUsers = () => {
 		props.appSocket.emit('F_getAvailableUsers', true);
@@ -726,14 +741,14 @@ function Chat(props: any) {
 		}
 	}
 	const onSubmit_createRoom = () => {
-
 		let tmpRoomName = newRoomName;
-		if (tmpRoomName.length == 0) {
+		if (tmpRoomName.length === 0) {
 			tmpRoomName = 'undefined';
 		}
 
 		const RoomToCreate = {
 			'name': tmpRoomName,
+			'image': roomImage,
 			'typeRoom': typeRoom,
 			'password': passWord,
 			'users': selectedNewParticipants
@@ -747,6 +762,7 @@ function Chat(props: any) {
 								 }
 								 else {
 									 setNewRoomName("");
+									 setRoomImage("");
 									 setTypeRoom("public");
 									 setPassword("");
 									 setSelectedNewParticipants([]);
@@ -942,6 +958,8 @@ function Chat(props: any) {
 								newRoomName={ newRoomName }
 								setNewRoomName={ setNewRoomName }
 								typeRoom={ typeRoom }
+								roomImage={ roomImage }
+								setRoomImage={ setRoomImage }
 								setTypeRoom={ setTypeRoom }
 								password={ passWord }
 								setPassword={ setPassword }
