@@ -135,17 +135,20 @@ function EditRoomMenu(props: any) {
 	const [isOpen, setOpen] = useState(false);
 	const [disablePassword, setDisablePassword] = useState(true);
 
-	const Html_AvailableUser = props.roomAvailableUsers.map((user: any, i: any) => {
-		return (
-			<div key={i} id="messages">
-				<input type="checkbox"
-					   onChange={(e) => props.onChange_selectRoomParticipant(e, user) }
-				/>
-				<img src={user.avatar} />
-				<label>{ user.username }</label>
-			</div>
-		);
-	});
+	const Html_AvailableUser =<div></div>;
+	if (props.roomAvailableUsers !== undefined) {
+		const Html_AvailableUser = props.roomAvailableUsers.map((user: any, i: any) => {
+			return (
+				<div key={i} id="messages">
+					<input type="checkbox"
+						   onChange={(e) => props.onChange_selectRoomParticipant(e, user) }
+					/>
+					<img src={user.avatar} />
+					<label>{ user.username }</label>
+				</div>
+			);
+		});
+	}
 
 	return (
 		<div>
@@ -723,8 +726,14 @@ function Chat(props: any) {
 		}
 	}
 	const onSubmit_createRoom = () => {
+
+		let tmpRoomName = newRoomName;
+		if (tmpRoomName.length == 0) {
+			tmpRoomName = 'undefined';
+		}
+
 		const RoomToCreate = {
-			'name': newRoomName,
+			'name': tmpRoomName,
 			'typeRoom': typeRoom,
 			'password': passWord,
 			'users': selectedNewParticipants
@@ -876,6 +885,9 @@ function Chat(props: any) {
 		if (props.appSocket.__callbacks === undefined ||
 			props.appSocket._callbacks['getRooms_listener'] === undefined) {
 			props.appSocket.on('B_getRooms', getRooms_listener);
+			if (rooms.length === 0) {
+				props.appSocket.emit('F_getRooms', '');
+			}
 		}
 		if (props.appSocket._callbacks['getMessages_listener'] === undefined) {
 			props.appSocket.on('B_getMessages', getMessages_listener);
