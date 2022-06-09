@@ -302,7 +302,7 @@ function ParticipantContextMenu(props: any) {
 				<img src={ props.currentUser.avatar } alt="" />
 				<div id="column-message">
 					<div id="message-send">
-						<a>{ props.currentUser.userName }</a>
+						<a>{ props.currentUser.username }</a>
 					</div>
 				</div>
 			</div>
@@ -747,7 +747,7 @@ function Chat(props: any) {
 	}
 	const createRoom_listener = (newRoom: I_Room) => {
 		let newRooms = rooms.slice();
-		newRooms.push(newRoom);
+		newRooms.unshift(newRoom);
 		setRooms(newRooms);
 		setCurrRoomId(newRoom.id);
 

@@ -35,6 +35,7 @@ export class MaobeRoomService {
 		@InjectRepository(User) private readonly userRepository: Repository<User>,
     ){}
 
+	/*get all the room the user participated and corresponding all participants in the room */
 	async maobe_getJoinRooms(userId: number): Promise<any[]>
 	{
 		const roomIds_obj: any[] = await this.roomRepository.createQueryBuilder()
@@ -92,7 +93,7 @@ export class MaobeRoomService {
 	** Create a new channel(room)
 	** :param(RoomDto) the infos of the channel given by front
 	** :return (RoomSnippetDto) dto contains new channel id and its name
-	*/	async maobe_createRoom(userId: number, roomDto: RoomDto): Promise<MaobeRoom| undefined>
+	*/	async maobe_createRoom(userId: number, roomDto: RoomDto): Promise<any | undefined>
 	{
 		console.log('roomDto:', roomDto, '---------------');
 		console.log(roomDto.password == null);
@@ -104,7 +105,6 @@ export class MaobeRoomService {
 		console.log('roomDto.password |', roomDto.password, '|');
 		if (roomDto.password.length > 0)
 		{
-			console.log('createRoom password');
 			new_room.is_protected = true;
 			const password = roomDto.password;
 			const saltOrRounds = 10;
@@ -118,19 +118,22 @@ export class MaobeRoomService {
             new_room.admin = [];
 		new_room.admin.push(userId);
 		await this.roomRepository.save(new_room);
-		console.log('---------BOID0----------');
 		await this.participantService.createParticipant({'userId': userId, 'roomId':  new_room.id});
-		console.log('---------BOID1----------');
-		let userIds: User[] = roomDto.users;
-		console.log('---------BOID2----------');
-		if (userIds.length > 0)
+		let users: User[] = roomDto.users;
+		if (users.length > 0)
 		{
-			console.log('----------BOID3-------userIds: ', userIds);
-			userIds.forEach(async element => await this.participantService.createParticipant({'userId': element['userId'], 'roomId': new_room.id}));
+			users.forEach(async element => await this.participantService.createParticipant({'userId': element['id'], 'roomId': new_room.id}));
 
 		}
-		console.log('-----------\n\n' , 'new_room', new_room , '\n\n');
-		return new_room;
+		return {
+            'id': new_room.id,
+            'name': new_room.name,
+            'typeRoom': new_room.typeRoom,
+            'image': new_room.image,
+            'owner': new_room.owner,
+            'admin': new_room.admin,
+            'participants': users
+        }
 	}
 
 
