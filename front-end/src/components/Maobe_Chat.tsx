@@ -142,7 +142,7 @@ function EditRoomMenu(props: any) {
 					   onChange={(e) => props.onChange_selectRoomParticipant(e, user) }
 				/>
 				<img src={user.avatar} />
-				<label>{ user.userName }</label>
+				<label>{ user.username }</label>
 			</div>
 		);
 	});
@@ -312,35 +312,35 @@ function ParticipantContextMenu(props: any) {
 				{ /* ----- KICK ----- */ }
                 <MenuItem onClick={
 							  () => props.onClick_kick(props.currentUser.userId, props.currRoomId) }>
-					Kick { props.currentUser.userName }
+					Kick { props.currentUser.username }
 				</MenuItem>
 				<hr />
 
 				{ /* ----- BAN ----- */ }
                 <MenuItem onClick={
 							  () => props.onClick_ban(props.currentUser.userId, props.currRoomId) }>
-					Ban { props.currentUser.userName }
+					Ban { props.currentUser.username }
 				</MenuItem>
 				<hr />
 
 				{ /* ----- MUTE ----- */ }
                 <MenuItem onClick={
 							  () => props.onClick_mute(props.currentUser.userId, props.currRoomId) }>
-					Mute { props.currentUser.userName }
+					Mute { props.currentUser.username }
 				</MenuItem>
 				<hr />
 
 				{ /* ----- BLOCK ----- */ }
                 <MenuItem onClick={
 							  () => props.onClick_block(props.currentUser.userId, props.currRoomId) }>
-					Block { props.currentUser.userName }
+					Block { props.currentUser.username }
 				</MenuItem>
 				<hr />
 
 				{ /* ----- DIRECT MESSAGE ----- */ }
                 <MenuItem onClick={
 							  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
-					Send Message { props.currentUser.userName }
+					Send Message { props.currentUser.username }
 				</MenuItem>
 
             </ControlledMenu>
@@ -485,7 +485,7 @@ function MessagePanel(props: any) {
 			let currentUser = currentRoom.participants.filter((obj: any) => obj.userId === message.userId)[0];
 			if (currentUser === undefined) {
 				currentUser = {
-					'userName': 'undefined',
+					'username': 'undefined',
 					'avatar': ''
 				};
 			}
@@ -496,7 +496,7 @@ function MessagePanel(props: any) {
 
 						<div id="column-message">
 							<div id="name-date-message">
-								<a>{ currentUser.userName }</a>
+								<a>{ currentUser.username }</a>
 								<a>{ message.date }</a>
 							</div>
 							<div id="message-send">
