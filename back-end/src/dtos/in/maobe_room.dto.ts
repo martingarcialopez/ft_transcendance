@@ -16,4 +16,6 @@ export class RoomDto {
 	@IsNumber()
 	public users: User[];
 
+	@IsString()
+    public image: string;
 }

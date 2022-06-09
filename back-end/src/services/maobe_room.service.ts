@@ -95,11 +95,17 @@ export class MaobeRoomService {
 	** :return (RoomSnippetDto) dto contains new channel id and its name
 	*/	async maobe_createRoom(userId: number, roomDto: RoomDto): Promise<any | undefined>
 	{
-		console.log('roomDto:', roomDto, '---------------');
-		console.log(roomDto.password == null);
+		console.log('roomDto:', roomDto.image, '---------------');
         const new_room = new MaobeRoom();
+
 		/***CHANGE IMAGE***/
-		new_room.image = 'https://stickershop.line-scdn.net/stickershop/v1/product/7594755/LINEStorePC/main.png;compress=true';
+		if (roomDto.image === undefined || roomDto.image === null ||  roomDto.image.length === 0) {
+			new_room.image = 'https://stickershop.line-scdn.net/stickershop/v1/product/7594755/LINEStorePC/main.png;compress=true';
+		}
+		else {
+			new_room.image = roomDto.image;
+		}
+
 		new_room.name = roomDto.name;
 		new_room.typeRoom = roomDto.typeRoom;
 		console.log('roomDto.password |', roomDto.password, '|');
