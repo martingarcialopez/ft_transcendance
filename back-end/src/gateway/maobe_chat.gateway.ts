@@ -241,22 +241,16 @@ export class MaobeChatGateway {
 	// }
 
 	@SubscribeMessage('F_updateRoom')
-	updateRoom(socket: Socket, roomInfos: any): boolean {
+	async updateRoom(socket: Socket, roomInfos: any): Promise<boolean> {
 		console.log(`Updating room with: ${roomInfos}`);
-		const currRoom = ROOMS_LIST.filter((obj) => obj.roomId === roomInfos.roomId)[0];
-		currRoom.participants = [...currRoom.participants, ...roomInfos.newParticipants];
-		if (true) {
-			this.server.emit('B_updateRoom',  {
-				'roomName': roomInfos.roomName,
-				'roomId': roomInfos.roomId,
-				'image': currRoom.image,
-				'roomType': roomInfos.roomType,
-				'participants': currRoom.participants
-			});
-			console.log('Returning stuuff');
-			return true;
-		}
-		return (false);
+		try {
+            const update_room = await this.roomService.maobe_updateRoom(roomInfos);
+            socket.emit('B_createRoom', update_room);
+        }
+         catch(e) {
+             return false;
+         }
+        return true;
 	}
 
 	@SubscribeMessage('F_getMessages')

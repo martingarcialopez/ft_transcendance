@@ -148,7 +148,7 @@ export class MaobeRoomService {
 
 	}
 
-	async updateRoom(roomInfos: any) : Promise<any> {
+	async maobe_updateRoom(roomInfos: any) : Promise<any> {
 		let room = await this.roomRepository.createQueryBuilder("room")
             .where("room.id = :room_Id", { room_Id: roomInfos.roomId })
             .getOne();
