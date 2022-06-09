@@ -158,85 +158,94 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_getAvailableUsers')
-	getUsers(socket: Socket, userId: number): boolean {
+	async getUsers(socket: Socket): Promise<boolean> {
+		let userId : number = Number(socket.handshake.headers.userid);
 		console.log(`Getting ${userId}`);
-		const users = [
-			{
-				'userId': 100,
-				'userName': 'Meilv',
-				'avatar': 'https://cdn2.iconfinder.com/data/icons/halloween-horror-1/512/35-black-cat-curse-mystery-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 200,
-				'userName': 'Sesame',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Tiger_Leopard-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 300,
-				'userName': 'Maobe',
-				'avatar': 'https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 400,
-				'userName': 'Xibao',
-				'avatar': 'https://cdn2.iconfinder.com/data/icons/japan-flat-2/340/japan_monk_asia_religion_buddhist_zen_japanese_traditional-512.png',
-				'mute' : false ,
-				'block' : false,
-
-			},
-
-			{
-				'userId': 3,
-				'userName': 'Tito',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/future-pack/64/010-emotional-robotics-robot-emotion-ai-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 4,
-				'userName': 'Monkey king',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Monkey-128.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 5,
-				'userName': 'Koala bao',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Koala-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 10,
-				'userName': 'Krak3n',
-				'avatar': 'https://cdn4.iconfinder.com/data/icons/supernatural-blush-vol-2/128/Kraken-256.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 11,
-				'userName': 'Shrek',
-				'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/shrek_character_animation_movie_ogre_cartoon-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 12,
-				'userName': 'Wulia bird',
-				'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/angry_bird_gaming_game_character_movie-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-
-		]
-		this.server.emit('B_getAvailableUsers', users);
+		try {
+			const users = await this.roomService.getAvailableUsers(userId);
+			socket.emit('B_getAvailableUsers', users);
+		}
+		catch(e)
+		{
+			return false;}
 		return true;
+		// const users = [
+		// 	{
+		// 		'userId': 100,
+		// 		'userName': 'Meilv',
+		// 		'avatar': 'https://cdn2.iconfinder.com/data/icons/halloween-horror-1/512/35-black-cat-curse-mystery-512.png',
+		// 		'mute' : false ,
+		// 		'block' : false,
+		// 	},
+		// 	{
+		// 		'userId': 200,
+		// 		'userName': 'Sesame',
+		// 		'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Tiger_Leopard-512.png',
+		// 		'mute' : false ,
+		// 		'block' : false,
+		// 	},
+		// 	{
+		// 		'userId': 300,
+		// 		'userName': 'Maobe',
+		// 		'avatar': 'https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png',
+		// 		'mute' : false ,
+		// 		'block' : false,
+		// 	},
+		// 	{
+		// 		'userId': 400,
+		// 		'userName': 'Xibao',
+		// 		'avatar': 'https://cdn2.iconfinder.com/data/icons/japan-flat-2/340/japan_monk_asia_religion_buddhist_zen_japanese_traditional-512.png',
+		// 		'mute' : false ,
+		// 		'block' : false,
+
+		// 	},
+
+		// 	{
+		// 		'userId': 3,
+		// 		'userName': 'Tito',
+		// 		'avatar': 'https://cdn3.iconfinder.com/data/icons/future-pack/64/010-emotional-robotics-robot-emotion-ai-512.png',
+		// 		'mute' : false ,
+		// 		'block' : false,
+		// 	},
+		// 	{
+		// 		'userId': 4,
+		// 		'userName': 'Monkey king',
+		// 		'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Monkey-128.png',
+		// 		'mute' : false ,
+		// 		'block' : false,
+		// 	},
+		// 	{
+		// 		'userId': 5,
+		// 		'userName': 'Koala bao',
+		// 		'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Koala-512.png',
+		// 		'mute' : false ,
+		// 		'block' : false,
+		// 	},
+		// 	{
+		// 		'userId': 10,
+		// 		'userName': 'Krak3n',
+		// 		'avatar': 'https://cdn4.iconfinder.com/data/icons/supernatural-blush-vol-2/128/Kraken-256.png',
+		// 		'mute' : false ,
+		// 		'block' : false,
+		// 	},
+		// 	{
+		// 		'userId': 11,
+		// 		'userName': 'Shrek',
+		// 		'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/shrek_character_animation_movie_ogre_cartoon-512.png',
+		// 		'mute' : false ,
+		// 		'block' : false,
+		// 	},
+		// 	{
+		// 		'userId': 12,
+		// 		'userName': 'Wulia bird',
+		// 		'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/angry_bird_gaming_game_character_movie-512.png',
+		// 		'mute' : false ,
+		// 		'block' : false,
+		// 	},
+
+		// ]
+		// this.server.emit('B_getAvailableUsers', users);
+		// return true;
 	}
 
 	@SubscribeMessage('F_getRoomAvailableUsers')

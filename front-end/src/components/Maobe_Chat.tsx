@@ -39,7 +39,7 @@ function CreateRoomMenu(props: any) {
 					   onChange={(e) => props.onChange_selectParticipant(e, user) }
 				/>
 				<img src={user.avatar} />
-				<label>{ user.userName }</label>
+				<label>{ user.username }</label>
 			</div>
 		);
 	});
@@ -355,6 +355,9 @@ function ParticipantsPanel(props: any) {
 		return (<div></div>);
 	}
 	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currRoomId)[0];
+	if (currentRoom.participants === undefined) {
+		return (<div></div>);
+	}
 	const Html_participants = currentRoom.participants.map((currentUser: any, i: any) => {
 		if (currentUser === undefined) {
 			return (<div></div>);
@@ -580,7 +583,6 @@ function Chat(props: any) {
 	const [currRoomId, setCurrRoomId] = useState(-1);
 	const [rooms, setRooms] = useState<any[]>([]);
 	const getRooms_listener = (receivedRooms: any[]) => {
-		console.log(receivedRooms)
 		setCurrRoomId(receivedRooms[0].id);
 		setRooms(receivedRooms);
 
@@ -747,7 +749,6 @@ function Chat(props: any) {
 		let newRooms = rooms.slice();
 		newRooms.push(newRoom);
 		setRooms(newRooms);
-		console.log('HERRRRE: ', newRoom, newRooms);
 		setCurrRoomId(newRoom.id);
 
 		let newMessageBarValues = new Map(messageBarValues);

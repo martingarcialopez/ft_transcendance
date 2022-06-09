@@ -98,8 +98,8 @@ export class MaobeRoomService {
 		console.log(roomDto.password == null);
         const new_room = new MaobeRoom();
 		/***CHANGE IMAGE***/
-		new_room.image = '';
-		new_room.name = roomDto.roomName;
+		new_room.image = 'https://stickershop.line-scdn.net/stickershop/v1/product/7594755/LINEStorePC/main.png;compress=true';
+		new_room.name = roomDto.name;
 		new_room.typeRoom = roomDto.typeRoom;
 		console.log('roomDto.password |', roomDto.password, '|');
 		if (roomDto.password.length > 0)
@@ -111,6 +111,8 @@ export class MaobeRoomService {
 			const hash = await bcrypt.hash(password, saltOrRounds);
 			new_room.password = hash;
 		}
+		else
+			new_room.password = null;
 		new_room.owner = userId;
 		if(new_room.admin == null)
             new_room.admin = [];
@@ -129,6 +131,18 @@ export class MaobeRoomService {
 		}
 		console.log('-----------\n\n' , 'new_room', new_room , '\n\n');
 		return new_room;
+	}
+
+
+	async getAvailableUsers(userId: number) : Promise<User[]> {
+		let blockList: number[] = await this.Mutual_blocklist(userId);
+        let dispo_users: User[] = await this.userRepository.createQueryBuilder("user")
+            .where("user.id NOT IN (:...list) ", { list : blockList })
+            .getMany();
+
+        console.log('dispo_users----------------------\n', dispo_users, '--------------------------');
+        return dispo_users;
+
 	}
 
 
@@ -282,14 +296,6 @@ export class MaobeRoomService {
         return await bcrypt.hash(password, saltOrRounds);
 	}
 
-	async get_RoomAdmins(roomId: number): Promise<number[] | undefined> {
-		let room = await this.roomRepository.createQueryBuilder("maoberoom")
-            .select(["maoberoom.admin"])
-            .where("maoberoom.id = :room_Id", { room_Id: roomId })
-			.getOne();
-        return room.admin;
-    }
-
 	async userIsAdmin(roomId: number, userId: number) : Promise<boolean> {
 		let admins = await this.get_RoomAdmins(roomId);
 		console.log('admins is here ', admins, admins.indexOf(userId));
@@ -400,18 +406,120 @@ export class MaobeRoomService {
 	}
 
 
+/****get a list of userId block the user*****/
+	async Blocklist_to_user(userId: number) : Promise<number[]> {
+		let block_list: number[] = [];
+		let rooms: MaobeRoom[] = await this.roomRepository.createQueryBuilder("room")
+			.select(["room.owner"])
+			.getMany();
+		for(var i = 0; i<rooms.length; i++) {
+			if (rooms[i].owner != userId){
+				let owner_block_list: number[] = await this.userService.getBlockList(rooms[i].owner);
+				if (owner_block_list.includes(userId))
+					block_list.push(rooms[i].owner);
+			}
+		}
+		return block_list;
+	}
+
+	async Mutual_blocklist(userId: number) : Promise<number[]> {
+		let block_list_to_user : number[] = await this.Blocklist_to_user(userId);
+		let user_block_list_to_other: number[]  = await this.userService.getBlockList(userId);
+		let list_block : number[] = [...block_list_to_user, ...user_block_list_to_other];
+		let unique_block_list : number[] = [...new Set(list_block)];
+		console.log('nique :', unique_block_list);
+		if (unique_block_list.length == 0) {
+			unique_block_list.push(-1);
+		}
+		return unique_block_list;
+
+	}
+	async F_getRoomsDispo(userId:number) : Promise<MaobeRoom[]> {
+		userId = 3;
+		let blockList: number[] = await this.Mutual_blocklist(userId);
+		console.log('blockList:', blockList, '|');
+
+		let dispo_rooms: MaobeRoom[] = await this.roomRepository.createQueryBuilder("room")
+			.select(["room.id"])
+			.leftJoin("room.participants", "participant")
+			.where("room.typeRoom = :typeRoom", {typeRoom: 'public'})
+			.andWhere("room.owner NOT IN (:...names) ", { names : blockList })
+			.andWhere("participant.userId != :id", { id: userId })
+			.getMany();
+
+		console.log('----------------------\n', dispo_rooms, '--------------------------');
+		return dispo_rooms;
+	}
+
 	async banUser(body: BanUserDto) : Promise<void> {
-		let roomId : number = body.roomId;
-		let user: User = await this.userId_fromLogin(body.userIdToMute);
-		let userIdToBan : number = user['id'];
-		let userId : number = body.userId;
+//		console.log(await this.findOne(2));
+
+		let roomId : number = 2;//body.roomId;
+		let userId : number = 5;//body.userId;
+		let userIdToBan : number = 3;//body.userIdToBan;
+		let ownerId : number = await this.get_Room_Owner(roomId);
+		let res = await this.participantRepository.findOne({ userId: userIdToBan, roomId: roomId });
+		console.log('res ', res);
+		if (res == undefined)
+		{
+			throw 'This user is not in the room';
+			return ;
+		}
 		//user does not have right OR baned person is admin/owner
-		if (await this.userIsAdmin(roomId, userId) == false || await this.userIsAdmin(roomId, userIdToBan) == true)
-			throw 'no right to ban';
+		if (userIdToBan == ownerId)
+		{
+			throw 'Cannot ban owner of the room';
+			return ;
+		}
+		if (await this.userIsAdmin(roomId, userId) == false)
+		{
+			throw 'You are not admin, so you cannot ban';
+			return ;
+		}
 		await this.participantService.leaveRoom({'userId': userIdToBan, 'roomId': roomId})
 		let banList: number[] = await this.get_Room_banList(roomId);
-		banList.push(userIdToBan);
+		if (await this.userIsAdmin(roomId, userIdToBan) == true)/*remove admin of column if the user is baned*/
+		{
+			var admins: number[] = await this.get_RoomAdmins(roomId);
+			var index = admins.indexOf(userIdToBan);
+            admins.splice(index, 1);
+			this.roomRepository.update({id: roomId}, {
+			 	admin: admins})
+		}
+		if (banList.indexOf(userIdToBan) == -1)/*add userid in ban_list*/
+			banList.push(userIdToBan);
+		await this.roomRepository
+            .createQueryBuilder()
+            .update(MaobeRoom)
+            .set({ banList: banList })
+            .where("id = :id", { id: roomId })
+            .execute();
+//		console.log(await this.findOne(2));
 	}
+
+	/*----------------------------FUNCTION-----------------------*/
+
+	async findOne(id: number): Promise<MaobeRoom> {
+		return this.roomRepository.findOne(id);
+	}
+
+	async get_Room_Owner(roomId: number): Promise<number> {
+	let room = await this.roomRepository.createQueryBuilder("room")
+        .select(["room.owner"])
+        .where("room.id = :room_Id", { room_Id: roomId })
+        .getOne();
+		console.log('in get_RoomOwner ', room , room.owner);
+		return room.owner;
+	}
+
+	async get_RoomAdmins(roomId: number): Promise<number[] | undefined> {
+		let room = await this.roomRepository.createQueryBuilder("room")
+            .select(["room.admin"])
+            .where("room.id = :room_Id", { room_Id: roomId })
+			.getOne();
+        return room.admin;
+    }
+
 
 
 }

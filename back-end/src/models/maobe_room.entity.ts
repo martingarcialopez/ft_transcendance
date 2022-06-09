@@ -17,8 +17,8 @@ export class MaobeRoom {
 	@Column({ default: false })
 	is_protected: boolean;
 
-	@Column({nullable:true})
-    password?: string;
+	@Column({ nullable: true, default: null })
+    password: string;
 
 	@Column()
 	image: string;
