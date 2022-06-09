@@ -239,10 +239,10 @@ function RoomsPanel(props: any) {
 			<div key={i}
 				 className="conversa"
 				 tabIndex={1}
-				 onClick={ () => { props.onClick(room.roomId); }}>
+				 onClick={ () => { props.onClick(room.id); }}>
 				<img alt="room logo" src={ room.image } />
 				<a>
-					{ room.roomName }
+					{ room.name }
 				</a>
 				<EditRoomMenu currRoom={ room }
 							  {...props} />
@@ -354,7 +354,7 @@ function ParticipantsPanel(props: any) {
 		props.roomsList === undefined || props.roomsList.length === 0) {
 		return (<div></div>);
 	}
-	const currentRoom = props.roomsList.filter((obj: any) => obj.roomId === props.currRoomId)[0];
+	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currRoomId)[0];
 	const Html_participants = currentRoom.participants.map((currentUser: any, i: any) => {
 		if (currentUser === undefined) {
 			return (<div></div>);
@@ -443,12 +443,12 @@ function RoomHeaderBar(props: any) {
 	if (props.roomsList.length === 0) {
 		return (<div></div>);
 	}
-	const currentRoom = props.roomsList.filter((obj: any) => obj.roomId === props.currRoomId)[0];
+	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currRoomId)[0];
 	return (
 		<div className="top-bar">
 			<div id="nome-conversa">
 				<img src={ arroba } alt="" />
-				<a>{ currentRoom.roomName } </a>
+				<a>{ currentRoom.name } </a>
 				<img src={ ocupado } alt="" />
 			</div>
 
@@ -472,7 +472,7 @@ function MessagePanel(props: any) {
 		props.roomsList === undefined || props.roomsList.length === 0) {
 		return (<div></div>);
 	}
-	const currentRoom = props.roomsList.filter((obj: any) => obj.roomId === props.currRoomId)[0];
+	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currRoomId)[0];
 
 	let Html_messages = (<div></div>);
 	if (props.messages !== undefined && props.messages.length !== 0 &&
@@ -515,7 +515,7 @@ function MessagePanel(props: any) {
 		<div>
 			<div id="profile">
 				<img src={ currentRoom.image } alt="" />
-				<a>{ currentRoom.roomName }</a>
+				<a>{ currentRoom.name }</a>
 			</div>
 
 			<div id="risco">
@@ -556,8 +556,8 @@ function SendMessageBar(props: any) {
 }
 
 interface I_Room {
-	roomName: string,
-	roomId: number,
+	id: number,
+	name: string,
 	image: string,
 	roomType: string,
 	participants: any[];
@@ -580,15 +580,16 @@ function Chat(props: any) {
 	const [currRoomId, setCurrRoomId] = useState(-1);
 	const [rooms, setRooms] = useState<any[]>([]);
 	const getRooms_listener = (receivedRooms: any[]) => {
-		setCurrRoomId(receivedRooms[0].roomId);
+		console.log(receivedRooms)
+		setCurrRoomId(receivedRooms[0].id);
 		setRooms(receivedRooms);
 
 		let sendMessageBarValues =  new Map<number, string>();
 		receivedRooms.map((room: I_Room, i: any) => {
-			sendMessageBarValues.set(room.roomId, '');
+			sendMessageBarValues.set(room.id, '');
 		});
 		setMessageBarValue(sendMessageBarValues);
-		props.appSocket.emit('F_getMessages', receivedRooms[0].roomId);
+		props.appSocket.emit('F_getMessages', receivedRooms[0].id);
 	}
 	const onClick_Room = (roomId: number) => {
 		setCurrRoomId(roomId);
@@ -613,7 +614,7 @@ function Chat(props: any) {
 							 (isBanned: boolean) => {
 								 if (isBanned === true) {
 									 let newRooms = rooms.slice();
-									 var index = newRooms.findIndex((obj:any) => obj.roomId === roomId);
+									 var index = newRooms.findIndex((obj:any) => obj.id === roomId);
 									 var unbaned_participants = newRooms[index].participants.filter((obj: any) => obj.userId !== userId);
 									 newRooms[index].participants = unbaned_participants;
 									 setRooms(newRooms);
@@ -632,7 +633,7 @@ function Chat(props: any) {
 							 (isMuted: boolean) => {
 								 if (isMuted === true) {
 									 let newRooms = rooms.slice();
-									 var index = newRooms.findIndex((obj:any) => obj.roomId === roomId);
+									 var index = newRooms.findIndex((obj:any) => obj.id === roomId);
 									 var user_index = newRooms[index].participants.findIndex((obj:any) => obj.userId === userId);
 									 newRooms[index].participants[user_index]['mute'] = true;
 									 setRooms(newRooms);
@@ -653,7 +654,7 @@ function Chat(props: any) {
 							 (isBlocked: boolean) => {
 								 if (isBlocked === true) {
 									 let newRooms = rooms.slice();
-									 var index = newRooms.findIndex((obj:any) => obj.roomId === roomId);
+									 var index = newRooms.findIndex((obj:any) => obj.id === roomId);
 									 var user_index = newRooms[index].participants.findIndex((obj:any) => obj.userId === userId);
 									 var unbaned_participants = newRooms[index].participants.filter((obj: any) => obj.userId !== userId);
 									 newRooms[index].participants = unbaned_participants;
@@ -721,7 +722,7 @@ function Chat(props: any) {
 	}
 	const onSubmit_createRoom = () => {
 		const RoomToCreate = {
-			'roomName': newRoomName,
+			'name': newRoomName,
 			'typeRoom': typeRoom,
 			'password': passWord,
 			'users': selectedNewParticipants
@@ -747,10 +748,10 @@ function Chat(props: any) {
 		newRooms.push(newRoom);
 		setRooms(newRooms);
 		console.log('HERRRRE: ', newRoom, newRooms);
-		setCurrRoomId(newRoom.roomId);
+		setCurrRoomId(newRoom.id);
 
 		let newMessageBarValues = new Map(messageBarValues);
-		newMessageBarValues.set(newRoom.roomId, '');
+		newMessageBarValues.set(newRoom.id, '');
 		setMessageBarValue(newMessageBarValues);
 	}
 
@@ -761,8 +762,8 @@ function Chat(props: any) {
 	const [updateTypeRoom, setUpdateTypeRoom] = useState("");
 	const [updatePassWord, setUpdatePassword] = useState("");
 	const onClick_updateRoom = (currRoom: I_Room) => {
-		props.appSocket.emit('F_getRoomAvailableUsers', currRoom.roomId);
-		setUpdateRoomName(currRoom.roomName);
+		props.appSocket.emit('F_getRoomAvailableUsers', currRoom.id);
+		setUpdateRoomName(currRoom.name);
 		setUpdateTypeRoom(currRoom.roomType);
 	}
 
@@ -785,7 +786,7 @@ function Chat(props: any) {
 	const onSubmit_updateRoom = () => {
 		props.appSocket.emit('F_updateRoom',
 							 {
-								 'roomName': updateRoomName,
+								 'name': updateRoomName,
 								 'roomId': currRoomId,
 								 'roomType': updateTypeRoom,
 								 'password': updatePassWord,
@@ -804,7 +805,7 @@ function Chat(props: any) {
 							 });
 	}
 	const updateRoom_listener = (updatedRoom: I_Room) => {
-		const newRooms = rooms.filter((obj: any) => obj.roomId !== updatedRoom.roomId);
+		const newRooms = rooms.filter((obj: any) => obj.id !== updatedRoom.id);
 		newRooms.unshift(updatedRoom);
 		console.log('newROOOOM: ', newRooms);
 		setRooms(newRooms);
