@@ -49,6 +49,10 @@ export class MaobeRoomService {
 			roomIds.push(obj.id);
 		})
 
+		if (roomIds.length === 0) {
+			return [];
+		}
+
 		let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
 			.select(["MaobeRoom", "u"])
 			.leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)

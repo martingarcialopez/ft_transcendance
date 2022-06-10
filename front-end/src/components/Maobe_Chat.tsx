@@ -616,6 +616,9 @@ function Chat(props: any) {
 	const [currRoomId, setCurrRoomId] = useState(-1);
 	const [rooms, setRooms] = useState<any[]>([]);
 	const getRooms_listener = (receivedRooms: any[]) => {
+		if (receivedRooms.length === 0) {
+			return ;
+		}
 		setCurrRoomId(receivedRooms[0].id);
 		setRooms(receivedRooms);
 
