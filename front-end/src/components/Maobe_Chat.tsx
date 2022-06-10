@@ -28,56 +28,63 @@ import { GetUserInfo } from "./GetUserInfo";
 
 
 function JoinRoomMenu(props: any) {
-	const [isOpen, setOpen] = useState(false);
 	const ref = useRef(null);
+	const [isOpen, setOpen] = useState(false);
 
 	let Html_AvailableRooms = (<div></div>);
 	if (props.roomsDispoToJoin !== undefined && props.roomsDispoToJoin.length > 0) {
 		Html_AvailableRooms = props.roomsDispoToJoin.map((room: any, i: any) => {
 			return (
-				<div key={i} id="messages">
-					<input type="checkbox"
-						   onChange={(e) => console.log('CHOSING ROOM') }
-					/>
-					<img src={ room.image } />
-					<label>{ room.name }</label>
+				<div key={i}
+					 onClick={ () => {
+   						 setOpen(false);
+					 }}>
+					<a id="messages">
+   						<img src={ room.image } />
+   						<label>{ room.name }</label>
+   					</a>
+					<hr />
 				</div>
-			);
-		});
-	}
-	return (
-		<div>
-			<button ref={ref} className="btn" onClick={() => {
-						setOpen(true);
-						props.onClick_getRoomsDispoToJoin()
-					}}>
-				🔗
-			</button>
+   			);
+   		});
+   	}
+   	return (
+   		<div>
+   			<button ref={ref} className="btn" onClick={() => {
+   						setOpen(true);
+   						props.onClick_getRoomsDispoToJoin()
+   					}}>
+   				🔗
+   			</button>
 
-			<ControlledMenu>
-				{ /* ---------- */ }
-				<label> Public Rooms </label>
-				<FocusableItem>
-					{({ ref }) => (
-						<div ref={ ref }>
-							{ Html_AvailableRooms }
-						</div>
-					)}
-				</FocusableItem>
-				<hr />
+   			<ControlledMenu
+				state={isOpen ? 'open' : 'closed'}
+				anchorRef={ref}
+				onClose={() => setOpen(false)}
+			>
+   				{ /* ---------- */ }
+   				<label> Public Rooms </label>
+   				<FocusableItem>
+   					{({ ref }) => (
+   						<div ref={ ref }>
+   							{ Html_AvailableRooms }
+   						</div>
+   					)}
+   				</FocusableItem>
+   				<hr />
 
-				{ /* ---------- */ }
-				<FocusableItem>
-					{({ ref }) => (
-						<button onClick={ () => {
-									props.onSubmit_createRoom();
-									setOpen(false);
-								}}> Create Room </button>
-					)}
-				</FocusableItem>
-			</ControlledMenu>
-		</div>
-	);
+   				{ /* ---------- */ }
+   				<FocusableItem>
+   					{({ ref }) => (
+   						<button onClick={ () => {
+   									props.onSubmit_createRoom();
+
+   								}}> Create Room </button>
+   					)}
+   				</FocusableItem>
+   			</ControlledMenu>
+   		</div>
+   	);
 }
 
 function CreateRoomMenu(props: any) {
