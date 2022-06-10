@@ -11,6 +11,7 @@ import { Socket, Server } from 'socket.io';
 import { NestGateway } from '@nestjs/websockets/interfaces/nest-gateway.interface';
 import { Bind, UseInterceptors } from '@nestjs/common';
 
+import { MaobeRoom } from '../models/maobe_room.entity';
 import { MaobeRoomService } from '../services/maobe_room.service';
 import { MaobeParticipantService } from '../services/maobe_participant.service';
 import { RoomDto } from '../dtos/in/maobe_room.dto';
@@ -180,6 +181,33 @@ export class MaobeChatGateway {
 		return true;
 	}
 
+	@SubscribeMessage('F_getDispoRooms')
+	async getDispoRooms(socket: Socket) : Promise<boolean> {
+		const userId: number = Number(socket.handshake.headers.userid);
+		try{
+            const rooms : MaobeRoom[] = await this.roomService.getDispoRooms(userId);
+            socket.emit('B_getDispoRooms', rooms);
+        }
+        catch(e){
+            return false;
+        }
+        return true;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	@SubscribeMessage('F_muteUser')
 	muteUser(socket: Socket, infos: any): boolean {
 		return (true);
@@ -218,26 +246,6 @@ export class MaobeChatGateway {
 			'msg': 'Something went wrong.'
 		});
 	}
-
-	// @SubscribeMessage('F_createRoom')
-	// createRoom(socket: Socket, room: any): any {
-	// 	console.log(`Creating room ${room}`);
-	// 	if (true) {
-	// 		this.server.emit('B_createRoom',  {
-	// 			'roomName': room.roomName,
-	// 			'roomId': 8686,
-	// 			'image': 'https://cdn3.iconfinder.com/data/icons/future-pack/64/023-artificial-heart-cyber-electronic-512.png',
-	// 			'roomType': room.roomType,
-	// 			'participants': room.users
-	// 		});
-	// 		console.log('Returning stuuff');
-	// 		return true;
-	// 	}
-	// 	return ({
-	// 		'status': 'KO',
-	// 		'msg': 'Something went wrong.'
-	// 	});
-	// }
 
 	@SubscribeMessage('F_updateRoom')
 	async updateRoom(socket: Socket, roomInfos: any): Promise<boolean> {

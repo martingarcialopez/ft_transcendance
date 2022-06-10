@@ -49,10 +49,6 @@ export class MaobeRoomService {
 			roomIds.push(obj.id);
 		})
 
-		if (roomIds.length === 0) {
-			return [];
-		}
-
 		let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
 			.select(["MaobeRoom", "u"])
 			.leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)
@@ -415,17 +411,25 @@ async updateRoomPw(body: RoomPwDto): Promise<boolean> {
 		return unique_block_list;
 
 	}
-	async F_getRoomsDispo(userId:number) : Promise<MaobeRoom[]> {
-		userId = 3;
-		let blockList: number[] = await this.Mutual_blocklist(userId);
-		let dispo_rooms: MaobeRoom[] = await this.roomRepository.createQueryBuilder("room")
+	async getDispoRooms(userId:number) : Promise<MaobeRoom[]> {
+		var blockList: number[] = await this.Mutual_blocklist(userId);
+		var rooms: MaobeRoom[] = await this.roomRepository.createQueryBuilder("room")
 			.select(["room.id"])
 			.leftJoin("room.participants", "participant")
 			.where("room.typeRoom = :typeRoom", {typeRoom: 'public'})
 			.andWhere("room.owner NOT IN (:...names) ", { names : blockList })
 			.andWhere("participant.userId != :id", { id: userId })
 			.getMany();
-		return dispo_rooms;
+		//filter room where user is banned
+		for(var i = 0; i<rooms.length; i++) {
+            if (rooms[i].banList.length !== 0){
+				let banList: number[] = await this.get_Room_banList(rooms[i].id);
+                if (banList.includes(userId)) {
+					rooms.splice(i, 1);
+				}
+            }
+        }
+		return rooms;
 	}
 
 	async banUser(body: BanUserDto) : Promise<void> {
