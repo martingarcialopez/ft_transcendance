@@ -89,6 +89,55 @@ export class MaobeRoomService {
 		return ret;
 	}
 
+
+	/*
+** Create a new obj of participant and store in the table
+*/
+	async createParticipant(participantDto: ParticipantDto): Promise<any[]> {
+		await this.participantService.createParticipant(participantDto);
+		const roomIds = [participantDto.roomId];
+        let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
+            .select(["MaobeRoom", "u"])
+            .leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)
+            .leftJoin(User, "u", `p.userId = u.id`)
+            .where("MaobeRoom.id IN (:...ids)", { ids: roomIds })
+            .getRawMany();
+
+        let managedIndex: any[] = [];
+        let ret: any[] = [];
+
+        rooms.forEach((obj: any) => {
+            if (managedIndex.indexOf(obj.MaobeRoom_id) === -1) {
+                managedIndex.push(obj.MaobeRoom_id);
+
+                const users = rooms.filter((obj2: any) => obj2.MaobeRoom_id === obj.MaobeRoom_id);
+                const tmp_participants: any[] = [];
+
+                users.forEach((obj2) => {
+                    tmp_participants.push({
+                        'userId': obj2.u_id,
+                        'username': obj2.u_username,
+                        'avatar': obj2.u_avatar,
+                    });
+                })
+                ret.push(
+                    {
+                        'id': obj.MaobeRoom_id,
+                        'name': obj.MaobeRoom_name,
+                        'typeRoom': obj.MaobeRoom_typeRoom,
+                        'image': obj.MaobeRoom_image,
+                        'owner': obj.MaobeRoom_owner,
+                        'admin': obj.MaobeRoom_admin,
+                        'participants': tmp_participants
+                    }
+                );
+            }
+        });
+        return ret[0];
+    }
+
+
+
 	/*
 	** Create a new channel(room)
 	** :param(RoomDto) the infos of the channel given by front

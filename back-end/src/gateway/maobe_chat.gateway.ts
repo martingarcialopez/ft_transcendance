@@ -194,6 +194,18 @@ export class MaobeChatGateway {
         return true;
 	}
 
+	@SubscribeMessage('F_createParticipant')
+    async createParticipant(socket: Socket, roomId: number): Promise<boolean> {
+		const userId: number = Number(socket.handshake.headers.userid);
+		try {
+			var info:any[] = await this.roomService.createParticipant({'userId': userId, 'roomId': roomId});
+			socket.emit('B_createParticipant', info);
+		}
+		catch(e){
+            return false;
+        }
+        return true;
+    }
 
 
 
