@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LeaderboardProfiles } from '../components/LeaderboardProfiles';
 import { RootState } from '../redux';
 import { getAllGamesAction } from '../redux/actions/userActions';
-import { AllMatchState, UserState } from '../redux/reducers/userReducers';
+import { UserState } from '../redux/reducers/userReducers';
 import "../styles/leaderboardStyles.css";
 
 export const LeaderBoard = () => {
@@ -12,17 +12,12 @@ export const LeaderBoard = () => {
         (state: RootState) => state.userLogin
     )
 
-    const allMatch = useSelector<RootState, AllMatchState>(
-        (state: RootState) => state.allMatch
-    )
-
     const { userInfo }: UserState = userLogin;
 
     useEffect(() => {
         dispatch(getAllGamesAction(userInfo?.access_token))
     })
 
-    console.log("LeaderBoard allMatch", allMatch)
     const between = (data: any) => {
         // sort with asending order
         return data.sort((a: any, b: any) => {
@@ -40,8 +35,8 @@ export const LeaderBoard = () => {
             <div className="board">
                 <h1 className='leaderboard'>Leaderboard</h1>
 
-                {/* <LeaderboardProfiles Leaderboard={between(Leaderboard)}></LeaderboardProfiles> */}
-                <LeaderboardProfiles Leaderboard={allMatch.MatchInfo}></LeaderboardProfiles>
+                <LeaderboardProfiles Leaderboard={between(Leaderboard)}></LeaderboardProfiles>
+                {/* <LeaderboardProfiles Leaderboard={allMatch.MatchInfo}></LeaderboardProfiles> */}
             </div>
 
         </div>

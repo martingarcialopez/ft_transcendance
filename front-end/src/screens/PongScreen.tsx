@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { BALL_RADIUS, GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
-import { Button, CircularProgress, Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import Canvas from '../components/Canvas';
 import { GameWrapper } from '../styles/gameStyle';
 import { useSelector } from 'react-redux';
@@ -62,8 +62,8 @@ export const Pong = () => {
     }
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        // console.log("event code = ")
-        // console.log(event.code)
+        console.log("event code = ")
+        console.log(event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
                 socket.emit('move', id.toString(), playerSide, roomId, 1);
@@ -81,6 +81,7 @@ export const Pong = () => {
     const receive_socket_info = () => {
         socket.on('gameState', (...args) => {
             setGameState(args[0])
+            setGameStarted(true);
             // console.log(args);
             // console.log(args[0]);
             // console.log(args[0].ballPos);
@@ -211,7 +212,7 @@ export const Pong = () => {
                 </div>
                 :
                 <div>
-                    {winner === '' ? (
+                    {!opponent ? (
                         <Grid
                             container
                             rowSpacing={10}
@@ -220,7 +221,7 @@ export const Pong = () => {
                             justifyContent="center"
                             style={{ minHeight: '100vh' }}
                         >
-                            <CircularProgress size={window_size.canvasWidth / 6} />
+                            {/* <CircularProgress size={window_size.canvasWidth / 6} /> */}
                             <Grid item xs={3}>
                                 {searchOpponent}
                             </Grid>

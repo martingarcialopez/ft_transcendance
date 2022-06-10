@@ -13,10 +13,12 @@ import {
 } from "../constants/userConstants";
 
 export interface MatchInfo {
-  player1?: string,
-  player2?: string,
+  rightPlayer?: string,
+  leftPlayer?: string,
+  rightPlayerScore?: string,
+  leftPlayerScore?: string,
   winner?: string,
-  scoreLoser?: number,
+  losser?: string,
   id?: number,
 }
 
@@ -39,7 +41,7 @@ export interface UserState {
   successMessage?: string;
   userInfo?: UserInfo,
   friendInfo?: UserInfo,
-  MatchInfo?: MatchInfo
+  MatchInfo?: MatchInfo[]
 }
 
 export interface AllMatchState {
@@ -54,31 +56,35 @@ interface Action {
 export const allMatchReducer = (
   state: AllMatchState = {
     MatchInfo: [{
-      player1: 'player1',
-      player2: 'player2',
-      winner: 'player1',
-      scoreLoser: 0,
+      rightPlayer: 'rightPlayer',
+      leftPlayer: 'leftPlayer',
+      leftPlayerScore: 'rightPlayer',
+      losser: 'rightPlayer',
+      winner: 'leftPlayer',
       id: 0,
     },
     {
-      player1: 'player3',
-      player2: 'player4',
-      winner: 'player3',
-      scoreLoser: 0,
+      rightPlayer: 'player3',
+      leftPlayer: 'player4',
+      leftPlayerScore: 'player3',
+      losser: 'rightPlayer',
+      winner: 'leftPlayer',
       id: 0,
     },
     {
-      player1: 'player3',
-      player2: 'player4',
-      winner: 'player3',
-      scoreLoser: 0,
+      rightPlayer: 'player3',
+      leftPlayer: 'player4',
+      leftPlayerScore: 'player3',
+      losser: 'rightPlayer',
+      winner: 'leftPlayer',
       id: 0,
     },
     {
-      player1: 'player3',
-      player2: 'player4',
-      winner: 'player3',
-      scoreLoser: 0,
+      rightPlayer: 'player3',
+      leftPlayer: 'player4',
+      leftPlayerScore: 'player3',
+      losser: 'rightPlayer',
+      winner: 'leftPlayer',
       id: 0,
     },
     ]
@@ -125,13 +131,39 @@ export const userLoginReducer = (
       friends: [],
       id: 0,
     },
-    MatchInfo: {
-      player1: 'unknown',
-      player2: 'unknown',
-      winner: 'unknown',
-      scoreLoser: 0,
+    MatchInfo: [{
+      rightPlayer: 'rightPlayer',
+      leftPlayer: 'leftPlayer',
+      leftPlayerScore: 'rightPlayer',
+      losser: 'rightPlayer',
+      winner: 'leftPlayer',
       id: 0,
-    }
+    },
+    {
+      rightPlayer: 'player3',
+      leftPlayer: 'player4',
+      leftPlayerScore: 'player3',
+      losser: 'rightPlayer',
+      winner: 'leftPlayer',
+      id: 0,
+    },
+    {
+      rightPlayer: 'player3',
+      leftPlayer: 'player4',
+      leftPlayerScore: 'player3',
+      losser: 'rightPlayer',
+      winner: 'leftPlayer',
+      id: 0,
+    },
+    {
+      rightPlayer: 'player3',
+      leftPlayer: 'player4',
+      leftPlayerScore: 'player3',
+      losser: 'rightPlayer',
+      winner: 'leftPlayer',
+      id: 0,
+    },
+    ]
   },
   action: Action
 ) => {
