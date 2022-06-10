@@ -27,22 +27,78 @@ import microfoneMuted from '../styles/assets/microfoneMuted.svg';
 import { GetUserInfo } from "./GetUserInfo";
 
 
+function JoinRoomMenu(props: any) {
+	const [isOpen, setOpen] = useState(false);
+	const ref = useRef(null);
+
+	let Html_AvailableRooms = (<div></div>);
+	if (props.roomsDispoToJoin !== undefined && props.roomsDispoToJoin.length > 0) {
+		Html_AvailableRooms = props.roomsDispoToJoin.map((room: any, i: any) => {
+			return (
+				<div key={i} id="messages">
+					<input type="checkbox"
+						   onChange={(e) => console.log('CHOSING ROOM') }
+					/>
+					<img src={ room.image } />
+					<label>{ room.name }</label>
+				</div>
+			);
+		});
+	}
+	return (
+		<div>
+			<button ref={ref} className="btn" onClick={() => {
+						setOpen(true);
+						props.onClick_getRoomsDispoToJoin()
+					}}>
+				🔗
+			</button>
+
+			<ControlledMenu>
+				{ /* ---------- */ }
+				<label> Public Rooms </label>
+				<FocusableItem>
+					{({ ref }) => (
+						<div ref={ ref }>
+							{ Html_AvailableRooms }
+						</div>
+					)}
+				</FocusableItem>
+				<hr />
+
+				{ /* ---------- */ }
+				<FocusableItem>
+					{({ ref }) => (
+						<button onClick={ () => {
+									props.onSubmit_createRoom();
+									setOpen(false);
+								}}> Create Room </button>
+					)}
+				</FocusableItem>
+			</ControlledMenu>
+		</div>
+	);
+}
+
 function CreateRoomMenu(props: any) {
 	const ref = useRef(null);
 	const [isOpen, setOpen] = useState(false);
 	const [disablePassword, setDisablePassword] = useState(true);
 
-	const Html_AvailableUser = props.availableUsers.map((user: any, i: any) => {
-		return (
-			<div key={i} id="messages">
-				<input type="checkbox"
-					   onChange={(e) => props.onChange_selectParticipant(e, user) }
-				/>
-				<img src={user.avatar} />
-				<label>{ user.username }</label>
-			</div>
-		);
-	});
+	let Html_AvailableUser = (<div></div>);
+	if (props.availableUsers !== undefined && props.availableUsers.length > 0) {
+		Html_AvailableUser = props.availableUsers.map((user: any, i: any) => {
+			return (
+				<div key={i} id="messages">
+					<input type="checkbox"
+						   onChange={(e) => props.onChange_selectParticipant(e, user) }
+					/>
+					<img src={user.avatar} />
+					<label>{ user.username }</label>
+				</div>
+			);
+		});
+	}
 
 	return (
 		<div>
@@ -278,6 +334,7 @@ function RoomsPanel(props: any) {
 
 			<div id="mensagens-diretas">
 				<a> Chat Rooms</a>
+				<JoinRoomMenu {...props} />
 				<CreateRoomMenu {...props} />
 			</div>
 
@@ -800,6 +857,17 @@ function Chat(props: any) {
 		setMessageBarValue(newMessageBarValues);
 	}
 
+	/* ------------------------- */
+	/*        Join room          */
+	/* ------------------------- */
+	const [roomsDispoToJoin, setRoomsDispoToJoin] = useState<any[]>([]);
+	const onClick_getRoomsDispoToJoin= () => {
+		props.appSocket.emit('F_getDispoRooms', true);
+	}
+	const getRoomsDispoToJoin_listener = (dispoRooms: I_Room[]) => {
+		setRoomsDispoToJoin(dispoRooms);
+	}
+
 	/* ------------------------------- */
 	/*          Update Room            */
 	/* ------------------------------- */
@@ -945,6 +1013,9 @@ function Chat(props: any) {
 		if (props.appSocket._callbacks['getRoomAvailableUsers_listener'] === undefined) {
 			props.appSocket.on('B_getRoomAvailableUsers', getRoomAvailableUsers_listener);
 		}
+		if (props.appSocket._callbacks['getRoomsDispoToJoin_listener'] === undefined) {
+			props.appSocket.on('B_getDispoRooms', getRoomsDispoToJoin_listener);
+		}
 		return () => {
 			props.appSocket.removeAllListeners('B_getRooms');
 			props.appSocket.removeAllListeners('B_getMessages');
@@ -953,6 +1024,7 @@ function Chat(props: any) {
 			props.appSocket.removeAllListeners('B_updateRoom');
 			props.appSocket.removeAllListeners('B_getAvailableUsers');
 			props.appSocket.removeAllListeners('B_getRoomAvailableUsers');
+			props.appSocket.removeAllListeners('B_getDispoRooms');
 		};
  	});
 
@@ -976,6 +1048,9 @@ function Chat(props: any) {
 					<RoomsPanel roomsList={ rooms }
 								onClick={ onClick_Room }
 								connectedUser={ props.connectedUser }
+
+								roomsDispoToJoin={ roomsDispoToJoin }
+								onClick_getRoomsDispoToJoin={ onClick_getRoomsDispoToJoin }
 
 								onSubmit_createRoom={ onSubmit_createRoom }
 								newRoomName={ newRoomName }
