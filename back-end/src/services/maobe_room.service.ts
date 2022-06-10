@@ -414,7 +414,6 @@ async updateRoomPw(body: RoomPwDto): Promise<boolean> {
 	async getDispoRooms(userId:number) : Promise<MaobeRoom[]> {
 		var blockList: number[] = await this.Mutual_blocklist(userId);
 		var rooms: MaobeRoom[] = await this.roomRepository.createQueryBuilder("room")
-			.select(["room.id"])
 			.leftJoin("room.participants", "participant")
 			.where("room.typeRoom = :typeRoom", {typeRoom: 'public'})
 			.andWhere("room.owner NOT IN (:...names) ", { names : blockList })
