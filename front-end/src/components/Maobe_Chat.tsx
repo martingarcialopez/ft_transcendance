@@ -38,6 +38,7 @@ function JoinRoomMenu(props: any) {
 				<div key={i}
 					 onClick={ () => {
    						 setOpen(false);
+						 props.onClick_joinRoom(room.id)
 					 }}>
 					<a id="messages">
    						<img src={ room.image } />
@@ -64,22 +65,12 @@ function JoinRoomMenu(props: any) {
 			>
    				{ /* ---------- */ }
    				<label> Public Rooms </label>
+   				<hr />
    				<FocusableItem>
    					{({ ref }) => (
    						<div ref={ ref }>
    							{ Html_AvailableRooms }
    						</div>
-   					)}
-   				</FocusableItem>
-   				<hr />
-
-   				{ /* ---------- */ }
-   				<FocusableItem>
-   					{({ ref }) => (
-   						<button onClick={ () => {
-   									props.onSubmit_createRoom();
-
-   								}}> Create Room </button>
    					)}
    				</FocusableItem>
    			</ControlledMenu>
@@ -380,26 +371,26 @@ function ParticipantAdminContextMenu(props: any) {
 	}
 	return (
 		<div>
-				{ /* ----- KICK ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_kick(props.currentUser.userId, props.currRoomId) }>
-					Kick { props.currentUser.username }
-				</MenuItem>
-				<hr />
+			{ /* ----- KICK ----- */ }
+            <MenuItem onClick={
+						  () => props.onClick_kick(props.currentUser.userId, props.currRoomId) }>
+				Kick { props.currentUser.username }
+			</MenuItem>
+			<hr />
 
-				{ /* ----- BAN ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_ban(props.currentUser.userId, props.currRoomId) }>
-					Ban { props.currentUser.username }
-				</MenuItem>
-				<hr />
+			{ /* ----- BAN ----- */ }
+            <MenuItem onClick={
+						  () => props.onClick_ban(props.currentUser.userId, props.currRoomId) }>
+				Ban { props.currentUser.username }
+			</MenuItem>
+			<hr />
 
-				{ /* ----- MUTE ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_mute(props.currentUser.userId, props.currRoomId) }>
-					Mute { props.currentUser.username }
-				</MenuItem>
-				<hr />
+			{ /* ----- MUTE ----- */ }
+            <MenuItem onClick={
+						  () => props.onClick_mute(props.currentUser.userId, props.currRoomId) }>
+				Mute { props.currentUser.username }
+			</MenuItem>
+			<hr />
 		</div>
 	);
 }
@@ -869,10 +860,30 @@ function Chat(props: any) {
 	/* ------------------------- */
 	const [roomsDispoToJoin, setRoomsDispoToJoin] = useState<any[]>([]);
 	const onClick_getRoomsDispoToJoin= () => {
+		console.log('SHOULD SEND F_getDispoRooms');
 		props.appSocket.emit('F_getDispoRooms', true);
 	}
 	const getRoomsDispoToJoin_listener = (dispoRooms: I_Room[]) => {
+		console.log('dispoRooms: ', dispoRooms);
 		setRoomsDispoToJoin(dispoRooms);
+	}
+	const onClick_joinRoom = (roomId: number) => {
+		props.appSocket.emit('F_joinRoom', roomId,
+							 (isJoined: boolean) => {
+								 if (isJoined !== true) {
+									 alert('Something went wrong');
+								 }
+							 });
+	}
+	const joinRoom_listener = (newRoom: I_Room) => {
+		let newRooms = rooms.slice();
+		newRooms.unshift(newRoom);
+		setRooms(newRooms);
+		setCurrRoomId(newRoom.id);
+
+		let newMessageBarValues = new Map(messageBarValues);
+		newMessageBarValues.set(newRoom.id, '');
+		setMessageBarValue(newMessageBarValues);
 	}
 
 	/* ------------------------------- */
@@ -1023,6 +1034,9 @@ function Chat(props: any) {
 		if (props.appSocket._callbacks['getRoomsDispoToJoin_listener'] === undefined) {
 			props.appSocket.on('B_getDispoRooms', getRoomsDispoToJoin_listener);
 		}
+		if (props.appSocket._callbacks['joinRoom_listener'] === undefined) {
+			props.appSocket.on('B_joinRoom', joinRoom_listener);
+		}
 		return () => {
 			props.appSocket.removeAllListeners('B_getRooms');
 			props.appSocket.removeAllListeners('B_getMessages');
@@ -1032,6 +1046,7 @@ function Chat(props: any) {
 			props.appSocket.removeAllListeners('B_getAvailableUsers');
 			props.appSocket.removeAllListeners('B_getRoomAvailableUsers');
 			props.appSocket.removeAllListeners('B_getDispoRooms');
+			props.appSocket.removeAllListeners('B_joinRoom');
 		};
  	});
 
@@ -1058,7 +1073,7 @@ function Chat(props: any) {
 
 								roomsDispoToJoin={ roomsDispoToJoin }
 								onClick_getRoomsDispoToJoin={ onClick_getRoomsDispoToJoin }
-
+								onClick_joinRoom={ onClick_joinRoom }
 								onSubmit_createRoom={ onSubmit_createRoom }
 								newRoomName={ newRoomName }
 								setNewRoomName={ setNewRoomName }
