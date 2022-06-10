@@ -95,7 +95,7 @@ export class MaobeRoomService {
 */
 	async createParticipant(participantDto: ParticipantDto): Promise<any[]> {
 		await this.participantService.createParticipant(participantDto);
-		const roomIds = [participantDto.roomId];
+		const roomIds = participantDto.roomId;
         let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
             .select(["MaobeRoom", "u"])
             .leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)
