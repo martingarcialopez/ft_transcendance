@@ -2,9 +2,11 @@ import "../styles/profileContainerStyles.css";
 import RepoCard from "../components/RepoCard";
 import { ListFriends } from "../components/ListFriends";
 import { UpdateProfile } from "./UpdateProfile";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux";
-import { UserState } from "../redux/reducers/userReducers";
+import { AllMatchState } from "../redux/reducers/userReducers";
+import { useEffect } from "react";
+import { getAllPlayerGamesAction } from "../redux/actions/userActions";
 
 const matchs = [
     {
@@ -39,11 +41,16 @@ const matchs = [
 export const ProfilePage = ({ userInfo }: any) => {
     // const ref_default_img = "/game/test/test_42.jpg"
     // const ref_default_img = "/shared/avatar/mgarcia-.png"
-    const userLogin = useSelector<RootState, UserState>(
-        (state: RootState) => state.userLogin
+    const dispatch = useDispatch()
+    const allMatch = useSelector<RootState, AllMatchState>(
+        (state: RootState) => state.allMatch
     )
 
-    console.log("ProfilePage userLogin", userLogin)
+    useEffect(() => {
+        dispatch(getAllPlayerGamesAction(userInfo.username))
+    }, [dispatch, userInfo])
+
+    console.log("ProfilePage allMatch", allMatch)
 
     return (
         <div className="backgroundProfile">
@@ -58,8 +65,9 @@ export const ProfilePage = ({ userInfo }: any) => {
                 <div className="reposContainer">
                     <p className="repoContainerTitle">Historique des matchs</p>
                     <div className="repos">
-                        {userLogin.MatchInfo && userLogin.MatchInfo.map((item) => (
+                        {allMatch.MatchInfo && allMatch.MatchInfo.map((item) => (
                             <RepoCard
+                                id={item.id}
                                 key={item.id}
                                 leftPlayer={item.leftPlayer}
                                 rightPlayer={item.rightPlayer}

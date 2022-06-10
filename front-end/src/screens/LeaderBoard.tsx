@@ -3,20 +3,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LeaderboardProfiles } from '../components/LeaderboardProfiles';
 import { RootState } from '../redux';
 import { getAllGamesAction } from '../redux/actions/userActions';
-import { UserState } from '../redux/reducers/userReducers';
+import { AllMatchState } from '../redux/reducers/userReducers';
 import "../styles/leaderboardStyles.css";
 
 export const LeaderBoard = () => {
     const dispatch = useDispatch()
-    const userLogin = useSelector<RootState, UserState>(
-        (state: RootState) => state.userLogin
+    const allMatch = useSelector<RootState, AllMatchState>(
+        (state: RootState) => state.allMatch
     )
 
-    const { userInfo }: UserState = userLogin;
-
     useEffect(() => {
-        dispatch(getAllGamesAction(userInfo?.access_token))
-    })
+        dispatch(getAllGamesAction())
+    }, [dispatch])
+
+    console.log("LeaderBoard allMatch", allMatch.MatchInfo)
 
     const between = (data: any) => {
         // sort with asending order
@@ -45,45 +45,39 @@ export const LeaderBoard = () => {
 
 const Leaderboard = [
     {
-        name: "Shawn Hanna",
-        location: "India",
+        name: "firstname lastname",
+        username: "username",
         score: 1550,
-        img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        dt: "2022-02-10"
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
         name: "Fidel Hand",
-        location: "USA",
+        username: "USA",
         score: 2310,
-        img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        dt: "2021-01-01"
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
         name: "Bessie Hickle",
-        location: "Chaina",
+        username: "Chaina",
         score: 350,
-        img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        dt: "2021-08-17"
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
         name: "Adella Wunsch",
-        location: "Japan",
+        username: "Japan",
         score: 2100,
-        img: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        dt: "2021-10-23"
+        avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
         name: "Clair O'Connell",
-        location: "London",
+        username: "London",
         score: 1250,
-        img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        dt: "2022-01-22"
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
         name: "Kameron Prosacco",
-        location: "Canada",
+        username: "Canada",
         score: 5250,
-        img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        dt: "2022-01-21"
+        avatar: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     }
 ]

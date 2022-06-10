@@ -41,7 +41,6 @@ export interface UserState {
   successMessage?: string;
   userInfo?: UserInfo,
   friendInfo?: UserInfo,
-  MatchInfo?: MatchInfo[]
 }
 
 export interface AllMatchState {
@@ -69,7 +68,7 @@ export const allMatchReducer = (
       leftPlayerScore: 'player3',
       losser: 'rightPlayer',
       winner: 'leftPlayer',
-      id: 0,
+      id: 1,
     },
     {
       rightPlayer: 'player3',
@@ -77,7 +76,7 @@ export const allMatchReducer = (
       leftPlayerScore: 'player3',
       losser: 'rightPlayer',
       winner: 'leftPlayer',
-      id: 0,
+      id: 2,
     },
     {
       rightPlayer: 'player3',
@@ -85,7 +84,7 @@ export const allMatchReducer = (
       leftPlayerScore: 'player3',
       losser: 'rightPlayer',
       winner: 'leftPlayer',
-      id: 0,
+      id: 3,
     },
     ]
   },
@@ -130,40 +129,7 @@ export const userLoginReducer = (
       access_token: '',
       friends: [],
       id: 0,
-    },
-    MatchInfo: [{
-      rightPlayer: 'rightPlayer',
-      leftPlayer: 'leftPlayer',
-      leftPlayerScore: 'rightPlayer',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 0,
-    },
-    {
-      rightPlayer: 'player3',
-      leftPlayer: 'player4',
-      leftPlayerScore: 'player3',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 0,
-    },
-    {
-      rightPlayer: 'player3',
-      leftPlayer: 'player4',
-      leftPlayerScore: 'player3',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 0,
-    },
-    {
-      rightPlayer: 'player3',
-      leftPlayer: 'player4',
-      leftPlayerScore: 'player3',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 0,
-    },
-    ]
+    }
   },
   action: Action
 ) => {
