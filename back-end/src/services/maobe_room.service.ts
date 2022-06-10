@@ -100,7 +100,7 @@ export class MaobeRoomService {
             .select(["MaobeRoom", "u"])
             .leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)
             .leftJoin(User, "u", `p.userId = u.id`)
-            .where("MaobeRoom.id IN (:...ids)", { ids: roomIds })
+			.where("MaobeRoom.id = :ids", { ids: roomIds })
             .getRawMany();
 
         let managedIndex: any[] = [];
