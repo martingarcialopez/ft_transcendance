@@ -24,7 +24,6 @@ function Adduser({ id }: T_Room) {
     (state: RootState) => state.userLogin
   );
 
-  /* console.log("userId : ", userInfo.id); */
   const { userInfo }: UserState = userLogin;
 
   if (!userInfo) {
@@ -76,6 +75,7 @@ export function AddAdmin({ room }: T_PropsRoomArray) {
             fct={Adduser}
             key={index}
             icon={GrUserAdmin}
+            typeItem={"btn-join-room"}
           />
         );
       })}

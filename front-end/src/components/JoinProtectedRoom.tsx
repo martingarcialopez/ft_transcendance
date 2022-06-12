@@ -86,6 +86,7 @@ export function JoinProtectedRoom({ room }: T_PropsRoomArray) {
             fct={IsProctect}
             key={index}
             icon={RiGitRepositoryPrivateFill}
+            typeItem={"btn-join-room"}
           />
         );
       })}

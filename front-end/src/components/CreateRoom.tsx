@@ -44,13 +44,7 @@ export function CreateRoom() {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           let newRoom = createRoom(data);
-          {
-            /* E_CreateRoom(newRoom, userInfo.id, ac_AddRoom, setMsgError); */
-          }
           E_CreateRoom(newRoom, userInfo.id, ac_InitRoomArray, setMsgError);
-          {
-            /* E_AllRoomInfos(ac_InitRoomArray); */
-          }
         })}
       >
         <input

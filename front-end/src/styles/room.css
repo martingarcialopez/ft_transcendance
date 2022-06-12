@@ -129,8 +129,8 @@ input::placeholder {
 		position: relative;
 		margin-right: 35%;
 		left: 30%;
-
 		cursor: pointer;
+
 }
 
 .box-fom-procted{
@@ -218,4 +218,12 @@ input::placeholder {
 .col-md-4{
 		    overflow: auto;
     height: 100vh;
+}
+
+.btn-invitation{
+		background-color: bisque;
+		position: relative;
+		left: 0%;
+		width: 280%;
+		font-size: 150%;
 }

@@ -21,6 +21,7 @@ export type T_Props = {
   fct: Function;
   key: number;
   icon: any;
+  typeItem: string;
 };
 
 export function BasicModal(props: T_Props) {
@@ -30,8 +31,8 @@ export function BasicModal(props: T_Props) {
 
   return (
     <>
-      <div className="roomList" onClick={handleOpen}>
-        <span className="btn-join-room">
+      <div className="roomList test" onClick={handleOpen}>
+        <span className={props.typeItem}>
           <props.icon />
         </span>
         {props.channel.name}

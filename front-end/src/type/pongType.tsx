@@ -9,13 +9,13 @@ export type Position = {
 };
 
 export type GameState = {
-  ballPos: { x: number, y: number };
-  ballVel: { x: number, y: number };
+  ballPos: { x: number; y: number };
+  ballVel: { x: number; y: number };
   leftPaddle: number;
   rightPaddle: number;
   leftScore: number;
   rightScore: number;
-}
+};
 
 export type CanvasType = React.DetailedHTMLProps<
   React.CanvasHTMLAttributes<HTMLCanvasElement>,
@@ -29,6 +29,13 @@ export enum Direction {
   DOWN,
 }
 
-export const BALL_RADIUS   = 10;
-export const PADDLE_WIDTH  = 20;
+export const BALL_RADIUS = 10;
+export const PADDLE_WIDTH = 20;
 export const PADDLE_HEIGTH = 70;
+
+export type T_LeaderBoard = {
+  name: string;
+  username: string;
+  score: number;
+  avatar: String;
+};

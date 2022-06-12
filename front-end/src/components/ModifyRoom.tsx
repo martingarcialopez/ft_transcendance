@@ -128,6 +128,7 @@ export function ModifyRoom({ room }: T_PropsRoomArray) {
             fct={Options}
             key={index}
             icon={FiSettings}
+            typeItem={"btn-join-room"}
           />
         );
       })}

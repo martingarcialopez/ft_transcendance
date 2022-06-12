@@ -2,7 +2,7 @@ import "../styles/ChatTemplate.css";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { T_Room, T_Participant } from "../type/chat";
-
+import { CreateInvitation } from "./CreateInvitation";
 type Props = {
   roomSelectedId: number;
 };
@@ -50,9 +50,8 @@ export function ChatHeader({ roomSelectedId }: Props) {
             </p>
           </div>
           <span className="settings-tray--right">
-            <i className="material-icons">cached</i>
-            <i className="material-icons">message</i>
-            <i className="material-icons">menu</i>
+            <CreateInvitation />
+            {/* <i className="material-icons" >cached</i> */}
           </span>
         </div>
       </div>
