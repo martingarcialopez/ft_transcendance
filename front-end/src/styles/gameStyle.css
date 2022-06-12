@@ -1,0 +1,38 @@
+.gamePong {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    outline: none;
+    flex-direction: column;
+}
+
+.Stanley {
+    background-color: red;
+    color: #fff;
+}
+
+.Samanta {
+    background-color: blue;
+    color: #fff;
+}
+
+.Gilbert {
+    background-color: yellow;
+    color: #333;
+}
+
+.Slavsky {
+    background-color: black;
+    color: #fff;
+}
+
+.btn {
+    background-color: #eee;
+    color: #333;
+}
+
+.button {
+    padding: 10px 15px;
+    border: 1px solid #eee;
+    margin: 10px;
+}

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { BALL_RADIUS, GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
+import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
-import { Button, CircularProgress, Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import Canvas from '../components/Canvas';
-import { GameWrapper } from '../styles/gameStyle';
+import "../styles/gameStyle.css";
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux';
 import { UserState } from '../redux/reducers/userReducers';
@@ -11,6 +11,7 @@ import { URL_test } from '../constants/url';
 import { ColumnGroupingTable } from '../components/ColumnGroupingTable';
 import { ResponsiveDialog } from '../components/ResponsiveDialog';
 // import Canvas from '../components/Canvas';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 export const socket = socketio(`${URL_test}`)
 
@@ -21,6 +22,8 @@ const window_size = {
 
 export const Pong = () => {
     const [progress, setProgress] = useState(10);
+    const [colorBackground, setColorBackground] = useState('white');
+    const [difficulty, setDifficulty] = useState(1);
     const [searchOpponent, setSearchOpponent] = useState("Waiting for an opponent");
     // Use a ref to access the Canvas
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -62,8 +65,8 @@ export const Pong = () => {
     }
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        // console.log("event code = ")
-        // console.log(event.code)
+        console.log("event code = ")
+        console.log(event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
                 socket.emit('move', id.toString(), playerSide, roomId, 1);
@@ -81,6 +84,7 @@ export const Pong = () => {
     const receive_socket_info = () => {
         socket.on('gameState', (...args) => {
             setGameState(args[0])
+            setGameStarted(true);
             // console.log(args);
             // console.log(args[0]);
             // console.log(args[0].ballPos);
@@ -148,17 +152,19 @@ export const Pong = () => {
 
             ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
         }
-        else if (gameStarted === false) {
-            img.src = "./game/cyberpong.jpeg"
+        // else if (gameStarted === false) {
+        //     img.src = "./game/cyberpong.jpeg"
 
-            ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
-        }
+        //     ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
+        // }
         else {
-            ctx.fillStyle = "blue";
-            // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
-            ctx.beginPath();
-            ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
-            ctx.closePath();
+            ctx.fillStyle = colorBackground;
+            ctx.fillRect(0, 0, window_size.canvasWidth, window_size.canvasHeight);
+
+            // // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
+            // ctx.beginPath();
+            // ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
+            // ctx.closePath();
 
             ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI)
             ctx.fillStyle = 'black';
@@ -187,11 +193,41 @@ export const Pong = () => {
                 <div>
                     <Grid
                         container
+                        direction="column"
+                        alignItems="center"
+                        justifyContent="space-around"
+                        style={{ minHeight: '20vh' }}
+                    >
+                        <Grid item xs={3}>
+                            <ButtonGroup variant="text" aria-label="text button group">
+                                <Button onClick={() => setDifficulty(1)}>Niveau 1</Button>
+                                <Button onClick={() => setDifficulty(2)}>Niveau 2</Button>
+                                <Button onClick={() => setDifficulty(3)}>Niveau 3</Button>
+                            </ButtonGroup>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <ButtonGroup variant="text" aria-label="text button group">
+                                <Button style={{ backgroundColor: "white", color: "black" }} onClick={() => setColorBackground("white")}>White</Button>
+                                <Button style={{ backgroundColor: "blue", color: "black" }} onClick={() => setColorBackground("blue")}>Blue</Button>
+                                <Button style={{ backgroundColor: "purple", color: "black" }} onClick={() => setColorBackground("purple")}>purple</Button>
+                                <Button style={{ backgroundColor: "orange", color: "black" }} onClick={() => setColorBackground("orange")}>orange</Button>
+                                <Button style={{ backgroundColor: "yellow", color: "black" }} onClick={() => setColorBackground("yellow")}>Yellow</Button>
+                            </ButtonGroup>
+                        </Grid>
+                        Background color selected :
+                        <div style={{ backgroundColor: colorBackground }}>
+                            {colorBackground}
+                        </div>
+                        Difficulty level {difficulty}
+                    </Grid>
+
+                    <Grid
+                        container
                         rowSpacing={10}
                         direction="column"
                         alignItems="center"
                         justifyContent="space-around"
-                        style={{ minHeight: '100vh' }}
+                        style={{ minHeight: '70vh' }}
                     >
                         <Grid item xs={3}>
                             <Button variant="outlined" onClick={handleClick}>
@@ -211,7 +247,7 @@ export const Pong = () => {
                 </div>
                 :
                 <div>
-                    {winner === '' ? (
+                    {!opponent ? (
                         <Grid
                             container
                             rowSpacing={10}
@@ -220,17 +256,17 @@ export const Pong = () => {
                             justifyContent="center"
                             style={{ minHeight: '100vh' }}
                         >
-                            <CircularProgress size={window_size.canvasWidth / 6} />
+                            {/* <CircularProgress size={window_size.canvasWidth / 6} /> */}
                             <Grid item xs={3}>
                                 {searchOpponent}
                             </Grid>
                         </Grid>
                     ) : (
                         <div>
-                            <GameWrapper tabIndex={0} onKeyDown={onKeyDownHandler}>
+                            <div className='gamePong' tabIndex={0} onKeyDown={onKeyDownHandler}>
                                 <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
 
-                            </GameWrapper>
+                            </div>
                             <ColumnGroupingTable side={playerSide} username={userInfo.username} opponent={opponent} />
                         </div>
 
