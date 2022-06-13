@@ -9,6 +9,11 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class UserController {
   constructor(private userService: UserService) {}
 
+@Get('/all')
+getAllUsers() {
+    return this.userService.getAllUsers();
+}
+
   @Post('/sign-up')
   createUser( @Body() body: CreateUserDto) : Promise<any> {
       console.log(body);

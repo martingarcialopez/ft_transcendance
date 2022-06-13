@@ -22,6 +22,21 @@ export class UserService {
         private GameHistoryRepository: Repository<GameHistory>
     ) { }
 
+    async getAllUsers() {
+
+        const all = await this.userRepository.find();
+
+        var allUsernames: Array<string> = [];
+
+        for (const user of all) {
+            console.log(user.username);
+            allUsernames.push(user.username);
+        }
+
+        return allUsernames;
+
+    }
+
     async createUser(payload: CreateUserDto): Promise<any> {
 
         const existing_user = await this.userRepository.findOne({ username: payload.username });
