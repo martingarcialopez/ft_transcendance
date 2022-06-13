@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, ImATeapotException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/services/user.service';
+import { MailerService } from '@nestjs-modules/mailer';
+import * as speakeasy from "speakeasy";
+import * as qrcode from "qrcode";
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -8,13 +11,14 @@ export class AuthService {
 
     constructor(
         private usersService: UserService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private mailerService: MailerService
         ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.getUser(username);
     if (user && await bcrypt.compare(pass, user.password)) {
-      const { password, ... result } = user;
+      const { password, ...result } = user;
       return result;
     }
     return null;
@@ -23,7 +27,7 @@ export class AuthService {
   async validate42User(/*username: string, */login42: string): Promise<any> {
     const user = await this.usersService.getUserBy42Login(login42);
     if (user && user.login42 === login42) {
-      const { password, ... result } = user;
+      const { password, ...result } = user;
       return result;
     }
     return null;
@@ -36,5 +40,50 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
     };
   }
+
+async updateSecret(code: string, id: string) {
+
+  this.usersService.updateUser( { "secret": code }, id);
+}
+
+async enable2FA(id: string) : Promise<string> {
+
+  const user = await this.usersService.getUserById(id);
+
+  if (!user)
+    throw new NotFoundException();
+
+  const updatedUser = await this.usersService.updateUser( { twofa: true }, id);
+
+  console.log('updated used is')
+  console.log(updatedUser);
+
+  const secret = speakeasy.generateSecret({ name: "Amazing Pong" });
+
+  await this.usersService.updateUser( { "secret": secret.ascii}, id);
+
+  let qrPromise = new Promise<string>( (resolve, reject) => {
+    qrcode.toDataURL(secret.otpauth_url, function(err, data) {
+      if (err) {
+        reject()
+        throw new ImATeapotException();
+      }
+       resolve(data)
+   })
+  })
+
+  return qrPromise;
+}
+
+async disable2FA(id: string) {
+
+  const user = await this.usersService.getUserById(id);
+  
+  if (user)
+    user.twofa = false;
+
+  this.usersService.updateUser(user, id);
+
+}
 
 }
