@@ -231,17 +231,9 @@ export class MaobeChatGateway {
 	async createMessage(socket: Socket, message: any): Promise<boolean> {
 		console.log(message);
 		const userId: number = Number(socket.handshake.headers.userid);
-		const roomId = message.roomId;
-		const content = message.content;
 		try {
 			var res = await this.messageService.createMessage(message);
-			this.server.to(roomId.toString())
-				// .emit('B_createMessage',  {'roomId': roomId,
-				// 						   'message': {
-				// 							   'userId': userId,
-				// 							   'content': content,
-				// 							   'date': '11/05/2020',
-			// 						   }
+			this.server.to(message.roomId.toString())
 				.emit('B_createMessage', res);
 			return true;
 		}

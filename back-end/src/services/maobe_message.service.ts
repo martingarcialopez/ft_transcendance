@@ -33,7 +33,6 @@ export class MaobeMessageService {
 		new_message.content = messageDto.content;
 		new_message.createdDate = new Date();
 		await this.messageRepository.save(new_message);
-		console.log(new_message);
 		return new_message;
 	}
 
