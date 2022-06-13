@@ -982,7 +982,7 @@ function Chat(props: any) {
 		}
 		let messageToCreate = {
 			'roomId': currRoomId,
-			'userId': 300,
+			'userId': 1,
 			'content': messageBarValues.get(currRoomId)
 		}
 

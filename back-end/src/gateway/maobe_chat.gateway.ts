@@ -15,8 +15,8 @@ import { MaobeRoom } from '../models/maobe_room.entity';
 import { MaobeRoomService } from '../services/maobe_room.service';
 import { MaobeParticipantService } from '../services/maobe_participant.service';
 import { RoomDto } from '../dtos/in/maobe_room.dto';
-
-
+import { MaobeMessageService } from '../services/maobe_message.service';
+import { UserService } from '../services/user.service';
 
 const ROOMS_LIST = [
 	{
@@ -114,6 +114,8 @@ export class MaobeChatGateway {
 	constructor(
 		private readonly participantService: MaobeParticipantService,
 		private readonly roomService: MaobeRoomService,
+		private readonly messageService: MaobeMessageService,
+		private readonly userService: UserService,
 	) {}
 
 
@@ -208,18 +210,6 @@ export class MaobeChatGateway {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 	@SubscribeMessage('F_muteUser')
 	muteUser(socket: Socket, infos: any): boolean {
 		return (true);
@@ -238,25 +228,27 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_createMessage')
-	createMessage(socket: Socket, message: any): any {
+	async createMessage(socket: Socket, message: any): Promise<boolean> {
+		console.log(message);
+		const userId: number = Number(socket.handshake.headers.userid);
 		const roomId = message.roomId;
 		const content = message.content;
-		const userId = message.userId;
-		console.log(`Creating message ${content} in ${roomId} for ${userId}`);
-		if (true) {
-			this.server.emit('B_createMessage',  {'roomId': roomId,
-												  'message': {
-													  'userId': userId,
-													  'content': content,
-													  'date': '11/05/2020',
-												  }
-												 });
+		try {
+			var res = await this.messageService.createMessage(message);
+			this.server.to(roomId.toString())
+				// .emit('B_createMessage',  {'roomId': roomId,
+				// 						   'message': {
+				// 							   'userId': userId,
+				// 							   'content': content,
+				// 							   'date': '11/05/2020',
+			// 						   }
+				.emit('B_createMessage', res);
 			return true;
 		}
-		return ({
-			'status': 'KO',
-			'msg': 'Something went wrong.'
-		});
+		catch (e)
+		{
+			return false;
+		}
 	}
 
 	@SubscribeMessage('F_updateRoom')

@@ -1,7 +1,7 @@
 import { Injectable, Inject, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { MessageDto } from '../dtos/in/message.dto';
+import { MaobeMessageDto } from '../dtos/in/maobe_message.dto';
 import { MaobeMessage } from '../models/maobe_message.entity';
 import { classToPlain, Exclude } from 'class-transformer';
 import { MessageSnippetDto } from '../dtos/out/MessageSnippetDto.dto';
@@ -25,16 +25,15 @@ export class MaobeMessageService {
 **create a new obj  of Message entity, store it in the repository
 **return: dto that contains messageId
 */
-	async createMessage(messageDto: MessageDto): Promise<MaobeMessage>
+	async createMessage(messageDto: MaobeMessageDto): Promise<MaobeMessage>
 	{
 		const new_message = new MaobeMessage();
 		new_message.userId = messageDto.userId;
-		new_message.sender = messageDto.sender;
-		new_message.roomId = messageDto.channelIdDst;
-		new_message.content = messageDto.contentToSend;
+		new_message.roomId = messageDto.roomId;
+		new_message.content = messageDto.content;
+		new_message.createdDate = new Date();
 		await this.messageRepository.save(new_message);
-//		const dto = plainToClass(MessageSnippetDto, new_message);
-		//		return dto;
+		console.log(new_message);
 		return new_message;
 	}
 

@@ -46,9 +46,9 @@ export class MessageGateway {
 		console.log('in message gw ', message);
 	    var value = await this.messageService.createMessage(message);
 
-    /*Send message_id to front
-    this.server.emit('SendMsg', value);*/
-    /*Send message infos to everyone in the same channel*/
+		/*Send message_id to front
+		  this.server.emit('SendMsg', value);*/
+		/*Send message infos to everyone in the same channel*/
     this.server
       .to(message.channelIdDst.toString())
 		.emit('MsgtoChat', value);

@@ -91,7 +91,7 @@ export class MaobeRoomService {
 
 
 	/*
-** Create a new obj of participant and store in the table
+** Create a new obj of participant and store in the table, return to front updated info
 */
 	async createParticipant(participantDto: ParticipantDto): Promise<any[]> {
 		await this.participantService.createParticipant(participantDto);
