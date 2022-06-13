@@ -27,22 +27,76 @@ import microfoneMuted from '../styles/assets/microfoneMuted.svg';
 import { GetUserInfo } from "./GetUserInfo";
 
 
+function JoinRoomMenu(props: any) {
+	const ref = useRef(null);
+	const [isOpen, setOpen] = useState(false);
+
+	let Html_AvailableRooms = (<div></div>);
+	if (props.roomsDispoToJoin !== undefined && props.roomsDispoToJoin.length > 0) {
+		Html_AvailableRooms = props.roomsDispoToJoin.map((room: any, i: any) => {
+			return (
+				<div key={i}
+					 onClick={ () => {
+   						 setOpen(false);
+						 props.onClick_joinRoom(room.id)
+					 }}>
+					<a id="messages">
+   						<img src={ room.image } />
+   						<label>{ room.name }</label>
+   					</a>
+					<hr />
+				</div>
+   			);
+   		});
+   	}
+   	return (
+   		<div>
+   			<button ref={ref} className="btn" onClick={() => {
+   						setOpen(true);
+   						props.onClick_getRoomsDispoToJoin()
+   					}}>
+   				🔗
+   			</button>
+
+   			<ControlledMenu
+				state={isOpen ? 'open' : 'closed'}
+				anchorRef={ref}
+				onClose={() => setOpen(false)}
+			>
+   				{ /* ---------- */ }
+   				<label> Public Rooms </label>
+   				<hr />
+   				<FocusableItem>
+   					{({ ref }) => (
+   						<div ref={ ref }>
+   							{ Html_AvailableRooms }
+   						</div>
+   					)}
+   				</FocusableItem>
+   			</ControlledMenu>
+   		</div>
+   	);
+}
+
 function CreateRoomMenu(props: any) {
 	const ref = useRef(null);
 	const [isOpen, setOpen] = useState(false);
 	const [disablePassword, setDisablePassword] = useState(true);
 
-	const Html_AvailableUser = props.availableUsers.map((user: any, i: any) => {
-		return (
-			<div key={i} id="messages">
-				<input type="checkbox"
-					   onChange={(e) => props.onChange_selectParticipant(e, user) }
-				/>
-				<img src={user.avatar} />
-				<label>{ user.userName }</label>
-			</div>
-		);
-	});
+	let Html_AvailableUser = (<div></div>);
+	if (props.availableUsers !== undefined && props.availableUsers.length > 0) {
+		Html_AvailableUser = props.availableUsers.map((user: any, i: any) => {
+			return (
+				<div key={i} id="messages">
+					<input type="checkbox"
+						   onChange={(e) => props.onChange_selectParticipant(e, user) }
+					/>
+					<img src={user.avatar} />
+					<label>{ user.username }</label>
+				</div>
+			);
+		});
+	}
 
 	return (
 		<div>
@@ -68,6 +122,20 @@ function CreateRoomMenu(props: any) {
 							   placeholder="Name your new room"
 							   value={ props.newRoomName }
 							   onChange={e => props.setNewRoomName(e.target.value)} />
+					)}
+				</FocusableItem>
+				<hr />
+
+				{ /* ---------- */ }
+				<label> Room Image </label>
+				<FocusableItem>
+					{({ ref }) => (
+						<input ref={ref}
+							   required
+							   type="text"
+							   placeholder="Put an image url here"
+							   value={ props.roomImage }
+							   onChange={e => props.setRoomImage(e.target.value)} />
 					)}
 				</FocusableItem>
 				<hr />
@@ -130,22 +198,29 @@ function CreateRoomMenu(props: any) {
 }
 
 function EditRoomMenu(props: any) {
-
 	const ref = useRef(null);
 	const [isOpen, setOpen] = useState(false);
 	const [disablePassword, setDisablePassword] = useState(true);
 
-	const Html_AvailableUser = props.roomAvailableUsers.map((user: any, i: any) => {
-		return (
-			<div key={i} id="messages">
-				<input type="checkbox"
-					   onChange={(e) => props.onChange_selectRoomParticipant(e, user) }
-				/>
-				<img src={user.avatar} />
-				<label>{ user.userName }</label>
-			</div>
-		);
-	});
+	if (props.currRoom.owner !== props.connectedUser.userId &&
+		props.currRoom.admin.indexOf(props.connectedUser.userId) === -1) {
+		return (<div></div>);
+	}
+
+	let Html_AvailableUser =<div></div>;
+	if (props.roomAvailableUsers !== undefined) {
+		Html_AvailableUser = props.roomAvailableUsers.map((user: any, i: any) => {
+			return (
+				<div key={i} id="messages">
+					<input type="checkbox"
+						   onChange={(e) => props.onChange_selectRoomParticipant(e, user) }
+					/>
+					<img src={user.avatar} />
+					<label>{ user.username }</label>
+				</div>
+			);
+		});
+	}
 
 	return (
 		<div>
@@ -239,10 +314,10 @@ function RoomsPanel(props: any) {
 			<div key={i}
 				 className="conversa"
 				 tabIndex={1}
-				 onClick={ () => { props.onClick(room.roomId); }}>
+				 onClick={ () => { props.onClick(room.id); }}>
 				<img alt="room logo" src={ room.image } />
 				<a>
-					{ room.roomName }
+					{ room.name }
 				</a>
 				<EditRoomMenu currRoom={ room }
 							  {...props} />
@@ -257,6 +332,7 @@ function RoomsPanel(props: any) {
 
 			<div id="mensagens-diretas">
 				<a> Chat Rooms</a>
+				<JoinRoomMenu {...props} />
 				<CreateRoomMenu {...props} />
 			</div>
 
@@ -288,6 +364,37 @@ function CreateRoomForm(props: any) {
 	);
 }
 
+function ParticipantAdminContextMenu(props: any) {
+	if (props.currentRoom.owner !== props.connectedUser.userId &&
+		props.currentRoom.admin.indexOf(props.connectedUser.userId) === -1) {
+		return (<div></div>);
+	}
+	return (
+		<div>
+			{ /* ----- KICK ----- */ }
+            <MenuItem onClick={
+						  () => props.onClick_kick(props.currentUser.userId, props.currRoomId) }>
+				Kick { props.currentUser.username }
+			</MenuItem>
+			<hr />
+
+			{ /* ----- BAN ----- */ }
+            <MenuItem onClick={
+						  () => props.onClick_ban(props.currentUser.userId, props.currRoomId) }>
+				Ban { props.currentUser.username }
+			</MenuItem>
+			<hr />
+
+			{ /* ----- MUTE ----- */ }
+            <MenuItem onClick={
+						  () => props.onClick_mute(props.currentUser.userId, props.currRoomId) }>
+				Mute { props.currentUser.username }
+			</MenuItem>
+			<hr />
+		</div>
+	);
+}
+
 function ParticipantContextMenu(props: any) {
     const [menuProps, toggleMenu] = useMenuState();
     const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
@@ -302,45 +409,26 @@ function ParticipantContextMenu(props: any) {
 				<img src={ props.currentUser.avatar } alt="" />
 				<div id="column-message">
 					<div id="message-send">
-						<a>{ props.currentUser.userName }</a>
+						<a>{ props.currentUser.username }</a>
 					</div>
 				</div>
 			</div>
 
             <ControlledMenu {...menuProps} anchorPoint={anchorPoint}
                             onClose={() => toggleMenu(false)}>
-				{ /* ----- KICK ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_kick(props.currentUser.userId, props.currRoomId) }>
-					Kick { props.currentUser.userName }
-				</MenuItem>
-				<hr />
-
-				{ /* ----- BAN ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_ban(props.currentUser.userId, props.currRoomId) }>
-					Ban { props.currentUser.userName }
-				</MenuItem>
-				<hr />
-
-				{ /* ----- MUTE ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_mute(props.currentUser.userId, props.currRoomId) }>
-					Mute { props.currentUser.userName }
-				</MenuItem>
-				<hr />
+				<ParticipantAdminContextMenu {...props} />
 
 				{ /* ----- BLOCK ----- */ }
                 <MenuItem onClick={
 							  () => props.onClick_block(props.currentUser.userId, props.currRoomId) }>
-					Block { props.currentUser.userName }
+					Block { props.currentUser.username }
 				</MenuItem>
 				<hr />
 
 				{ /* ----- DIRECT MESSAGE ----- */ }
                 <MenuItem onClick={
 							  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
-					Send Message { props.currentUser.userName }
+					Send Message { props.currentUser.username }
 				</MenuItem>
 
             </ControlledMenu>
@@ -354,7 +442,10 @@ function ParticipantsPanel(props: any) {
 		props.roomsList === undefined || props.roomsList.length === 0) {
 		return (<div></div>);
 	}
-	const currentRoom = props.roomsList.filter((obj: any) => obj.roomId === props.currRoomId)[0];
+	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currRoomId)[0];
+	if (currentRoom.participants === undefined) {
+		return (<div></div>);
+	}
 	const Html_participants = currentRoom.participants.map((currentUser: any, i: any) => {
 		if (currentUser === undefined) {
 			return (<div></div>);
@@ -362,6 +453,7 @@ function ParticipantsPanel(props: any) {
 		return (
 			<div key={i}>
 				<ParticipantContextMenu currentUser={ currentUser }
+										currentRoom={ currentRoom }
 										{...props} />
 			</div>
 		)
@@ -408,15 +500,14 @@ function ChannelPanel(props: any) {
 	);
 }
 
-function StatusBar() {
+function StatusBar(props: any) {
 	return (
 		<div id="status">
 			<div className="content-status">
-				<img src="https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png" alt="ProfilePhoto" />
+				<img src={ props.connectedUser.avatar } alt="ProfilePhoto" />
 
 				<div id="name-id">
-					<a> Maobe</a>
-					<a> #8686</a>
+					<a> { props.connectedUser.username }</a>
 				</div>
 
 				<div id="icons">
@@ -443,12 +534,12 @@ function RoomHeaderBar(props: any) {
 	if (props.roomsList.length === 0) {
 		return (<div></div>);
 	}
-	const currentRoom = props.roomsList.filter((obj: any) => obj.roomId === props.currRoomId)[0];
+	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currRoomId)[0];
 	return (
 		<div className="top-bar">
 			<div id="nome-conversa">
 				<img src={ arroba } alt="" />
-				<a>{ currentRoom.roomName } </a>
+				<a>{ currentRoom.name } </a>
 				<img src={ ocupado } alt="" />
 			</div>
 
@@ -472,7 +563,7 @@ function MessagePanel(props: any) {
 		props.roomsList === undefined || props.roomsList.length === 0) {
 		return (<div></div>);
 	}
-	const currentRoom = props.roomsList.filter((obj: any) => obj.roomId === props.currRoomId)[0];
+	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currRoomId)[0];
 
 	let Html_messages = (<div></div>);
 	if (props.messages !== undefined && props.messages.length !== 0 &&
@@ -482,7 +573,7 @@ function MessagePanel(props: any) {
 			let currentUser = currentRoom.participants.filter((obj: any) => obj.userId === message.userId)[0];
 			if (currentUser === undefined) {
 				currentUser = {
-					'userName': 'undefined',
+					'username': 'undefined',
 					'avatar': ''
 				};
 			}
@@ -493,7 +584,7 @@ function MessagePanel(props: any) {
 
 						<div id="column-message">
 							<div id="name-date-message">
-								<a>{ currentUser.userName }</a>
+								<a>{ currentUser.username }</a>
 								<a>{ message.date }</a>
 							</div>
 							<div id="message-send">
@@ -515,7 +606,7 @@ function MessagePanel(props: any) {
 		<div>
 			<div id="profile">
 				<img src={ currentRoom.image } alt="" />
-				<a>{ currentRoom.roomName }</a>
+				<a>{ currentRoom.name }</a>
 			</div>
 
 			<div id="risco">
@@ -556,8 +647,8 @@ function SendMessageBar(props: any) {
 }
 
 interface I_Room {
-	roomName: string,
-	roomId: number,
+	id: number,
+	name: string,
 	image: string,
 	roomType: string,
 	participants: any[];
@@ -580,15 +671,18 @@ function Chat(props: any) {
 	const [currRoomId, setCurrRoomId] = useState(-1);
 	const [rooms, setRooms] = useState<any[]>([]);
 	const getRooms_listener = (receivedRooms: any[]) => {
-		setCurrRoomId(receivedRooms[0].roomId);
+		if (receivedRooms.length === 0) {
+			return ;
+		}
+		setCurrRoomId(receivedRooms[0].id);
 		setRooms(receivedRooms);
 
 		let sendMessageBarValues =  new Map<number, string>();
 		receivedRooms.map((room: I_Room, i: any) => {
-			sendMessageBarValues.set(room.roomId, '');
+			sendMessageBarValues.set(room.id, '');
 		});
 		setMessageBarValue(sendMessageBarValues);
-		props.appSocket.emit('F_getMessages', receivedRooms[0].roomId);
+		props.appSocket.emit('F_getMessages', receivedRooms[0].id);
 	}
 	const onClick_Room = (roomId: number) => {
 		setCurrRoomId(roomId);
@@ -613,7 +707,7 @@ function Chat(props: any) {
 							 (isBanned: boolean) => {
 								 if (isBanned === true) {
 									 let newRooms = rooms.slice();
-									 var index = newRooms.findIndex((obj:any) => obj.roomId === roomId);
+									 var index = newRooms.findIndex((obj:any) => obj.id === roomId);
 									 var unbaned_participants = newRooms[index].participants.filter((obj: any) => obj.userId !== userId);
 									 newRooms[index].participants = unbaned_participants;
 									 setRooms(newRooms);
@@ -632,7 +726,7 @@ function Chat(props: any) {
 							 (isMuted: boolean) => {
 								 if (isMuted === true) {
 									 let newRooms = rooms.slice();
-									 var index = newRooms.findIndex((obj:any) => obj.roomId === roomId);
+									 var index = newRooms.findIndex((obj:any) => obj.id === roomId);
 									 var user_index = newRooms[index].participants.findIndex((obj:any) => obj.userId === userId);
 									 newRooms[index].participants[user_index]['mute'] = true;
 									 setRooms(newRooms);
@@ -653,7 +747,7 @@ function Chat(props: any) {
 							 (isBlocked: boolean) => {
 								 if (isBlocked === true) {
 									 let newRooms = rooms.slice();
-									 var index = newRooms.findIndex((obj:any) => obj.roomId === roomId);
+									 var index = newRooms.findIndex((obj:any) => obj.id === roomId);
 									 var user_index = newRooms[index].participants.findIndex((obj:any) => obj.userId === userId);
 									 var unbaned_participants = newRooms[index].participants.filter((obj: any) => obj.userId !== userId);
 									 newRooms[index].participants = unbaned_participants;
@@ -698,8 +792,9 @@ function Chat(props: any) {
 	/*        Create new room          */
 	/* ------------------------------- */
 	const [newRoomName, setNewRoomName ] = useState("");
-	const [typeRoom, setTypeRoom ] = useState("public");
-	const [passWord, setPassword ] = useState("");
+	const [typeRoom, setTypeRoom] = useState("public");
+	const [passWord, setPassword] = useState("");
+	const [roomImage, setRoomImage] = useState("");
 	const [availableUsers, setAvailableUsers] = useState<any[]>([]);
 	const onClick_getAvailableUsers = () => {
 		props.appSocket.emit('F_getAvailableUsers', true);
@@ -720,8 +815,14 @@ function Chat(props: any) {
 		}
 	}
 	const onSubmit_createRoom = () => {
+		let tmpRoomName = newRoomName;
+		if (tmpRoomName.length === 0) {
+			tmpRoomName = 'undefined';
+		}
+
 		const RoomToCreate = {
-			'roomName': newRoomName,
+			'name': tmpRoomName,
+			'image': roomImage,
 			'typeRoom': typeRoom,
 			'password': passWord,
 			'users': selectedNewParticipants
@@ -735,6 +836,7 @@ function Chat(props: any) {
 								 }
 								 else {
 									 setNewRoomName("");
+									 setRoomImage("");
 									 setTypeRoom("public");
 									 setPassword("");
 									 setSelectedNewParticipants([]);
@@ -744,13 +846,43 @@ function Chat(props: any) {
 	}
 	const createRoom_listener = (newRoom: I_Room) => {
 		let newRooms = rooms.slice();
-		newRooms.push(newRoom);
+		newRooms.unshift(newRoom);
 		setRooms(newRooms);
-		console.log('HERRRRE: ', newRoom, newRooms);
-		setCurrRoomId(newRoom.roomId);
+		setCurrRoomId(newRoom.id);
 
 		let newMessageBarValues = new Map(messageBarValues);
-		newMessageBarValues.set(newRoom.roomId, '');
+		newMessageBarValues.set(newRoom.id, '');
+		setMessageBarValue(newMessageBarValues);
+	}
+
+	/* ------------------------- */
+	/*        Join room          */
+	/* ------------------------- */
+	const [roomsDispoToJoin, setRoomsDispoToJoin] = useState<any[]>([]);
+	const onClick_getRoomsDispoToJoin= () => {
+		console.log('SHOULD SEND F_getDispoRooms');
+		props.appSocket.emit('F_getDispoRooms', true);
+	}
+	const getRoomsDispoToJoin_listener = (dispoRooms: I_Room[]) => {
+		console.log('dispoRooms: ', dispoRooms);
+		setRoomsDispoToJoin(dispoRooms);
+	}
+	const onClick_joinRoom = (roomId: number) => {
+		props.appSocket.emit('F_joinRoom', roomId,
+							 (isJoined: boolean) => {
+								 if (isJoined !== true) {
+									 alert('Something went wrong');
+								 }
+							 });
+	}
+	const joinRoom_listener = (newRoom: I_Room) => {
+		let newRooms = rooms.slice();
+		newRooms.unshift(newRoom);
+		setRooms(newRooms);
+		setCurrRoomId(newRoom.id);
+
+		let newMessageBarValues = new Map(messageBarValues);
+		newMessageBarValues.set(newRoom.id, '');
 		setMessageBarValue(newMessageBarValues);
 	}
 
@@ -758,11 +890,11 @@ function Chat(props: any) {
 	/*          Update Room            */
 	/* ------------------------------- */
 	const [updateRoomName, setUpdateRoomName] = useState("");
-	const [updateTypeRoom, setUpdateTypeRoom] = useState("");
+	const [updateTypeRoom, setUpdateTypeRoom] = useState("public");
 	const [updatePassWord, setUpdatePassword] = useState("");
 	const onClick_updateRoom = (currRoom: I_Room) => {
-		props.appSocket.emit('F_getRoomAvailableUsers', currRoom.roomId);
-		setUpdateRoomName(currRoom.roomName);
+		props.appSocket.emit('F_getRoomAvailableUsers', currRoom.id);
+		setUpdateRoomName(currRoom.name);
 		setUpdateTypeRoom(currRoom.roomType);
 	}
 
@@ -783,14 +915,15 @@ function Chat(props: any) {
 		setRoomAvailableUsers(userList);
 	}
 	const onSubmit_updateRoom = () => {
+		const tmpRoomInfos = {
+			'name': updateRoomName,
+			'roomId': currRoomId,
+			'roomType': updateTypeRoom !== undefined ? updateTypeRoom : "public",
+			'password': updatePassWord,
+			'newParticipants': selectedNewRoomParticipants,
+		}
 		props.appSocket.emit('F_updateRoom',
-							 {
-								 'roomName': updateRoomName,
-								 'roomId': currRoomId,
-								 'roomType': updateTypeRoom,
-								 'password': updatePassWord,
-								 'newParticipants': selectedNewRoomParticipants,
-							 },
+							 tmpRoomInfos,
 							 (isUpdated: boolean) => {
 								 if (isUpdated !== true) {
 									 alert('Something went wrong');
@@ -804,9 +937,11 @@ function Chat(props: any) {
 							 });
 	}
 	const updateRoom_listener = (updatedRoom: I_Room) => {
-		const newRooms = rooms.filter((obj: any) => obj.roomId !== updatedRoom.roomId);
+		let newRooms = rooms.filter((obj: any) => obj.id !== updatedRoom.id);
+		let oldRoom = rooms.filter((obj: any) => obj.id === updatedRoom.id)[0];
+
+		updatedRoom.participants = [...oldRoom.participants, ...updatedRoom.participants]
 		newRooms.unshift(updatedRoom);
-		console.log('newROOOOM: ', newRooms);
 		setRooms(newRooms);
 	}
 
@@ -874,6 +1009,9 @@ function Chat(props: any) {
 		if (props.appSocket.__callbacks === undefined ||
 			props.appSocket._callbacks['getRooms_listener'] === undefined) {
 			props.appSocket.on('B_getRooms', getRooms_listener);
+			if (rooms.length === 0) {
+				props.appSocket.emit('F_getRooms', '');
+			}
 		}
 		if (props.appSocket._callbacks['getMessages_listener'] === undefined) {
 			props.appSocket.on('B_getMessages', getMessages_listener);
@@ -893,6 +1031,12 @@ function Chat(props: any) {
 		if (props.appSocket._callbacks['getRoomAvailableUsers_listener'] === undefined) {
 			props.appSocket.on('B_getRoomAvailableUsers', getRoomAvailableUsers_listener);
 		}
+		if (props.appSocket._callbacks['getRoomsDispoToJoin_listener'] === undefined) {
+			props.appSocket.on('B_getDispoRooms', getRoomsDispoToJoin_listener);
+		}
+		if (props.appSocket._callbacks['joinRoom_listener'] === undefined) {
+			props.appSocket.on('B_joinRoom', joinRoom_listener);
+		}
 		return () => {
 			props.appSocket.removeAllListeners('B_getRooms');
 			props.appSocket.removeAllListeners('B_getMessages');
@@ -901,6 +1045,8 @@ function Chat(props: any) {
 			props.appSocket.removeAllListeners('B_updateRoom');
 			props.appSocket.removeAllListeners('B_getAvailableUsers');
 			props.appSocket.removeAllListeners('B_getRoomAvailableUsers');
+			props.appSocket.removeAllListeners('B_getDispoRooms');
+			props.appSocket.removeAllListeners('B_joinRoom');
 		};
  	});
 
@@ -923,11 +1069,17 @@ function Chat(props: any) {
 				<div id="middle-box">
 					<RoomsPanel roomsList={ rooms }
 								onClick={ onClick_Room }
+								connectedUser={ props.connectedUser }
 
+								roomsDispoToJoin={ roomsDispoToJoin }
+								onClick_getRoomsDispoToJoin={ onClick_getRoomsDispoToJoin }
+								onClick_joinRoom={ onClick_joinRoom }
 								onSubmit_createRoom={ onSubmit_createRoom }
 								newRoomName={ newRoomName }
 								setNewRoomName={ setNewRoomName }
 								typeRoom={ typeRoom }
+								roomImage={ roomImage }
+								setRoomImage={ setRoomImage }
 								setTypeRoom={ setTypeRoom }
 								password={ passWord }
 								setPassword={ setPassword }
@@ -946,7 +1098,7 @@ function Chat(props: any) {
 								roomAvailableUsers={ roomAvailableUsers }
 								onChange_selectRoomParticipant={onChange_selectRoomParticipant}
 					/>
-					<StatusBar />
+					<StatusBar connectedUser={ props.connectedUser } />
 				</div>
 
 				<div id="main">
@@ -966,6 +1118,7 @@ function Chat(props: any) {
 					<div className="content">
 						<ParticipantsPanel roomsList={ rooms }
 										   currRoomId={ currRoomId }
+										   connectedUser={ props.connectedUser }
 										   onClick_kick={ onClick_kick  }
 										   onClick_ban={ onClick_ban  }
 										   onClick_mute={ onClick_mute  }

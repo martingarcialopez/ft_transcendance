@@ -1,8 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RoomDto } from '../dtos/in/room.dto';
-import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
 
 import { User } from '../models/user.entity';
 import { MaobeRoom } from '../models/maobe_room.entity';
@@ -10,7 +8,9 @@ import { MaobeParticipant } from '../models/maobe_participant.entity';
 import { MaobeMessage } from '../models/maobe_message.entity';
 import { classToPlain, Exclude } from 'class-transformer';
 import { plainToClass } from 'class-transformer';
+
 import * as bcrypt from 'bcrypt';
+import { RoomDto } from '../dtos/in/maobe_room.dto';
 import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
 import { RoomPwDto } from '../dtos/in/room_password.dto';
 import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
@@ -35,17 +35,106 @@ export class MaobeRoomService {
 		@InjectRepository(User) private readonly userRepository: Repository<User>,
     ){}
 
+	/*get all the room the user participated and corresponding all participants in the room */
 	async maobe_getJoinRooms(userId: number): Promise<any[]>
 	{
-		let rooms: any = await this.roomRepository.createQueryBuilder("room")
-            .leftJoinAndSelect("room.participants", "participant")
-            .leftJoinAndSelect("participant.user", "user")
-			.select(["room.id",
-					 "participant.roomId", "room.name"])
+		const roomIds_obj: any[] = await this.roomRepository.createQueryBuilder()
+			.select(["MaobeRoom.id"])
+			.innerJoin(MaobeParticipant, "participant", `participant.roomId = MaobeRoom.id`)
 			.where("participant.userId = :id", { id: userId })
-            .getMany();
-		return rooms;
+			.getMany();
+
+		const roomIds: number[] = []
+		roomIds_obj.forEach((obj) => {
+			roomIds.push(obj.id);
+		})
+
+		let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
+			.select(["MaobeRoom", "u"])
+			.leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)
+			.leftJoin(User, "u", `p.userId = u.id`)
+			.where("MaobeRoom.id IN (:...ids)", { ids: roomIds })
+			.getRawMany();
+
+		let managedIndex: any[] = [];
+		let ret: any[] = [];
+
+		rooms.forEach((obj: any) => {
+			if (managedIndex.indexOf(obj.MaobeRoom_id) === -1) {
+				managedIndex.push(obj.MaobeRoom_id);
+
+				const users = rooms.filter((obj2: any) => obj2.MaobeRoom_id === obj.MaobeRoom_id);
+				const tmp_participants: any[] = [];
+
+				users.forEach((obj2) => {
+					tmp_participants.push({
+						'userId': obj2.u_id,
+						'username': obj2.u_username,
+						'avatar': obj2.u_avatar,
+					});
+				})
+				ret.push(
+					{
+						'id': obj.MaobeRoom_id,
+						'name': obj.MaobeRoom_name,
+						'typeRoom': obj.MaobeRoom_typeRoom,
+						'image': obj.MaobeRoom_image,
+						'owner': obj.MaobeRoom_owner,
+						'admin': obj.MaobeRoom_admin,
+						'participants': tmp_participants
+					}
+				);
+			}
+		});
+		return ret;
 	}
+
+
+	/*
+** Create a new obj of participant and store in the table
+*/
+	async createParticipant(participantDto: ParticipantDto): Promise<any[]> {
+		await this.participantService.createParticipant(participantDto);
+		const roomIds = participantDto.roomId;
+        let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
+            .select(["MaobeRoom", "u"])
+            .leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)
+            .leftJoin(User, "u", `p.userId = u.id`)
+			.where("MaobeRoom.id = :ids", { ids: roomIds })
+            .getRawMany();
+
+        let managedIndex: any[] = [];
+        let ret: any[] = [];
+
+        rooms.forEach((obj: any) => {
+            if (managedIndex.indexOf(obj.MaobeRoom_id) === -1) {
+                managedIndex.push(obj.MaobeRoom_id);
+
+                const users = rooms.filter((obj2: any) => obj2.MaobeRoom_id === obj.MaobeRoom_id);
+                const tmp_participants: any[] = [];
+
+                users.forEach((obj2) => {
+                    tmp_participants.push({
+                        'userId': obj2.u_id,
+                        'username': obj2.u_username,
+                        'avatar': obj2.u_avatar,
+                    });
+                })
+                ret.push(
+                    {
+                        'id': obj.MaobeRoom_id,
+                        'name': obj.MaobeRoom_name,
+                        'typeRoom': obj.MaobeRoom_typeRoom,
+                        'image': obj.MaobeRoom_image,
+                        'owner': obj.MaobeRoom_owner,
+                        'admin': obj.MaobeRoom_admin,
+                        'participants': tmp_participants
+                    }
+                );
+            }
+        });
+        return ret[0];
+    }
 
 
 
@@ -53,32 +142,121 @@ export class MaobeRoomService {
 	** Create a new channel(room)
 	** :param(RoomDto) the infos of the channel given by front
 	** :return (RoomSnippetDto) dto contains new channel id and its name
-	*/	async createRoom(roomDto: RoomDto): Promise<RoomSnippetDto>
+	*/	async maobe_createRoom(userId: number, roomDto: RoomDto): Promise<any | undefined>
 	{
-		// console.log('throw err after');
-		console.log('roomDto ', roomDto);
+		console.log('roomDto:', roomDto.image, '---------------');
         const new_room = new MaobeRoom();
+
+		/***CHANGE IMAGE***/
+		if (roomDto.image === undefined || roomDto.image === null ||  roomDto.image.length === 0) {
+			new_room.image = 'https://stickershop.line-scdn.net/stickershop/v1/product/7594755/LINEStorePC/main.png;compress=true';
+		}
+		else {
+			new_room.image = roomDto.image;
+		}
+
 		new_room.name = roomDto.name;
 		new_room.typeRoom = roomDto.typeRoom;
 		console.log('roomDto.password |', roomDto.password, '|');
-		if (roomDto.password)
+		if (roomDto.password.length > 0)
 		{
-			console.log('createRoom password');
 			new_room.is_protected = true;
 			const password = roomDto.password;
 			const saltOrRounds = 10;
 			const hash = await bcrypt.hash(password, saltOrRounds);
 			new_room.password = hash;
 		}
-		new_room.owner = roomDto.creatorId;
+		else
+			new_room.password = null;
+		new_room.owner = userId;
 		if(new_room.admin == null)
             new_room.admin = [];
-		new_room.admin.push(roomDto.creatorId);
+		new_room.admin.push(userId);
 		await this.roomRepository.save(new_room);
-		await this.participantService.createParticipant({'userId': roomDto.creatorId, 'roomId':  new_room.id});
-		const dto = plainToClass(RoomSnippetDto, new_room);
-		return dto;
+		await this.participantService.createParticipant({'userId': userId, 'roomId':  new_room.id});
+		let users: User[] = roomDto.users;
+		if (users.length > 0)
+		{
+			users.forEach(async element => await this.participantService.createParticipant({'userId': element['id'], 'roomId': new_room.id}));
+
+		}
+		return {
+            'id': new_room.id,
+            'name': new_room.name,
+            'typeRoom': new_room.typeRoom,
+            'image': new_room.image,
+            'owner': new_room.owner,
+            'admin': new_room.admin,
+            'participants': users
+        }
 	}
+
+
+	async get_AvailableUsers(userId: number) : Promise<User[]> {
+		let blockList: number[] = await this.Mutual_blocklist(userId);
+        let dispo_users: User[] = await this.userRepository.createQueryBuilder("user")
+            .where("user.id NOT IN (:...list) ", { list : blockList })
+            .getMany();
+        return dispo_users;
+	}
+
+	/*get potentials users who are not in the room yet*/
+	async getRoom_AvailableUsers(userId: number, roomId: number) :  Promise<User[] | any> {
+		let blockList: number[] = await this.Mutual_blocklist(userId);
+		let deja_member : MaobeParticipant[] = await this.participantRepository.createQueryBuilder("participant")
+			.select(["participant.userId"])
+			.where("participant.roomId = :room_Id", { room_Id: roomId })
+			.getMany();
+		deja_member.forEach(element => blockList.push(element.userId));
+
+        let users: User[] = await this.userRepository.createQueryBuilder("user")
+		    .where("user.id NOT IN (:...list) ", { list : blockList })
+			.getMany();
+		return users;
+	}
+
+	async maobe_updateRoom(roomInfos: any) : Promise<any> {
+		let room = await this.roomRepository.createQueryBuilder("room")
+            .where("room.id = :room_Id", { room_Id: roomInfos.roomId })
+            .getOne();
+
+		if (room === undefined){
+			throw 'cannot find this room';
+			return ;
+		}
+
+		var is_protected = false;
+		var password = null;
+		if (roomInfos['password'].length !== 0)
+		{
+			is_protected = true;
+			password = await bcrypt.hash(roomInfos.password, 10);
+		}
+
+		await this.roomRepository
+            .createQueryBuilder()
+            .update(MaobeRoom)
+            .set( {name: roomInfos.name, typeRoom: roomInfos.roomType,
+				   is_protected: is_protected,
+				   password: password})
+            .where("id = :id", { id: roomInfos.roomId })
+            .execute();
+		/*add new participants*/
+		const new_participants : MaobeParticipant[] = roomInfos.newParticipants.forEach(async element => await this.participantService.createParticipant({'userId': element['id'], 'roomId': roomInfos.roomId}));
+	const update_room = await this.roomRepository.findOne(roomInfos.roomId);
+		return {
+			'id': update_room['id'],
+			'name': update_room['name'],
+			'typeRoom': update_room['typeRoom'],
+			'is_protected': update_room['is_protected'],
+			'image': update_room['image'],
+			'owner': update_room['owner'],
+			'admin': update_room['admin'],
+			'participants': roomInfos.newParticipants,
+			}
+
+		}
+
 
 
 	/*
@@ -95,7 +273,7 @@ export class MaobeRoomService {
             .leftJoinAndSelect("participant.user", "user")
 			.where("room.id = :room_Id", { room_Id: room_Id })
 			.getOne();
-		console.log('here in getRoom', p, 'and type of p is ', typeof p);
+
 		return p;
 	}
 
@@ -118,9 +296,7 @@ export class MaobeRoomService {
 		return false;
 	}
 
-	async joinRoom(joinRoomDto: JoinRoomDto): Promise<boolean> {
-		console.log('joinRoomDto: ', joinRoomDto);
-
+/*	async joinRoom(joinRoomDto: JoinRoomDto): Promise<boolean> {
 		const typeRoom: string = joinRoomDto.typeRoom;
 		const userId : number = joinRoomDto.userId;
 		const roomId: number = joinRoomDto.roomId;
@@ -145,7 +321,6 @@ export class MaobeRoomService {
 			const login: string = joinRoomDto.login;
 			const invitee_info = await this.userId_fromLogin(login);
 			console.log('login', login);
-//			console.log('invitee_info is ', invitee_info);
 			if (invitee_info == undefined)
 				return false;
 			const invite_id = invitee_info['id'];
@@ -172,9 +347,10 @@ export class MaobeRoomService {
 			}
 		}
 		return false;
-	}
+	} */
 
-	async updateRoomPw(body: RoomPwDto): Promise<boolean> {
+/*	NO NEED
+async updateRoomPw(body: RoomPwDto): Promise<boolean> {
 		console.log(body);
 		let room = await this.roomRepository.createQueryBuilder("room")
             .select(["room.admin"])
@@ -185,108 +361,59 @@ export class MaobeRoomService {
 			let room =  await this.roomRepository.createQueryBuilder("room")
 			    .where("room.id = :room_Id", { room_Id: body.roomId })
 				.getOne();
-	//		console.log('origin: ', room['password'], body['password']);
 			let new_hashed_password = await this.get_hash_pw(body['password']);
 			room['password'] = new_hashed_password;
 			await this.roomRepository.save(room);
 			return true;
-//			console.log(await bcrypt.compare('666', room['password']));//should be true
 		}
 		return false;
-	}
-
-//NEED TO CHANGE VOID->BOOLEAN IF DELETE PASSWORD
-	async deleteRoomPw(body: RoomPwDto): Promise<boolean> {
-		// console.log('in svc of deleteRoomPw');
-		// let admin = await this.roomRepository.createQueryBuilder("room")
-        //     .select(["room.owner"])
-        //     .where("room.id = :room_Id", { room_Id: body.roomId })
-        //     .getOne();
-		// console.log(admin, admin['owner'], body.userId);
-		// //user does not have the right
-		// if (admin['owner'].indexOf(body.userId) == -1)
-		// {
-		// 	console.log('il a pas le droit pour supprimer le pw');
-		// 	return false;
-		//}
-		let room =  await this.roomRepository.createQueryBuilder("room")
-            .where("room.id = :room_Id", { room_Id: body.roomId })
-            .getOne();
-		room['password'] = null;
-		if (room['typeRoom'] == 'protected')
-			room['typeRoom'] = 'public';
-		await this.roomRepository.save(room);
-		console.log('here room', room);
-		//TEST IS WORKING?
-		room =  await this.roomRepository.createQueryBuilder("room")
-//			.select(["room.password"])
-            .where("room.id = :room_Id", { room_Id: body.roomId })
-            .getOne();
-		console.log('NOW room', room);
-		return true;
-	}
-
-	async get_hash_pw(password: string): Promise<string> {
-		const saltOrRounds = 10;
-        return await bcrypt.hash(password, saltOrRounds);
-	}
-
-	async get_RoomAdmins(roomId: number): Promise<number[] | undefined> {
-		let room = await this.roomRepository.createQueryBuilder("maoberoom")
-            .select(["maoberoom.admin"])
-            .where("maoberoom.id = :room_Id", { room_Id: roomId })
-			.getOne();
-        return room.admin;
-    }
+	}*/
 
 	async userIsAdmin(roomId: number, userId: number) : Promise<boolean> {
 		let admins = await this.get_RoomAdmins(roomId);
 		console.log('admins is here ', admins, admins.indexOf(userId));
-		//return false;
 		return await admins.indexOf(userId) != -1;
 	}
 
-	async manageAdmin(body: UpdateAdminDto): Promise<boolean> {
+// 	async manageAdmin(body: UpdateAdminDto): Promise<boolean> {
 
-		let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
-		let admins = await this.get_RoomAdmins(body.roomId);
-		if (admins == undefined)/*no admin in this chat*/
-			return false;
-		if (admins.indexOf(body.userId) == -1) /*userId is not admin*/
-			return false;
-		const login: string = body.login;
-		const user_info = await this.userId_fromLogin(login);
-		if (user_info == undefined)
-			return false;
-		let other_userId: number = user_info['id'];
-		const other_user_is_admin = await this.userIsAdmin(body.roomId, other_userId);
-		if (body['toAdd'] == true && other_user_is_admin == false)
-			admins.push(other_userId);
-		//remove this admin
-		else if (body['toAdd'] == false && other_user_is_admin == true)
-		{
-			var index = admins.indexOf(other_userId);
-			admins.splice(index, 1);
-		}
-		await this.roomRepository
-			.createQueryBuilder()
-			.update(MaobeRoom)
-			.set({ admin: admins })
-			.where("id = :id", { id: body.roomId })
-			.execute();
-		return true;
-	}
+// 		let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
+// 		let admins = await this.get_RoomAdmins(body.roomId);
+// 		if (admins == undefined)/*no admin in this chat*/
+// 			return false;
+// 		if (admins.indexOf(body.userId) == -1) /*userId is not admin*/
+// 			return false;
+// 		const login: string = body.login;
+// 		const user_info = await this.userId_fromLogin(login);
+// 		if (user_info == undefined)
+// 			return false;
+// 		let other_userId: number = user_info['id'];
+// 		const other_user_is_admin = await this.userIsAdmin(body.roomId, other_userId);
+// 		if (body['toAdd'] == true && other_user_is_admin == false)
+// 			admins.push(other_userId);
+// 		//remove this admin
+// 		else if (body['toAdd'] == false && other_user_is_admin == true)
+// 		{
+// 			var index = admins.indexOf(other_userId);
+// 			admins.splice(index, 1);
+// 		}
+// 		await this.roomRepository
+// 			.createQueryBuilder()
+// 			.update(MaobeRoom)
+// 			.set({ admin: admins })
+// 			.where("id = :id", { id: body.roomId })
+// 			.execute();
+// 		return true;
+// }
 
 	async AdminleaveRoom(body: ParticipantDto): Promise<void> {
 		console.log('AdminleaveRoom');
         let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
         let admins = await this.get_RoomAdmins(body.roomId);
-        //remove this admin
         if (is_already_admin == true)
         {
             var index = admins.indexOf(body.userId);
             admins.splice(index, 1);
-		console.log('delete admin');
         await this.roomRepository
             .createQueryBuilder()
             .update(MaobeRoom)
@@ -295,49 +422,6 @@ export class MaobeRoomService {
             .execute();
 		}
     }
-
-	async getRoomId(roomName: string): Promise<number> {
-		let room : MaobeRoom =  await this.roomRepository.createQueryBuilder("maoberoom")
-			.select("maoberoom.id")
-			.where("maoberoom.name = :roomName", { roomName: roomName })
-            .getOne();
-
-		console.log('here room ', room);
-		return room.id;
-
-	}
-
-	async IsRoomName_Unique(roomName: string): Promise<boolean> {
-		console.log(roomName);
-		let names: any = await this.roomRepository.createQueryBuilder("room")
-			.select("room.id")
-			.where("room.name = :room_name", { room_name: roomName })
-			.getOne();
-
-		if (names != undefined)//name exist deja
-			return false;
-		return true;
-	}
-
-	async allRoomInfos() : Promise<MaobeRoom[] | undefined> {
-		let rooms: any = await this.roomRepository.createQueryBuilder("maoberoom")
-			.leftJoinAndSelect("maoberoom.participants", "maobeparticipant")
-		    .leftJoinAndSelect("maobeparticipant.user", "user")
-            .getMany();
-		return rooms;
-
-	}
-
-	async userId_fromLogin(login : string) : Promise<User | undefined> {
-
-		console.log('login', login);
-		const user_info = await this.userRepository.createQueryBuilder("user")
-			.select(["user.id"])
-			.where("user.login42 = :login", { login: login })
-			.getOne();
-		return user_info;
-	}
-
 
 	async get_Room_banList(roomId: number): Promise<number[]> {
 	let room = await this.roomRepository.createQueryBuilder("room")
@@ -349,18 +433,119 @@ export class MaobeRoomService {
 	}
 
 
+/****get a list of userId block the user*****/
+	async Blocklist_to_user(userId: number) : Promise<number[]> {
+		let block_list: number[] = [];
+		let rooms: MaobeRoom[] = await this.roomRepository.createQueryBuilder("room")
+			.select(["room.owner"])
+			.getMany();
+		for(var i = 0; i<rooms.length; i++) {
+			if (rooms[i].owner != userId){
+				let owner_block_list: number[] = await this.userService.getBlockList(rooms[i].owner);
+				if (owner_block_list.includes(userId))
+					block_list.push(rooms[i].owner);
+			}
+		}
+		return block_list;
+	}
+
+	async Mutual_blocklist(userId: number) : Promise<number[]> {
+		let block_list_to_user : number[] = await this.Blocklist_to_user(userId);
+		let user_block_list_to_other: number[]  = await this.userService.getBlockList(userId);
+		let list_block : number[] = [...block_list_to_user, ...user_block_list_to_other];
+		let unique_block_list : number[] = [...new Set(list_block)];
+		if (unique_block_list.length == 0) {
+			unique_block_list.push(-1);
+		}
+		return unique_block_list;
+
+	}
+	async getDispoRooms(userId:number) : Promise<MaobeRoom[]> {
+		var blockList: number[] = await this.Mutual_blocklist(userId);
+		var rooms: MaobeRoom[] = await this.roomRepository.createQueryBuilder("room")
+			.leftJoin("room.participants", "participant")
+			.where("room.typeRoom = :typeRoom", {typeRoom: 'public'})
+			.andWhere("room.owner NOT IN (:...names) ", { names : blockList })
+			.andWhere("participant.userId != :id", { id: userId })
+			.getMany();
+		//filter room where user is banned
+		for(var i = 0; i<rooms.length; i++) {
+            if (rooms[i].banList.length !== 0){
+				let banList: number[] = await this.get_Room_banList(rooms[i].id);
+                if (banList.includes(userId)) {
+					rooms.splice(i, 1);
+				}
+            }
+        }
+		return rooms;
+	}
+
 	async banUser(body: BanUserDto) : Promise<void> {
-		let roomId : number = body.roomId;
-		let user: User = await this.userId_fromLogin(body.userIdToMute);
-		let userIdToBan : number = user['id'];
-		let userId : number = body.userId;
+		let roomId : number = 2;//body.roomId;
+		let userId : number = 5;//body.userId;
+		let userIdToBan : number = 3;//body.userIdToBan;
+		let ownerId : number = await this.get_Room_Owner(roomId);
+		let res = await this.participantRepository.findOne({ userId: userIdToBan, roomId: roomId });
+		if (res == undefined)
+		{
+			throw 'This user is not in the room';
+			return ;
+		}
 		//user does not have right OR baned person is admin/owner
-		if (await this.userIsAdmin(roomId, userId) == false || await this.userIsAdmin(roomId, userIdToBan) == true)
-			throw 'no right to ban';
+		if (userIdToBan == ownerId)
+		{
+			throw 'Cannot ban owner of the room';
+			return ;
+		}
+		if (await this.userIsAdmin(roomId, userId) == false)
+		{
+			throw 'You are not admin, so you cannot ban';
+			return ;
+		}
 		await this.participantService.leaveRoom({'userId': userIdToBan, 'roomId': roomId})
 		let banList: number[] = await this.get_Room_banList(roomId);
-		banList.push(userIdToBan);
+		if (await this.userIsAdmin(roomId, userIdToBan) == true)/*remove admin of column if the user is baned*/
+		{
+			var admins: number[] = await this.get_RoomAdmins(roomId);
+			var index = admins.indexOf(userIdToBan);
+            admins.splice(index, 1);
+			this.roomRepository.update({id: roomId}, {
+			 	admin: admins})
+		}
+		if (banList.indexOf(userIdToBan) == -1)/*add userid in ban_list*/
+			banList.push(userIdToBan);
+		await this.roomRepository
+            .createQueryBuilder()
+            .update(MaobeRoom)
+            .set({ banList: banList })
+            .where("id = :id", { id: roomId })
+            .execute();
+//		console.log(await this.findOne(2));
 	}
+
+	/*----------------------------FUNCTION-----------------------*/
+
+	async findOne(id: number): Promise<MaobeRoom> {
+		return this.roomRepository.findOne(id);
+	}
+
+	async get_Room_Owner(roomId: number): Promise<number> {
+	let room = await this.roomRepository.createQueryBuilder("room")
+        .select(["room.owner"])
+        .where("room.id = :room_Id", { room_Id: roomId })
+        .getOne();
+		console.log('in get_RoomOwner ', room , room.owner);
+		return room.owner;
+	}
+
+	async get_RoomAdmins(roomId: number): Promise<number[] | undefined> {
+		let room = await this.roomRepository.createQueryBuilder("room")
+            .select(["room.admin"])
+            .where("room.id = :room_Id", { room_Id: roomId })
+			.getOne();
+        return room.admin;
+    }
+
 
 
 }

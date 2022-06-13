@@ -73,5 +73,4 @@ export class UserController {
       return this.userService.getUserGames(username);
   }
   
-
 }

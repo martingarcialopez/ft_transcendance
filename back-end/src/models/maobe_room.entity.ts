@@ -8,7 +8,7 @@ export class MaobeRoom {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({unique: true})
+	@Column()
 	name: string;
 
 	@Column()
@@ -17,8 +17,11 @@ export class MaobeRoom {
 	@Column({ default: false })
 	is_protected: boolean;
 
-	@Column({nullable:true})
-    password?: string;
+	@Column({ nullable: true, default: null })
+    password: string;
+
+	@Column()
+	image: string;
 
 	@Column()
 	owner : number;

@@ -176,7 +176,6 @@ export class UserService {
 
     async getBlockList(userId: number): Promise<number[]> | null {
 
-        console.log('id isss ', userId);
         let user: User = await this.userRepository.createQueryBuilder("user")
             .select(["user.blockList"])
             .where("user.id = :user_Id", { user_Id: userId })

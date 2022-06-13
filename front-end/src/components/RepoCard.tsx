@@ -11,8 +11,9 @@ const RepoCard = (props: MatchInfo) => {
           <RiBookMarkLine className="icon" />
           {props.winner}
         </header>
-        <p>{props.player1} vs {props.player2}</p>
-        <p>3 vs {props.scoreLoser}</p>
+        <p>{props.leftPlayer} vs {props.rightPlayer}</p>
+        <p>{props.leftPlayerScore} vs {props.rightPlayerScore}</p>
+        <p>Winner {props.winner}</p>
       </div>
     </div>
   );

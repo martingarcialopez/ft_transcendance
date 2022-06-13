@@ -81,13 +81,20 @@ export function getFriendList(access_token: any) {
     });
 }
 
-export function getAllGames(access_token: any) {
-    console.log("getAllGames TOKEN :")
-    console.log(access_token)
+export function getAllGames() {
+    console.log("getAllGames :")
     return axios({
         method: 'get',
         url: `${URL_test}/user/games/all`,
-        headers: { 'Authorization': `Bearer ${access_token}` }
+    });
+}
+
+export function getAllPlayerGames(username: any) {
+    console.log("getAllPlayerGames USERNAME :")
+    console.log(username)
+    return axios({
+        method: 'get',
+        url: `${URL_test}/user/games/${username}`,
     });
 }
 

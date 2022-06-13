@@ -13,7 +13,7 @@ export const MyProfileScreen = () => {
   console.log(userLogin);
 
 
-  if (!userLogin || userLogin.errorMessage !== '') {
+  if (!userLogin) {
     return <h1>Loading...</h1>;
   }
   const { userInfo }: UserState = userLogin;
@@ -21,6 +21,6 @@ export const MyProfileScreen = () => {
   console.log("userInfo MyProfile:", userInfo)
 
   return (
-    <ProfilePage userInfo={userInfo} />
+    <ProfilePage userInfo={userInfo} id={userInfo?.id} />
   );
 };

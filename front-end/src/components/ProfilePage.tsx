@@ -2,27 +2,38 @@ import "../styles/profileContainerStyles.css";
 import RepoCard from "../components/RepoCard";
 import { ListFriends } from "../components/ListFriends";
 import { UpdateProfile } from "./UpdateProfile";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux";
+import { AllMatchState } from "../redux/reducers/userReducers";
+import { useEffect } from "react";
+import { getAllPlayerGamesAction } from "../redux/actions/userActions";
 
 const matchs = [
     {
-        player1: 'Champomy',
-        player2: 'TaCopineBonne',
-        winner: 'TaCopineBonne',
-        scoreLoser: 2,
+        rightPlayer: 'Champomy',
+        leftPlayer: 'TaCopineBonne',
+        rightPlayerScore: '3',
+        leftPlayerScore: '2',
+        winner: 'Champomy',
+        losser: 'TaCopineBonne',
         id: 0,
     },
     {
-        player1: 'Champomy',
-        player2: 'TaCopineBonne',
-        winner: 'TaCopineBonne',
-        scoreLoser: 2,
+        rightPlayer: 'Champomy',
+        leftPlayer: 'TaCopineBonne',
+        rightPlayerScore: '3',
+        leftPlayerScore: '2',
+        winner: 'Champomy',
+        losser: 'TaCopineBonne',
         id: 1,
     },
     {
-        player1: 'Champomy',
-        player2: 'TaCopineBonne',
-        winner: 'TaCopineBonne',
-        scoreLoser: 2,
+        rightPlayer: 'Champomy',
+        leftPlayer: 'TaCopineBonne',
+        rightPlayerScore: '3',
+        leftPlayerScore: '2',
+        winner: 'Champomy',
+        losser: 'TaCopineBonne',
         id: 2,
     },
 ];
@@ -30,6 +41,16 @@ const matchs = [
 export const ProfilePage = ({ userInfo }: any) => {
     // const ref_default_img = "/game/test/test_42.jpg"
     // const ref_default_img = "/shared/avatar/mgarcia-.png"
+    const dispatch = useDispatch()
+    const allMatch = useSelector<RootState, AllMatchState>(
+        (state: RootState) => state.allMatch
+    )
+
+    useEffect(() => {
+        dispatch(getAllPlayerGamesAction(userInfo.username))
+    }, [dispatch, userInfo])
+
+    console.log("ProfilePage allMatch", allMatch)
 
     return (
         <div className="backgroundProfile">
@@ -44,13 +65,15 @@ export const ProfilePage = ({ userInfo }: any) => {
                 <div className="reposContainer">
                     <p className="repoContainerTitle">Historique des matchs</p>
                     <div className="repos">
-                        {matchs.map((item) => (
+                        {allMatch.MatchInfo && allMatch.MatchInfo.map((item) => (
                             <RepoCard
+                                id={item.id}
                                 key={item.id}
-                                player1={item.player1}
-                                player2={item.player2}
+                                leftPlayer={item.leftPlayer}
+                                rightPlayer={item.rightPlayer}
+                                leftPlayerScore={item.leftPlayerScore}
+                                rightPlayerScore={item.rightPlayerScore}
                                 winner={item.winner}
-                                scoreLoser={item.scoreLoser}
                             />
                         ))}
                     </div>

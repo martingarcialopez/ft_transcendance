@@ -16,17 +16,15 @@ export class MaobeParticipantService {
 
     ){}
 
-/*
-** Create a new obj of participant and store in the table
-*/
-	async createParticipant(participantDto: ParticipantDto): Promise<RoomSnippetDto> {
+
+	async createParticipant(participantDto: ParticipantDto): Promise<void> {
         const new_participant = new MaobeParticipant();
-		new_participant.userId = participantDto.userId;
-		new_participant.roomId = participantDto.roomId;
-		await this.participantRepository.save(new_participant);
-		const dto = plainToClass(RoomSnippetDto, new_participant);
-		return dto;
-    }
+        new_participant.userId = participantDto.userId;
+        new_participant.roomId = participantDto.roomId;
+        await this.participantRepository.save(new_participant);
+	}
+
+
 
 /*
  ** From the given userID, obtain infos of RoomId participated and corresponding RoomName

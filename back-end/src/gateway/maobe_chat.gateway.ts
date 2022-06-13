@@ -11,8 +11,10 @@ import { Socket, Server } from 'socket.io';
 import { NestGateway } from '@nestjs/websockets/interfaces/nest-gateway.interface';
 import { Bind, UseInterceptors } from '@nestjs/common';
 
+import { MaobeRoom } from '../models/maobe_room.entity';
 import { MaobeRoomService } from '../services/maobe_room.service';
 import { MaobeParticipantService } from '../services/maobe_participant.service';
+import { RoomDto } from '../dtos/in/maobe_room.dto';
 
 
 
@@ -117,12 +119,10 @@ export class MaobeChatGateway {
 
 	@SubscribeMessage('F_getRooms')
 	async handleMessage(client: Socket, payload: string): Promise<boolean> {
-		console.log('Message received for user: ', client.handshake.headers.userid);
 		let userId : number = Number(client.handshake.headers.userid);
 		try{
 			const rooms = await this.roomService.maobe_getJoinRooms(userId);
-			console.log('---', rooms);
-			this.server.emit('B_getRooms', rooms);
+			client.emit('B_getRooms', rooms);
 		}
 		catch(e) {
 			return false;
@@ -130,191 +130,103 @@ export class MaobeChatGateway {
 		return true;
 	}
 
+	@SubscribeMessage('F_createRoom')
+	async createRoom(client: Socket, body: RoomDto) : Promise<boolean> {
+		let userId : number = Number(client.handshake.headers.userid);
+		try {
+			const new_room = await this.roomService.maobe_createRoom(userId, body);
+			client.emit('B_createRoom', new_room);
+		}
+		catch(e) {
+			return false;
+		}
+		return true;
+	}
+
+
 	@SubscribeMessage('F_deleteMessage')
 	deleteRoom(socket: Socket, roomId: number): boolean {
-		console.log(`Deleting room ${roomId}`);
 		return (true);
 	}
 
 	@SubscribeMessage('F_banUser')
 	banUser(socket: Socket, infos: any): boolean {
-		console.log(`Baning ${infos}`);
 		return (true);
 	}
 
 	@SubscribeMessage('F_getAvailableUsers')
-	getUsers(socket: Socket, userId: number): boolean {
-		console.log(`Getting ${userId}`);
-		const users = [
-			{
-				'userId': 100,
-				'userName': 'Meilv',
-				'avatar': 'https://cdn2.iconfinder.com/data/icons/halloween-horror-1/512/35-black-cat-curse-mystery-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 200,
-				'userName': 'Sesame',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Tiger_Leopard-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 300,
-				'userName': 'Maobe',
-				'avatar': 'https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 400,
-				'userName': 'Xibao',
-				'avatar': 'https://cdn2.iconfinder.com/data/icons/japan-flat-2/340/japan_monk_asia_religion_buddhist_zen_japanese_traditional-512.png',
-				'mute' : false ,
-				'block' : false,
-
-			},
-
-			{
-				'userId': 3,
-				'userName': 'Tito',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/future-pack/64/010-emotional-robotics-robot-emotion-ai-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 4,
-				'userName': 'Monkey king',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Monkey-128.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 5,
-				'userName': 'Koala bao',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Koala-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 10,
-				'userName': 'Krak3n',
-				'avatar': 'https://cdn4.iconfinder.com/data/icons/supernatural-blush-vol-2/128/Kraken-256.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 11,
-				'userName': 'Shrek',
-				'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/shrek_character_animation_movie_ogre_cartoon-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 12,
-				'userName': 'Wulia bird',
-				'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/angry_bird_gaming_game_character_movie-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-
-		]
-		this.server.emit('B_getAvailableUsers', users);
+	async getUsers(socket: Socket): Promise<boolean> {
+		let userId : number = Number(socket.handshake.headers.userid);
+		try {
+			const users = await this.roomService.get_AvailableUsers(userId);
+			socket.emit('B_getAvailableUsers', users);
+		}
+		catch(e)
+		{
+			return false;
+		}
 		return true;
 	}
 
 	@SubscribeMessage('F_getRoomAvailableUsers')
-	getRoomUsers(socket: Socket, userId: number): boolean {
-		console.log(`Getting ${userId}`);
-		const users = [
-			{
-				'userId': 100,
-				'userName': 'Meilv',
-				'avatar': 'https://cdn2.iconfinder.com/data/icons/halloween-horror-1/512/35-black-cat-curse-mystery-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 200,
-				'userName': 'Sesame',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Tiger_Leopard-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 300,
-				'userName': 'Maobe',
-				'avatar': 'https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 400,
-				'userName': 'Xibao',
-				'avatar': 'https://cdn2.iconfinder.com/data/icons/japan-flat-2/340/japan_monk_asia_religion_buddhist_zen_japanese_traditional-512.png',
-				'mute' : false ,
-				'block' : false,
-
-			},
-
-			{
-				'userId': 3,
-				'userName': 'Tito',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/future-pack/64/010-emotional-robotics-robot-emotion-ai-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 4,
-				'userName': 'Monkey king',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Monkey-128.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 5,
-				'userName': 'Koala bao',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Koala-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 10,
-				'userName': 'Krak3n',
-				'avatar': 'https://cdn4.iconfinder.com/data/icons/supernatural-blush-vol-2/128/Kraken-256.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 11,
-				'userName': 'Shrek',
-				'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/shrek_character_animation_movie_ogre_cartoon-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 12,
-				'userName': 'Wulia bird',
-				'avatar': 'https://cdn0.iconfinder.com/data/icons/movies-11/32/angry_bird_gaming_game_character_movie-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-
-		]
-		this.server.emit('B_getRoomAvailableUsers', users);
+	async getRoomUsers(socket: Socket, roomId: number): Promise<boolean> {
+		const userId: number = Number(socket.handshake.headers.userid);
+		try{
+			const users = await this.roomService.getRoom_AvailableUsers(userId, roomId);
+			this.server.emit('B_getRoomAvailableUsers', users);
+		}
+		catch(e){
+			return false;
+		}
 		return true;
 	}
 
+	@SubscribeMessage('F_getDispoRooms')
+	async getDispoRooms(socket: Socket) : Promise<boolean> {
+		const userId: number = Number(socket.handshake.headers.userid);
+		try{
+            const rooms : MaobeRoom[] = await this.roomService.getDispoRooms(userId);
+            socket.emit('B_getDispoRooms', rooms);
+        }
+        catch(e){
+            return false;
+        }
+        return true;
+	}
+
+	@SubscribeMessage('F_joinRoom')
+    async createParticipant(socket: Socket, roomId: number): Promise<boolean> {
+		const userId: number = Number(socket.handshake.headers.userid);
+		try {
+			var info:any[] = await this.roomService.createParticipant({'userId': userId, 'roomId': roomId});
+			socket.emit('B_joinRoom', info);
+		}
+		catch(e){
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	@SubscribeMessage('F_muteUser')
 	muteUser(socket: Socket, infos: any): boolean {
-		console.log(`Muting ${infos}`);
 		return (true);
 	}
 
 	@SubscribeMessage('F_blockUser')
 	blockUser(socket: Socket, infos: any): boolean {
-		console.log(`Blocking ${infos}`);
 		return (true);
 	}
 
@@ -347,48 +259,20 @@ export class MaobeChatGateway {
 		});
 	}
 
-	@SubscribeMessage('F_createRoom')
-	createRoom(socket: Socket, room: any): any {
-		console.log(`Creating room ${room}`);
-		if (true) {
-			this.server.emit('B_createRoom',  {
-				'roomName': room.roomName,
-				'roomId': 8686,
-				'image': 'https://cdn3.iconfinder.com/data/icons/future-pack/64/023-artificial-heart-cyber-electronic-512.png',
-				'roomType': room.roomType,
-				'participants': room.users
-			});
-			console.log('Returning stuuff');
-			return true;
-		}
-		return ({
-			'status': 'KO',
-			'msg': 'Something went wrong.'
-		});
-	}
-
 	@SubscribeMessage('F_updateRoom')
-	updateRoom(socket: Socket, roomInfos: any): boolean {
-		console.log(`Updating room with: ${roomInfos}`);
-		const currRoom = ROOMS_LIST.filter((obj) => obj.roomId === roomInfos.roomId)[0];
-		currRoom.participants = [...currRoom.participants, ...roomInfos.newParticipants];
-		if (true) {
-			this.server.emit('B_updateRoom',  {
-				'roomName': roomInfos.roomName,
-				'roomId': roomInfos.roomId,
-				'image': currRoom.image,
-				'roomType': roomInfos.roomType,
-				'participants': currRoom.participants
-			});
-			console.log('Returning stuuff');
-			return true;
-		}
-		return (false);
+	async updateRoom(socket: Socket, roomInfos: any): Promise<boolean> {
+		try {
+            const update_room = await this.roomService.maobe_updateRoom(roomInfos);
+            socket.emit('B_updateRoom', update_room);
+        }
+         catch(e) {
+             return false;
+         }
+        return true;
 	}
 
 	@SubscribeMessage('F_getMessages')
 	updateMessage(socket: Socket, roomId: number): boolean {
-		console.log(`Getting message for ${roomId}`);
 		const firstRoomId = 42;
 		if (roomId === -1) {
 			roomId = firstRoomId;

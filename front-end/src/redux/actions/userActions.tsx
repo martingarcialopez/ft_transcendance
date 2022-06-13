@@ -12,7 +12,7 @@ import {
   GET_FRIENDS_LIST_ACTION,
   GET_ALL_GAMES_ACTION,
 } from '../constants/userConstants'
-import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update, getAllGames } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -90,11 +90,25 @@ export function getUserInfoAction(username: any, access_token: any) {
   };
 }
 
-export function getAllGamesAction(access_token: any) {
+export function getAllGamesAction() {
   return (dispatch: any) => {
-    getAllGames(access_token)
+    getAllGames()
       .then((response) => {
         console.log("getAllGamesAction response", response)
+        dispatch(getAllMatch(response.data));
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
+export function getAllPlayerGamesAction(username: any) {
+  return (dispatch: any) => {
+    getAllPlayerGames(username)
+      .then((response) => {
+        console.log("getAllPlayerGamesAction response", response)
         dispatch(getAllMatch(response.data));
       })
       .catch((error) => {
