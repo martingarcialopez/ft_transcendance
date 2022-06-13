@@ -11,6 +11,7 @@ html{
     display: flex;
 }
 
+
 /* LEFT-BAR */
 #left-bars{
     height: 100vh;
@@ -70,7 +71,7 @@ html{
     background-color: #2F3136;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: end;
 }
 
 #middle-box #search-conversa{
@@ -152,13 +153,6 @@ html{
 
 }
 
-#conversas :focus {
-    background-color: #393C43;
-}
-
-#conversas :focus a{
-    color: #fff;
-}
 
 .conversa{
     flex: 1;
@@ -332,20 +326,6 @@ html{
 }
 
 /* CONTENT */
-.content{
-    flex: 1;
-    background-color:#36393F;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-
-    padding-left: 15px;
-    padding-top: 200px;
-
-    margin-bottom: 0px;
-}
-
-
 #profile{
     display: flex;
     flex-direction: column;
@@ -443,7 +423,8 @@ html{
 
     padding-right: 5px;
     padding-left: 5px;
-
+    height: 1695px;
+    position: absolute;
 }
 
 #send-message img{
@@ -476,4 +457,93 @@ html{
 
 #send-message input::placeholder{
     font-size: 14px;
+}
+
+
+.mao-btn-add-room {
+	top: 10px;
+	right: 0;
+	content: " ";
+	width: 25px;
+	height: 25px;
+	opacity: 0.3;
+	transition: opacity 0.2s linear;
+	background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMCAxMCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTguOTksMy45OUg2LjAxVjEuMDFDNi4wMSwwLjQ1Miw1LjU1OCwwLDUsMFMzLjk5LDAuNDUyLDMuOTksMS4wMVYzLjk5SDEuMDFDMC40NTIsMy45OSwwLDQuNDQyLDAsNWMwLDAuNTU4LDAuNDUyLDEuMDEsMS4wMSwxLjAxSDMuOTlWOC45OUMzLjk5LDkuNTQ4LDQuNDQyLDEwLDUsMTBzMS4wMS0wLjQ1MiwxLjAxLTEuMDFWNi4wMUg4Ljk5QzkuNTQ4LDYuMDEsMTAsNS41NTgsMTAsNUMxMCw0LjQ0Miw5LjU0OCwzLjk5LDguOTksMy45OXoiLz48L3N2Zz4=) no-repeat 50%;
+}
+
+.mao-btn-join-room {
+	top: 10px;
+	right: 0;
+	content: " ";
+	width: 30px;
+	height: 30px;
+	opacity: 0.3;
+	transition: opacity 0.2s linear;
+	background: transparent;
+}
+
+#mao-room-names {
+	color: #8A8E94;
+	overflow: auto;
+	overflow-x:auto;
+	max-height: 780px;
+}
+
+#mao-room-names :focus {
+    background-color: #393C43;
+    color: #fff;
+}
+
+#test-xibao {
+	-webkit-box-shadow: 0 0 0 1px rgb(32 34 37 / 60%), 0 2px 10px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 0 0 1px rgb(32 34 37 / 60%), 0 2px 10px 0 rgb(0 0 0 / 20%);
+
+	background-color: #36393F !important;
+	background: #36393F !important;
+}
+
+.szh-menu {
+	background: #36393F;
+	color: #fff;
+    box-shadow: 0 0 0 1px rgb(32 34 37 / 60%), 0 2px 10px 0 rgb(0 0 0 / 20%);
+	text-align: center;
+}
+
+#mao-menu-input::placeholder {
+	color: #36393F;
+}
+
+#room-participants{
+    display: flex;
+}
+
+#room-participants img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+#room-participants-input {
+	width: 30%;
+}
+
+#main {
+	max-height: 980px;
+}
+
+#mao-messages-panel {
+	overflow: auto;
+	max-height: 800px;
+}
+
+.container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    max-width: 1920px;
+    margin: 0px auto;
+}
+
+.content{
+    flex: 1;
+    background-color:#36393F;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0px;
 }

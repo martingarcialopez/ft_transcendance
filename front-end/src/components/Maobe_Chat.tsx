@@ -51,7 +51,9 @@ function JoinRoomMenu(props: any) {
    	}
    	return (
    		<div>
-   			<button ref={ref} className="btn" onClick={() => {
+   			<button ref={ref}
+					className="mao-btn-join-room"
+					onClick={() => {
    						setOpen(true);
    						props.onClick_getRoomsDispoToJoin()
    					}}>
@@ -100,11 +102,12 @@ function CreateRoomMenu(props: any) {
 
 	return (
 		<div>
-			<button ref={ref} className="btn" onClick={() => {
+			<button ref={ref}
+					className="mao-btn-add-room"
+					onClick={() => {
 						setOpen(true);
 						props.onClick_getAvailableUsers()
 					}}>
-				+
 			</button>
 
 			<ControlledMenu
@@ -211,8 +214,9 @@ function EditRoomMenu(props: any) {
 	if (props.roomAvailableUsers !== undefined) {
 		Html_AvailableUser = props.roomAvailableUsers.map((user: any, i: any) => {
 			return (
-				<div key={i} id="messages">
-					<input type="checkbox"
+				<div key={i} id="room-participants">
+					<input id="room-participants-input"
+						type="checkbox"
 						   onChange={(e) => props.onChange_selectRoomParticipant(e, user) }
 					/>
 					<img src={user.avatar} />
@@ -224,7 +228,9 @@ function EditRoomMenu(props: any) {
 
 	return (
 		<div>
-			<a ref={ref} className="btn" onClick={() => {
+			<a ref={ref}
+			   className="mao-btn-join-room"
+			   onClick={() => {
 				   setOpen(true);
 				   props.onClick_updateRoom(props.currRoom);
 			   }}>
@@ -232,6 +238,7 @@ function EditRoomMenu(props: any) {
 			</a>
 
 			<ControlledMenu
+				menuClassName="nope"
 				state={isOpen ? 'open' : 'closed'}
 				anchorRef={ref}
 				onClose={() => setOpen(false)}
@@ -241,6 +248,7 @@ function EditRoomMenu(props: any) {
 				<FocusableItem>
 					{({ ref }) => (
 						<input ref={ref}
+							   id="mao-menu-input"
 							   required
 							   type="text"
 							   placeholder="Name your new room"
@@ -272,6 +280,7 @@ function EditRoomMenu(props: any) {
 				<FocusableItem>
 					{({ ref }) => (
 						<input disabled={ disablePassword }
+							   id="mao-menu-input"
 							   ref={ref}
 							   type="password"
 							   placeholder="Room password"
@@ -336,7 +345,10 @@ function RoomsPanel(props: any) {
 				<CreateRoomMenu {...props} />
 			</div>
 
-			<div id="conversas">
+			<hr />
+			<hr />
+			<hr />
+			<div className="test-xibao" id="mao-room-names">
 				{ Html_roomsList }
 			</div>
 		</div>
@@ -603,7 +615,7 @@ function MessagePanel(props: any) {
 		});
 	}
 	return (
-		<div>
+		<div id="mao-messages-panel">
 			<div id="profile">
 				<img src={ currentRoom.image } alt="" />
 				<a>{ currentRoom.name }</a>
