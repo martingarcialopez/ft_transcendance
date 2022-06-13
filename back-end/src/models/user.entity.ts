@@ -23,6 +23,15 @@ export class User {
   @Column({ nullable: true })
   password: string;
 
+  // @Column({unique:true})
+  // email: string;
+
+  @Column( {nullable: false} )
+  twofa: boolean;
+
+  @Column ( {nullable: true} )
+  secret: string;
+
   @Column({ nullable: true })
   avatar: string;
 

@@ -34,6 +34,8 @@ export class UserService {
         user.lastname = payload.lastname;
         user.username = payload.username;
         user.avatar = payload.avatar;
+        // user.email = payload.email;
+        user.twofa = false;
 
         const saltOrRounds = 10;
         const hash = await bcrypt.hash(payload.password, saltOrRounds);

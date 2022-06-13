@@ -18,7 +18,19 @@ export class AuthController {
     @UseGuards(Oauth42Guard)
     @Get('/redirect')
     async getUserFrom42Intra(@Request() req) {
-        return this.authService.login(req.user); //returns a JWT
+        return this.authService.login(req.user.username); //returns a JWT
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('/enable2FA')
+    async enable2FA(@Request() req) : Promise<string> {
+        return await this.authService.enable2FA(req.user.userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('/disable2FA')
+    async disable2FA(@Request() req) {
+        return await this.authService.disable2FA(req.userId);
     }
 
 }

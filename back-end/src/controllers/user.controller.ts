@@ -62,6 +62,10 @@ export class UserController {
       return this.userService.deleteUser(id);
   }
 
+  @Get('/games/all')
+  getAllGames() {
+      return this.userService.getAllGames();
+  }
 
 //   @UseGuards(JwtAuthGuard)
   @Get('/games/:username')
@@ -69,9 +73,5 @@ export class UserController {
       return this.userService.getUserGames(username);
   }
   
-  @Get('/games/all')
-  getAllGames() {
-      return this.userService.getAllGames();
-  }
 
 }
