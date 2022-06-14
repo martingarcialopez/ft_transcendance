@@ -24,7 +24,9 @@ const theme = createTheme();
 const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
   const [errors, setErrors] = useState({ username: "", password: "" });
+  const [needCode, setNeedCode] = useState(false);
   const [open, setOpen] = useState(true);
   const [errorFromBack, setErrorFromBack]: any = useState();
 
@@ -67,11 +69,12 @@ const SignIn = () => {
     validate();
     setOpen(true);
     if (!errors.password && !errors.username) {
-      dispatch(loginAction(username, password, navigate))
+      dispatch(loginAction(username, password, code, navigate))
 
       console.log("signin TOUT MARCHE SUPER BIEN", {
         username: username,
         password: password,
+        code: code,
       });
     }
     else {
@@ -94,7 +97,12 @@ const SignIn = () => {
   useEffect(() => {
     if (!errors.password && !errors.username && !userLogin.errorMessage)
       setErrorFromBack()
-    }, [userLogin, errors])
+  }, [userLogin, errors])
+
+  if (userLogin.errorMessage === "TIPOT") {
+    setNeedCode(true)
+    setErrorFromBack("Please enter your Google Authentification code")
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -173,6 +181,23 @@ const SignIn = () => {
               error={errors.password ? true : false}
               helperText={errors.password}
             />
+            {
+              needCode ?
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="code"
+                  label="Password"
+                  type="code"
+                  id="code"
+                  autoComplete="current-code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                />
+                :
+                null
+            }
             <Button
               type="submit"
               fullWidth

@@ -60,7 +60,7 @@ export const Pong = () => {
         };
     }, [progress]);
 
-    if (!userInfo) {
+    if (userLogin.showLoading || !userInfo) {
         return <h1>Loading...</h1>;
     }
 

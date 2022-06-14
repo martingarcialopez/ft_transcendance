@@ -1,0 +1,27 @@
+.Twofa {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+button {
+    border: 0;
+    padding: 1.2rem;
+    color: #222;
+    font-size: 1.3rem;
+    background: #eee;
+    border-radius: var(--space);
+}
+
+input {
+    width: 60%;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--space);
+    border: 1px solid #ccc;
+    font-size: 1.2rem;
+    outline: 0;
+    transition: all 0.36s ease-in-out;
+}
+
+input:focus {
+    width: 80%;
+}

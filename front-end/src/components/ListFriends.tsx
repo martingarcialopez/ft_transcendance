@@ -70,14 +70,14 @@ export const ListFriends = ({ userPageInfo }: any) => {
         console.log("buttonFriend :", buttonFriend)
         if (userInfo && buttonFriend === "ADD FRIEND") {
             console.log("case 111")
-            dispatch(addFriendAction(userPageInfo.username, userInfo))
+            dispatch(addFriendAction(navigate, userPageInfo.username, userInfo))
             setButtonFriend("REMOVE FRIEND")
         }
         // console.log("userInfo.friends :", userInfo.friends)
         // && userInfo.friends && userInfo.friends.find(friend => friend === userInfo.username)
         else if (userInfo) {
             console.log("case 222")
-            dispatch(removeFriendAction(userPageInfo.username, userInfo.access_token))
+            dispatch(removeFriendAction(navigate, userPageInfo.username, userInfo.access_token))
             setButtonFriend("ADD FRIEND")
         }
         // console.log("ADD FRIEND")

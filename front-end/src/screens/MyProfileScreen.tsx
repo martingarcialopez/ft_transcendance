@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { ProfilePage } from "../components/ProfilePage";
+import { ControlledSwitches } from "../components/ControlledSwitches";
 
 export const MyProfileScreen = () => {
   const userLogin = useSelector<RootState, UserState>(
@@ -21,6 +22,9 @@ export const MyProfileScreen = () => {
   console.log("userInfo MyProfile:", userInfo)
 
   return (
-    <ProfilePage userInfo={userInfo} id={userInfo?.id} />
+    <div>
+      <ControlledSwitches userInfo={userInfo} />
+      <ProfilePage userInfo={userInfo} id={userInfo?.id} />
+    </div>
   );
 };

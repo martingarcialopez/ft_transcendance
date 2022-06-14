@@ -5,7 +5,7 @@ import { Box } from "@mui/system";
 import { updateAction } from "../redux/actions/userActions";
 import { useDispatch } from "react-redux";
 import { CustomizedSnackbars } from "./CustomizedSnackbars";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const UpdateProfile = ({ userInfo }: any) => {
     const [firstname, setFirstname] = useState(userInfo.firstname)
@@ -16,7 +16,8 @@ export const UpdateProfile = ({ userInfo }: any) => {
     const [statusError, setStatusError] = useState(false);
     const { id } = useParams();
 
-    const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
     // const ref_default_img = "/game/test/test_42.jpg"
     // const ref_default_img = "/shared/avatar/mgarcia-.png"
 
@@ -30,7 +31,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
 
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
-            dispatch(updateAction(firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, userInfo.friends))
+            dispatch(updateAction(navigate, firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, userInfo.friends, userInfo.is2FAenable))
             setStatusError(true);
             setSnackbars(true);
         }

@@ -10,6 +10,7 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
         password,
         avatar: '/shared/avatar/avatar_chat.jpeg',
         returnSecureToken: true,
+        is2FAenable: false
     };
     console.log("postData", postData)
 
@@ -19,7 +20,7 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any) {
+export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any, is2FAenable: any) {
     const postData = {
         firstname,
         lastname,
@@ -27,6 +28,7 @@ export function update(firstname: any, lastname: any, username: any, password: a
         password,
         avatar,
         friends,
+        is2FAenable
     };
 
     return axios.post(
@@ -38,10 +40,31 @@ export function update(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function login(username: any, password: any) {
+export function enable2FA(access_token: any) {
+    return axios.post(
+        `${URL_test}/auth/enable2FA`,
+        null,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
+
+export function disable2FA(access_token: any) {
+    return axios.post(
+        `${URL_test}/auth/disable2FA`,
+        null,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
+
+export function login(username: any, password: any, code: any) {
     const postData = {
         username,
         password,
+        code
     };
 
     return axios.post(
