@@ -189,6 +189,7 @@ export class MaobeChatGateway {
 		try {
 			await this.roomService.AdminleaveRoom(body);
 			await this.participantService.leaveRoom(body);
+			socket.emit('B_leaveRoom', body);
 		}
 		catch (e) {
 			return false;
