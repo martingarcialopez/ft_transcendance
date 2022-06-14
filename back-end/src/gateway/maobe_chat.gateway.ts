@@ -15,6 +15,7 @@ import { MaobeRoom } from '../models/maobe_room.entity';
 import { MaobeRoomService } from '../services/maobe_room.service';
 import { MaobeParticipantService } from '../services/maobe_participant.service';
 import { RoomDto } from '../dtos/in/maobe_room.dto';
+import { ParticipantDto } from '../dtos/in/participant.dto';
 import { MaobeMessageService } from '../services/maobe_message.service';
 import { UserService } from '../services/user.service';
 
@@ -180,12 +181,24 @@ export class MaobeChatGateway {
 										  });
 		return (true);
 	}
-}
 
-interface I_Room {
-	roomName: string,
-	roomId: number,
-	image: string,
-	roomType: string,
-	participants: any[];
+	@SubscribeMessage('F_leaveRoom')
+    async leaveRoom(socket: Socket, roomId: number): Promise<boolean> {
+		const userId : number = Number(socket.handshake.headers.userid);
+		const body: ParticipantDto = {'userId': userId, 'roomId': roomId};
+		try {
+			await this.roomService.AdminleaveRoom(body);
+			await this.participantService.leaveRoom(body);
+		}
+		catch (e) {
+			return false;
+		}
+		return true;
+    }
+
+
+
+
+
+
 }

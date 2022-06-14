@@ -57,6 +57,9 @@ export class MaobeRoomService {
 			roomIds.push(obj.id);
 		})
 
+		if (roomIds.length === 0)
+			return [];
+
 		let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
 			.select(["MaobeRoom", "u"])
 			.leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)
@@ -417,17 +420,17 @@ async updateRoomPw(body: RoomPwDto): Promise<boolean> {
 	async AdminleaveRoom(body: ParticipantDto): Promise<void> {
 		console.log('AdminleaveRoom');
         let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
-        let admins = await this.get_RoomAdmins(body.roomId);
         if (is_already_admin == true)
         {
+			let admins = await this.get_RoomAdmins(body.roomId);
             var index = admins.indexOf(body.userId);
             admins.splice(index, 1);
-        await this.roomRepository
-            .createQueryBuilder()
-            .update(MaobeRoom)
-            .set({ admin: admins })
-            .where("id = :id", { id: body.roomId })
-            .execute();
+			await this.roomRepository
+				.createQueryBuilder()
+				.update(MaobeRoom)
+				.set({ admin: admins })
+				.where("id = :id", { id: body.roomId })
+				.execute();
 		}
     }
 
