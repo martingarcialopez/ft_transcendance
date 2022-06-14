@@ -128,11 +128,6 @@ export class MaobeChatGateway {
     }
 
 
-	@SubscribeMessage('F_muteUser')
-	muteUser(socket: Socket, infos: any): boolean {
-		return (true);
-	}
-
 	@SubscribeMessage('F_blockUser')
 	blockUser(socket: Socket, infos: any): boolean {
 		return (true);
@@ -221,8 +216,17 @@ export class MaobeChatGateway {
 		return true;
 	}
 
-
-
+	@SubscribeMessage('F_muteUser')
+    async muteUser(userId:number, roomId: number) : Promise<boolean> {
+		try {
+            await this.participantService.muteUser(userId, roomId);
+		}
+        catch(e)
+        {
+            return false;
+        }
+        return true;
+	}
 
 
 }
