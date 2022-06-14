@@ -146,13 +146,11 @@ export class MaobeChatGateway {
 
 	@SubscribeMessage('F_createMessage')
 	async createMessage(socket: Socket, message: any): Promise<boolean> {
-		console.log(message);
 		const userId: number = Number(socket.handshake.headers.userid);
 		message.userId = userId;
 		try {
 			var res = await this.messageService.createMessage(message);
-			// this.server.to(message.roomId.toString()).emit('B_createMessage', res);
-			this.server.emit('B_createMessage', res);
+			this.server.to(message.roomId.toString()).emit('B_createMessage', res);
 			return true;
 		}
 		catch (e)
@@ -177,7 +175,6 @@ export class MaobeChatGateway {
 	async getMessage(socket: Socket, roomId: number): Promise<boolean> {
 		socket.join(roomId.toString());
 		const allMessages = await this.roomService.maobe_getMessages(roomId);
-		console.log(allMessages);
 		this.server.emit('B_getMessages', {'roomId': roomId,
 										   'messages': allMessages
 										  });

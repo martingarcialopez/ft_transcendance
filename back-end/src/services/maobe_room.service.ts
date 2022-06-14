@@ -37,11 +37,9 @@ export class MaobeRoomService {
     ){}
 
     async maobe_getMessages(roomId: number) : Promise<any> {
-		console.log(roomId);
         let messages = await this.messagesRepository.createQueryBuilder("maobe_messages")
             .where("maobe_messages.roomId = :room_Id", { room_Id: roomId })
             .getMany();
-		console.log('------------------ ', messages);
         return messages;
     }
 
