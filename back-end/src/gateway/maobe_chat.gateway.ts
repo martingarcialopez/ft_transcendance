@@ -18,89 +18,6 @@ import { RoomDto } from '../dtos/in/maobe_room.dto';
 import { MaobeMessageService } from '../services/maobe_message.service';
 import { UserService } from '../services/user.service';
 
-const ROOMS_LIST = [
-	{
-		'roomName': 'Cat ambassy',
-		'roomId': 42,
-		'roomType': 'public',
-		'image': 'https://img.freepik.com/free-vector/pink-cat-head-with-angry-face-with-revenge-vector-illustration-carton-emoticon-doodle-icon-drawing_10606-1569.jpg?w=200-',
-		'participants': [
-			{
-				'userId': 100,
-				'userName': 'Meilv',
-				'avatar': 'https://cdn2.iconfinder.com/data/icons/halloween-horror-1/512/35-black-cat-curse-mystery-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 200,
-				'userName': 'Sesame',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Tiger_Leopard-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 300,
-				'userName': 'Maobe',
-				'avatar': 'https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png',
-				'mute' : false ,
-				'block' : false,
-			},
-			{
-				'userId': 400,
-				'userName': 'Xibao',
-				'avatar': 'https://cdn2.iconfinder.com/data/icons/japan-flat-2/340/japan_monk_asia_religion_buddhist_zen_japanese_traditional-512.png',
-				'mute' : false ,
-				'block' : false,
-
-			},
-		]
-	},
-	{
-		'roomName': 'Blue team',
-		'roomId': 888,
-		'roomType': 'private',
-		'image': 'https://stickershop.line-scdn.net/stickershop/v1/product/7594755/LINEStorePC/main.png;compress=true',
-		'participants': [
-			{
-				'userId': 100,
-				'userName': 'Meilv',
-				'avatar': 'https://cdn2.iconfinder.com/data/icons/halloween-horror-1/512/35-black-cat-curse-mystery-512.png',
-				'mute' : false,
-				'block' : false,
-			},
-			{
-				'userId': 400,
-				'userName': 'Xibao',
-				'avatar': 'https://cdn2.iconfinder.com/data/icons/japan-flat-2/340/japan_monk_asia_religion_buddhist_zen_japanese_traditional-512.png',
-				'mute' : false,
-				'block' : false,
-			},
-		]
-	},
-	{
-		'roomName': 'Yellow team',
-		'roomId': 666,
-		'roomType': 'private',
-		'image': 'https://c8.alamy.com/comp/2H5Y6BE/smile-yellow-kitten-head-2H5Y6BE.jpg',
-		'participants': [
-			{
-				'userId': 200,
-				'userName': 'Sesame',
-				'avatar': 'https://cdn3.iconfinder.com/data/icons/animal-40/128/Animal_Tiger_Leopard-512.png',
-				'mute' : false,
-				'block' : false,
-			},
-			{
-				'userId': 300,
-				'userName': 'Maobe',
-				'avatar': 'https://cdn4.iconfinder.com/data/icons/animals-177/512/Caticorn-512.png',
-				'mute' : false,
-				'block' : false,
-			},
-		]
-	},
-]
 
 @WebSocketGateway({
 	cors: {
@@ -231,10 +148,11 @@ export class MaobeChatGateway {
 	async createMessage(socket: Socket, message: any): Promise<boolean> {
 		console.log(message);
 		const userId: number = Number(socket.handshake.headers.userid);
+		message.userId = userId;
 		try {
 			var res = await this.messageService.createMessage(message);
-			this.server.to(message.roomId.toString())
-				.emit('B_createMessage', res);
+			// this.server.to(message.roomId.toString()).emit('B_createMessage', res);
+			this.server.emit('B_createMessage', res);
 			return true;
 		}
 		catch (e)

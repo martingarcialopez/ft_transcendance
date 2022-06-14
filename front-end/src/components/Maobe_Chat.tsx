@@ -668,12 +668,15 @@ interface I_Room {
 
 interface I_Messages {
 	roomId: number,
-	messages: any[];
+	messages: I_Message[]
 }
 
 interface I_Message {
+	userId: number,
 	roomId: number,
-	message: any;
+	content: string,
+	createdDate: string,
+	id: number,
 }
 
 function Chat(props: any) {
@@ -967,7 +970,6 @@ function Chat(props: any) {
 	/* ------------------------------- */
 	const [messageBarValues, setMessageBarValue] = useState<Map<number, string>>();
 	const onChange_setMessageBarValue = (value: string) => {
-		console.log('update bar value: ', currRoomId, ' | ', value, ' | ', messageBarValues);
 		if (messageBarValues !== undefined) {
 			let newVarValues = new Map(messageBarValues);
 			newVarValues.set(currRoomId, value);
@@ -976,13 +978,11 @@ function Chat(props: any) {
 	}
 	const onSubmit_messageBar = (e: any) => {
 		e.preventDefault();
-		console.log('submit bar value: ', currRoomId, ' | ', messageBarValues);
 		if (messageBarValues === undefined) {
 			return;
 		}
 		let messageToCreate = {
 			'roomId': currRoomId,
-			'userId': 1,
 			'content': messageBarValues.get(currRoomId)
 		}
 
@@ -1003,17 +1003,22 @@ function Chat(props: any) {
 			newVarValues.set(messageRoomId, newMessages.messages);
 			setMessages(newVarValues);
 		}
-		const createMessage_listener = (newMessage: I_Message) => {
+		const createMessage_listener = (newMessageInfos: I_Message) => {
 			if (messages !== undefined) {
-				let intendedRoomMessages = messages.get(newMessage.roomId);
+				let intendedRoomMessages = messages.get(newMessageInfos.roomId);
+				const newMessage: any = {
+					'userId': newMessageInfos.userId,
+					'content': newMessageInfos.content,
+					'date': newMessageInfos.createdDate
+				}
 				if (intendedRoomMessages !== undefined) {
-					intendedRoomMessages.push(newMessage.message);
+					intendedRoomMessages.push(newMessage);
 				}
 				else {
-					intendedRoomMessages = [newMessage.message];
+					intendedRoomMessages = [newMessage];
 				}
 				let newVarValues = new Map(messages);
-				newVarValues.set(newMessage.roomId, intendedRoomMessages);
+				newVarValues.set(newMessageInfos.roomId, intendedRoomMessages);
 				setMessages(newVarValues);
 			}
 		}
