@@ -307,132 +307,21 @@ export class MaobeRoomService {
 		return false;
 	}
 
-/*	async joinRoom(joinRoomDto: JoinRoomDto): Promise<boolean> {
-		const typeRoom: string = joinRoomDto.typeRoom;
-		const userId : number = joinRoomDto.userId;
-		const roomId: number = joinRoomDto.roomId;
-		let existing_user = false;
-		if (typeRoom == 'public')
-		{
-			//if the person is already a number in the room
-			existing_user = await this.participant_already_exist({'userId': userId, 'roomId': roomId});
-			if (existing_user)
-				return false;
-			await this.participantService.createParticipant({'userId': userId, 'roomId': roomId});
-			return true;
-		}
-		else if (typeRoom == 'private')
-		{
-			console.log('enter in private room', roomId, userId);
-			let is_admin = await this.userIsAdmin(roomId, userId);
-
-			console.log('is_admin? ', is_admin);
-			if (is_admin == false)
-				return false;
-			const login: string = joinRoomDto.login;
-			const invitee_info = await this.userId_fromLogin(login);
-			console.log('login', login);
-			if (invitee_info == undefined)
-				return false;
-			const invite_id = invitee_info['id'];
-			existing_user = await this.participant_already_exist({'userId': invite_id, 'roomId': roomId});
-			if (existing_user || invite_id == userId)
-				return false;
-			await this.participantService.createParticipant({'userId': invite_id, 'roomId': roomId});
-            return true;
-		}
-		else if (typeRoom == 'protected')
-		{
-			const entered_pw : string = joinRoomDto.password;
-			const room_info = await this.roomRepository.createQueryBuilder("room")
-				.select(["room.password"])
-				.where("room.id = :room_Id", { room_Id: roomId })
-				.getOne();
-			if (await bcrypt.compare(entered_pw, room_info['password']))
-			{
-				existing_user = await this.participant_already_exist({'userId': userId, 'roomId': roomId});
-				if (existing_user)
-					return false;
-				await this.participantService.createParticipant({'userId': joinRoomDto.userId, 'roomId': roomId});
-				return true;
-			}
-		}
-		return false;
-	} */
-
-/*	NO NEED
-async updateRoomPw(body: RoomPwDto): Promise<boolean> {
-		console.log(body);
-		let room = await this.roomRepository.createQueryBuilder("room")
-            .select(["room.admin"])
-            .where("room.id = :room_Id", { room_Id: body.roomId })
-            .getOne();
-		if (room && room['admin'].indexOf(body.userId) != -1)
-		{
-			let room =  await this.roomRepository.createQueryBuilder("room")
-			    .where("room.id = :room_Id", { room_Id: body.roomId })
-				.getOne();
-			let new_hashed_password = await this.get_hash_pw(body['password']);
-			room['password'] = new_hashed_password;
-			await this.roomRepository.save(room);
-			return true;
-		}
-		return false;
-	}*/
-
 	async userIsAdmin(roomId: number, userId: number) : Promise<boolean> {
 		let admins = await this.get_RoomAdmins(roomId);
-		console.log('admins is here ', admins, admins.indexOf(userId));
 		return await admins.indexOf(userId) != -1;
 	}
 
-// 	async manageAdmin(body: UpdateAdminDto): Promise<boolean> {
-
-// 		let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
-// 		let admins = await this.get_RoomAdmins(body.roomId);
-// 		if (admins == undefined)/*no admin in this chat*/
-// 			return false;
-// 		if (admins.indexOf(body.userId) == -1) /*userId is not admin*/
-// 			return false;
-// 		const login: string = body.login;
-// 		const user_info = await this.userId_fromLogin(login);
-// 		if (user_info == undefined)
-// 			return false;
-// 		let other_userId: number = user_info['id'];
-// 		const other_user_is_admin = await this.userIsAdmin(body.roomId, other_userId);
-// 		if (body['toAdd'] == true && other_user_is_admin == false)
-// 			admins.push(other_userId);
-// 		//remove this admin
-// 		else if (body['toAdd'] == false && other_user_is_admin == true)
-// 		{
-// 			var index = admins.indexOf(other_userId);
-// 			admins.splice(index, 1);
-// 		}
-// 		await this.roomRepository
-// 			.createQueryBuilder()
-// 			.update(MaobeRoom)
-// 			.set({ admin: admins })
-// 			.where("id = :id", { id: body.roomId })
-// 			.execute();
-// 		return true;
-// }
-
-	async AdminleaveRoom(body: ParticipantDto): Promise<void> {
-		console.log('AdminleaveRoom');
-        let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
-        if (is_already_admin == true)
-        {
-			let admins = await this.get_RoomAdmins(body.roomId);
-            var index = admins.indexOf(body.userId);
-            admins.splice(index, 1);
-			await this.roomRepository
-				.createQueryBuilder()
-				.update(MaobeRoom)
-				.set({ admin: admins })
-				.where("id = :id", { id: body.roomId })
-				.execute();
-		}
-    }
+	async setAsAdmin(userId: number, roomId: number): Promise<void> {
+		let admins = await this.get_RoomAdmins(roomId);
+		admins.push(userId);
+		await this.roomRepository
+			.createQueryBuilder()
+			.update(MaobeRoom)
+			.set({ admin: admins })
+			.where("id = :id", { id: roomId })
+			.execute();
+	}
 
 	async get_Room_banList(roomId: number): Promise<number[]> {
 	let room = await this.roomRepository.createQueryBuilder("room")
@@ -531,7 +420,6 @@ async updateRoomPw(body: RoomPwDto): Promise<boolean> {
             .set({ banList: banList })
             .where("id = :id", { id: roomId })
             .execute();
-//		console.log(await this.findOne(2));
 	}
 
 	/*----------------------------FUNCTION-----------------------*/
@@ -557,9 +445,24 @@ async updateRoomPw(body: RoomPwDto): Promise<boolean> {
         return room.admin;
     }
 
+	async AdminleaveRoom(body: ParticipantDto): Promise<void> {
+        let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
+        if (is_already_admin == true)
+        {
+			let admins = await this.get_RoomAdmins(body.roomId);
+            var index = admins.indexOf(body.userId);
+            admins.splice(index, 1);
+			await this.roomRepository
+				.createQueryBuilder()
+				.update(MaobeRoom)
+				.set({ admin: admins })
+				.where("id = :id", { id: body.roomId })
+				.execute();
+		}
+    }
+
+
+
 
 
 }
-
-
-/*https://stackoverflow.com/questions/53378667/cast-entity-to-dto*/

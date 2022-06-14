@@ -197,6 +197,17 @@ export class MaobeChatGateway {
 		return true;
     }
 
+	@SubscribeMessage('F_setAsAdmin')
+	async setAsAdmin(socket: Socket, userId: number, roomId: number) : Promise<boolean> {
+		try {
+			await this.roomService.setAsAdmin(userId, roomId);
+			socket.emit('B_setAsAdmin', userId, roomId);
+		}
+		catch (e) {
+			return false;
+		}
+		return true;
+	}
 
 
 
