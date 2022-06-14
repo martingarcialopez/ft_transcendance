@@ -198,10 +198,10 @@ export class MaobeChatGateway {
     }
 
 	@SubscribeMessage('F_setAsAdmin')
-	async setAsAdmin(socket: Socket, userId: number, roomId: number) : Promise<boolean> {
+	async setAsAdmin(socket: Socket, dto: ParticipantDto) : Promise<boolean> {
 		try {
-			await this.roomService.setAsAdmin(userId, roomId);
-			socket.emit('B_setAsAdmin', userId, roomId);
+			await this.roomService.setAsAdmin(dto.userId, dto.roomId);
+			socket.emit('B_setAsAdmin', dto.userId, dto.roomId);
 		}
 		catch (e) {
 			return false;
