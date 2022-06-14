@@ -209,6 +209,18 @@ export class MaobeChatGateway {
 		return true;
 	}
 
+	@SubscribeMessage('F_kickUser')
+	async kickUser(@Body() participantDto: ParticipantDto) : Promise<boolean> {
+		try {
+			await this.participantService.leaveRoom(participantDto);
+			await this.roomService.AdminleaveRoom(participantDto);
+		}
+		catch(e) {
+			return false;
+		}
+		return true;
+	}
+
 
 
 

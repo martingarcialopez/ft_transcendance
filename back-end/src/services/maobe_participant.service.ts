@@ -72,7 +72,7 @@ export class MaobeParticipantService {
 			.select(["participant.id"])
 			.where("participant.userId = :userId AND participant.roomId = :roomId", { userId: userId, roomId: roomId })
             .getOne();
-		if (id != undefined)
+		if (id !== undefined)
 			await this.participantRepository.delete(id);
 	}
 
