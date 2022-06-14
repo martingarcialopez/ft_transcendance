@@ -174,96 +174,13 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_getMessages')
-	updateMessage(socket: Socket, roomId: number): boolean {
-		const firstRoomId = 42;
-		if (roomId === -1) {
-			roomId = firstRoomId;
-		}
-		const allMessages = {
-			42: [
-				{
-					'userId': 100,
-					'content': 'Coucou je suis Meilv !! <3',
-					'date': '11/05/2020',
-				},
-				{
-					'userId': 300,
-					'content': '<3 Ai ni <3',
-					'date': '11/05/2020',
-				},
-				{
-					'userId': 200,
-					'content': 'J\'ai faim :(',
-					'date': '11/05/2020',
-				},
-				{
-					'userId': 400,
-					'content': 'Time to chi!',
-					'date': '11/05/2020',
-				},
-			],
-			666: [
-				{
-					'userId': 200,
-					'content': 'Meilv bully me :\'(',
-					'date': '09/05/2020',
-				},
-				{
-					'userId': 300,
-					'content': 'You can hiss her, she\'ll run away petit bao',
-					'date': '09/05/2020',
-				},
-				{
-					'userId': 200,
-					'content': 'I\'m still a bao, she should not treat me as a dog!!!',
-					'date': '09/05/2020',
-				},
-				{
-					'userId': 300,
-					'content': 'kekelianlian <3',
-					'date': '09/05/2020',
-				},
-			],
-			888: [
-				{
-					'userId': 100,
-					'content': 'Xiao di really like to bother me when I eat...',
-					'date': '09/05/2020',
-				},
-				{
-					'userId': 400,
-					'content': 'nigama is the same with me',
-					'date': '09/05/2020',
-				},
-				{
-					'userId': 100,
-					'content': 'still love them tho',
-					'date': '09/05/2020',
-				},
-				{
-					'userId': 400,
-					'content': 'so much <3',
-					'date': '09/05/2020',
-				},
-				{
-					'userId': 100,
-					'content': 'miss mama and youuuu. When will you come back ?',
-					'date': '13/05/2020',
-				},
-				{
-					'userId': 400,
-					'content': 'very soon, we are in the train',
-					'date': '13/05/2020',
-				},
-				{
-					'userId': 100,
-					'content': 'don\'t forger to buy some petit faims 66666666666',
-					'date': '13/05/2020',
-				},
-			]
-		}
+	async getMessage(socket: Socket, roomId: number): Promise<boolean> {
+		socket.join(roomId.toString());
+		const allMessages = await this.roomService.maobe_getMessages(roomId);
+		console.log(allMessages);
 		this.server.emit('B_getMessages', {'roomId': roomId,
-										   'messages': allMessages[roomId]});
+										   'messages': allMessages
+										  });
 		return (true);
 	}
 }

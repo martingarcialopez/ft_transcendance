@@ -248,7 +248,7 @@ function EditRoomMenu(props: any) {
 				<FocusableItem>
 					{({ ref }) => (
 						<input ref={ref}
-							   id="mao-menu-input"
+							   className="mao-menu-input"
 							   required
 							   type="text"
 							   placeholder="Name your new room"
@@ -280,7 +280,7 @@ function EditRoomMenu(props: any) {
 				<FocusableItem>
 					{({ ref }) => (
 						<input disabled={ disablePassword }
-							   id="mao-menu-input"
+							   className="mao-menu-input"
 							   ref={ref}
 							   type="password"
 							   placeholder="Room password"
@@ -581,38 +581,40 @@ function MessagePanel(props: any) {
 	if (props.messages !== undefined && props.messages.length !== 0 &&
 		props.messages.get(props.currRoomId) !== undefined) {
 		const currMessages = props.messages.get(props.currRoomId);
-		Html_messages = currMessages.map((message: any, i: any) => {
-			let currentUser = currentRoom.participants.filter((obj: any) => obj.userId === message.userId)[0];
-			if (currentUser === undefined) {
-				currentUser = {
-					'username': 'undefined',
-					'avatar': ''
-				};
-			}
-			return (
-				<div key={i}>
-					<div id="messages">
-						<img src={ currentUser.avatar } alt="" />
+		if (currMessages.length > 0) {
+			Html_messages = currMessages.map((message: any, i: any) => {
+				let currentUser = currentRoom.participants.filter((obj: any) => obj.userId === message.userId)[0];
+				if (currentUser === undefined) {
+					currentUser = {
+						'username': 'undefined',
+						'avatar': ''
+					};
+				}
+				return (
+					<div key={i}>
+						<div id="messages">
+							<img src={ currentUser.avatar } alt="" />
 
-						<div id="column-message">
-							<div id="name-date-message">
-								<a>{ currentUser.username }</a>
-								<a>{ message.date }</a>
-							</div>
-							<div id="message-send">
-								<a>{ message.content }</a>
+							<div id="column-message">
+								<div id="name-date-message">
+									<a>{ currentUser.username }</a>
+									<a>{ message.date }</a>
+								</div>
+								<div id="message-send">
+									<a>{ message.content }</a>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div id="risco">
-						<hr />
-						<a> ------------------- </a>
-						<hr />
-					</div>
+						<div id="risco">
+							<hr />
+							<a> ------------------- </a>
+							<hr />
+						</div>
 
-				</div>
-			)
-		});
+					</div>
+				)
+			});
+		}
 	}
 	return (
 		<div id="mao-messages-panel">
@@ -875,11 +877,9 @@ function Chat(props: any) {
 	/* ------------------------- */
 	const [roomsDispoToJoin, setRoomsDispoToJoin] = useState<any[]>([]);
 	const onClick_getRoomsDispoToJoin= () => {
-		console.log('SHOULD SEND F_getDispoRooms');
 		props.appSocket.emit('F_getDispoRooms', true);
 	}
 	const getRoomsDispoToJoin_listener = (dispoRooms: I_Room[]) => {
-		console.log('dispoRooms: ', dispoRooms);
 		setRoomsDispoToJoin(dispoRooms);
 	}
 	const onClick_joinRoom = (roomId: number) => {

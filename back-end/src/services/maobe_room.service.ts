@@ -33,7 +33,17 @@ export class MaobeRoomService {
         @InjectRepository(MaobeRoom) private readonly roomRepository: Repository<MaobeRoom>,
 		@InjectRepository(MaobeParticipant) private readonly participantRepository: Repository<MaobeParticipant>,
 		@InjectRepository(User) private readonly userRepository: Repository<User>,
+		@InjectRepository(MaobeMessage) private readonly messagesRepository: Repository<MaobeMessage>,
     ){}
+
+    async maobe_getMessages(roomId: number) : Promise<any> {
+		console.log(roomId);
+        let messages = await this.messagesRepository.createQueryBuilder("maobe_messages")
+            .where("maobe_messages.roomId = :room_Id", { room_Id: roomId })
+            .getMany();
+		console.log('------------------ ', messages);
+        return messages;
+    }
 
 	/*get all the room the user participated and corresponding all participants in the room */
 	async maobe_getJoinRooms(userId: number): Promise<any[]>

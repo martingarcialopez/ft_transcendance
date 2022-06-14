@@ -509,7 +509,7 @@ html{
 	text-align: center;
 }
 
-#mao-menu-input::placeholder {
+.mao-menu-input::placeholder {
 	color: #36393F;
 }
 
