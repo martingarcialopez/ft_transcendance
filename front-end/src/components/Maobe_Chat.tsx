@@ -316,6 +316,18 @@ function EditRoomMenu(props: any) {
 	);
 }
 
+function LeaveRoomButton(props: any) {
+	if (props.currRoom.owner === props.connectedUser.userId) {
+		return (<div></div>);
+	}
+	return (
+   		<button className="mao-btn-join-room"
+				onClick={ () => { props.onClick_leaveRoom(props.currRoom.id) }}>
+   			❌
+   		</button>
+	)
+}
+
 function RoomsPanel(props: any) {
 	const rooms = props.roomsList;
 	const Html_roomsList = rooms.map((room: any, i: any) => {
@@ -330,9 +342,13 @@ function RoomsPanel(props: any) {
 				</a>
 				<EditRoomMenu currRoom={ room }
 							  {...props} />
+				<LeaveRoomButton currRoom={ room }
+								 {...props} />
+
 			</div>
 		)
 	});
+
 	return (
 		<div>
 			<div id="search-conversa">
@@ -681,6 +697,11 @@ interface I_Message {
 	id: number,
 }
 
+interface I_LeaveRoom {
+	userId: number,
+	roomId: number
+}
+
 function Chat(props: any) {
 	/* ------------------------------- */
 	/*        Get existing rooms       */
@@ -901,6 +922,25 @@ function Chat(props: any) {
 		setMessageBarValue(newMessageBarValues);
 	}
 
+	const onClick_leaveRoom = (roomId: number) => {
+		props.appSocket.emit('F_leaveRoom', roomId,
+							 (isLeft: boolean) => {
+								 if (isLeft !== true) {
+									 alert('Something went wrong');
+								 }
+							 });
+	}
+	const leaveRoom_listener = (leaveRoom: I_LeaveRoom) => {
+		const tmp_newRooms = rooms.filter((obj) => obj.id !== leaveRoom.roomId);
+		if (tmp_newRooms.length > 0) {
+			setCurrRoomId(tmp_newRooms[0].id);
+		}
+		else {
+			setCurrRoomId(-1);
+		}
+		setRooms(tmp_newRooms);
+	}
+
 	/* ------------------------------- */
 	/*          Update Room            */
 	/* ------------------------------- */
@@ -1054,6 +1094,9 @@ function Chat(props: any) {
 		if (props.appSocket._callbacks['joinRoom_listener'] === undefined) {
 			props.appSocket.on('B_joinRoom', joinRoom_listener);
 		}
+		if (props.appSocket._callbacks['leaveRoom_listener'] === undefined) {
+			props.appSocket.on('B_leaveRoom', leaveRoom_listener);
+		}
 		return () => {
 			props.appSocket.removeAllListeners('B_getRooms');
 			props.appSocket.removeAllListeners('B_getMessages');
@@ -1064,6 +1107,7 @@ function Chat(props: any) {
 			props.appSocket.removeAllListeners('B_getRoomAvailableUsers');
 			props.appSocket.removeAllListeners('B_getDispoRooms');
 			props.appSocket.removeAllListeners('B_joinRoom');
+			props.appSocket.removeAllListeners('B_leaveRoom');
 		};
  	});
 
@@ -1114,6 +1158,8 @@ function Chat(props: any) {
 								onClick_updateRoom={ onClick_updateRoom }
 								roomAvailableUsers={ roomAvailableUsers }
 								onChange_selectRoomParticipant={onChange_selectRoomParticipant}
+
+								onClick_leaveRoom={ onClick_leaveRoom }
 					/>
 					<StatusBar connectedUser={ props.connectedUser } />
 				</div>
