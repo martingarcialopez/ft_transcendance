@@ -393,8 +393,10 @@ function CreateRoomForm(props: any) {
 }
 
 function ParticipantAdminContextMenu(props: any) {
-	if (props.currentRoom.owner !== props.connectedUser.userId &&
-		props.currentRoom.admin.indexOf(props.connectedUser.userId) === -1) {
+	if ((props.currentRoom.owner !== props.connectedUser.userId &&
+		 props.currentRoom.admin.indexOf(props.connectedUser.userId) === -1) ||
+		props.currentRoom.owner === props.currentUser.userId ||
+		props.currentUser.userId === props.connectedUser.userId) {
 		return (<div></div>);
 	}
 	return (
@@ -423,6 +425,49 @@ function ParticipantAdminContextMenu(props: any) {
 	);
 }
 
+function ParticipantSetAsAdminContextMenu(props: any) {
+	if (props.currentUser.userId === props.connectedUser.userId ||
+		props.currentRoom.admin.indexOf(props.currentUser.userId) !== -1 ||
+		props.currentRoom.owner === props.currentUser.userId ||
+		(props.currentRoom.owner !== props.connectedUser.userId &&
+		 props.currentRoom.admin.indexOf(props.connectedUser.userId) === -1)) {
+		return (<div></div>);
+	}
+	return (
+		<div>
+            <MenuItem onClick={
+						  () => props.onClick_setAsAdmin(props.currentUser.userId, props.currRoomId) }>
+				Set as Admin { props.currentUser.username }
+			</MenuItem>
+			<hr />
+		</div>
+	);
+}
+
+function ParticipantBasicContextMenu(props: any) {
+	if (props.currentUser.userId === props.connectedUser.userId) {
+		return (<div></div>);
+	}
+	return (
+		<div>
+			{ /* ----- BLOCK ----- */ }
+            <MenuItem onClick={
+						  () => props.onClick_block(props.currentUser.userId, props.currRoomId) }>
+				Block { props.currentUser.username }
+			</MenuItem>
+			<hr />
+
+			{ /* ----- DIRECT MESSAGE ----- */ }
+            <MenuItem onClick={
+						  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
+				Send Message { props.currentUser.username }
+			</MenuItem>
+			<hr />
+		</div>
+	);
+}
+
+
 function ParticipantContextMenu(props: any) {
     const [menuProps, toggleMenu] = useMenuState();
     const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
@@ -444,20 +489,10 @@ function ParticipantContextMenu(props: any) {
 
             <ControlledMenu {...menuProps} anchorPoint={anchorPoint}
                             onClose={() => toggleMenu(false)}>
+				<ParticipantBasicContextMenu {...props} />
+				<ParticipantSetAsAdminContextMenu {...props} />
 				<ParticipantAdminContextMenu {...props} />
 
-				{ /* ----- BLOCK ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_block(props.currentUser.userId, props.currRoomId) }>
-					Block { props.currentUser.username }
-				</MenuItem>
-				<hr />
-
-				{ /* ----- DIRECT MESSAGE ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
-					Send Message { props.currentUser.username }
-				</MenuItem>
 
             </ControlledMenu>
         </div >
@@ -825,7 +860,18 @@ function Chat(props: any) {
 							 });
 		console.log(`DirectMessaging ${userId} in ${roomId}`);
 	}
-
+	const onClick_setAsAdmin = (userId: number, roomId: number) => {
+		props.appSocket.emit('F_setAsAdmin',
+							 {
+								 'userId': userId,
+								 'roomId': roomId
+							 },
+							 (isSet: boolean) => {
+								 if (isSet !== true) {
+									 alert('Something went wrong');
+								 }
+							 });
+	}
 	/* ------------------------------- */
 	/*        Create new room          */
 	/* ------------------------------- */
@@ -1182,6 +1228,7 @@ function Chat(props: any) {
 						<ParticipantsPanel roomsList={ rooms }
 										   currRoomId={ currRoomId }
 										   connectedUser={ props.connectedUser }
+										   onClick_setAsAdmin={ onClick_setAsAdmin }
 										   onClick_kick={ onClick_kick  }
 										   onClick_ban={ onClick_ban  }
 										   onClick_mute={ onClick_mute  }
