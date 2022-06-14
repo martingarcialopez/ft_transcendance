@@ -39,7 +39,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       )
 
       if (!verified)
-        throw new HttpException('incorrect totp code', HttpStatus.UNAUTHORIZED);
+        throw new HttpException('incorrect totp code', HttpStatus.I_AM_A_TEAPOT);
 
     }
 
