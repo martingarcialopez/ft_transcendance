@@ -467,7 +467,6 @@ function ParticipantBasicContextMenu(props: any) {
 	);
 }
 
-
 function ParticipantContextMenu(props: any) {
     const [menuProps, toggleMenu] = useMenuState();
     const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
@@ -768,7 +767,23 @@ function Chat(props: any) {
 	/*      Participants actions       */
 	/* ------------------------------- */
 	const onClick_kick = (userId: number, roomId: number) => {
-		console.log(`Kicking ${userId} in ${roomId}`);
+		props.appSocket.emit('F_kickUser',
+							 {
+								 'userId': userId,
+								 'roomId': roomId
+							 },
+							 (isKicked: boolean) => {
+								 if (isKicked === true) {
+									 let newRooms = rooms.slice();
+									 var index = newRooms.findIndex((obj:any) => obj.id === roomId);
+									 var unkicked_participants = newRooms[index].participants.filter((obj: any) => obj.userId !== userId);
+									 newRooms[index].participants = unkicked_participants;
+									 setRooms(newRooms);
+								 }
+								 else {
+									 alert('Something went wrong');
+								 }
+							 });
 	}
 	const onClick_ban = (userId: number, roomId: number) => {
 		console.log(`Banning ${userId} in ${roomId}`);
@@ -872,6 +887,7 @@ function Chat(props: any) {
 								 }
 							 });
 	}
+
 	/* ------------------------------- */
 	/*        Create new room          */
 	/* ------------------------------- */
