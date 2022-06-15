@@ -1,16 +1,15 @@
 import "../styles/Twofa.css";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../redux";
-import { enable2FAAction, loginAction } from "../redux/actions/userActions";
+import { enable2FAAction } from "../redux/actions/userActions";
 import { UserState } from "../redux/reducers/userReducers";
 import { Button } from "@mui/material";
 
 export const Twofa = ({ check }: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
-  const [code, setCode] = useState("");
   const [img, setImg] = useState("");
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin

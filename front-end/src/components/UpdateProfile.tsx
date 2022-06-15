@@ -5,7 +5,7 @@ import { Box } from "@mui/system";
 import { updateAction } from "../redux/actions/userActions";
 import { useDispatch } from "react-redux";
 import { CustomizedSnackbars } from "./CustomizedSnackbars";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export const UpdateProfile = ({ userInfo }: any) => {
     const [firstname, setFirstname] = useState(userInfo.firstname)
