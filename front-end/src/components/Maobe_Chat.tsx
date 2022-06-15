@@ -829,10 +829,7 @@ function Chat(props: any) {
 	}
 	const onClick_block = (userId: number, roomId: number) => {
 		props.appSocket.emit('F_blockUser',
-							 {
-								 'userId': userId,
-								 'roomId': roomId
-							 },
+							 userId,
 							 (isBlocked: boolean) => {
 								 if (isBlocked === true) {
 									 let newRooms = rooms.slice();
