@@ -198,7 +198,8 @@ export class MaobeRoomService {
             'image': new_room.image,
             'owner': new_room.owner,
             'admin': new_room.admin,
-            'participants': users
+            'participants': users,
+			'is_protected': new_room.is_protected
         }
 	}
 
