@@ -10,14 +10,12 @@ import { JwtStrategy } from './jwt.strategy';
 import { Oauth42Strategy } from './oauth42.strategy';
 import { HttpModule } from '@nestjs/axios';
 import { User } from 'src/models/user.entity';
-import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
     HttpModule,
     UserModule, 
     PassportModule,
-    MailerModule,
     JwtModule.register({
         secret: jwtConstants.secret,
         signOptions: { expiresIn: '86400s' }, // expires in a day (86400 seconds)

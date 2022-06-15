@@ -1,7 +1,6 @@
 import { Injectable, Inject, ImATeapotException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/services/user.service';
-import { MailerService } from '@nestjs-modules/mailer';
 import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
 import * as bcrypt from 'bcrypt';
@@ -12,7 +11,6 @@ export class AuthService {
     constructor(
         private usersService: UserService,
         private jwtService: JwtService,
-        private mailerService: MailerService
         ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {

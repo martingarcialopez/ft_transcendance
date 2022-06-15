@@ -46,8 +46,7 @@ import { MaobeRoomService} from './services/maobe_room.service';
 import { MaobeParticipant } from './models/maobe_participant.entity';
 import { MaobeParticipantModule } from './modules/maobe_participant.module';
 import { MaobeParticipantService} from './services/maobe_participant.service';
-import { MailerModule } from '@nestjs-modules/mailer';
-
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -62,6 +61,9 @@ import { MailerModule } from '@nestjs-modules/mailer';
 		entities: [User, Message, MaobeMessage, Room, MaobeRoom, Participant, MaobeParticipant, Matchmaking, Relationship, GameHistory],
       synchronize: true,
     }),
+    // MulterModule.register({
+    //   dest: './upload',
+    // }),
     InMemoryDBModule.forRoot({}),
     HttpModule,
     UserModule,
@@ -70,11 +72,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
 	  RoomModule, ParticipantModule,
 	  MaobeRoomModule, MaobeParticipantModule,
 	  PongModule,
-    MailerModule.forRoot({
-      transport: 'smtps://user@domain.com:pass@smtp.domain.com',
-      defaults: {
-        from:'"nest-modules" <modules@nestjs.com>',
-      },
       // template: {
       //   dir: __dirname + '/templates',
       //   adapter: new HandlebarsAdapter(), // or new PugAdapter()
@@ -82,7 +79,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       //     strict: true,
       //   },
       // },
-    }),
+   // }),
   ],
   controllers: [],
 	providers: [MessageGateway, RoomGateway, ParticipantGateway, PongGateway, MaobeChatGateway],
@@ -96,3 +93,4 @@ export class AppModule {}
 //         .forRoutes(OauthController)
 //   }
 // }
+
