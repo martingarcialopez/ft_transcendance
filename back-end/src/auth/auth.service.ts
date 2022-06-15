@@ -77,10 +77,10 @@ async disable2FA(id: string) {
 
   const user = await this.usersService.getUserById(id);
   
-  if (user)
-    user.twofa = false;
+  if (!user)
+    throw new NotFoundException();
 
-  this.usersService.updateUser(user, id);
+  this.usersService.updateUser( { twofa: false }, id);
 
 }
 
