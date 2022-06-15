@@ -968,6 +968,20 @@ function Chat(props: any) {
 	}
 	const createRoom_listener = (newRoom: I_Room) => {
 		let newRooms = rooms.slice();
+
+		let tmpNewParticipants: any = []
+		if (newRoom.participants.length > 0) {
+			newRoom.participants.forEach((tmp_user) => {
+				tmpNewParticipants.push({
+					'userId': tmp_user.id,
+					'username': tmp_user.username,
+					'avatar': tmp_user.avatar
+
+				})
+			})
+			newRoom.participants = tmpNewParticipants;
+		}
+
 		newRooms.unshift(newRoom);
 		setRooms(newRooms);
 		setCurrRoomId(newRoom.id);
@@ -1079,7 +1093,18 @@ function Chat(props: any) {
 		let newRooms = rooms.filter((obj: any) => obj.id !== updatedRoom.id);
 		let oldRoom = rooms.filter((obj: any) => obj.id === updatedRoom.id)[0];
 
-		updatedRoom.participants = [...oldRoom.participants, ...updatedRoom.participants]
+		let tmpNewParticipants: any = []
+		if (updatedRoom.participants.length > 0) {
+			updatedRoom.participants.forEach((tmp_user) => {
+				tmpNewParticipants.push({
+					'userId': tmp_user.id,
+					'username': tmp_user.username,
+					'avatar': tmp_user.avatar
+
+				})
+			})
+		}
+		updatedRoom.participants = [...oldRoom.participants, ...tmpNewParticipants]
 		newRooms.unshift(updatedRoom);
 		setRooms(newRooms);
 	}
