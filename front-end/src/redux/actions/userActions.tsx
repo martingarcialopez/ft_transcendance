@@ -14,8 +14,9 @@ import {
   UPDATE_CONFIRMED_ACTION,
   ENABLE_2FA_CONFIRMED_ACTION,
   DISABLE_2FA_CONFIRMED_ACTION,
+  UPLOAD_IMAGE_CONFIRMED_ACTION,
 } from '../constants/userConstants'
-import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -96,6 +97,28 @@ export function enable2FAAction(access_token: any) {
         console.log(error);
         const errorMessage = formatError(error.code);
         console.log("ceci est une errorMessage return de formatError dans enable2FAAction :" + errorMessage)
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
+export function uploadImageAction(image: any, access_token: any) {
+  return (dispatch: any) => {
+    uploadImage(image, access_token)
+      .then((response) => {
+        console.log("uploadImageAction qui fct :")
+        console.log(response)
+        console.log("uploadImageAction data qui fct :")
+        console.log(response.data)
+        console.log("uploadImageAction data filename qui fct :")
+        console.log(response.data.filename)
+        dispatch(uploadImageActionConfirmedAction(response.data.filename));
+      })
+      .catch((error) => {
+        console.log("ceci est une error dans uploadImageAction :")
+        console.log(error);
+        const errorMessage = formatError(error.code);
+        console.log("ceci est une errorMessage return de formatError dans uploadImageAction :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
   };
@@ -270,6 +293,13 @@ export function getFriendListConfirmedAction(friendList: any) {
 export function getFriendInfosAction(data: any) {
   return {
     type: GET_FRIEND_INFOS_ACTION,
+    payload: data,
+  };
+}
+
+export function uploadImageActionConfirmedAction(data: any) {
+  return {
+    type: UPLOAD_IMAGE_CONFIRMED_ACTION,
     payload: data,
   };
 }
