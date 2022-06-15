@@ -155,7 +155,6 @@ export class MaobeRoomService {
 	** :return (RoomSnippetDto) dto contains new channel id and its name
 	*/	async maobe_createRoom(userId: number, roomDto: RoomDto): Promise<any | undefined>
 	{
-		console.log('roomDto:', roomDto.image, '---------------');
         const new_room = new MaobeRoom();
 
 		/***CHANGE IMAGE***/
@@ -168,7 +167,6 @@ export class MaobeRoomService {
 
 		new_room.name = roomDto.name;
 		new_room.typeRoom = roomDto.typeRoom;
-		console.log('roomDto.password |', roomDto.password, '|');
 		if (roomDto.password.length > 0)
 		{
 			new_room.is_protected = true;
@@ -186,11 +184,13 @@ export class MaobeRoomService {
 		await this.roomRepository.save(new_room);
 		await this.participantService.createParticipant({'userId': userId, 'roomId':  new_room.id});
 		let users: User[] = roomDto.users;
+		const user = await this.userRepository.findOne(userId);
 		if (users.length > 0)
 		{
 			users.forEach(async element => await this.participantService.createParticipant({'userId': element['id'], 'roomId': new_room.id}));
 
 		}
+		users.push(user);
 		return {
             'id': new_room.id,
             'name': new_room.name,
@@ -205,6 +205,7 @@ export class MaobeRoomService {
 
 	async get_AvailableUsers(userId: number) : Promise<User[]> {
 		let blockList: number[] = await this.Mutual_blocklist(userId);
+		blockList.push(userId);
         let dispo_users: User[] = await this.userRepository.createQueryBuilder("user")
             .where("user.id NOT IN (:...list) ", { list : blockList })
             .getMany();
@@ -313,6 +314,8 @@ export class MaobeRoomService {
 	}
 
 	async setAsAdmin(userId: number, roomId: number): Promise<void> {
+		if (userId === undefined)
+			throw ('sth went wrong');
 		let admins = await this.get_RoomAdmins(roomId);
 		admins.push(userId);
 		await this.roomRepository
