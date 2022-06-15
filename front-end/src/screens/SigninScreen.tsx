@@ -44,6 +44,14 @@ const SignIn = () => {
     }
   }, [userInfo, navigate])
 
+  useEffect(() => {
+    console.log("signin userInfo :")
+    if (userLogin.errorMessage === 'Write your 6 number from Google Authentificator') {
+      setNeedCode(true)
+      setErrorFromBack("Please enter your Google Authentification code")
+    }
+  }, [userLogin.errorMessage])
+
   const validate = () => {
     let temp = { ...errors }
     temp.username = username ? "" : "This field is required."
@@ -97,12 +105,8 @@ const SignIn = () => {
   useEffect(() => {
     if (!errors.password && !errors.username && !userLogin.errorMessage)
       setErrorFromBack()
-  }, [userLogin, errors])
 
-  if (userLogin.errorMessage === "TIPOT") {
-    setNeedCode(true)
-    setErrorFromBack("Please enter your Google Authentification code")
-  }
+  }, [userLogin, errors])
 
   return (
     <ThemeProvider theme={theme}>
@@ -188,7 +192,7 @@ const SignIn = () => {
                   required
                   fullWidth
                   name="code"
-                  label="Password"
+                  label="Code"
                   type="code"
                   id="code"
                   autoComplete="current-code"
