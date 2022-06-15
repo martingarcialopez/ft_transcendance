@@ -34,17 +34,29 @@ function JoinRoomMenu(props: any) {
 	let Html_AvailableRooms = (<div></div>);
 	if (props.roomsDispoToJoin !== undefined && props.roomsDispoToJoin.length > 0) {
 		Html_AvailableRooms = props.roomsDispoToJoin.map((room: any, i: any) => {
+			let Html_password = (<div></div>);
+			if (room.is_protected === true) {
+				Html_password = (<input type="password"
+										placeholder="Password" required />);
+			}
+
 			return (
-				<div key={i}
-					 onClick={ () => {
-   						 setOpen(false);
-						 props.onClick_joinRoom(room.id)
-					 }}>
-					<a id="messages">
-   						<img src={ room.image } />
-   						<label>{ room.name }</label>
-   					</a>
-					<hr />
+				<div key={i}>
+					<form action="#" onSubmit={ (e: any) => {
+							  e.preventDefault();
+							  setOpen(false);
+							  props.onClick_joinRoom(room.id, e.target[0].value)
+						  }}>
+						<a id="messages">
+   							<img src={ room.image } />
+   							<label>{ room.name }</label>
+   						</a>
+						{ Html_password }
+						<button>
+							JOIN
+						</button>
+						<hr />
+					</form >
 				</div>
    			);
    		});
@@ -83,7 +95,7 @@ function JoinRoomMenu(props: any) {
 function CreateRoomMenu(props: any) {
 	const ref = useRef(null);
 	const [isOpen, setOpen] = useState(false);
-	const [disablePassword, setDisablePassword] = useState(true);
+	const [disablePassword, setDisablePassword] = useState(false);
 
 	let Html_AvailableUser = (<div></div>);
 	if (props.availableUsers !== undefined && props.availableUsers.length > 0) {
@@ -150,7 +162,6 @@ function CreateRoomMenu(props: any) {
 					{({ ref }) => (
 						<select value={ props.roomType }
 								onChange={ (e) => {
-									setDisablePassword(!disablePassword);
 									props.setTypeRoom(e.target.value)
 								}}
 								required>
@@ -204,7 +215,7 @@ function CreateRoomMenu(props: any) {
 function EditRoomMenu(props: any) {
 	const ref = useRef(null);
 	const [isOpen, setOpen] = useState(false);
-	const [disablePassword, setDisablePassword] = useState(true);
+	const [disablePassword, setDisablePassword] = useState(false);
 
 	if (props.currRoom.owner !== props.connectedUser.userId &&
 		props.currRoom.admin.indexOf(props.connectedUser.userId) === -1) {
@@ -265,7 +276,6 @@ function EditRoomMenu(props: any) {
 					{({ ref }) => (
 						<select value={ props.updateTypeRoom }
 								onChange={ (e) => {
-									setDisablePassword(!disablePassword);
 									props.setUpdateTypeRoom(e.target.value)
 								}}
 								required>
@@ -998,11 +1008,13 @@ function Chat(props: any) {
 	const getRoomsDispoToJoin_listener = (dispoRooms: I_Room[]) => {
 		setRoomsDispoToJoin(dispoRooms);
 	}
-	const onClick_joinRoom = (roomId: number) => {
-		props.appSocket.emit('F_joinRoom', roomId,
+	const onClick_joinRoom = (roomId: number, password: string) => {
+		props.appSocket.emit('F_joinRoom', {
+			'roomId': roomId,
+			'password': password},
 							 (isJoined: boolean) => {
 								 if (isJoined !== true) {
-									 alert('Something went wrong');
+									 alert('Invalid Password');
 								 }
 							 });
 	}
