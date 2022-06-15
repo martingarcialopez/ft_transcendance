@@ -486,7 +486,7 @@ html{
 	color: #8A8E94;
 	overflow: auto;
 	overflow-x:auto;
-	max-height: 780px;
+	height: 780px;
 }
 
 #mao-room-names :focus {
