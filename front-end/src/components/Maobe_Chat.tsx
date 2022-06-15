@@ -123,6 +123,7 @@ function CreateRoomMenu(props: any) {
 							   required
 							   type="text"
 							   placeholder="Name your new room"
+							   maxLength={15}
 							   value={ props.newRoomName }
 							   onChange={e => props.setNewRoomName(e.target.value)} />
 					)}
