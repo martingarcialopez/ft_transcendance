@@ -22,9 +22,12 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     console.log(code);
 
     const user = await this.authService.validateUser(username, password);
+
     if (!user) {
       throw new UnauthorizedException();
     }
+
+    console.log('yo yo');
 
     if (user.twofa === true) {
 

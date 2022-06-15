@@ -35,7 +35,7 @@ export interface UserInfo {
   expiresIn?: any,
   access_token?: string,
   friends: string[],
-  is2FAenable: boolean,
+  twofa: boolean,
   code2FA: string,
   id?: any
 }
@@ -122,7 +122,7 @@ export const userLoginReducer = (
       expiresIn: '',
       access_token: '',
       friends: [],
-      is2FAenable: false,
+      twofa: false,
       code2FA: '',
       id: 0,
     },
@@ -136,7 +136,7 @@ export const userLoginReducer = (
       expiresIn: '',
       access_token: '',
       friends: [],
-      is2FAenable: false,
+      twofa: false,
       code2FA: '',
       id: 0,
     }
@@ -153,12 +153,15 @@ export const userLoginReducer = (
     case ENABLE_2FA_CONFIRMED_ACTION:
       return {
         ...state,
-        userInfo: { ...state.userInfo, code2FA: action.payload },
+        showLoading: false,
+        errorMessage: "",
+        userInfo: { ...state.userInfo, twofa: true, code2FA: action.payload },
       };
     case GET_FRIENDS_LIST_ACTION:
       return {
         ...state,
         showLoading: false,
+        errorMessage: "",
         userInfo: { ...state.userInfo, friends: action.payload },
       };
     case GET_FRIEND_INFOS_ACTION:
@@ -175,6 +178,7 @@ export const userLoginReducer = (
         showLoading: false,
         errorMessage: "",
         successMessage: "Disable 2FA Successfully Send",
+        userInfo: { ...state.userInfo, twofa: false, code2FA: '' },
       };
     case UPDATE_CONFIRMED_ACTION:
       return {
