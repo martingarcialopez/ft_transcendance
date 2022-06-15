@@ -15,7 +15,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('upload')
+  @Post('uploadProfileImage')
   @UseInterceptors(
       FileInterceptor('file', {
         storage: diskStorage({
