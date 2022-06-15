@@ -123,6 +123,7 @@ function CreateRoomMenu(props: any) {
 							   required
 							   type="text"
 							   placeholder="Name your new room"
+							   maxLength={15}
 							   value={ props.newRoomName }
 							   onChange={e => props.setNewRoomName(e.target.value)} />
 					)}
@@ -248,7 +249,7 @@ function EditRoomMenu(props: any) {
 				<FocusableItem>
 					{({ ref }) => (
 						<input ref={ref}
-							   id="mao-menu-input"
+							   className="mao-menu-input"
 							   required
 							   type="text"
 							   placeholder="Name your new room"
@@ -280,7 +281,7 @@ function EditRoomMenu(props: any) {
 				<FocusableItem>
 					{({ ref }) => (
 						<input disabled={ disablePassword }
-							   id="mao-menu-input"
+							   className="mao-menu-input"
 							   ref={ref}
 							   type="password"
 							   placeholder="Room password"
@@ -316,6 +317,18 @@ function EditRoomMenu(props: any) {
 	);
 }
 
+function LeaveRoomButton(props: any) {
+	if (props.currRoom.owner === props.connectedUser.userId) {
+		return (<div></div>);
+	}
+	return (
+   		<button className="mao-btn-join-room"
+				onClick={ () => { props.onClick_leaveRoom(props.currRoom.id) }}>
+   			❌
+   		</button>
+	)
+}
+
 function RoomsPanel(props: any) {
 	const rooms = props.roomsList;
 	const Html_roomsList = rooms.map((room: any, i: any) => {
@@ -330,9 +343,13 @@ function RoomsPanel(props: any) {
 				</a>
 				<EditRoomMenu currRoom={ room }
 							  {...props} />
+				<LeaveRoomButton currRoom={ room }
+								 {...props} />
+
 			</div>
 		)
 	});
+
 	return (
 		<div>
 			<div id="search-conversa">
@@ -377,8 +394,10 @@ function CreateRoomForm(props: any) {
 }
 
 function ParticipantAdminContextMenu(props: any) {
-	if (props.currentRoom.owner !== props.connectedUser.userId &&
-		props.currentRoom.admin.indexOf(props.connectedUser.userId) === -1) {
+	if ((props.currentRoom.owner !== props.connectedUser.userId &&
+		 props.currentRoom.admin.indexOf(props.connectedUser.userId) === -1) ||
+		props.currentRoom.owner === props.currentUser.userId ||
+		props.currentUser.userId === props.connectedUser.userId) {
 		return (<div></div>);
 	}
 	return (
@@ -407,6 +426,48 @@ function ParticipantAdminContextMenu(props: any) {
 	);
 }
 
+function ParticipantSetAsAdminContextMenu(props: any) {
+	if (props.currentUser.userId === props.connectedUser.userId ||
+		props.currentRoom.admin.indexOf(props.currentUser.userId) !== -1 ||
+		props.currentRoom.owner === props.currentUser.userId ||
+		(props.currentRoom.owner !== props.connectedUser.userId &&
+		 props.currentRoom.admin.indexOf(props.connectedUser.userId) === -1)) {
+		return (<div></div>);
+	}
+	return (
+		<div>
+            <MenuItem onClick={
+						  () => props.onClick_setAsAdmin(props.currentUser.userId, props.currRoomId) }>
+				Set as Admin { props.currentUser.username }
+			</MenuItem>
+			<hr />
+		</div>
+	);
+}
+
+function ParticipantBasicContextMenu(props: any) {
+	if (props.currentUser.userId === props.connectedUser.userId) {
+		return (<div></div>);
+	}
+	return (
+		<div>
+			{ /* ----- BLOCK ----- */ }
+            <MenuItem onClick={
+						  () => props.onClick_block(props.currentUser.userId, props.currRoomId) }>
+				Block { props.currentUser.username }
+			</MenuItem>
+			<hr />
+
+			{ /* ----- DIRECT MESSAGE ----- */ }
+            <MenuItem onClick={
+						  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
+				Send Message { props.currentUser.username }
+			</MenuItem>
+			<hr />
+		</div>
+	);
+}
+
 function ParticipantContextMenu(props: any) {
     const [menuProps, toggleMenu] = useMenuState();
     const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
@@ -428,20 +489,10 @@ function ParticipantContextMenu(props: any) {
 
             <ControlledMenu {...menuProps} anchorPoint={anchorPoint}
                             onClose={() => toggleMenu(false)}>
+				<ParticipantBasicContextMenu {...props} />
+				<ParticipantSetAsAdminContextMenu {...props} />
 				<ParticipantAdminContextMenu {...props} />
 
-				{ /* ----- BLOCK ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_block(props.currentUser.userId, props.currRoomId) }>
-					Block { props.currentUser.username }
-				</MenuItem>
-				<hr />
-
-				{ /* ----- DIRECT MESSAGE ----- */ }
-                <MenuItem onClick={
-							  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
-					Send Message { props.currentUser.username }
-				</MenuItem>
 
             </ControlledMenu>
         </div >
@@ -581,38 +632,40 @@ function MessagePanel(props: any) {
 	if (props.messages !== undefined && props.messages.length !== 0 &&
 		props.messages.get(props.currRoomId) !== undefined) {
 		const currMessages = props.messages.get(props.currRoomId);
-		Html_messages = currMessages.map((message: any, i: any) => {
-			let currentUser = currentRoom.participants.filter((obj: any) => obj.userId === message.userId)[0];
-			if (currentUser === undefined) {
-				currentUser = {
-					'username': 'undefined',
-					'avatar': ''
-				};
-			}
-			return (
-				<div key={i}>
-					<div id="messages">
-						<img src={ currentUser.avatar } alt="" />
+		if (currMessages.length > 0) {
+			Html_messages = currMessages.map((message: any, i: any) => {
+				let currentUser = currentRoom.participants.filter((obj: any) => obj.userId === message.userId)[0];
+				if (currentUser === undefined) {
+					currentUser = {
+						'username': 'undefined',
+						'avatar': ''
+					};
+				}
+				return (
+					<div key={i}>
+						<div id="messages">
+							<img src={ currentUser.avatar } alt="" />
 
-						<div id="column-message">
-							<div id="name-date-message">
-								<a>{ currentUser.username }</a>
-								<a>{ message.date }</a>
-							</div>
-							<div id="message-send">
-								<a>{ message.content }</a>
+							<div id="column-message">
+								<div id="name-date-message">
+									<a>{ currentUser.username }</a>
+									<a>{ message.date }</a>
+								</div>
+								<div id="message-send">
+									<a>{ message.content }</a>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div id="risco">
-						<hr />
-						<a> ------------------- </a>
-						<hr />
-					</div>
+						<div id="risco">
+							<hr />
+							<a> ------------------- </a>
+							<hr />
+						</div>
 
-				</div>
-			)
-		});
+					</div>
+				)
+			});
+		}
 	}
 	return (
 		<div id="mao-messages-panel">
@@ -668,12 +721,20 @@ interface I_Room {
 
 interface I_Messages {
 	roomId: number,
-	messages: any[];
+	messages: I_Message[]
 }
 
 interface I_Message {
+	userId: number,
 	roomId: number,
-	message: any;
+	content: string,
+	createdDate: string,
+	id: number,
+}
+
+interface I_LeaveRoom {
+	userId: number,
+	roomId: number
 }
 
 function Chat(props: any) {
@@ -707,7 +768,23 @@ function Chat(props: any) {
 	/*      Participants actions       */
 	/* ------------------------------- */
 	const onClick_kick = (userId: number, roomId: number) => {
-		console.log(`Kicking ${userId} in ${roomId}`);
+		props.appSocket.emit('F_kickUser',
+							 {
+								 'userId': userId,
+								 'roomId': roomId
+							 },
+							 (isKicked: boolean) => {
+								 if (isKicked === true) {
+									 let newRooms = rooms.slice();
+									 var index = newRooms.findIndex((obj:any) => obj.id === roomId);
+									 var unkicked_participants = newRooms[index].participants.filter((obj: any) => obj.userId !== userId);
+									 newRooms[index].participants = unkicked_participants;
+									 setRooms(newRooms);
+								 }
+								 else {
+									 alert('Something went wrong');
+								 }
+							 });
 	}
 	const onClick_ban = (userId: number, roomId: number) => {
 		console.log(`Banning ${userId} in ${roomId}`);
@@ -799,6 +876,18 @@ function Chat(props: any) {
 							 });
 		console.log(`DirectMessaging ${userId} in ${roomId}`);
 	}
+	const onClick_setAsAdmin = (userId: number, roomId: number) => {
+		props.appSocket.emit('F_setAsAdmin',
+							 {
+								 'userId': userId,
+								 'roomId': roomId
+							 },
+							 (isSet: boolean) => {
+								 if (isSet !== true) {
+									 alert('Something went wrong');
+								 }
+							 });
+	}
 
 	/* ------------------------------- */
 	/*        Create new room          */
@@ -872,11 +961,9 @@ function Chat(props: any) {
 	/* ------------------------- */
 	const [roomsDispoToJoin, setRoomsDispoToJoin] = useState<any[]>([]);
 	const onClick_getRoomsDispoToJoin= () => {
-		console.log('SHOULD SEND F_getDispoRooms');
 		props.appSocket.emit('F_getDispoRooms', true);
 	}
 	const getRoomsDispoToJoin_listener = (dispoRooms: I_Room[]) => {
-		console.log('dispoRooms: ', dispoRooms);
 		setRoomsDispoToJoin(dispoRooms);
 	}
 	const onClick_joinRoom = (roomId: number) => {
@@ -896,6 +983,25 @@ function Chat(props: any) {
 		let newMessageBarValues = new Map(messageBarValues);
 		newMessageBarValues.set(newRoom.id, '');
 		setMessageBarValue(newMessageBarValues);
+	}
+
+	const onClick_leaveRoom = (roomId: number) => {
+		props.appSocket.emit('F_leaveRoom', roomId,
+							 (isLeft: boolean) => {
+								 if (isLeft !== true) {
+									 alert('Something went wrong');
+								 }
+							 });
+	}
+	const leaveRoom_listener = (leaveRoom: I_LeaveRoom) => {
+		const tmp_newRooms = rooms.filter((obj) => obj.id !== leaveRoom.roomId);
+		if (tmp_newRooms.length > 0) {
+			setCurrRoomId(tmp_newRooms[0].id);
+		}
+		else {
+			setCurrRoomId(-1);
+		}
+		setRooms(tmp_newRooms);
 	}
 
 	/* ------------------------------- */
@@ -967,7 +1073,6 @@ function Chat(props: any) {
 	/* ------------------------------- */
 	const [messageBarValues, setMessageBarValue] = useState<Map<number, string>>();
 	const onChange_setMessageBarValue = (value: string) => {
-		console.log('update bar value: ', currRoomId, ' | ', value, ' | ', messageBarValues);
 		if (messageBarValues !== undefined) {
 			let newVarValues = new Map(messageBarValues);
 			newVarValues.set(currRoomId, value);
@@ -976,13 +1081,11 @@ function Chat(props: any) {
 	}
 	const onSubmit_messageBar = (e: any) => {
 		e.preventDefault();
-		console.log('submit bar value: ', currRoomId, ' | ', messageBarValues);
 		if (messageBarValues === undefined) {
 			return;
 		}
 		let messageToCreate = {
 			'roomId': currRoomId,
-			'userId': 300,
 			'content': messageBarValues.get(currRoomId)
 		}
 
@@ -1003,17 +1106,22 @@ function Chat(props: any) {
 			newVarValues.set(messageRoomId, newMessages.messages);
 			setMessages(newVarValues);
 		}
-		const createMessage_listener = (newMessage: I_Message) => {
+		const createMessage_listener = (newMessageInfos: I_Message) => {
 			if (messages !== undefined) {
-				let intendedRoomMessages = messages.get(newMessage.roomId);
+				let intendedRoomMessages = messages.get(newMessageInfos.roomId);
+				const newMessage: any = {
+					'userId': newMessageInfos.userId,
+					'content': newMessageInfos.content,
+					'date': newMessageInfos.createdDate
+				}
 				if (intendedRoomMessages !== undefined) {
-					intendedRoomMessages.push(newMessage.message);
+					intendedRoomMessages.push(newMessage);
 				}
 				else {
-					intendedRoomMessages = [newMessage.message];
+					intendedRoomMessages = [newMessage];
 				}
 				let newVarValues = new Map(messages);
-				newVarValues.set(newMessage.roomId, intendedRoomMessages);
+				newVarValues.set(newMessageInfos.roomId, intendedRoomMessages);
 				setMessages(newVarValues);
 			}
 		}
@@ -1049,6 +1157,9 @@ function Chat(props: any) {
 		if (props.appSocket._callbacks['joinRoom_listener'] === undefined) {
 			props.appSocket.on('B_joinRoom', joinRoom_listener);
 		}
+		if (props.appSocket._callbacks['leaveRoom_listener'] === undefined) {
+			props.appSocket.on('B_leaveRoom', leaveRoom_listener);
+		}
 		return () => {
 			props.appSocket.removeAllListeners('B_getRooms');
 			props.appSocket.removeAllListeners('B_getMessages');
@@ -1059,6 +1170,7 @@ function Chat(props: any) {
 			props.appSocket.removeAllListeners('B_getRoomAvailableUsers');
 			props.appSocket.removeAllListeners('B_getDispoRooms');
 			props.appSocket.removeAllListeners('B_joinRoom');
+			props.appSocket.removeAllListeners('B_leaveRoom');
 		};
  	});
 
@@ -1109,6 +1221,8 @@ function Chat(props: any) {
 								onClick_updateRoom={ onClick_updateRoom }
 								roomAvailableUsers={ roomAvailableUsers }
 								onChange_selectRoomParticipant={onChange_selectRoomParticipant}
+
+								onClick_leaveRoom={ onClick_leaveRoom }
 					/>
 					<StatusBar connectedUser={ props.connectedUser } />
 				</div>
@@ -1131,6 +1245,7 @@ function Chat(props: any) {
 						<ParticipantsPanel roomsList={ rooms }
 										   currRoomId={ currRoomId }
 										   connectedUser={ props.connectedUser }
+										   onClick_setAsAdmin={ onClick_setAsAdmin }
 										   onClick_kick={ onClick_kick  }
 										   onClick_ban={ onClick_ban  }
 										   onClick_mute={ onClick_mute  }

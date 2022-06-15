@@ -1,5 +1,7 @@
 import {
   CHANGE_PAGE_ACTION,
+  DISABLE_2FA_CONFIRMED_ACTION,
+  ENABLE_2FA_CONFIRMED_ACTION,
   GET_ALL_GAMES_ACTION,
   GET_FRIENDS_LIST_ACTION,
   GET_FRIEND_INFOS_ACTION,
@@ -9,6 +11,7 @@ import {
   LOGOUT_ACTION,
   SIGNUP_CONFIRMED_ACTION,
   SIGNUP_FAILED_ACTION,
+  UPDATE_CONFIRMED_ACTION,
   UPDATE_FAILED_ACTION,
 } from "../constants/userConstants";
 
@@ -32,6 +35,8 @@ export interface UserInfo {
   expiresIn?: any,
   access_token?: string,
   friends: string[],
+  is2FAenable: boolean,
+  code2FA: string,
   id?: any
 }
 
@@ -41,6 +46,7 @@ export interface UserState {
   successMessage?: string;
   userInfo?: UserInfo,
   friendInfo?: UserInfo,
+  code2FA?: string;
 }
 
 export interface AllMatchState {
@@ -116,6 +122,8 @@ export const userLoginReducer = (
       expiresIn: '',
       access_token: '',
       friends: [],
+      is2FAenable: false,
+      code2FA: '',
       id: 0,
     },
     friendInfo: {
@@ -128,6 +136,8 @@ export const userLoginReducer = (
       expiresIn: '',
       access_token: '',
       friends: [],
+      is2FAenable: false,
+      code2FA: '',
       id: 0,
     }
   },
@@ -139,6 +149,11 @@ export const userLoginReducer = (
       return {
         ...state,
         showLoading: true,
+      };
+    case ENABLE_2FA_CONFIRMED_ACTION:
+      return {
+        ...state,
+        userInfo: { ...state.userInfo, code2FA: action.payload },
       };
     case GET_FRIENDS_LIST_ACTION:
       return {
@@ -153,6 +168,21 @@ export const userLoginReducer = (
         friendInfo: action.payload,
         errorMessage: "",
         successMessage: "Get Friend Infos Successfully Completed",
+      };
+    case DISABLE_2FA_CONFIRMED_ACTION:
+      return {
+        ...state,
+        showLoading: false,
+        errorMessage: "",
+        successMessage: "Disable 2FA Successfully Send",
+      };
+    case UPDATE_CONFIRMED_ACTION:
+      return {
+        ...state,
+        showLoading: false,
+        userInfo: action.payload,
+        errorMessage: "",
+        successMessage: "Update Successfully Completed",
       };
     case LOGIN_CONFIRMED_ACTION:
       return {

@@ -17,6 +17,7 @@ import { UserState } from "./redux/reducers/userReducers";
 import { OtherProfileScreen } from "./screens/OtherProfileScreen";
 import { LeaderBoard } from "./screens/LeaderBoard";
 import  Maobe_Chat from "./components/Maobe_Chat";
+import { Twofa } from "./screens/Twofa";
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -53,6 +54,7 @@ const App = () => {
 				<Route path="/leaderboard" element={<LeaderBoard />} />
 				<Route path="/home" element={<HomeScreen />} />
 				<Route path="/logout" element={<HomeScreen />} />
+				<Route path="/twofa" element={<Twofa check={false} />} />
 				<Route path="/" element={<HomeScreen />} />
 				<Route path="*" element={<Navigate to="/" replace />} />
 			</Routes>

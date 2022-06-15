@@ -5,14 +5,14 @@ export const LeaderboardProfiles = ({ Leaderboard }: any) => {
     const Item = (data: any) => {
         console.log("LeaderboardProfiles data", data)
 
-        const Leaderboard =
-            {
-                name: "Shawn Hanna",
-                location: "India",
-                score: 1550,
-                img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-                dt: "2022-02-10"
-            }
+        // const Leaderboard =
+        //     {
+        //         name: "Shawn Hanna",
+        //         location: "India",
+        //         score: 1550,
+        //         img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+        //         dt: "2022-02-10"
+        //     }
 
         return (
             <>

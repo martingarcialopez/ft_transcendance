@@ -33,7 +33,15 @@ export class MaobeRoomService {
         @InjectRepository(MaobeRoom) private readonly roomRepository: Repository<MaobeRoom>,
 		@InjectRepository(MaobeParticipant) private readonly participantRepository: Repository<MaobeParticipant>,
 		@InjectRepository(User) private readonly userRepository: Repository<User>,
+		@InjectRepository(MaobeMessage) private readonly messagesRepository: Repository<MaobeMessage>,
     ){}
+
+    async maobe_getMessages(roomId: number) : Promise<any> {
+        let messages = await this.messagesRepository.createQueryBuilder("maobe_messages")
+            .where("maobe_messages.roomId = :room_Id", { room_Id: roomId })
+            .getMany();
+        return messages;
+    }
 
 	/*get all the room the user participated and corresponding all participants in the room */
 	async maobe_getJoinRooms(userId: number): Promise<any[]>
@@ -48,6 +56,9 @@ export class MaobeRoomService {
 		roomIds_obj.forEach((obj) => {
 			roomIds.push(obj.id);
 		})
+
+		if (roomIds.length === 0)
+			return [];
 
 		let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
 			.select(["MaobeRoom", "u"])
@@ -91,7 +102,7 @@ export class MaobeRoomService {
 
 
 	/*
-** Create a new obj of participant and store in the table
+** Create a new obj of participant and store in the table, return to front updated info
 */
 	async createParticipant(participantDto: ParticipantDto): Promise<any[]> {
 		await this.participantService.createParticipant(participantDto);
@@ -296,132 +307,21 @@ export class MaobeRoomService {
 		return false;
 	}
 
-/*	async joinRoom(joinRoomDto: JoinRoomDto): Promise<boolean> {
-		const typeRoom: string = joinRoomDto.typeRoom;
-		const userId : number = joinRoomDto.userId;
-		const roomId: number = joinRoomDto.roomId;
-		let existing_user = false;
-		if (typeRoom == 'public')
-		{
-			//if the person is already a number in the room
-			existing_user = await this.participant_already_exist({'userId': userId, 'roomId': roomId});
-			if (existing_user)
-				return false;
-			await this.participantService.createParticipant({'userId': userId, 'roomId': roomId});
-			return true;
-		}
-		else if (typeRoom == 'private')
-		{
-			console.log('enter in private room', roomId, userId);
-			let is_admin = await this.userIsAdmin(roomId, userId);
-
-			console.log('is_admin? ', is_admin);
-			if (is_admin == false)
-				return false;
-			const login: string = joinRoomDto.login;
-			const invitee_info = await this.userId_fromLogin(login);
-			console.log('login', login);
-			if (invitee_info == undefined)
-				return false;
-			const invite_id = invitee_info['id'];
-			existing_user = await this.participant_already_exist({'userId': invite_id, 'roomId': roomId});
-			if (existing_user || invite_id == userId)
-				return false;
-			await this.participantService.createParticipant({'userId': invite_id, 'roomId': roomId});
-            return true;
-		}
-		else if (typeRoom == 'protected')
-		{
-			const entered_pw : string = joinRoomDto.password;
-			const room_info = await this.roomRepository.createQueryBuilder("room")
-				.select(["room.password"])
-				.where("room.id = :room_Id", { room_Id: roomId })
-				.getOne();
-			if (await bcrypt.compare(entered_pw, room_info['password']))
-			{
-				existing_user = await this.participant_already_exist({'userId': userId, 'roomId': roomId});
-				if (existing_user)
-					return false;
-				await this.participantService.createParticipant({'userId': joinRoomDto.userId, 'roomId': roomId});
-				return true;
-			}
-		}
-		return false;
-	} */
-
-/*	NO NEED
-async updateRoomPw(body: RoomPwDto): Promise<boolean> {
-		console.log(body);
-		let room = await this.roomRepository.createQueryBuilder("room")
-            .select(["room.admin"])
-            .where("room.id = :room_Id", { room_Id: body.roomId })
-            .getOne();
-		if (room && room['admin'].indexOf(body.userId) != -1)
-		{
-			let room =  await this.roomRepository.createQueryBuilder("room")
-			    .where("room.id = :room_Id", { room_Id: body.roomId })
-				.getOne();
-			let new_hashed_password = await this.get_hash_pw(body['password']);
-			room['password'] = new_hashed_password;
-			await this.roomRepository.save(room);
-			return true;
-		}
-		return false;
-	}*/
-
 	async userIsAdmin(roomId: number, userId: number) : Promise<boolean> {
 		let admins = await this.get_RoomAdmins(roomId);
-		console.log('admins is here ', admins, admins.indexOf(userId));
 		return await admins.indexOf(userId) != -1;
 	}
 
-// 	async manageAdmin(body: UpdateAdminDto): Promise<boolean> {
-
-// 		let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
-// 		let admins = await this.get_RoomAdmins(body.roomId);
-// 		if (admins == undefined)/*no admin in this chat*/
-// 			return false;
-// 		if (admins.indexOf(body.userId) == -1) /*userId is not admin*/
-// 			return false;
-// 		const login: string = body.login;
-// 		const user_info = await this.userId_fromLogin(login);
-// 		if (user_info == undefined)
-// 			return false;
-// 		let other_userId: number = user_info['id'];
-// 		const other_user_is_admin = await this.userIsAdmin(body.roomId, other_userId);
-// 		if (body['toAdd'] == true && other_user_is_admin == false)
-// 			admins.push(other_userId);
-// 		//remove this admin
-// 		else if (body['toAdd'] == false && other_user_is_admin == true)
-// 		{
-// 			var index = admins.indexOf(other_userId);
-// 			admins.splice(index, 1);
-// 		}
-// 		await this.roomRepository
-// 			.createQueryBuilder()
-// 			.update(MaobeRoom)
-// 			.set({ admin: admins })
-// 			.where("id = :id", { id: body.roomId })
-// 			.execute();
-// 		return true;
-// }
-
-	async AdminleaveRoom(body: ParticipantDto): Promise<void> {
-		console.log('AdminleaveRoom');
-        let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
-        let admins = await this.get_RoomAdmins(body.roomId);
-        if (is_already_admin == true)
-        {
-            var index = admins.indexOf(body.userId);
-            admins.splice(index, 1);
-        await this.roomRepository
-            .createQueryBuilder()
-            .update(MaobeRoom)
-            .set({ admin: admins })
-            .where("id = :id", { id: body.roomId })
-            .execute();
-		}
-    }
+	async setAsAdmin(userId: number, roomId: number): Promise<void> {
+		let admins = await this.get_RoomAdmins(roomId);
+		admins.push(userId);
+		await this.roomRepository
+			.createQueryBuilder()
+			.update(MaobeRoom)
+			.set({ admin: admins })
+			.where("id = :id", { id: roomId })
+			.execute();
+	}
 
 	async get_Room_banList(roomId: number): Promise<number[]> {
 	let room = await this.roomRepository.createQueryBuilder("room")
@@ -461,13 +361,27 @@ async updateRoomPw(body: RoomPwDto): Promise<boolean> {
 
 	}
 	async getDispoRooms(userId:number) : Promise<MaobeRoom[]> {
-		var blockList: number[] = await this.Mutual_blocklist(userId);
-		var rooms: MaobeRoom[] = await this.roomRepository.createQueryBuilder("room")
+		let blockList: number[] = await this.Mutual_blocklist(userId);
+		let joined_rooms = await this.participantRepository.createQueryBuilder("participant")
+			.select("participant.roomId")
+			.where("participant.userId = :id", { id: userId })
+			.getMany();
+
+		let joined_roomsIds = [];
+		joined_rooms.forEach((obj) => {
+			joined_roomsIds.push(obj.roomId);
+		})
+		 if (joined_roomsIds.length === 0)
+		 	 joined_roomsIds.push(-1);
+
+		var rooms = await this.roomRepository.createQueryBuilder("room")
 			.leftJoin("room.participants", "participant")
 			.where("room.typeRoom = :typeRoom", {typeRoom: 'public'})
 			.andWhere("room.owner NOT IN (:...names) ", { names : blockList })
-			.andWhere("participant.userId != :id", { id: userId })
+			.andWhere("room.id NOT IN (:...rid)", { rid: joined_roomsIds })
 			.getMany();
+
+
 		//filter room where user is banned
 		for(var i = 0; i<rooms.length; i++) {
             if (rooms[i].banList.length !== 0){
@@ -520,7 +434,6 @@ async updateRoomPw(body: RoomPwDto): Promise<boolean> {
             .set({ banList: banList })
             .where("id = :id", { id: roomId })
             .execute();
-//		console.log(await this.findOne(2));
 	}
 
 	/*----------------------------FUNCTION-----------------------*/
@@ -546,9 +459,24 @@ async updateRoomPw(body: RoomPwDto): Promise<boolean> {
         return room.admin;
     }
 
+	async AdminleaveRoom(body: ParticipantDto): Promise<void> {
+        let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
+        if (is_already_admin == true)
+        {
+			let admins = await this.get_RoomAdmins(body.roomId);
+            var index = admins.indexOf(body.userId);
+            admins.splice(index, 1);
+			await this.roomRepository
+				.createQueryBuilder()
+				.update(MaobeRoom)
+				.set({ admin: admins })
+				.where("id = :id", { id: body.roomId })
+				.execute();
+		}
+    }
+
+
+
 
 
 }
-
-
-/*https://stackoverflow.com/questions/53378667/cast-entity-to-dto*/

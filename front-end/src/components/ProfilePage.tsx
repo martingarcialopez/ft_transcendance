@@ -8,35 +8,35 @@ import { AllMatchState } from "../redux/reducers/userReducers";
 import { useEffect } from "react";
 import { getAllPlayerGamesAction } from "../redux/actions/userActions";
 
-const matchs = [
-    {
-        rightPlayer: 'Champomy',
-        leftPlayer: 'TaCopineBonne',
-        rightPlayerScore: '3',
-        leftPlayerScore: '2',
-        winner: 'Champomy',
-        losser: 'TaCopineBonne',
-        id: 0,
-    },
-    {
-        rightPlayer: 'Champomy',
-        leftPlayer: 'TaCopineBonne',
-        rightPlayerScore: '3',
-        leftPlayerScore: '2',
-        winner: 'Champomy',
-        losser: 'TaCopineBonne',
-        id: 1,
-    },
-    {
-        rightPlayer: 'Champomy',
-        leftPlayer: 'TaCopineBonne',
-        rightPlayerScore: '3',
-        leftPlayerScore: '2',
-        winner: 'Champomy',
-        losser: 'TaCopineBonne',
-        id: 2,
-    },
-];
+// const matchs = [
+//     {
+//         rightPlayer: 'Champomy',
+//         leftPlayer: 'TaCopineBonne',
+//         rightPlayerScore: '3',
+//         leftPlayerScore: '2',
+//         winner: 'Champomy',
+//         losser: 'TaCopineBonne',
+//         id: 0,
+//     },
+//     {
+//         rightPlayer: 'Champomy',
+//         leftPlayer: 'TaCopineBonne',
+//         rightPlayerScore: '3',
+//         leftPlayerScore: '2',
+//         winner: 'Champomy',
+//         losser: 'TaCopineBonne',
+//         id: 1,
+//     },
+//     {
+//         rightPlayer: 'Champomy',
+//         leftPlayer: 'TaCopineBonne',
+//         rightPlayerScore: '3',
+//         leftPlayerScore: '2',
+//         winner: 'Champomy',
+//         losser: 'TaCopineBonne',
+//         id: 2,
+//     },
+// ];
 
 export const ProfilePage = ({ userInfo }: any) => {
     // const ref_default_img = "/game/test/test_42.jpg"

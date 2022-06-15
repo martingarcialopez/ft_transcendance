@@ -7,7 +7,7 @@ export function GetUserInfo() {
     (state: RootState) => state.userLogin
   );
   const { userInfo }: UserState = userLogin;
-  /* if (!userInfo) {
+  /* if (userLogin.showLoading) {
    *   return <h1>Loading...</h1>;
    * } */
   return userInfo;

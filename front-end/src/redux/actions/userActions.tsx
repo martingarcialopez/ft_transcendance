@@ -11,8 +11,11 @@ import {
   UPDATE_FAILED_ACTION,
   GET_FRIENDS_LIST_ACTION,
   GET_ALL_GAMES_ACTION,
+  UPDATE_CONFIRMED_ACTION,
+  ENABLE_2FA_CONFIRMED_ACTION,
+  DISABLE_2FA_CONFIRMED_ACTION,
 } from '../constants/userConstants'
-import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -20,7 +23,7 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
       .then((response) => {
         console.log("signupAction response : ")
         console.log(response)
-        dispatch(loginAction(username, password, navigate))
+        dispatch(loginAction(username, password, null, navigate))
       })
       .catch((error) => {
         console.log("ceci est une error dans signupAction :")
@@ -32,13 +35,16 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
   };
 }
 
-export function updateAction(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any) {
+export function updateAction(navigate: NavigateFunction, firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any, is2FAenable: any) {
   return (dispatch: any) => {
-    update(firstname, lastname, username, password, avatar, id, access_token, friends)
+    update(firstname, lastname, username, password, avatar, id, access_token, friends, is2FAenable)
       .then((response) => {
         console.log("updateAction response : ")
         console.log(response)
         saveTokenInLocalStorage(access_token, response.data);
+        if (is2FAenable === true) {
+          navigate("/twofa")
+        }
         dispatch(loginConfirmedAction(response.data))
       })
       .catch((error) => {
@@ -72,6 +78,48 @@ export function getInfoAction(access_token: any) {
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
+export function enable2FAAction(access_token: any, navigate: NavigateFunction) {
+  return (dispatch: any) => {
+    enable2FA(access_token)
+      .then((response) => {
+        console.log("enable2FAAction qui fct :")
+        console.log(response)
+        console.log("enable2FAAction data qui fct :")
+        console.log(response.data)
+        dispatch(enable2FAActionConfirmedAction(response.data));
+        // navigate('/profile')
+      })
+      .catch((error) => {
+        console.log("ceci est une error dans enable2FAAction :")
+        console.log(error);
+        const errorMessage = formatError(error.code);
+        console.log("ceci est une errorMessage return de formatError dans enable2FAAction :" + errorMessage)
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
+export function disable2FAAction(access_token: any, navigate: NavigateFunction) {
+  return (dispatch: any) => {
+    disable2FA(access_token)
+      .then((response) => {
+        console.log("disable2FAAction qui fct :")
+        console.log(response)
+        console.log("disable2FAAction data qui fct :")
+        console.log(response.data)
+        dispatch(disable2FAActionConfirmedAction(response.data));
+        // navigate('/profile')
+      })
+      .catch((error) => {
+        console.log("ceci est une error dans disable2FAAction :")
+        console.log(error);
+        const errorMessage = formatError(error.code);
+        console.log("ceci est une errorMessage return de formatError dans disable2FAAction :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
   };
@@ -118,12 +166,12 @@ export function getAllPlayerGamesAction(username: any) {
   };
 }
 
-export function getFriendListAction(userInfo: any) {
+export function getFriendListAction(navigate: NavigateFunction, userInfo: any) {
   return (dispatch: any) => {
     getFriendList(userInfo.access_token)
       .then((response) => {
         console.log("getFriendListAction response", response)
-        dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, response.data));
+        dispatch(updateAction(navigate, userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, userInfo.is2FAenable, response.data));
         // dispatch(getFriendListConfirmedAction(response.data));
       })
       .catch((error) => {
@@ -133,13 +181,13 @@ export function getFriendListAction(userInfo: any) {
   };
 }
 
-export function addFriendAction(username: any, userInfo: any) {
+export function addFriendAction(navigate: NavigateFunction, username: any, userInfo: any) {
   return (dispatch: any) => {
     console.log("addFriendAction username", username)
     console.log("addFriendAction userInfo", userInfo)
     addFriend(username, userInfo.access_token)
       .then(() => {
-        dispatch(getFriendListAction(userInfo));
+        dispatch(getFriendListAction(navigate, userInfo));
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);
@@ -148,11 +196,11 @@ export function addFriendAction(username: any, userInfo: any) {
   };
 }
 
-export function removeFriendAction(username: any, access_token: any) {
+export function removeFriendAction(navigate: NavigateFunction, username: any, access_token: any) {
   return (dispatch: any) => {
     removeFriend(username, access_token)
       .then(() => {
-        dispatch(getFriendListAction(access_token));
+        dispatch(getFriendListAction(navigate, access_token));
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);
@@ -167,9 +215,9 @@ export function logout() {
   };
 }
 
-export function loginAction(username: any, password: any, navigate: NavigateFunction) {
+export function loginAction(username: any, password: any, code: any, navigate: NavigateFunction) {
   return (dispatch: any) => {
-    login(username, password)
+    login(username, password, code)
       .then((response) => {
         console.log("loginAction qui fct :")
         console.log(response)
@@ -222,6 +270,27 @@ export function getFriendListConfirmedAction(friendList: any) {
 export function getFriendInfosAction(data: any) {
   return {
     type: GET_FRIEND_INFOS_ACTION,
+    payload: data,
+  };
+}
+
+export function enable2FAActionConfirmedAction(data: any) {
+  return {
+    type: ENABLE_2FA_CONFIRMED_ACTION,
+    payload: data,
+  };
+}
+
+export function disable2FAActionConfirmedAction(data: any) {
+  return {
+    type: DISABLE_2FA_CONFIRMED_ACTION,
+    payload: data,
+  };
+}
+
+export function updateConfirmedAction(data: any) {
+  return {
+    type: UPDATE_CONFIRMED_ACTION,
     payload: data,
   };
 }
