@@ -458,19 +458,26 @@ function ParticipantBasicContextMenu(props: any) {
 			</MenuItem>
 			<hr />
 
-			{ /* ----- DIRECT MESSAGE ----- */ }
-            <MenuItem onClick={
-						  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
-				Send Message { props.currentUser.username }
-			</MenuItem>
-			<hr />
 		</div>
 	);
+    // <MenuItem onClick={
+	// 			  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
+	// 	Send Message { props.currentUser.username }
+	// </MenuItem>
+	// <hr />
 }
 
 function ParticipantContextMenu(props: any) {
     const [menuProps, toggleMenu] = useMenuState();
     const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+
+	let userRole = '';
+	if (props.currentRoom.owner === props.currentUser.userId) {
+		userRole = '👑 ';
+	}
+	else if (props.currentRoom.admin.indexOf(props.currentUser.userId) !== -1) {
+		userRole = '👮 ';
+	}
 
     return (
         <div onContextMenu={e => {
@@ -482,7 +489,7 @@ function ParticipantContextMenu(props: any) {
 				<img src={ props.currentUser.avatar } alt="" />
 				<div id="column-message">
 					<div id="message-send">
-						<a>{ props.currentUser.username }</a>
+						<a>{ props.currentUser.username } { userRole }</a>
 					</div>
 				</div>
 			</div>
@@ -622,6 +629,17 @@ function RoomHeaderBar(props: any) {
 }
 
 function MessagePanel(props: any) {
+	const messagesEndRef = useRef<null | HTMLDivElement>(null);;
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ block: "end", inline: "nearest", behavior: "smooth" })
+	}
+
+	useEffect(() => {
+		scrollToBottom()
+	}, [props.messages]);
+
+
 	if (props.currRoomId === -1 ||
 		props.roomsList === undefined || props.roomsList.length === 0) {
 		return (<div></div>);
@@ -661,12 +679,13 @@ function MessagePanel(props: any) {
 							<a> ------------------- </a>
 							<hr />
 						</div>
-
+						<div ref={ messagesEndRef } />
 					</div>
 				)
 			});
 		}
 	}
+
 	return (
 		<div id="mao-messages-panel">
 			<div id="profile">
@@ -747,7 +766,9 @@ function Chat(props: any) {
 		if (receivedRooms.length === 0) {
 			return ;
 		}
-		setCurrRoomId(receivedRooms[0].id);
+		if (currRoomId === -1) {
+			setCurrRoomId(receivedRooms[0].id);
+		}
 		setRooms(receivedRooms);
 
 		let sendMessageBarValues =  new Map<number, string>();
@@ -884,6 +905,9 @@ function Chat(props: any) {
 									 alert('Something went wrong');
 								 }
 							 });
+	}
+	const setAsAdmin_listener = () => {
+		props.appSocket.emit('F_getRooms', '');
 	}
 
 	/* ------------------------------- */
@@ -1157,6 +1181,9 @@ function Chat(props: any) {
 		if (props.appSocket._callbacks['leaveRoom_listener'] === undefined) {
 			props.appSocket.on('B_leaveRoom', leaveRoom_listener);
 		}
+		if (props.appSocket._callbacks['setAsAdmin_listener'] === undefined) {
+			props.appSocket.on('B_setAsAdmin', setAsAdmin_listener);
+		}
 		return () => {
 			props.appSocket.removeAllListeners('B_getRooms');
 			props.appSocket.removeAllListeners('B_getMessages');
@@ -1168,6 +1195,7 @@ function Chat(props: any) {
 			props.appSocket.removeAllListeners('B_getDispoRooms');
 			props.appSocket.removeAllListeners('B_joinRoom');
 			props.appSocket.removeAllListeners('B_leaveRoom');
+			props.appSocket.removeAllListeners('B_setAsAdmin');
 		};
  	});
 
