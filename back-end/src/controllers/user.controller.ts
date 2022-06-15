@@ -26,12 +26,17 @@ export class UserController {
               }
           }),
       }))
-  uploadProfileImage(@UploadedFile() file: Express.Multer.File) {
+  uploadProfileImage(@UploadedFile() file: Express.Multer.File, @Request() req) {
+
+    console.log(file);
 
     const response = {
     	originalname: file.originalname,
-    	filename: file.filename,
+    	filename: `/shared/avatar/${file.filename}`,
     };
+
+    this.userService.updateUser( { avatar: `/shared/avatar/${file.filename}`}, req.user.userId );
+
     return response;
   }
 
