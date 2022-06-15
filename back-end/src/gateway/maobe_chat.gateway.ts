@@ -129,7 +129,15 @@ export class MaobeChatGateway {
 
 
 	@SubscribeMessage('F_blockUser')
-	blockUser(socket: Socket, infos: any): boolean {
+	async blockUser(socket: Socket, b_userId: number): Promise<boolean> {
+		const userId: number = Number(socket.handshake.headers.userid);
+		try{
+			await this.roomService.blockUser(userId, b_userId);
+		}
+		catch(e)
+		{
+			return false;
+		}
 		return (true);
 	}
 
