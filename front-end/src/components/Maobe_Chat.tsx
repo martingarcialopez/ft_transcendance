@@ -654,10 +654,7 @@ function MessagePanel(props: any) {
 			Html_messages = currMessages.map((message: any, i: any) => {
 				let currentUser = currentRoom.participants.filter((obj: any) => obj.userId === message.userId)[0];
 				if (currentUser === undefined) {
-					currentUser = {
-						'username': 'undefined',
-						'avatar': ''
-					};
+					return (<div></div>);
 				}
 				return (
 					<div key={i}>
@@ -869,7 +866,7 @@ function Chat(props: any) {
 											 setMessages(newMessages);
 										 };
 									 }
-
+									 props.appSocket.emit('F_getRooms', '');
 								 }
 								 else {
 									 alert('Something went wrong');
@@ -968,6 +965,20 @@ function Chat(props: any) {
 	}
 	const createRoom_listener = (newRoom: I_Room) => {
 		let newRooms = rooms.slice();
+
+		let tmpNewParticipants: any = []
+		if (newRoom.participants.length > 0) {
+			newRoom.participants.forEach((tmp_user) => {
+				tmpNewParticipants.push({
+					'userId': tmp_user.id,
+					'username': tmp_user.username,
+					'avatar': tmp_user.avatar
+
+				})
+			})
+			newRoom.participants = tmpNewParticipants;
+		}
+
 		newRooms.unshift(newRoom);
 		setRooms(newRooms);
 		setCurrRoomId(newRoom.id);
@@ -1079,7 +1090,18 @@ function Chat(props: any) {
 		let newRooms = rooms.filter((obj: any) => obj.id !== updatedRoom.id);
 		let oldRoom = rooms.filter((obj: any) => obj.id === updatedRoom.id)[0];
 
-		updatedRoom.participants = [...oldRoom.participants, ...updatedRoom.participants]
+		let tmpNewParticipants: any = []
+		if (updatedRoom.participants.length > 0) {
+			updatedRoom.participants.forEach((tmp_user) => {
+				tmpNewParticipants.push({
+					'userId': tmp_user.id,
+					'username': tmp_user.username,
+					'avatar': tmp_user.avatar
+
+				})
+			})
+		}
+		updatedRoom.participants = [...oldRoom.participants, ...tmpNewParticipants]
 		newRooms.unshift(updatedRoom);
 		setRooms(newRooms);
 	}
