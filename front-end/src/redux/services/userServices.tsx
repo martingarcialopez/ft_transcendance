@@ -10,7 +10,7 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
         password,
         avatar: '/shared/avatar/avatar_chat.jpeg',
         returnSecureToken: true,
-        is2FAenable: false
+        twofa: false
     };
     console.log("postData", postData)
 
@@ -20,7 +20,7 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any, is2FAenable: any) {
+export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any, twofa: any) {
     const postData = {
         firstname,
         lastname,
@@ -28,7 +28,7 @@ export function update(firstname: any, lastname: any, username: any, password: a
         password,
         avatar,
         friends,
-        is2FAenable
+        twofa
     };
 
     return axios.post(
@@ -150,6 +150,8 @@ export function formatError(errorResponse: any) {
     console.log("Ceci est l err return dans la fct formatError :")
     console.log(errorResponse)
     switch (errorResponse) {
+        case 'Request failed with status code 418':
+            return 'Write your 6 number from Google Authentificator'
         case 'EMAIL_EXISTS':
             return 'Email already exists';
         case 'EMAIL_NOT_FOUND':

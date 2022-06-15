@@ -16,7 +16,6 @@ export const UpdateProfile = ({ userInfo }: any) => {
     const [statusError, setStatusError] = useState(false);
     const { id } = useParams();
 
-  const navigate = useNavigate();
   const dispatch = useDispatch()
     // const ref_default_img = "/game/test/test_42.jpg"
     // const ref_default_img = "/shared/avatar/mgarcia-.png"
@@ -31,7 +30,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
 
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
-            dispatch(updateAction(navigate, firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, userInfo.friends, userInfo.is2FAenable))
+            dispatch(updateAction(firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, userInfo.twofa, userInfo.friends))
             setStatusError(true);
             setSnackbars(true);
         }

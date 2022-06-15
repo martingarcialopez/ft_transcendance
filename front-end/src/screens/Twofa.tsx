@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../redux";
 import { enable2FAAction, loginAction } from "../redux/actions/userActions";
 import { UserState } from "../redux/reducers/userReducers";
+import { Button } from "@mui/material";
 
 export const Twofa = ({ check }: any) => {
   const navigate = useNavigate();
@@ -39,28 +40,25 @@ export const Twofa = ({ check }: any) => {
   const { userInfo }: UserState = userLogin;
   console.log("Twofa userInfo:", userInfo)
 
-  if (userInfo && userInfo.is2FAenable === false) {
+  if (userInfo && userInfo.twofa === false) {
     navigate('/profile');
   }
   const displayQRCode = () => {
-    dispatch(enable2FAAction(userInfo?.access_token, navigate))
+    dispatch(enable2FAAction(userInfo?.access_token))
   };
 
-  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setCode(value);
-    if (code.length >= 5 && userInfo) {
-      dispatch(loginAction(userInfo.username, userInfo.password, code, navigate))
-    }
+  const handleOnChange = () => {
+    navigate("/profile")
   };
 
   return (
     <div className="App">
       <h1>Scan the QR code</h1>
       <br />
-      <button onClick={displayQRCode} >
-        Click if QR code is not well displayed
-      </button>
+      <h3>
+        Scan the QR Code on <br />
+        Google Authentificator
+      </h3>
       {img ?
         <div>
           <img src={img} alt="QR Code" />
@@ -68,7 +66,9 @@ export const Twofa = ({ check }: any) => {
         :
         null
       }
-      <input onChange={handleOnChange} placeholder="Write your 6 numbers code" />
+      <Button onClick={() => handleOnChange()} variant="contained" color="success">
+        Done
+      </Button>
     </div>
   );
 };
