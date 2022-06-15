@@ -654,10 +654,7 @@ function MessagePanel(props: any) {
 			Html_messages = currMessages.map((message: any, i: any) => {
 				let currentUser = currentRoom.participants.filter((obj: any) => obj.userId === message.userId)[0];
 				if (currentUser === undefined) {
-					currentUser = {
-						'username': 'undefined',
-						'avatar': ''
-					};
+					return (<div></div>);
 				}
 				return (
 					<div key={i}>
@@ -869,7 +866,7 @@ function Chat(props: any) {
 											 setMessages(newMessages);
 										 };
 									 }
-
+									 props.appSocket.emit('F_getRooms', '');
 								 }
 								 else {
 									 alert('Something went wrong');
