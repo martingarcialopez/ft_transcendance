@@ -13,6 +13,7 @@ import {
   SIGNUP_FAILED_ACTION,
   UPDATE_CONFIRMED_ACTION,
   UPDATE_FAILED_ACTION,
+  UPLOAD_IMAGE_CONFIRMED_ACTION,
 } from "../constants/userConstants";
 
 export interface MatchInfo {
@@ -144,7 +145,6 @@ export const userLoginReducer = (
   action: Action
 ) => {
   switch (action.type) {
-
     case LOADING_TOGGLE_ACTION:
       return {
         ...state,
@@ -171,6 +171,14 @@ export const userLoginReducer = (
         friendInfo: action.payload,
         errorMessage: "",
         successMessage: "Get Friend Infos Successfully Completed",
+      };
+    case UPLOAD_IMAGE_CONFIRMED_ACTION:
+      return {
+        ...state,
+        showLoading: false,
+        errorMessage: "",
+        successMessage: "Image Successfully Upload",
+        userInfo: { ...state.userInfo, avatar: action.payload },
       };
     case DISABLE_2FA_CONFIRMED_ACTION:
       return {
