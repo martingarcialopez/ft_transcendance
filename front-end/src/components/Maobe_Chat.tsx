@@ -458,14 +458,13 @@ function ParticipantBasicContextMenu(props: any) {
 			</MenuItem>
 			<hr />
 
-			{ /* ----- DIRECT MESSAGE ----- */ }
-            <MenuItem onClick={
-						  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
-				Send Message { props.currentUser.username }
-			</MenuItem>
-			<hr />
 		</div>
 	);
+    // <MenuItem onClick={
+	// 			  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
+	// 	Send Message { props.currentUser.username }
+	// </MenuItem>
+	// <hr />
 }
 
 function ParticipantContextMenu(props: any) {
@@ -622,6 +621,17 @@ function RoomHeaderBar(props: any) {
 }
 
 function MessagePanel(props: any) {
+	const messagesEndRef = useRef<null | HTMLDivElement>(null);;
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ block: "end", inline: "nearest", behavior: "smooth" })
+	}
+
+	useEffect(() => {
+		scrollToBottom()
+	}, [props.messages]);
+
+
 	if (props.currRoomId === -1 ||
 		props.roomsList === undefined || props.roomsList.length === 0) {
 		return (<div></div>);
@@ -661,12 +671,13 @@ function MessagePanel(props: any) {
 							<a> ------------------- </a>
 							<hr />
 						</div>
-
+						<div ref={ messagesEndRef } />
 					</div>
 				)
 			});
 		}
 	}
+
 	return (
 		<div id="mao-messages-panel">
 			<div id="profile">
