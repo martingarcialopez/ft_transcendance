@@ -19,6 +19,7 @@ import { ParticipantDto } from '../dtos/in/participant.dto';
 import { JoinRoomDto } from '../dtos/in/maobe_JoinRoom.dto';
 import { MaobeMessageService } from '../services/maobe_message.service';
 import { UserService } from '../services/user.service';
+import { BanUserDto } from '../dtos/in/banUser.dto';
 
 
 @WebSocketGateway({
@@ -71,8 +72,15 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_banUser')
-	banUser(socket: Socket, infos: any): boolean {
-		return (true);
+	async banUser(socket: Socket, infos: BanUserDto): Promise<boolean> {
+		try {
+			await this.roomService.banUser(infos);
+			//			socket.emit('B_banUser', )
+		}
+		catch (e) {
+			return false
+		}
+		return true;
 	}
 
 	@SubscribeMessage('F_getAvailableUsers')

@@ -440,27 +440,10 @@ export class MaobeRoomService {
 	}
 
 	async banUser(body: BanUserDto) : Promise<void> {
-		let roomId : number = 2;//body.roomId;
-		let userId : number = 5;//body.userId;
-		let userIdToBan : number = 3;//body.userIdToBan;
+		let roomId : number = body.roomId;
+		let userIdToBan : number = body.userIdToBan;
 		let ownerId : number = await this.get_Room_Owner(roomId);
 		let res = await this.participantRepository.findOne({ userId: userIdToBan, roomId: roomId });
-		if (res == undefined)
-		{
-			throw 'This user is not in the room';
-			return ;
-		}
-		//user does not have right OR baned person is admin/owner
-		if (userIdToBan == ownerId)
-		{
-			throw 'Cannot ban owner of the room';
-			return ;
-		}
-		if (await this.userIsAdmin(roomId, userId) == false)
-		{
-			throw 'You are not admin, so you cannot ban';
-			return ;
-		}
 		await this.participantService.leaveRoom({'userId': userIdToBan, 'roomId': roomId})
 		let banList: number[] = await this.get_Room_banList(roomId);
 		if (await this.userIsAdmin(roomId, userIdToBan) == true)/*remove admin of column if the user is baned*/
