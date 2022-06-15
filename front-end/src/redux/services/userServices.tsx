@@ -50,6 +50,15 @@ export function enable2FA(access_token: any) {
     );
 }
 
+export function uploadImage(image: any, access_token: any) {
+    return axios.post(
+        `${URL_test}/user/uploadProfileImage`,
+        image,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
 export function disable2FA(access_token: any) {
     return axios.post(
         `${URL_test}/auth/disable2FA`,
