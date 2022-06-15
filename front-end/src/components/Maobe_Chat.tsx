@@ -45,7 +45,10 @@ function JoinRoomMenu(props: any) {
 					<form action="#" onSubmit={ (e: any) => {
 							  e.preventDefault();
 							  setOpen(false);
-							  props.onClick_joinRoom(room.id, e.target[0].value)
+							  props.onSubmit_joinRoom(room.id,
+													  e.target[0].value,
+													  room.is_protected
+													 )
 						  }}>
 						<a id="messages">
    							<img src={ room.image } />
@@ -1008,10 +1011,12 @@ function Chat(props: any) {
 	const getRoomsDispoToJoin_listener = (dispoRooms: I_Room[]) => {
 		setRoomsDispoToJoin(dispoRooms);
 	}
-	const onClick_joinRoom = (roomId: number, password: string) => {
+	const onSubmit_joinRoom = (roomId: number, password: string, isProtected: boolean) => {
+		console.log(roomId, password, isProtected)
 		props.appSocket.emit('F_joinRoom', {
 			'roomId': roomId,
-			'password': password},
+			'password': password,
+			'isProtected': isProtected},
 							 (isJoined: boolean) => {
 								 if (isJoined !== true) {
 									 alert('Invalid Password');
@@ -1256,7 +1261,7 @@ function Chat(props: any) {
 
 								roomsDispoToJoin={ roomsDispoToJoin }
 								onClick_getRoomsDispoToJoin={ onClick_getRoomsDispoToJoin }
-								onClick_joinRoom={ onClick_joinRoom }
+								onSubmit_joinRoom={ onSubmit_joinRoom }
 								onSubmit_createRoom={ onSubmit_createRoom }
 								newRoomName={ newRoomName }
 								setNewRoomName={ setNewRoomName }
