@@ -1,7 +1,6 @@
 import { Injectable, Inject, ImATeapotException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/services/user.service';
-import { MailerService } from '@nestjs-modules/mailer';
 import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
 import * as bcrypt from 'bcrypt';
@@ -12,7 +11,6 @@ export class AuthService {
     constructor(
         private usersService: UserService,
         private jwtService: JwtService,
-        private mailerService: MailerService
         ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -79,10 +77,10 @@ async disable2FA(id: string) {
 
   const user = await this.usersService.getUserById(id);
   
-  if (user)
-    user.twofa = false;
+  if (!user)
+    throw new NotFoundException();
 
-  this.usersService.updateUser(user, id);
+  this.usersService.updateUser( { twofa: false }, id);
 
 }
 
