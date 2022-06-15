@@ -11,12 +11,12 @@ import { plainToClass } from 'class-transformer';
 
 import * as bcrypt from 'bcrypt';
 import { RoomDto } from '../dtos/in/maobe_room.dto';
-import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
 import { RoomPwDto } from '../dtos/in/room_password.dto';
 import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { newUser_In_Room_Message } from '../dtos/out/newUser_In_Room_Message.dto';
 import { BanUserDto } from '../dtos/in/banUser.dto';
+import { JoinRoomDto } from '../dtos/in/maobe_JoinRoom.dto';
 import { UserService } from './user.service';
 import { MaobeMessageService } from './maobe_message.service';
 import { MaobeParticipantService } from './maobe_participant.service';
@@ -105,6 +105,21 @@ export class MaobeRoomService {
 		return ret;
 	}
 
+
+
+	async joinRoom(dto: JoinRoomDto): Promise<void> {
+		if (dto.isProtected === true){
+			const room_info = await this.roomRepository.createQueryBuilder("room")
+				.select(["room.password"])
+				.where("room.id = :room_Id", { room_Id: dto.roomId })
+				.getOne();
+			const res = await bcrypt.compare(dto.password, room_info['password'])
+			if (res === false)
+			{
+				throw 'password is wrong';
+			}
+		}
+	}
 
 	/*
 ** Create a new obj of participant and store in the table, return to front updated info

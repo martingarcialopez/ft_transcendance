@@ -16,6 +16,7 @@ import { MaobeRoomService } from '../services/maobe_room.service';
 import { MaobeParticipantService } from '../services/maobe_participant.service';
 import { RoomDto } from '../dtos/in/maobe_room.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
+import { JoinRoomDto } from '../dtos/in/maobe_JoinRoom.dto';
 import { MaobeMessageService } from '../services/maobe_message.service';
 import { UserService } from '../services/user.service';
 
@@ -115,10 +116,12 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_joinRoom')
-    async createParticipant(socket: Socket, roomId: number): Promise<boolean> {
+    async createParticipant(socket: Socket, dto: JoinRoomDto): Promise<boolean> {
 		const userId: number = Number(socket.handshake.headers.userid);
 		try {
-			var info:any[] = await this.roomService.createParticipant({'userId': userId, 'roomId': roomId});
+			await this.roomService.joinRoom(dto);
+			const info = await this.roomService.createParticipant({'userId': userId,
+													  'roomId': dto.roomId});
 			socket.emit('B_joinRoom', info);
 		}
 		catch(e){
