@@ -20,15 +20,12 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any, twofa: any) {
+export function update(firstname: any, lastname: any, username: any, id: any, access_token: any, friends: any) {
     const postData = {
         firstname,
         lastname,
         username,
-        password,
-        avatar,
         friends,
-        twofa
     };
 
     return axios.post(
@@ -79,6 +76,12 @@ export function login(username: any, password: any, code: any) {
     return axios.post(
         `${URL_test}/auth/login`,
         postData,
+    );
+}
+
+export function login42(code: any) {
+    return axios.post(
+        `${URL_test}/auth/redirect${code}`,
     );
 }
 
@@ -160,7 +163,7 @@ export function formatError(errorResponse: any) {
     console.log(errorResponse)
     switch (errorResponse) {
         case 'Request failed with status code 418':
-            return 'Write your 6 number from Google Authentificator'
+            return 'Write the 6 digit code you\'re seen on Google Authenticator'
         case 'EMAIL_EXISTS':
             return 'Email already exists';
         case 'EMAIL_NOT_FOUND':

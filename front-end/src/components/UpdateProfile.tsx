@@ -17,7 +17,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
     const [statusError, setStatusError] = useState(false);
     const { id } = useParams();
 
-  const dispatch = useDispatch()
+    const dispatch = useDispatch()
     // const ref_default_img = "/game/test/test_42.jpg"
     // const ref_default_img = "/shared/avatar/mgarcia-.png"
 
@@ -31,14 +31,14 @@ export const UpdateProfile = ({ userInfo }: any) => {
 
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
-            dispatch(updateAction(firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, userInfo.twofa, userInfo.friends))
+            dispatch(updateAction(firstname, lastname, username, userInfo.id, userInfo.access_token, userInfo.friends))
             setStatusError(true);
             setSnackbars(true);
         }
         else {
             setStatusError(false);
         }
-        console.log("signUp :", {
+        console.log("UpdateProfile :", {
             firstname: firstname,
             lastname: lastname,
             username: username,
@@ -67,7 +67,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
                     :
                     null
                 }
-                <img src={userInfo.avatar}/*{userInfo.avatar}*/ alt="" className="userImage" />
+                <FilesUploadComponent userInfo={userInfo} />
                 <h1 className="userName">{userInfo.username}</h1>
                 <h3 className="userNickName">{userInfo.login42}</h3>
                 <h5 className="userNickName">{userInfo.firstname}</h5>
@@ -91,7 +91,6 @@ export const UpdateProfile = ({ userInfo }: any) => {
                     sx={{ mt: 3 }}
                 >
                     <Grid container spacing={2}>
-                        <FilesUploadComponent userInfo={userInfo} />
                         {/* <input type="file" name="image" placeholder='Image' onChange={e => handleSetImage(e)} /> */}
                         <Grid item xs={12} sm={6}>
                             <TextField

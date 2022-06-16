@@ -65,8 +65,7 @@ export const Pong = () => {
     }
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        console.log("event code = ")
-        console.log(event.code)
+        // console.log("onKeyDownHandler event code :", event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
                 socket.emit('move', id.toString(), playerSide, roomId, 1);
@@ -77,12 +76,11 @@ export const Pong = () => {
                 setId(id + 1);
                 break;
         }
-        // console.log("id = ");
-        // console.log(id);
     };
 
     const receive_socket_info = () => {
         socket.on('gameState', (...args) => {
+            console.log("socket.on gameState");
             setGameState(args[0])
             setGameStarted(true);
             // console.log(args);
@@ -93,16 +91,18 @@ export const Pong = () => {
             // console.log(gameState);
         });
         socket.on('gameOver', (winnerPlayer) => {
-            console.log("winnerPlayer")
-            console.log(winnerPlayer)
+            console.log("socket.on gameOver");
+            console.log("winnerPlayer :", winnerPlayer)
             setWinner(winnerPlayer);
             setGameStarted(false);
         });
     }
 
     function handleClick() {
-        if (userInfo)
+        if (userInfo) {
+            console.log("socket.emit lookingForplay");
             socket.emit('lookingForplay', userInfo.id);
+        }
 
         // console.log("HANDKE CKUC")
         setWinner('');
@@ -110,10 +110,8 @@ export const Pong = () => {
     }
 
     socket.on('GameInfo', (...args) => {
-        console.log("roomId / side");
-        console.log(args);
-        console.log(args[0]);
-        console.log(args[1]);
+        console.log("socket.on GameInfo");
+        console.log("roomId / side", args);
         // console.log(side);
         setRoomId(args[0])
         setPlayerSide(args[1])
@@ -122,11 +120,8 @@ export const Pong = () => {
     });
 
     socket.on('GamePlayerName', (...args) => {
-        console.log("GamePlayerName");
-        console.log(args);
-        console.log(args[0]);
-        console.log(args[1]);
-        // console.log(side);
+        console.log("socket.on GamePlayerName");
+        console.log("GamePlayerName args: ", args);
         userInfo.username = args[0];
         setOpponent(args[1])
         if (playerSide === 'leftPlayer') {
@@ -136,6 +131,7 @@ export const Pong = () => {
     });
 
     const endGame = () => {
+        console.log("socket.removeAllListeners gameState gameOver GameInfo GamePlayerName");
         socket.removeAllListeners('gameState')
         socket.removeAllListeners('gameOver')
         socket.removeAllListeners('GameInfo')

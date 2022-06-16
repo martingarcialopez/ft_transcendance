@@ -61,39 +61,6 @@ interface Action {
 
 export const allMatchReducer = (
   state: AllMatchState = {
-    MatchInfo: [{
-      rightPlayer: 'rightPlayer',
-      leftPlayer: 'leftPlayer',
-      leftPlayerScore: 'rightPlayer',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 0,
-    },
-    {
-      rightPlayer: 'player3',
-      leftPlayer: 'player4',
-      leftPlayerScore: 'player3',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 1,
-    },
-    {
-      rightPlayer: 'player3',
-      leftPlayer: 'player4',
-      leftPlayerScore: 'player3',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 2,
-    },
-    {
-      rightPlayer: 'player3',
-      leftPlayer: 'player4',
-      leftPlayerScore: 'player3',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 3,
-    },
-    ]
   },
   action: Action
 ) => {
@@ -145,6 +112,7 @@ export const userLoginReducer = (
   action: Action
 ) => {
   switch (action.type) {
+
     case LOADING_TOGGLE_ACTION:
       return {
         ...state,
@@ -172,14 +140,6 @@ export const userLoginReducer = (
         errorMessage: "",
         successMessage: "Get Friend Infos Successfully Completed",
       };
-    case UPLOAD_IMAGE_CONFIRMED_ACTION:
-      return {
-        ...state,
-        showLoading: false,
-        errorMessage: "",
-        successMessage: "Image Successfully Upload",
-        userInfo: { ...state.userInfo, avatar: action.payload },
-      };
     case DISABLE_2FA_CONFIRMED_ACTION:
       return {
         ...state,
@@ -188,13 +148,22 @@ export const userLoginReducer = (
         successMessage: "Disable 2FA Successfully Send",
         userInfo: { ...state.userInfo, twofa: false, code2FA: '' },
       };
+    case UPLOAD_IMAGE_CONFIRMED_ACTION:
+      console.log("UPLOAD_IMAGE_CONFIRMED_ACTION action.payload", action.payload)
+      return {
+        ...state,
+        showLoading: false,
+        userInfo: { ...state.userInfo, avatar: action.payload },
+        errorMessage: "",
+        successMessage: "Image Successfully Upload",
+      };
     case UPDATE_CONFIRMED_ACTION:
       return {
         ...state,
         showLoading: false,
         userInfo: action.payload,
         errorMessage: "",
-        successMessage: "Update Successfully Completed",
+        successMessage: "Profile Successfully Update",
       };
     case LOGIN_CONFIRMED_ACTION:
       return {

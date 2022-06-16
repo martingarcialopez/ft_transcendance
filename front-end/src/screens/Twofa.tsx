@@ -54,10 +54,9 @@ export const Twofa = ({ check }: any) => {
     <div className="App">
       <h1>Scan the QR code</h1>
       <br />
-      <h3>
-        Scan the QR Code on <br />
-        Google Authentificator
-      </h3>
+      <h4>
+        Please download the Google Authenticator app from the Play/App Store <br/> and scan the QR code to enable Two factor Authentication
+      </h4>
       {img ?
         <div>
           <img src={img} alt="QR Code" />
