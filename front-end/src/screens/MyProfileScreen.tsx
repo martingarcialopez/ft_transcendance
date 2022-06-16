@@ -10,9 +10,7 @@ export const MyProfileScreen = () => {
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   )
-  console.log("Profile UserLogin :");
-  console.log(userLogin);
-
+  console.log("Profile UserLogin :", userLogin);
 
   if (!userLogin) {
     return <h1>Loading...</h1>;

@@ -13,7 +13,6 @@ import {
   SIGNUP_FAILED_ACTION,
   UPDATE_CONFIRMED_ACTION,
   UPDATE_FAILED_ACTION,
-  UPLOAD_IMAGE_CONFIRMED_ACTION,
 } from "../constants/userConstants";
 
 export interface MatchInfo {
@@ -61,39 +60,6 @@ interface Action {
 
 export const allMatchReducer = (
   state: AllMatchState = {
-    MatchInfo: [{
-      rightPlayer: 'rightPlayer',
-      leftPlayer: 'leftPlayer',
-      leftPlayerScore: 'rightPlayer',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 0,
-    },
-    {
-      rightPlayer: 'player3',
-      leftPlayer: 'player4',
-      leftPlayerScore: 'player3',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 1,
-    },
-    {
-      rightPlayer: 'player3',
-      leftPlayer: 'player4',
-      leftPlayerScore: 'player3',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 2,
-    },
-    {
-      rightPlayer: 'player3',
-      leftPlayer: 'player4',
-      leftPlayerScore: 'player3',
-      losser: 'rightPlayer',
-      winner: 'leftPlayer',
-      id: 3,
-    },
-    ]
   },
   action: Action
 ) => {
@@ -145,6 +111,7 @@ export const userLoginReducer = (
   action: Action
 ) => {
   switch (action.type) {
+
     case LOADING_TOGGLE_ACTION:
       return {
         ...state,
@@ -171,14 +138,6 @@ export const userLoginReducer = (
         friendInfo: action.payload,
         errorMessage: "",
         successMessage: "Get Friend Infos Successfully Completed",
-      };
-    case UPLOAD_IMAGE_CONFIRMED_ACTION:
-      return {
-        ...state,
-        showLoading: false,
-        errorMessage: "",
-        successMessage: "Image Successfully Upload",
-        userInfo: { ...state.userInfo, avatar: action.payload },
       };
     case DISABLE_2FA_CONFIRMED_ACTION:
       return {
