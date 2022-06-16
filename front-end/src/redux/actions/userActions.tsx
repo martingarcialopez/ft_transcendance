@@ -36,9 +36,9 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
   };
 }
 
-export function updateAction(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, twofa: any, friends: any) {
+export function updateAction(firstname: any, lastname: any, username: any, id: any, access_token: any, friends: any) {
   return (dispatch: any) => {
-    update(firstname, lastname, username, password, avatar, id, access_token, friends, twofa)
+    update(firstname, lastname, username, id, access_token, friends)
       .then((response) => {
         console.log("updateAction response : ")
         console.log(response)
@@ -191,7 +191,7 @@ export function getFriendListAction(userInfo: any) {
     getFriendList(userInfo.access_token)
       .then((response) => {
         console.log("getFriendListAction response", response)
-        dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, userInfo.twofa, response.data));
+        dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, userInfo.access_token, response.data));
         // dispatch(getFriendListConfirmedAction(response.data));
       })
       .catch((error) => {

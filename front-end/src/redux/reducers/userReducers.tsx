@@ -13,6 +13,7 @@ import {
   SIGNUP_FAILED_ACTION,
   UPDATE_CONFIRMED_ACTION,
   UPDATE_FAILED_ACTION,
+  UPLOAD_IMAGE_CONFIRMED_ACTION,
 } from "../constants/userConstants";
 
 export interface MatchInfo {
@@ -147,13 +148,22 @@ export const userLoginReducer = (
         successMessage: "Disable 2FA Successfully Send",
         userInfo: { ...state.userInfo, twofa: false, code2FA: '' },
       };
+    case UPLOAD_IMAGE_CONFIRMED_ACTION:
+      console.log("UPLOAD_IMAGE_CONFIRMED_ACTION action.payload", action.payload)
+      return {
+        ...state,
+        showLoading: false,
+        userInfo: { ...state.userInfo, avatar: action.payload },
+        errorMessage: "",
+        successMessage: "Image Successfully Upload",
+      };
     case UPDATE_CONFIRMED_ACTION:
       return {
         ...state,
         showLoading: false,
         userInfo: action.payload,
         errorMessage: "",
-        successMessage: "Update Successfully Completed",
+        successMessage: "Profile Successfully Update",
       };
     case LOGIN_CONFIRMED_ACTION:
       return {

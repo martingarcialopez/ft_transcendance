@@ -20,15 +20,12 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any, twofa: any) {
+export function update(firstname: any, lastname: any, username: any, id: any, access_token: any, friends: any) {
     const postData = {
         firstname,
         lastname,
         username,
-        password,
-        avatar,
         friends,
-        twofa
     };
 
     return axios.post(
