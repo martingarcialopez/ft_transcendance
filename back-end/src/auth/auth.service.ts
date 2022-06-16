@@ -23,7 +23,14 @@ export class AuthService {
   }
 
   async validate42User(/*username: string, */login42: string): Promise<any> {
+
+    console.log('in validate 42 user');
+
     const user = await this.usersService.getUserBy42Login(login42);
+
+    console.log(`user is`);
+    console.log(user);
+
     if (user && user.login42 === login42) {
       const { password, ...result } = user;
       return result;
