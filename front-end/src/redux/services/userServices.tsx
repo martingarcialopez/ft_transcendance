@@ -82,6 +82,12 @@ export function login(username: any, password: any, code: any) {
     );
 }
 
+export function login42(code: any) {
+    return axios.post(
+        `${URL_test}/auth/redirect${code}`,
+    );
+}
+
 export function getInfo(access_token: any) {
     console.log("getInfo TOKEN :")
     console.log(access_token)

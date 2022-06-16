@@ -16,7 +16,7 @@ import {
   DISABLE_2FA_CONFIRMED_ACTION,
   UPLOAD_IMAGE_CONFIRMED_ACTION,
 } from '../constants/userConstants'
-import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42 } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -256,6 +256,30 @@ export function loginAction(username: any, password: any, code: any, navigate: N
         console.log(error);
         const errorMessage = formatError(error.message);
         console.log("ceci est une errorMessage return de formatError dans loginAction :" + errorMessage)
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
+export function login42Action(code: any, navigate: NavigateFunction) {
+  console.log("login42Action code", code)
+  return (dispatch: any) => {
+    login42(code)
+      .then((response) => {
+        console.log("login42Action qui fct :")
+        console.log(response)
+        console.log("login42Action data qui fct :")
+        console.log(response.data)
+        console.log("login42Action data access qui fct :")
+        console.log(response.data.access_token)
+        dispatch(getInfoAction(response.data.access_token));
+        navigate('/home')
+      })
+      .catch((error) => {
+        console.log("ceci est une error dans login42Action :")
+        console.log(error);
+        const errorMessage = formatError(error.message);
+        console.log("ceci est une errorMessage return de formatError dans login42Action :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
   };
