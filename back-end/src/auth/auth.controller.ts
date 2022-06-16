@@ -18,7 +18,7 @@ export class AuthController {
     @UseGuards(Oauth42Guard)
     @Get('/redirect')
     async getUserFrom42Intra(@Request() req) {
-        return this.authService.login(req.user.username); //returns a JWT
+        return this.authService.login(req.user); //returns a JWT
     }
 
     @UseGuards(JwtAuthGuard)
