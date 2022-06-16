@@ -18,9 +18,9 @@ export class Relationship {
     friend_username: string;
 
 
-	@ManyToOne((type) => User, (user) => user.friends)
-	@JoinColumn({ name: 'userId' })
-    user: User;
-	@Column()
-    public userId: number;
+	// @ManyToOne((type) => User, (user) => user.friends)
+	// @JoinColumn({ name: 'userId' })
+    // user: User;
+	// @Column()
+    // public userId: number;
 }
