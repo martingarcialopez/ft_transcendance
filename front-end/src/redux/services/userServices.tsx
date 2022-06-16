@@ -160,7 +160,7 @@ export function formatError(errorResponse: any) {
     console.log(errorResponse)
     switch (errorResponse) {
         case 'Request failed with status code 418':
-            return 'Write your 6 number from Google Authentificator'
+            return 'Write the 6 digit code you\'re seen on Google Authenticator'
         case 'EMAIL_EXISTS':
             return 'Email already exists';
         case 'EMAIL_NOT_FOUND':

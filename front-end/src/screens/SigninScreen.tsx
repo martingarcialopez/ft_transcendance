@@ -46,7 +46,7 @@ const SignIn = () => {
 
   useEffect(() => {
     console.log("signin userInfo :")
-    if (userLogin.errorMessage === 'Write your 6 number from Google Authentificator') {
+    if (userLogin.errorMessage === 'Write the 6 digit code you\'re seen on Google Authenticator') {
       setNeedCode(true)
       setErrorFromBack("Please enter your Google Authentification code")
     }
@@ -130,7 +130,7 @@ const SignIn = () => {
             <Collapse in={open}>
               <Alert
                 variant="outlined"
-                severity="error"
+                severity={userLogin.errorMessage === 'Write the 6 digit code you\'re seen on Google Authenticator' ? "info" : "error"}
                 action={
                   <IconButton
                     aria-label="close"
