@@ -37,7 +37,7 @@ const ButtonBases = () => {
     else {
       const domain = "api.intra.42.fr/oauth/authorize";
       const client_id = "cf72ee9e9567d932423b583e5629802719575881cc5a4ab8c883b5d153639c00";
-      const redirect_uri = `${URL_back}/auth/redirect`;
+      const redirect_uri = `http://localhost:3000/auth/redirect`;
       const scope = "public";
       //const state = "aswhidl";
       const response_type = "code";

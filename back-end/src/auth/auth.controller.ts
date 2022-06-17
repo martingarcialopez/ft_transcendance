@@ -1,4 +1,4 @@
-import { Controller, Request, UseGuards, Post, Get } from '@nestjs/common';
+import { Controller, Request, UseGuards, Post, Get, Redirect } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -17,6 +17,7 @@ export class AuthController {
 
     @UseGuards(Oauth42Guard)
     @Get('/redirect')
+//    @Redirect('http://localhost:8080', 302)
     async getUserFrom42Intra(@Request() req) {
         return this.authService.login(req.user); //returns a JWT
     }
