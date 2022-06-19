@@ -252,9 +252,10 @@ export class MaobeRoomService {
 			.getMany();
 		deja_member.forEach(element => blockList.push(element.userId));
 		let banList  = await this.get_Room_banList(roomId);
+		if (banList.length > 0)
+			banList.forEach(element => blockList.push(element));
         let users: User[] = await this.userRepository.createQueryBuilder("user")
 		    .where("user.id NOT IN (:...list) ", { list : blockList })
-			.andWhere("user.id NOT IN (:...banlist) ", { banlist : banList })
 			.getMany();
 		return users;
 	}
@@ -350,11 +351,20 @@ export class MaobeRoomService {
 		return await admins.indexOf(userId) != -1;
 	}
 
-	async setAsAdmin(userId: number, roomId: number): Promise<void> {
+	async setAsAdmin(userId: number, roomId: number, toAdd:boolean): Promise<void> {
 		if (userId === undefined)
 			throw ('sth went wrong');
 		let admins = await this.get_RoomAdmins(roomId);
-		admins.push(userId);
+		if (toAdd === true)
+			admins.push(userId);
+		else
+		{
+			let index = admins.indexOf(userId);
+			if (index !== -1)
+				admins.splice(index, 1);
+			else
+				return ;
+		}
 		await this.roomRepository
 			.createQueryBuilder()
 			.update(MaobeRoom)

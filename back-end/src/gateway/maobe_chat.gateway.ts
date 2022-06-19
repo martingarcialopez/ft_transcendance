@@ -211,9 +211,9 @@ export class MaobeChatGateway {
     }
 
 	@SubscribeMessage('F_setAsAdmin')
-	async setAsAdmin(socket: Socket, dto: ParticipantDto) : Promise<boolean> {
+	async setAsAdmin(socket: Socket, dto: ParticipantDto, toAdd: boolean) : Promise<boolean> {
 		try {
-			await this.roomService.setAsAdmin(dto.userId, dto.roomId);
+			await this.roomService.setAsAdmin(dto.userId, dto.roomId, toAdd);
 			socket.emit('B_setAsAdmin', dto.userId, dto.roomId);
 		}
 		catch (e) {
@@ -235,9 +235,9 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_muteUser')
-    async muteUser(@Body() dto: ParticipantDto) : Promise<boolean> {
+    async muteUser(userId:number, roomId: number) : Promise<boolean> {
 		try {
-            await this.participantService.muteUser(dto.userId, dto.roomId);
+            await this.participantService.muteUser(userId, roomId);
 		}
         catch(e)
         {
