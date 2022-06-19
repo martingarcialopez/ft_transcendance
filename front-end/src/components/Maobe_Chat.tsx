@@ -720,10 +720,14 @@ function SendMessageBar(props: any) {
 	}
 
 	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currentRoomId)[0];
+	let placeholder_val = 'Click here to start messaging';
 	let isLocked = false;
 	if (currentRoom !== undefined && currentRoom.participants !== undefined) {
 		const this_participant = currentRoom.participants.filter((obj: any) => obj.userId === props.connectedUser.userId)[0];
 		isLocked = this_participant.isMute;
+		if (isLocked === true) {
+			placeholder_val = '⛔ You are muted ⛔';
+		}
 	}
 
 	const currentValueBis = props.messageBarValues.get(props.currentRoomId);
@@ -735,7 +739,7 @@ function SendMessageBar(props: any) {
 				<input type="text"
 					   disabled={ isLocked }
 					   value={ currentValueBis }
-					   placeholder="Click here to start messaging"
+					   placeholder={ placeholder_val }
 					   required
 					   onChange={ (e) => {
 						   props.onChange(e.target.value)
@@ -799,6 +803,13 @@ function Chat(props: any) {
 				});
 				setMessageBarValue(sendMessageBarValues);
 			}
+		}
+		else {
+			let sendMessageBarValues =  new Map<number, string>();
+			receivedRooms.map((room: I_Room, i: any) => {
+				sendMessageBarValues.set(room.id, '');
+			});
+			setMessageBarValue(sendMessageBarValues);
 		}
 		props.appSocket.emit('F_getMessages', receivedRooms[0].id);
 	}
@@ -1178,7 +1189,9 @@ function Chat(props: any) {
 			const messageRoomId = newMessages.roomId;
 			let newVarValues = new Map(messages);
 			newVarValues.set(messageRoomId, newMessages.messages);
-			setMessages(newVarValues);
+			if (newVarValues !== messages) {
+				setMessages(newVarValues);
+			}
 		}
 		const createMessage_listener = (newMessageInfos: I_Message) => {
 			if (messages !== undefined) {
