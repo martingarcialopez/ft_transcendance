@@ -235,9 +235,9 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_muteUser')
-    async muteUser(userId:number, roomId: number) : Promise<boolean> {
+    async muteUser(@Body() participantDto: ParticipantDto) : Promise<boolean> {
 		try {
-            await this.participantService.muteUser(userId, roomId);
+            await this.participantService.muteUser(participantDto);
 		}
         catch(e)
         {

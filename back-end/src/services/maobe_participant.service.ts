@@ -51,15 +51,15 @@ export class MaobeParticipantService {
 			.where("participant.userId = :userId", { userId: userId})
 			.andWhere("participant.roomId = :roomId", {roomId: roomId })
 			.getOne();
-		console.log('what is id ', id);
 		if (id !== undefined)
 		{
-			console.log('what is id ', id);
 			await this.participantRepository.delete(id);
 		}
 }
 
-	async muteUser(userId: number, roomId: number) : Promise<void> {
+	async muteUser(participantDto: ParticipantDto) : Promise<void> {
+		const userId:number = participantDto.userId;
+		const roomId:number = participantDto.roomId;
 		let time: number = 10;
 		let res = await this.participantRepository.findOne({ userId: userId, roomId: roomId });
 		var current_time = new Date();

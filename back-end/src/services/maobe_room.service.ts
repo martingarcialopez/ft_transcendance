@@ -385,7 +385,7 @@ export class MaobeRoomService {
 
 	async blockUser(userId: number, b_userId:number) : Promise<void> {
 		let block_list: number[]  = await this.userService.getBlockList(userId);
-		if (block_list.indexOf(b_userId) != -1)
+		if (block_list.indexOf(b_userId) !== -1)
 			return ;
 		block_list.push(b_userId);
 		await this.userRepository
