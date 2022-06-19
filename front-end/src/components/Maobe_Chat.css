@@ -547,3 +547,25 @@ html{
     flex-direction: column;
     margin-bottom: 0px;
 }
+
+::-webkit-scrollbar-thumb {
+    height: 50px;
+    background-color: #2F3136;
+    outline-offset: -3px;
+    border-radius: 6px;
+    outline: rgb(58, 58, 58) solid 0px;
+    border-width: 0px;
+    border-style: solid;
+    border-color: rgb(58, 58, 58);
+    border-image: initial;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: rgb(58, 58, 58);
+    border-radius: 0px;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
