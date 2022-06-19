@@ -664,7 +664,7 @@ function MessagePanel(props: any) {
 			Html_messages = currMessages.map((message: any, i: any) => {
 				let currentUser = currentRoom.participants.filter((obj: any) => obj.userId === message.userId)[0];
 				if (currentUser === undefined) {
-					return (<div></div>);
+					return (<div key={i}></div>);
 				}
 				return (
 					<div key={i}>
