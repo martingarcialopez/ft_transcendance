@@ -485,13 +485,14 @@ function ParticipantBasicContextMenu(props: any) {
 			</MenuItem>
 			<hr />
 
+			{ /* ----- Direct Message ----- */ }
+			<MenuItem onClick={
+						  () => props.onClick_directMessage(props.currentUser.userId, props.currentUser.username) }>
+				Send Message { props.currentUser.username }
+			</MenuItem>
+		<hr />
 		</div>
 	);
-    // <MenuItem onClick={
-	// 			  () => props.onClick_directMessage(props.currentUser.userId, props.currRoomId) }>
-	// 	Send Message { props.currentUser.username }
-	// </MenuItem>
-	// <hr />
 }
 
 function ParticipantContextMenu(props: any) {
@@ -930,21 +931,38 @@ function Chat(props: any) {
 
 		console.log(rooms, `Blocking ${userId} in ${roomId}`);
 	}
-	const onClick_directMessage = (userId: number, roomId: number) => {
-		props.appSocket.emit('F_directMessage',
-							 {
-								 'userId': userId,
-								 'roomId': roomId
-							 },
-							 (res: boolean) => {
-								 if (res === true) {
-									 console.log('Now let\'s chat!')
-								 }
-								 else {
-									 console.log('sth went wring');
-								 }
-							 });
-		console.log(`DirectMessaging ${userId} in ${roomId}`);
+	const onClick_directMessage = (userId: number, username: string) => {
+		let possibleRooms = []
+		let roomFounded = false;
+		rooms.forEach((room) => {
+			if (roomFounded === true) {
+				return ;
+			}
+			if (room.participants.length == 2) {
+				const userMatch = room.participants.filter((obj: any) => obj.userId === userId)
+				if (userMatch.length === 1) {
+					setCurrRoomId(room.id);
+					roomFounded = true;
+				}
+			}
+		});
+		if (roomFounded === false) {
+
+			const newPmRoom = {
+				'name': `PM ${username}`,
+				'image': '',
+				'typeRoom': 'private',
+				'password': '',
+				'users': [{'id': userId}]
+			}
+			props.appSocket.emit('F_createRoom',
+								 newPmRoom,
+								 (isCreated: boolean) => {
+									 if (isCreated !== true) {
+										 alert('Something went wrong');
+									 }
+								 });
+		}
 	}
 	const onClick_setAsAdmin = (userId: number, roomId: number, toAdd: boolean) => {
 		props.appSocket.emit('F_setAsAdmin',
@@ -1017,7 +1035,6 @@ function Chat(props: any) {
 									 setSelectedNewParticipants([]);
 								 }
 							 });
-		console.log("creating Room: ", newRoomName, typeRoom, passWord);
 	}
 	const createRoom_listener = (newRoom: I_Room) => {
 		let newRooms = rooms.slice();
