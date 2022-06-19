@@ -438,17 +438,25 @@ function ParticipantAdminContextMenu(props: any) {
 
 function ParticipantSetAsAdminContextMenu(props: any) {
 	if (props.currentUser.userId === props.connectedUser.userId ||
-		props.currentRoom.admin.indexOf(props.currentUser.userId) !== -1 ||
-		props.currentRoom.owner === props.currentUser.userId ||
-		(props.currentRoom.owner !== props.connectedUser.userId &&
-		 props.currentRoom.admin.indexOf(props.connectedUser.userId) === -1)) {
+			props.currentRoom.owner === props.currentUser.userId ||
+		(props.currentRoom.owner !== props.connectedUser.userId)) {
 		return (<div></div>);
+	}
+
+
+	let toAdd = true;
+	let label = `Set as Admin ${props.currentUser.username}`
+	if (props.currentRoom.admin.indexOf(props.currentUser.userId) !== -1) {
+		toAdd = false;
+		label = `Remove from Admin role ${props.currentUser.username}`;
 	}
 	return (
 		<div>
             <MenuItem onClick={
-						  () => props.onClick_setAsAdmin(props.currentUser.userId, props.currRoomId) }>
-				Set as Admin { props.currentUser.username }
+						  () => props.onClick_setAsAdmin(props.currentUser.userId,
+														 props.currRoomId,
+														 {toAdd}) }>
+				{ label }
 			</MenuItem>
 			<hr />
 		</div>
@@ -929,11 +937,12 @@ function Chat(props: any) {
 							 });
 		console.log(`DirectMessaging ${userId} in ${roomId}`);
 	}
-	const onClick_setAsAdmin = (userId: number, roomId: number) => {
+	const onClick_setAsAdmin = (userId: number, roomId: number, toAdd: boolean) => {
 		props.appSocket.emit('F_setAsAdmin',
 							 {
 								 'userId': userId,
-								 'roomId': roomId
+								 'roomId': roomId,
+								 'toAdd': toAdd
 							 },
 							 (isSet: boolean) => {
 								 if (isSet !== true) {
