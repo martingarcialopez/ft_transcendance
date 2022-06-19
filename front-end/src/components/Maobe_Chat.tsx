@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, SubMenu, MenuButton, ControlledMenu, MenuItem, useMenuState, FocusableItem } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/core.css';
+import { useNavigate } from 'react-router-dom';
 
 import './Maobe_Chat.css';
 
@@ -464,6 +465,8 @@ function ParticipantSetAsAdminContextMenu(props: any) {
 }
 
 function ParticipantBasicContextMenu(props: any) {
+	const navigate = useNavigate();
+
 	if (props.currentUser.userId === props.connectedUser.userId) {
 		return (<div></div>);
 	}
@@ -473,6 +476,12 @@ function ParticipantBasicContextMenu(props: any) {
             <MenuItem onClick={
 						  () => props.onClick_block(props.currentUser.userId, props.currRoomId) }>
 				Block { props.currentUser.username }
+			</MenuItem>
+			<hr />
+
+			{ /* ----- ACCESS PROFILE ----- */ }
+            <MenuItem onClick={ () => { navigate(`/profile/${props.currentUser.username}`)} }>
+				Access { props.currentUser.username }'s profile
 			</MenuItem>
 			<hr />
 
