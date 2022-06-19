@@ -456,7 +456,7 @@ function ParticipantSetAsAdminContextMenu(props: any) {
             <MenuItem onClick={
 						  () => props.onClick_setAsAdmin(props.currentUser.userId,
 														 props.currRoomId,
-														 {toAdd}) }>
+														 toAdd) }>
 				{ label }
 			</MenuItem>
 			<hr />
