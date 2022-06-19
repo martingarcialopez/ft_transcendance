@@ -1,13 +1,49 @@
-import { Controller, Get, Post, Delete, Body, Param, UseGuards, Request, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, UseGuards, Request, ParseIntPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
 import { UpdateUserDto } from 'src/dtos/in/UpdateUser.dto';
 import { User } from '../models/user.entity';
 import { UserService } from '../services/user.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+ import { Express } from 'express';
+// import Express from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from  'path';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Post('uploadProfileImage')
+  @UseInterceptors(
+      FileInterceptor('file', {
+        storage: diskStorage({
+            destination: './public/shared/avatar',
+            filename: (req, file, cb) => {
+                // const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('')
+                return cb(null, `${req.user['username']}${extname(file.originalname)}`)
+              }
+          }),
+      }))
+  uploadProfileImage(@UploadedFile() file: Express.Multer.File, @Request() req) {
+
+    console.log(file);
+
+    const response = {
+    	originalname: file.originalname,
+    	filename: `/shared/avatar/${file.filename}`,
+    };
+
+    this.userService.updateUser( { avatar: `/shared/avatar/${file.filename}`}, req.user.userId );
+
+    return response;
+  }
+
+@Get('/all')
+getAllUsers() {
+    return this.userService.getAllUsers();
+}
 
   @Post('/sign-up')
   createUser( @Body() body: CreateUserDto) : Promise<any> {
@@ -66,7 +102,6 @@ export class UserController {
   getAllGames() {
       return this.userService.getAllGames();
   }
-
 
 //   @UseGuards(JwtAuthGuard)
   @Get('/games/:username')

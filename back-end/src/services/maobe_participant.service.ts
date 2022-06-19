@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ParticipantDto } from '../dtos/in/participant.dto';
 import { MaobeParticipant } from '../models/maobe_participant.entity';
 import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
 import { plainToClass } from 'class-transformer';
-
+import { MaobeRoomService } from './maobe_room.service';
 
 @Injectable()
 export class MaobeParticipantService {
+	@Inject(forwardRef(() => MaobeRoomService))
+    private roomService: MaobeRoomService;
 
 	constructor(
 		@InjectRepository(MaobeParticipant)
@@ -23,30 +25,6 @@ export class MaobeParticipantService {
         new_participant.roomId = participantDto.roomId;
         await this.participantRepository.save(new_participant);
 	}
-
-
-
-/*
- ** From the given userID, obtain infos of RoomId participated and corresponding RoomName
- ** :Param(userId:number)
-** Return type (RoomSnippetDto) that contain room_id + room_name
-*/
-	// async maobe_getJoinRooms(userId: number): Promise<any[]>
-	// {
-	// 	let rooms: any = await this.roomRepository.createQueryBuilder("maobe_room")
-    //         .leftJoinAndSelect("maobe_room.participants", "maobe_participant")
-    //         .leftJoinAndSelect("maobe_participant.user", "user")
-    //         .getMany();
-
-
-	// 	// const roomIds = await this.participantRepository
-	// 	// 	.createQueryBuilder("maobe_participant")
-	// 	// 	.leftJoinAndSelect("maobe_participant.room", "maobe_room")
-	// 	// 	.select(["participant.roomId", "room.name"])
-	// 	// 	.where("maobe_participant.userId = :id", { id: userId })
-	// 	// 	.getRawMany();
-	// 	return rooms;
-	// }
 
 /*
 ** Obtain the specific column in tab participant by requerying primary id
@@ -67,16 +45,25 @@ export class MaobeParticipantService {
 	async leaveRoom(participantDto: ParticipantDto) : Promise<void> {
 		let userId : number = participantDto.userId;
 		let roomId : number = participantDto.roomId;
-		console.log('participantDto ', participantDto, userId, roomId);
 		const id = await this.participantRepository
             .createQueryBuilder("participant")
 			.select(["participant.id"])
 			.where("participant.userId = :userId AND participant.roomId = :roomId", { userId: userId, roomId: roomId })
             .getOne();
-		console.log('id is', id);
-		if (id != undefined)
+		if (id !== undefined)
 			await this.participantRepository.delete(id);
 	}
+
+	async muteUser(userId: number, roomId: number) : Promise<void> {
+		let time: number = 10;
+		let res = await this.participantRepository.findOne({ userId: userId, roomId: roomId });
+		var current_time = new Date();
+		var time_until_mute = new Date();
+		time_until_mute.setTime(current_time.getTime() + (time * 60 * 1000));
+		this.participantRepository.update({id: res['id']}, {
+            mute_until: time_until_mute});
+	}
+
 
 
 }

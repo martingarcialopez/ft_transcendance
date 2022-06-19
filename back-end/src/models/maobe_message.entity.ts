@@ -14,8 +14,8 @@ export class MaobeMessage {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
-	sender: string;
+	// @Column()
+	// sender: string;
 
 	@Column('text')
 	content: string;

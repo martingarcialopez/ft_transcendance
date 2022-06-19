@@ -1,11 +1,12 @@
 import "../styles/profileContainerStyles.css";
 import { Button, Grid, TextField } from "@mui/material";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import { Box } from "@mui/system";
 import { updateAction } from "../redux/actions/userActions";
 import { useDispatch } from "react-redux";
 import { CustomizedSnackbars } from "./CustomizedSnackbars";
 import { useParams } from "react-router-dom";
+import { FilesUploadComponent } from "./FilesUploadComponent";
 
 export const UpdateProfile = ({ userInfo }: any) => {
     const [firstname, setFirstname] = useState(userInfo.firstname)
@@ -30,33 +31,33 @@ export const UpdateProfile = ({ userInfo }: any) => {
 
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
-            dispatch(updateAction(firstname, lastname, username, userInfo.password, userInfo.avatar, userInfo.id, userInfo.access_token, userInfo.friends))
+            dispatch(updateAction(firstname, lastname, username, userInfo.id, userInfo.access_token, userInfo.friends))
             setStatusError(true);
             setSnackbars(true);
         }
         else {
             setStatusError(false);
         }
-        console.log("signUp :", {
+        console.log("UpdateProfile :", {
             firstname: firstname,
             lastname: lastname,
             username: username,
         });
     }
 
-    const handleSetImage = (event: ChangeEvent<HTMLInputElement>) => {
-        const { files } = event.target;
+    // const handleSetImage = (event: ChangeEvent<HTMLInputElement>) => {
+    //     const { files } = event.target;
 
-        console.log("files:", files);
-        if (files && files[0]) {
-            var img: any = document.querySelector('img');
-            img.src = URL.createObjectURL(files[0]); // set src to blob url
-        }
-        // Or if you don't prefer Object destructuring assignment...
-        // const files = event.target.files;
+    //     console.log("files:", files);
+    //     if (files && files[0]) {
+    //         var img: any = document.querySelector('img');
+    //         img.src = URL.createObjectURL(files[0]); // set src to blob url
+    //     }
+    //     // Or if you don't prefer Object destructuring assignment...
+    //     // const files = event.target.files;
 
-        // Rest of the logic here
-    }
+    //     // Rest of the logic here
+    // }
 
     return (
         !open ?
@@ -66,7 +67,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
                     :
                     null
                 }
-                <img src={userInfo.avatar}/*{userInfo.avatar}*/ alt="" className="userImage" />
+                <FilesUploadComponent userInfo={userInfo} />
                 <h1 className="userName">{userInfo.username}</h1>
                 <h3 className="userNickName">{userInfo.login42}</h3>
                 <h5 className="userNickName">{userInfo.firstname}</h5>
@@ -90,7 +91,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
                     sx={{ mt: 3 }}
                 >
                     <Grid container spacing={2}>
-                        <input type="file" name="image" placeholder='Image' onChange={e => handleSetImage(e)} />
+                        {/* <input type="file" name="image" placeholder='Image' onChange={e => handleSetImage(e)} /> */}
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 autoComplete="given-name"

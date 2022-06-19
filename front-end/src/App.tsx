@@ -16,7 +16,9 @@ import { RootState } from "./redux";
 import { UserState } from "./redux/reducers/userReducers";
 import { OtherProfileScreen } from "./screens/OtherProfileScreen";
 import { LeaderBoard } from "./screens/LeaderBoard";
-import  Maobe_Chat from "./components/Maobe_Chat";
+import Maobe_Chat from "./components/Maobe_Chat";
+import { Twofa } from "./screens/Twofa";
+import { RedirectPage } from "./screens/RedirectPage";
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -36,6 +38,7 @@ const App = () => {
 			<Route path="/signup" element={<SignUp />} />
 			<Route path="/login" element={<SignIn />} />
 			<Route path="/home" element={<HomeScreen />} />
+			<Route path="/auth/redirect" element={<RedirectPage />} />
 			<Route path="/" element={<HomeScreen />} />
 			<Route path="*" element={<Navigate to="/" replace />} />
 		</Routes>
@@ -44,15 +47,17 @@ const App = () => {
 	if (isAuthenticated) {
 		routes = (
 			<Routes>
+				<Route path="/auth/redirect" element={<RedirectPage />} />
 				<Route path="/chat" element={<Chat />} />
 				<Route path="/profile/:id" element={<OtherProfileScreen />} />
 				<Route path="/profile" element={<MyProfileScreen />} />
 				<Route path="pong" element={<Pong />} />
 				<Route path="/room" element={<Room />} />
-				<Route path="/maobe_chat" element={ <Maobe_Chat /> } />
+				<Route path="/maobe_chat" element={<Maobe_Chat />} />
 				<Route path="/leaderboard" element={<LeaderBoard />} />
 				<Route path="/home" element={<HomeScreen />} />
 				<Route path="/logout" element={<HomeScreen />} />
+				<Route path="/twofa" element={<Twofa check={false} />} />
 				<Route path="/" element={<HomeScreen />} />
 				<Route path="*" element={<Navigate to="/" replace />} />
 			</Routes>

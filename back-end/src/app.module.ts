@@ -46,7 +46,7 @@ import { MaobeRoomService} from './services/maobe_room.service';
 import { MaobeParticipant } from './models/maobe_participant.entity';
 import { MaobeParticipantModule } from './modules/maobe_participant.module';
 import { MaobeParticipantService} from './services/maobe_participant.service';
-
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -61,6 +61,9 @@ import { MaobeParticipantService} from './services/maobe_participant.service';
 		entities: [User, Message, MaobeMessage, Room, MaobeRoom, Participant, MaobeParticipant, Matchmaking, Relationship, GameHistory],
       synchronize: true,
     }),
+    // MulterModule.register({
+    //   dest: './upload',
+    // }),
     InMemoryDBModule.forRoot({}),
     HttpModule,
     UserModule,
@@ -68,7 +71,15 @@ import { MaobeParticipantService} from './services/maobe_participant.service';
       AuthModule,
 	  RoomModule, ParticipantModule,
 	  MaobeRoomModule, MaobeParticipantModule,
-	  PongModule
+	  PongModule,
+      // template: {
+      //   dir: __dirname + '/templates',
+      //   adapter: new HandlebarsAdapter(), // or new PugAdapter()
+      //   options: {
+      //     strict: true,
+      //   },
+      // },
+   // }),
   ],
   controllers: [],
 	providers: [MessageGateway, RoomGateway, ParticipantGateway, PongGateway, MaobeChatGateway],
@@ -82,3 +93,4 @@ export class AppModule {}
 //         .forRoutes(OauthController)
 //   }
 // }
+

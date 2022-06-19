@@ -10,6 +10,7 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
         password,
         avatar: '/shared/avatar/avatar_chat.jpeg',
         returnSecureToken: true,
+        twofa: false
     };
     console.log("postData", postData)
 
@@ -19,13 +20,11 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function update(firstname: any, lastname: any, username: any, password: any, avatar: any, id: any, access_token: any, friends: any) {
+export function update(firstname: any, lastname: any, username: any, id: any, access_token: any, friends: any) {
     const postData = {
         firstname,
         lastname,
         username,
-        password,
-        avatar,
         friends,
     };
 
@@ -38,15 +37,51 @@ export function update(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function login(username: any, password: any) {
+export function enable2FA(access_token: any) {
+    return axios.post(
+        `${URL_test}/auth/enable2FA`,
+        null,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
+
+export function uploadImage(image: any, access_token: any) {
+    return axios.post(
+        `${URL_test}/user/uploadProfileImage`,
+        image,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
+export function disable2FA(access_token: any) {
+    return axios.post(
+        `${URL_test}/auth/disable2FA`,
+        null,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
+
+export function login(username: any, password: any, code: any) {
     const postData = {
         username,
         password,
+        code
     };
 
     return axios.post(
         `${URL_test}/auth/login`,
         postData,
+    );
+}
+
+export function login42(code: any) {
+    return axios.post(
+        `${URL_test}/auth/redirect${code}`,
     );
 }
 
@@ -127,6 +162,8 @@ export function formatError(errorResponse: any) {
     console.log("Ceci est l err return dans la fct formatError :")
     console.log(errorResponse)
     switch (errorResponse) {
+        case 'Request failed with status code 418':
+            return 'Write the 6 digit code you\'re seen on Google Authenticator'
         case 'EMAIL_EXISTS':
             return 'Email already exists';
         case 'EMAIL_NOT_FOUND':

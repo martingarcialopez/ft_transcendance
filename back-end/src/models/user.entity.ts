@@ -23,6 +23,15 @@ export class User {
   @Column({ nullable: true })
   password: string;
 
+  // @Column({unique:true})
+  // email: string;
+
+  @Column( {nullable: false} )
+  twofa: boolean;
+
+  @Column ( {nullable: true} )
+  secret: string;
+
   @Column({ nullable: true })
   avatar: string;
 
@@ -38,8 +47,8 @@ export class User {
   @OneToMany((type) => Participant, (participant) => participant.user)
 	participants: Participant[];
 
-	@OneToMany((type) => Relationship, (friend) => friend.user)
-	friends: Relationship[];
+	// @OneToMany((type) => Relationship, (friend) => friend.user)
+	// friends: Relationship[];
 
   // @OneToMany(() => Relationship, (relations) => relations.user)
   // friends: Relationship[];

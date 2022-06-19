@@ -22,6 +22,21 @@ export class UserService {
         private GameHistoryRepository: Repository<GameHistory>
     ) { }
 
+    async getAllUsers() {
+
+        const all = await this.userRepository.find();
+
+        var allUsernames: Array<string> = [];
+
+        for (const user of all) {
+            console.log(user.username);
+            allUsernames.push(user.username);
+        }
+
+        return allUsernames;
+
+    }
+
     async createUser(payload: CreateUserDto): Promise<any> {
 
         const existing_user = await this.userRepository.findOne({ username: payload.username });
@@ -34,6 +49,8 @@ export class UserService {
         user.lastname = payload.lastname;
         user.username = payload.username;
         user.avatar = payload.avatar;
+        // user.email = payload.email;
+        user.twofa = false;
 
         const saltOrRounds = 10;
         const hash = await bcrypt.hash(payload.password, saltOrRounds);
