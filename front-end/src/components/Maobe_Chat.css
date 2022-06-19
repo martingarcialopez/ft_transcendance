@@ -132,6 +132,11 @@ html{
     padding-top: 20px;
 }
 
+#mensagens-diretas li {
+    overflow: auto;
+    max-height: 300px;
+}
+
 #mensagens-diretas a{
     text-decoration: none ;
     font-size: 12px;
@@ -145,7 +150,10 @@ html{
     color: #D4D5D6;
 }
 
-
+.room-participants-mgt {
+    overflow: auto;
+    max-height: 200px;
+}
 
 #conversas{
     padding-top: 10px;
@@ -457,8 +465,15 @@ html{
 
 #send-message input::placeholder{
     font-size: 14px;
+	color: #969696;
+	opacity: 65%;
 }
 
+#search-conversa input::placeholder{
+    font-size: 14px;
+	color: #969696;
+	opacity: 65%;
+}
 
 .mao-btn-add-room {
 	top: 10px;
@@ -486,7 +501,8 @@ html{
 	color: #8A8E94;
 	overflow: auto;
 	overflow-x:auto;
-	height: 780px;
+	height: 770px;
+    margin-top: 30px;
 }
 
 #mao-room-names :focus {
@@ -546,4 +562,26 @@ html{
     display: flex;
     flex-direction: column;
     margin-bottom: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+    height: 50px;
+    background-color: #2F3136;
+    outline-offset: -3px;
+    border-radius: 6px;
+    outline: rgb(58, 58, 58) solid 0px;
+    border-width: 0px;
+    border-style: solid;
+    border-color: rgb(58, 58, 58);
+    border-image: initial;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: rgb(58, 58, 58);
+    border-radius: 0px;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
 }

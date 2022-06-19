@@ -48,13 +48,18 @@ export class MaobeParticipantService {
 		const id = await this.participantRepository
             .createQueryBuilder("participant")
 			.select(["participant.id"])
-			.where("participant.userId = :userId AND participant.roomId = :roomId", { userId: userId, roomId: roomId })
-            .getOne();
+			.where("participant.userId = :userId", { userId: userId})
+			.andWhere("participant.roomId = :roomId", {roomId: roomId })
+			.getOne();
 		if (id !== undefined)
+		{
 			await this.participantRepository.delete(id);
-	}
+		}
+}
 
-	async muteUser(userId: number, roomId: number) : Promise<void> {
+	async muteUser(participantDto: ParticipantDto) : Promise<void> {
+		const userId:number = participantDto.userId;
+		const roomId:number = participantDto.roomId;
 		let time: number = 10;
 		let res = await this.participantRepository.findOne({ userId: userId, roomId: roomId });
 		var current_time = new Date();

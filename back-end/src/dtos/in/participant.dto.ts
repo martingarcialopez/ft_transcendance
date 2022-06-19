@@ -9,4 +9,5 @@ export class ParticipantDto {
     @IsNumber()
     @IsNotEmpty()
     public roomId: number;
+
 }

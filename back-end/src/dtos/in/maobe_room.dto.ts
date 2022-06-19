@@ -13,7 +13,6 @@ export class RoomDto {
     public password: string;
 
 	@IsArray()
-	@IsNumber()
 	public users: User[];
 
 	@IsString()

@@ -20,6 +20,7 @@ import { JoinRoomDto } from '../dtos/in/maobe_JoinRoom.dto';
 import { UserService } from './user.service';
 import { MaobeMessageService } from './maobe_message.service';
 import { MaobeParticipantService } from './maobe_participant.service';
+import { AdminDto } from '../dtos/in/maobe_admin.dto';
 
 @Injectable()
 export class MaobeRoomService {
@@ -64,7 +65,7 @@ export class MaobeRoomService {
 			return [];
 
 		let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
-			.select(["MaobeRoom", "u"])
+			.select(["MaobeRoom", "p.mute_until", "u"])
 			.leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)
 			.leftJoin(User, "u", `p.userId = u.id`)
 			.where("MaobeRoom.id IN (:...ids)", { ids: roomIds })
@@ -77,15 +78,21 @@ export class MaobeRoomService {
 			if (managedIndex.indexOf(obj.MaobeRoom_id) === -1) {
 				managedIndex.push(obj.MaobeRoom_id);
 
+
+
 				const users = rooms.filter((obj2: any) => obj2.MaobeRoom_id === obj.MaobeRoom_id);
 				const tmp_participants: any[] = [];
 
+				const now_date = new Date();
+
 				users.forEach((obj2) => {
+					const mute_date = new Date(obj2.p_mute_until);
 					if (blockList.indexOf(obj2.u_id) === -1){
 						tmp_participants.push({
 							'userId': obj2.u_id,
 							'username': obj2.u_username,
 							'avatar': obj2.u_avatar,
+							'isMute': mute_date > now_date,
 						});
 					}
 				})
@@ -144,11 +151,15 @@ export class MaobeRoomService {
                 const users = rooms.filter((obj2: any) => obj2.MaobeRoom_id === obj.MaobeRoom_id);
                 const tmp_participants: any[] = [];
 
+                const now_date = new Date();
+
                 users.forEach((obj2) => {
+                    const mute_date = new Date(obj2.p_mute_until);
                     tmp_participants.push({
                         'userId': obj2.u_id,
                         'username': obj2.u_username,
                         'avatar': obj2.u_avatar,
+						'isMute': mute_date > now_date,
                     });
                 })
                 ret.push(
@@ -241,7 +252,9 @@ export class MaobeRoomService {
 			.where("participant.roomId = :room_Id", { room_Id: roomId })
 			.getMany();
 		deja_member.forEach(element => blockList.push(element.userId));
-
+		let banList  = await this.get_Room_banList(roomId);
+		if (banList.length > 0)
+			banList.forEach(element => blockList.push(element));
         let users: User[] = await this.userRepository.createQueryBuilder("user")
 		    .where("user.id NOT IN (:...list) ", { list : blockList })
 			.getMany();
@@ -275,7 +288,12 @@ export class MaobeRoomService {
             .where("id = :id", { id: roomInfos.roomId })
             .execute();
 		/*add new participants*/
-		const new_participants : MaobeParticipant[] = roomInfos.newParticipants.forEach(async element => await this.participantService.createParticipant({'userId': element['id'], 'roomId': roomInfos.roomId}));
+		const new_participants : MaobeParticipant[] = roomInfos.newParticipants.forEach(async element =>
+			{
+				await this.participantService.createParticipant({'userId': element['id'], 'roomId': roomInfos.roomId})
+			}
+
+																					   );
 	const update_room = await this.roomRepository.findOne(roomInfos.roomId);
 		return {
 			'id': update_room['id'],
@@ -334,16 +352,25 @@ export class MaobeRoomService {
 		return await admins.indexOf(userId) != -1;
 	}
 
-	async setAsAdmin(userId: number, roomId: number): Promise<void> {
-		if (userId === undefined)
+	async setAsAdmin(dto: AdminDto): Promise<void> {
+		if (dto.userId === undefined)
 			throw ('sth went wrong');
-		let admins = await this.get_RoomAdmins(roomId);
-		admins.push(userId);
+		let admins = await this.get_RoomAdmins(dto.roomId);
+		if (dto.toAdd === true)
+			admins.push(dto.userId);
+		else
+		{
+			let index = admins.indexOf(dto.userId);
+			if (index !== -1)
+				admins.splice(index, 1);
+			else
+				return ;
+		}
 		await this.roomRepository
 			.createQueryBuilder()
 			.update(MaobeRoom)
 			.set({ admin: admins })
-			.where("id = :id", { id: roomId })
+			.where("id = :id", { id: dto.roomId })
 			.execute();
 	}
 
@@ -352,14 +379,13 @@ export class MaobeRoomService {
             .select(["room.banList"])
         .where("room.id = :room_Id", { room_Id: roomId })
         .getOne();
-		console.log('in get_RoomAdmins ', room , room.owner);
 		return room.banList;
 	}
 
 
 	async blockUser(userId: number, b_userId:number) : Promise<void> {
 		let block_list: number[]  = await this.userService.getBlockList(userId);
-		if (block_list.indexOf(b_userId) != -1)
+		if (block_list.indexOf(b_userId) !== -1)
 			return ;
 		block_list.push(b_userId);
 		await this.userRepository
@@ -439,14 +465,12 @@ export class MaobeRoomService {
 		return rooms;
 	}
 
-	async banUser(body: BanUserDto) : Promise<void> {
+	async banUser(body: ParticipantDto) : Promise<void> {
 		let roomId : number = body.roomId;
-		let userIdToBan : number = body.userIdToBan;
-		let ownerId : number = await this.get_Room_Owner(roomId);
-		let res = await this.participantRepository.findOne({ userId: userIdToBan, roomId: roomId });
+		let userIdToBan : number = body.userId;
 		await this.participantService.leaveRoom({'userId': userIdToBan, 'roomId': roomId})
 		let banList: number[] = await this.get_Room_banList(roomId);
-		if (await this.userIsAdmin(roomId, userIdToBan) == true)/*remove admin of column if the user is baned*/
+		if ((await this.userIsAdmin(roomId, userIdToBan)) === true)/*remove admin of column if the user is baned*/
 		{
 			var admins: number[] = await this.get_RoomAdmins(roomId);
 			var index = admins.indexOf(userIdToBan);
@@ -454,7 +478,7 @@ export class MaobeRoomService {
 			this.roomRepository.update({id: roomId}, {
 			 	admin: admins})
 		}
-		if (banList.indexOf(userIdToBan) == -1)/*add userid in ban_list*/
+		if (banList.indexOf(userIdToBan) === -1 && userIdToBan !== null)/*add userid in ban_list*/
 			banList.push(userIdToBan);
 		await this.roomRepository
             .createQueryBuilder()

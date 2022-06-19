@@ -20,7 +20,7 @@ import { JoinRoomDto } from '../dtos/in/maobe_JoinRoom.dto';
 import { MaobeMessageService } from '../services/maobe_message.service';
 import { UserService } from '../services/user.service';
 import { BanUserDto } from '../dtos/in/banUser.dto';
-
+import { AdminDto } from '../dtos/in/maobe_admin.dto';
 
 @WebSocketGateway({
 	cors: {
@@ -72,10 +72,9 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_banUser')
-	async banUser(socket: Socket, infos: BanUserDto): Promise<boolean> {
+	async banUser(socket: Socket, infos:ParticipantDto): Promise<boolean> {
 		try {
 			await this.roomService.banUser(infos);
-			//			socket.emit('B_banUser', )
 		}
 		catch (e) {
 			return false
@@ -212,9 +211,9 @@ export class MaobeChatGateway {
     }
 
 	@SubscribeMessage('F_setAsAdmin')
-	async setAsAdmin(socket: Socket, dto: ParticipantDto) : Promise<boolean> {
+	async setAsAdmin(socket: Socket, dto: AdminDto) : Promise<boolean> {
 		try {
-			await this.roomService.setAsAdmin(dto.userId, dto.roomId);
+			await this.roomService.setAsAdmin(dto);
 			socket.emit('B_setAsAdmin', dto.userId, dto.roomId);
 		}
 		catch (e) {
@@ -236,9 +235,9 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_muteUser')
-    async muteUser(userId:number, roomId: number) : Promise<boolean> {
+    async muteUser(@Body() participantDto: ParticipantDto) : Promise<boolean> {
 		try {
-            await this.participantService.muteUser(userId, roomId);
+            await this.participantService.muteUser(participantDto);
 		}
         catch(e)
         {
