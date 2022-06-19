@@ -20,6 +20,7 @@ import { JoinRoomDto } from '../dtos/in/maobe_JoinRoom.dto';
 import { UserService } from './user.service';
 import { MaobeMessageService } from './maobe_message.service';
 import { MaobeParticipantService } from './maobe_participant.service';
+import { AdminDto } from '../dtos/in/maobe_admin.dto';
 
 @Injectable()
 export class MaobeRoomService {
@@ -351,15 +352,15 @@ export class MaobeRoomService {
 		return await admins.indexOf(userId) != -1;
 	}
 
-	async setAsAdmin(userId: number, roomId: number, toAdd:boolean): Promise<void> {
-		if (userId === undefined)
+	async setAsAdmin(dto: AdminDto): Promise<void> {
+		if (dto.userId === undefined)
 			throw ('sth went wrong');
-		let admins = await this.get_RoomAdmins(roomId);
-		if (toAdd === true)
-			admins.push(userId);
+		let admins = await this.get_RoomAdmins(dto.roomId);
+		if (dto.toAdd === true)
+			admins.push(dto.userId);
 		else
 		{
-			let index = admins.indexOf(userId);
+			let index = admins.indexOf(dto.userId);
 			if (index !== -1)
 				admins.splice(index, 1);
 			else
@@ -369,7 +370,7 @@ export class MaobeRoomService {
 			.createQueryBuilder()
 			.update(MaobeRoom)
 			.set({ admin: admins })
-			.where("id = :id", { id: roomId })
+			.where("id = :id", { id: dto.roomId })
 			.execute();
 	}
 

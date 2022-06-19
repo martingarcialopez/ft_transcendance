@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsBoolean,IsOptional } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class ParticipantDto {
 
@@ -10,7 +10,4 @@ export class ParticipantDto {
     @IsNotEmpty()
     public roomId: number;
 
-	@IsOptional()
-	@IsBoolean()
-	public toAdd?: boolean;
 }
