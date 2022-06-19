@@ -220,10 +220,6 @@ input::placeholder {
     height: 100vh;
 }
 
-.btn-invitation{
-		background-color: bisque;
-		position: relative;
-		left: 0%;
-		width: 280%;
-		font-size: 150%;
+.test{
+		cursor: pointer;
 }

@@ -44,6 +44,7 @@ export type T_game = {
   rightPlayer: string;
   leftPlayer: string;
   leftPlayerScore: string;
+  rightPlayerScore: string;
   losser: string;
   winner: string;
   id: number;
