@@ -544,7 +544,7 @@ function ParticipantsPanel(props: any) {
 		return (<div></div>);
 	}
 	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currRoomId)[0];
-	if (currentRoom.participants === undefined) {
+	if (currentRoom === undefined || currentRoom.participants === undefined) {
 		return (<div></div>);
 	}
 	const Html_participants = currentRoom.participants.map((currentUser: any, i: any) => {
@@ -636,6 +636,9 @@ function RoomHeaderBar(props: any) {
 		return (<div></div>);
 	}
 	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currRoomId)[0];
+	if (currentRoom === undefined) {
+		return (<div></div>);
+	}
 	return (
 		<div className="top-bar">
 			<div id="nome-conversa">
@@ -676,6 +679,10 @@ function MessagePanel(props: any) {
 		return (<div></div>);
 	}
 	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currRoomId)[0];
+
+	if (currentRoom === undefined) {
+		return <div></div>
+	}
 
 	let Html_messages = (<div></div>);
 	if (props.messages !== undefined && props.messages.length !== 0 &&
@@ -738,6 +745,10 @@ function SendMessageBar(props: any) {
 	}
 
 	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currentRoomId)[0];
+	if (currentRoom === undefined) {
+		return <div></div>;
+	}
+
 	let placeholder_val = 'Click here to start messaging';
 	let isLocked = false;
 	if (currentRoom !== undefined && currentRoom.participants !== undefined) {
@@ -913,6 +924,11 @@ function Chat(props: any) {
 									 newRooms[index].participants = unbaned_participants;
 									 setRooms(newRooms);
 
+									 const tmpCurrRoom = newRooms.filter((obj) => obj.id === currRoomId);
+									 if (tmpCurrRoom.length !== 1) {
+										 setCurrRoomId(-1);
+									 }
+
 									 if (messages !== undefined) {
 										 let room_message = messages.get(roomId);
 										 if ( room_message!==undefined ){
@@ -947,7 +963,6 @@ function Chat(props: any) {
 			}
 		});
 		if (roomFounded === false) {
-
 			const newPmRoom = {
 				'name': `PM ${username}`,
 				'image': '',
