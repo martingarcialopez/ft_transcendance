@@ -75,7 +75,6 @@ export class MaobeChatGateway {
 	async banUser(socket: Socket, infos: BanUserDto): Promise<boolean> {
 		try {
 			await this.roomService.banUser(infos);
-			//			socket.emit('B_banUser', )
 		}
 		catch (e) {
 			return false
