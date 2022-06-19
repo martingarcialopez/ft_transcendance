@@ -457,8 +457,15 @@ html{
 
 #send-message input::placeholder{
     font-size: 14px;
+	color: #969696;
+	opacity: 65%;
 }
 
+#search-conversa input::placeholder{
+    font-size: 14px;
+	color: #969696;
+	opacity: 65%;
+}
 
 .mao-btn-add-room {
 	top: 10px;
@@ -486,7 +493,8 @@ html{
 	color: #8A8E94;
 	overflow: auto;
 	overflow-x:auto;
-	height: 780px;
+	height: 770px;
+    margin-top: 30px;
 }
 
 #mao-room-names :focus {
