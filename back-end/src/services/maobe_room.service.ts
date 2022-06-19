@@ -241,9 +241,10 @@ export class MaobeRoomService {
 			.where("participant.roomId = :room_Id", { room_Id: roomId })
 			.getMany();
 		deja_member.forEach(element => blockList.push(element.userId));
-
+		let banList  = await this.get_Room_banList(roomId);
         let users: User[] = await this.userRepository.createQueryBuilder("user")
 		    .where("user.id NOT IN (:...list) ", { list : blockList })
+			.andWhere("user.id NOT IN (:...banlist) ", { banlist : banList })
 			.getMany();
 		return users;
 	}
@@ -275,7 +276,12 @@ export class MaobeRoomService {
             .where("id = :id", { id: roomInfos.roomId })
             .execute();
 		/*add new participants*/
-		const new_participants : MaobeParticipant[] = roomInfos.newParticipants.forEach(async element => await this.participantService.createParticipant({'userId': element['id'], 'roomId': roomInfos.roomId}));
+		const new_participants : MaobeParticipant[] = roomInfos.newParticipants.forEach(async element =>
+			{
+				await this.participantService.createParticipant({'userId': element['id'], 'roomId': roomInfos.roomId})
+			}
+
+																					   );
 	const update_room = await this.roomRepository.findOne(roomInfos.roomId);
 		return {
 			'id': update_room['id'],
@@ -352,7 +358,6 @@ export class MaobeRoomService {
             .select(["room.banList"])
         .where("room.id = :room_Id", { room_Id: roomId })
         .getOne();
-		console.log('in get_RoomAdmins ', room , room.owner);
 		return room.banList;
 	}
 
@@ -439,14 +444,12 @@ export class MaobeRoomService {
 		return rooms;
 	}
 
-	async banUser(body: BanUserDto) : Promise<void> {
+	async banUser(body: ParticipantDto) : Promise<void> {
 		let roomId : number = body.roomId;
-		let userIdToBan : number = body.userIdToBan;
-		let ownerId : number = await this.get_Room_Owner(roomId);
-		let res = await this.participantRepository.findOne({ userId: userIdToBan, roomId: roomId });
+		let userIdToBan : number = body.userId;
 		await this.participantService.leaveRoom({'userId': userIdToBan, 'roomId': roomId})
 		let banList: number[] = await this.get_Room_banList(roomId);
-		if (await this.userIsAdmin(roomId, userIdToBan) == true)/*remove admin of column if the user is baned*/
+		if ((await this.userIsAdmin(roomId, userIdToBan)) === true)/*remove admin of column if the user is baned*/
 		{
 			var admins: number[] = await this.get_RoomAdmins(roomId);
 			var index = admins.indexOf(userIdToBan);
@@ -454,7 +457,7 @@ export class MaobeRoomService {
 			this.roomRepository.update({id: roomId}, {
 			 	admin: admins})
 		}
-		if (banList.indexOf(userIdToBan) == -1)/*add userid in ban_list*/
+		if (banList.indexOf(userIdToBan) === -1 && userIdToBan !== null)/*add userid in ban_list*/
 			banList.push(userIdToBan);
 		await this.roomRepository
             .createQueryBuilder()

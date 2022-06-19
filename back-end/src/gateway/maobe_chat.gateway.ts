@@ -72,7 +72,7 @@ export class MaobeChatGateway {
 	}
 
 	@SubscribeMessage('F_banUser')
-	async banUser(socket: Socket, infos: BanUserDto): Promise<boolean> {
+	async banUser(socket: Socket, infos:ParticipantDto): Promise<boolean> {
 		try {
 			await this.roomService.banUser(infos);
 		}
