@@ -39,3 +39,12 @@ export type T_LeaderBoard = {
   score: number;
   avatar: String;
 };
+
+export type T_game = {
+  rightPlayer: string;
+  leftPlayer: string;
+  leftPlayerScore: string;
+  losser: string;
+  winner: string;
+  id: number;
+};

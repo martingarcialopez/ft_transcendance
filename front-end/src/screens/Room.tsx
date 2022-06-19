@@ -16,7 +16,8 @@ import { FilterParticipant } from "../components/FilterRoom";
 import { FilterType } from "../components/FilterRoom";
 import { FilterAdmin } from "../components/FilterRoom";
 import { GetUserInfo } from "../components/GetUserInfo";
-import { SortLeaderboard } from "../components/SortLeaderboard";
+/* import { SortLeaderboard } from "../components/SortLeaderboard"; */
+import { CreateLeader } from "../components/CreateArrayLeaderBoard";
 
 function SettingRoom() {
   const { arrayRoom } = useSelector((state: RootState) => state);
@@ -57,7 +58,8 @@ export function Room() {
   const { ac_InitRoomArray } = bindActionCreators(actionCreatorsRoom, dispatch);
   //init arrayRoom
   E_AllRoomInfos(ac_InitRoomArray);
-  SortLeaderboard();
+  /* SortLeaderboard(); */
+  CreateLeader();
   return (
     <>
       <SettingRoom />
