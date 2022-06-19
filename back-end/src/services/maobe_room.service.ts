@@ -64,7 +64,7 @@ export class MaobeRoomService {
 			return [];
 
 		let rooms: any = await this.roomRepository.createQueryBuilder("MaobeRoom")
-			.select(["MaobeRoom", "u"])
+			.select(["MaobeRoom", "p.mute_until", "u"])
 			.leftJoin(MaobeParticipant, "p", `p.roomId = MaobeRoom.id`)
 			.leftJoin(User, "u", `p.userId = u.id`)
 			.where("MaobeRoom.id IN (:...ids)", { ids: roomIds })
@@ -77,15 +77,21 @@ export class MaobeRoomService {
 			if (managedIndex.indexOf(obj.MaobeRoom_id) === -1) {
 				managedIndex.push(obj.MaobeRoom_id);
 
+
+
 				const users = rooms.filter((obj2: any) => obj2.MaobeRoom_id === obj.MaobeRoom_id);
 				const tmp_participants: any[] = [];
 
+				const now_date = new Date();
+
 				users.forEach((obj2) => {
+					const mute_date = new Date(obj2.p_mute_until);
 					if (blockList.indexOf(obj2.u_id) === -1){
 						tmp_participants.push({
 							'userId': obj2.u_id,
 							'username': obj2.u_username,
 							'avatar': obj2.u_avatar,
+							'isMute': mute_date > now_date,
 						});
 					}
 				})
@@ -144,11 +150,15 @@ export class MaobeRoomService {
                 const users = rooms.filter((obj2: any) => obj2.MaobeRoom_id === obj.MaobeRoom_id);
                 const tmp_participants: any[] = [];
 
+                const now_date = new Date();
+
                 users.forEach((obj2) => {
+                    const mute_date = new Date(obj2.p_mute_until);
                     tmp_participants.push({
                         'userId': obj2.u_id,
                         'username': obj2.u_username,
                         'avatar': obj2.u_avatar,
+						'isMute': mute_date > now_date,
                     });
                 })
                 ret.push(

@@ -488,7 +488,10 @@ function ParticipantContextMenu(props: any) {
 	else if (props.currentRoom.admin.indexOf(props.currentUser.userId) !== -1) {
 		userRole = '👮 ';
 	}
-
+	let isMute = '';
+	if (props.currentUser.isMute) {
+		isMute = '🔇';
+	}
     return (
         <div onContextMenu={e => {
                  e.preventDefault();
@@ -499,7 +502,7 @@ function ParticipantContextMenu(props: any) {
 				<img src={ props.currentUser.avatar } alt="" />
 				<div id="column-message">
 					<div id="message-send">
-						<a>{ props.currentUser.username } { userRole }</a>
+						<a>{ props.currentUser.username } { userRole } { isMute }</a>
 					</div>
 				</div>
 			</div>
@@ -715,6 +718,14 @@ function SendMessageBar(props: any) {
 	if 	(props.messageBarValues === undefined || props.currentRoomId === -1) {
 		return (<div></div>);
 	}
+
+	const currentRoom = props.roomsList.filter((obj: any) => obj.id === props.currentRoomId)[0];
+	let isLocked = false;
+	if (currentRoom !== undefined && currentRoom.participants !== undefined) {
+		const this_participant = currentRoom.participants.filter((obj: any) => obj.userId === props.connectedUser.userId)[0];
+		isLocked = this_participant.isMute;
+	}
+
 	const currentValueBis = props.messageBarValues.get(props.currentRoomId);
 	return (
 		<div id="send-message" key={ props.currentRoomId }>
@@ -722,6 +733,7 @@ function SendMessageBar(props: any) {
 			<form action="#"
 				  onSubmit={ props.onSubmit } >
 				<input type="text"
+					   disabled={ isLocked }
 					   value={ currentValueBis }
 					   placeholder="Click here to start messaging"
 					   required
@@ -778,11 +790,16 @@ function Chat(props: any) {
 		}
 		setRooms(receivedRooms);
 
-		let sendMessageBarValues =  new Map<number, string>();
-		receivedRooms.map((room: I_Room, i: any) => {
-			sendMessageBarValues.set(room.id, '');
-		});
-		setMessageBarValue(sendMessageBarValues);
+		if (messageBarValues && currRoomId !== undefined) {
+			const currMessageBarValue = messageBarValues.get(currRoomId)
+			if (currMessageBarValue !== undefined && currMessageBarValue.length === 0) {
+				let sendMessageBarValues =  new Map<number, string>();
+				receivedRooms.map((room: I_Room, i: any) => {
+					sendMessageBarValues.set(room.id, '');
+				});
+				setMessageBarValue(sendMessageBarValues);
+			}
+		}
 		props.appSocket.emit('F_getMessages', receivedRooms[0].id);
 	}
 	const onClick_Room = (roomId: number) => {
@@ -1304,6 +1321,8 @@ function Chat(props: any) {
 									  messages={ messages }/>
 						<SendMessageBar messageBarValues={ messageBarValues }
 										currentRoomId={ currRoomId }
+										roomsList={ rooms }
+										connectedUser={ props.connectedUser }
 										onChange={ onChange_setMessageBarValue }
 										onSubmit={ onSubmit_messageBar } />
 					</div>
