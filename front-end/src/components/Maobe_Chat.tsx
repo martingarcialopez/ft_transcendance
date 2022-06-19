@@ -375,9 +375,6 @@ function RoomsPanel(props: any) {
 				<CreateRoomMenu {...props} />
 			</div>
 
-			<hr />
-			<hr />
-			<hr />
 			<div className="test-xibao" id="mao-room-names">
 				{ Html_roomsList }
 			</div>
