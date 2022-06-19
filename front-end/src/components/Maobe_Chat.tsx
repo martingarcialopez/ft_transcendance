@@ -194,7 +194,7 @@ function CreateRoomMenu(props: any) {
 				<label> Participants </label>
 				<FocusableItem>
 					{({ ref }) => (
-						<div ref={ ref }>
+						<div ref={ ref } className="room-participants-mgt">
 							{ Html_AvailableUser }
 						</div>
 					)}
@@ -309,7 +309,7 @@ function EditRoomMenu(props: any) {
 				<label> Participants </label>
 				<FocusableItem>
 					{({ ref }) => (
-						<div ref={ ref }>
+						<div ref={ ref } className="room-participants-mgt">
 							{ Html_AvailableUser }
 						</div>
 					)}

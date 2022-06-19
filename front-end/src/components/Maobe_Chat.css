@@ -132,6 +132,11 @@ html{
     padding-top: 20px;
 }
 
+#mensagens-diretas li {
+    overflow: auto;
+    max-height: 300px;
+}
+
 #mensagens-diretas a{
     text-decoration: none ;
     font-size: 12px;
@@ -145,7 +150,10 @@ html{
     color: #D4D5D6;
 }
 
-
+.room-participants-mgt {
+    overflow: auto;
+    max-height: 200px;
+}
 
 #conversas{
     padding-top: 10px;
