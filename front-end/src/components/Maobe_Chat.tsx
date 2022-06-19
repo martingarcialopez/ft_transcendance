@@ -1243,6 +1243,14 @@ function Chat(props: any) {
 		});
 	}, []);
 
+	useEffect(() => {
+		const interval = setInterval(() => {
+			console.log('emitting getRooms');
+			props.appSocket.emit('F_getRooms', '');
+		}, 1000);
+		return () => clearInterval(interval);
+	}, []);
+
 	/* ------------------------------- */
 	/*         Component HTML          */
 	/* ------------------------------- */
