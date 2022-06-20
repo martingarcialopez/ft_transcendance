@@ -481,7 +481,7 @@ function ParticipantBasicContextMenu(props: any) {
 
 			{ /* ----- ACCESS PROFILE ----- */ }
             <MenuItem onClick={ () => { navigate(`/profile/${props.currentUser.username}`)} }>
-				Access { props.currentUser.username }'s profile
+				Access { props.currentUser.username } profile
 			</MenuItem>
 			<hr />
 
@@ -702,7 +702,7 @@ function MessagePanel(props: any) {
 							<div id="column-message">
 								<div id="name-date-message">
 									<a>{ currentUser.username }</a>
-									<a>{ message.date }</a>
+									<a>{ message.createdDate }</a>
 								</div>
 								<div id="message-send">
 									<a>{ message.content }</a>

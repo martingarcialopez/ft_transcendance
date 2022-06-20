@@ -31,7 +31,9 @@ export class MaobeMessageService {
 		new_message.userId = messageDto.userId;
 		new_message.roomId = messageDto.roomId;
 		new_message.content = messageDto.content;
-		new_message.createdDate = new Date();
+		var date = new Date();
+		const time = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.getHours()+ ':' + date.getMinutes() + ':' + date.getSeconds();
+		new_message.createdDate = time;
 		await this.messageRepository.save(new_message);
 		return new_message;
 	}

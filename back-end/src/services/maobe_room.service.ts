@@ -48,7 +48,6 @@ export class MaobeRoomService {
 	async maobe_getJoinRooms(userId: number): Promise<any[]>
 	{
 		let blockList: number[] = await this.Mutual_blocklist(userId);
-//		console.log("0000000 ", userId, blockList);
 		const roomIds_obj: any[] = await this.roomRepository.createQueryBuilder()
 			.select(["MaobeRoom.id"])
 			.innerJoin(MaobeParticipant, "participant", `participant.roomId = MaobeRoom.id`)

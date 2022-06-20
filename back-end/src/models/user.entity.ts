@@ -26,7 +26,7 @@ export class User {
   // @Column({unique:true})
   // email: string;
 
-  @Column( {nullable: false} )
+  @Column( {nullable: true} )
   twofa: boolean;
 
   @Column ( {nullable: true} )

@@ -14,14 +14,11 @@ export class MaobeMessage {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	// @Column()
-	// sender: string;
-
 	@Column('text')
 	content: string;
 
-	@CreateDateColumn()
-    createdDate: Date;
+	@Column({nullable:true})
+    createdDate: string;
 
 	@ManyToOne((type) => User, (user) => user.messages)
 	@JoinColumn({ name: 'userId' })
