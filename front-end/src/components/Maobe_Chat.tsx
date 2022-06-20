@@ -1249,7 +1249,7 @@ function Chat(props: any) {
 				const newMessage: any = {
 					'userId': newMessageInfos.userId,
 					'content': newMessageInfos.content,
-					'date': newMessageInfos.createdDate
+					'createdDate': newMessageInfos.createdDate
 				}
 				if (intendedRoomMessages !== undefined) {
 					intendedRoomMessages.push(newMessage);
