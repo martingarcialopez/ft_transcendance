@@ -45,6 +45,7 @@ export const Pong = () => {
     const [roomId, setRoomId] = useState('');
     const [opponent, setOpponent] = useState('');
     const { userInfo }: UserState = userLogin;
+    const [playerName, setPlayerName] = useState(userInfo?.username);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -128,10 +129,10 @@ export const Pong = () => {
     socket.on('GamePlayerName', (...args) => {
         console.log("socket.on GamePlayerName");
         console.log("GamePlayerName args: ", args);
-        userInfo.username = args[0];
+        setPlayerName(args[0])
         setOpponent(args[1])
         if (playerSide === 'leftPlayer') {
-            userInfo.username = args[1];
+            setPlayerName(args[1])
             setOpponent(args[0])
         }
     });
@@ -247,7 +248,7 @@ export const Pong = () => {
 
                                 </div>
                                 {opponent ?
-                                    <ColumnGroupingTable side={playerSide} username={userInfo.username} opponent={opponent} />
+                                    <ColumnGroupingTable side={playerSide} username={playerName} opponent={opponent} />
                                     :
                                     null
                                 }
@@ -294,7 +295,7 @@ export const Pong = () => {
                                 <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
 
                             </div>
-                            <ColumnGroupingTable side={playerSide} username={userInfo.username} opponent={opponent} />
+                            <ColumnGroupingTable side={playerSide} username={playerName} opponent={opponent} />
                         </div>
 
                     )}
