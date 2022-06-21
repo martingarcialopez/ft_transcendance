@@ -125,7 +125,9 @@ export class PongService {
 
 			this.gameHistoryRepository.save(gameResult);
 
-			server.to(socket.id).emit("GamePlayerName", gameResult.leftPlayer, gameResult.rightPlayer);
+			server.to(opponent.roomName).emit("GamePlayerName", gameResult.leftPlayer, gameResult.rightPlayer);
+			console.log(`left player is ${gameResult.leftPlayer}`);
+			console.log(`right player is ${gameResult.rightPlayer}`);
 			
 			this.playGame(server, opponent.roomName);
 

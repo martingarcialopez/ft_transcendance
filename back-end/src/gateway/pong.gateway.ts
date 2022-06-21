@@ -36,7 +36,7 @@ export class PongGateway
 
 
 	@SubscribeMessage('lookingForplay')
-	async lookingForplayn(socket: Socket, userId: number) : Promise<void> {
+	async lookingForplay(socket: Socket, userId: number) : Promise<void> {
 		console.log('lookingForplay Gateway');
 		let value = await this.pongService.managePlayer(socket, this.server, userId);
 
