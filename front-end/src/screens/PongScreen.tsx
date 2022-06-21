@@ -108,7 +108,9 @@ export const Pong = () => {
         }
 
         // console.log("HANDKE CKUC")
-        setWinner('');
+        setGameStarted(true);
+        setOpponent('')
+        setWinner('')
         receive_socket_info();
     }
 
@@ -136,35 +138,53 @@ export const Pong = () => {
 
     const endGame = () => {
         console.log("socket.removeAllListeners gameState gameOver GameInfo GamePlayerName");
-        // socket.removeAllListeners('gameState')
-        // socket.removeAllListeners('gameOver')
-        // socket.removeAllListeners('GameInfo')
-        // socket.removeAllListeners('GamePlayerName')
+        socket.removeAllListeners('gameState')
+        socket.removeAllListeners('gameOver')
+        socket.removeAllListeners('GameInfo')
+        socket.removeAllListeners('GamePlayerName')
+        setGameState(({
+            ballPos: { x: window_size.canvasWidth / 2, y: window_size.canvasHeight / 2 },
+            ballVel: { x: 10, y: 10 },
+            leftPaddle: window_size.canvasHeight / 2,
+            rightPaddle: window_size.canvasHeight / 2,
+            leftScore: 0,
+            rightScore: 0,
+        }))
     }
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
         var img = new Image();
+        ctx.imageSmoothingEnabled = false
         if (winner !== '') {
-            if (winner === 'leftPlayer')
+            console.log("drawGame winner:", winner)
+            if (winner === 'leftplayer')
                 img.src = "./game/left_win.jpeg"
             else
                 img.src = "./game/right_win.jpeg"
 
             ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
         }
-        // else if (gameStarted === false) {
-        //     img.src = "./game/cyberpong.jpeg"
+        else if (opponent === '') {
+            img.src = "./game/cyberpong.jpeg"
 
-        //     ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
-        // }
+            ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
+        }
         else {
+            ctx.beginPath();
+            ctx.clearRect(0, 0, window_size.canvasWidth, window_size.canvasHeight);
+            ctx.closePath();
+
             ctx.fillStyle = colorBackground;
             ctx.fillRect(0, 0, window_size.canvasWidth, window_size.canvasHeight);
 
-            // // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
+            // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
             // ctx.beginPath();
-            ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
-            ctx.closePath();
+            // ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
+            // ctx.closePath();
+
+            ctx.fillStyle = colorBackground;
+            ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 5, 0, 2 * Math.PI)
+            ctx.fill();
 
             ctx.fillStyle = 'black';
             ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI)
@@ -219,17 +239,24 @@ export const Pong = () => {
                             {colorBackground}
                         </div>
                         Difficulty level {difficulty}
-                    </Grid>
+                        <Grid item xs={6}>
 
-                    <Grid
-                        container
-                        rowSpacing={10}
-                        direction="column"
-                        alignItems="center"
-                        justifyContent="space-around"
-                        style={{ minHeight: '70vh' }}
-                    >
-                        <Grid item xs={3}>
+                            <div>
+                                <div className='gamePong' tabIndex={0} onKeyDown={onKeyDownHandler}>
+                                    <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
+
+                                </div>
+                                {opponent ?
+                                    <ColumnGroupingTable side={playerSide} username={userInfo.username} opponent={opponent} />
+                                    :
+                                    null
+                                }
+                            </div>
+                        </Grid>
+
+                        <Grid
+                            rowSpacing={10}
+                        >
                             <Button variant="outlined" onClick={handleClick}>
                                 {winner === '' ? (
                                     <div>
