@@ -119,6 +119,7 @@ export const userLoginReducer = (
         showLoading: true,
       };
     case ENABLE_2FA_CONFIRMED_ACTION:
+      console.log("ENABLE_2FA_CONFIRMED_ACTION action.payload", action.payload)
       return {
         ...state,
         showLoading: false,
@@ -126,6 +127,7 @@ export const userLoginReducer = (
         userInfo: { ...state.userInfo, twofa: true, code2FA: action.payload },
       };
     case GET_FRIENDS_LIST_ACTION:
+      console.log("GET_FRIENDS_LIST_ACTION action.payload", action.payload)
       return {
         ...state,
         showLoading: false,
@@ -133,6 +135,7 @@ export const userLoginReducer = (
         userInfo: { ...state.userInfo, friends: action.payload },
       };
     case GET_FRIEND_INFOS_ACTION:
+      console.log("GET_FRIEND_INFOS_ACTION action.payload", action.payload)
       return {
         ...state,
         showLoading: false,
@@ -141,6 +144,7 @@ export const userLoginReducer = (
         successMessage: "Get Friend Infos Successfully Completed",
       };
     case DISABLE_2FA_CONFIRMED_ACTION:
+      console.log("DISABLE_2FA_CONFIRMED_ACTION action.payload", action.payload)
       return {
         ...state,
         showLoading: false,
@@ -158,6 +162,7 @@ export const userLoginReducer = (
         successMessage: "Image Successfully Upload",
       };
     case UPDATE_CONFIRMED_ACTION:
+      console.log("UPDATE_CONFIRMED_ACTION action.payload", action.payload)
       return {
         ...state,
         showLoading: false,
@@ -166,6 +171,7 @@ export const userLoginReducer = (
         successMessage: "Profile Successfully Update",
       };
     case LOGIN_CONFIRMED_ACTION:
+      console.log("LOGIN_CONFIRMED_ACTION action.payload", action.payload)
       return {
         ...state,
         showLoading: false,
@@ -174,6 +180,7 @@ export const userLoginReducer = (
         successMessage: "Login Successfully Completed",
       };
     case SIGNUP_CONFIRMED_ACTION:
+      console.log("SIGNUP_CONFIRMED_ACTION action.payload", action.payload)
       return {
         ...state,
         showLoading: false,

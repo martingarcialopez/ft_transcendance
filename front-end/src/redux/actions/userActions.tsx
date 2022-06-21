@@ -43,7 +43,8 @@ export function updateAction(firstname: any, lastname: any, username: any, id: a
         console.log("updateAction response : ")
         console.log(response)
         saveTokenInLocalStorage(access_token, response.data);
-        dispatch(loginConfirmedAction(response.data))
+        dispatch(updateConfirmedAction(response.data))
+        //maybe use loginConfirmedAction ?
       })
       .catch((error) => {
         console.log("ceci est une error dans signupAction :")

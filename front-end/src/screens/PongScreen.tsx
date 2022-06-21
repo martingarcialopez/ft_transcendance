@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { BALL_RADIUS, GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
+import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
 import { Button, Grid } from '@mui/material';
 import Canvas from '../components/Canvas';

@@ -2,7 +2,7 @@ import "../styles/profileContainerStyles.css";
 import { Button, Grid, TextField } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { Box } from "@mui/system";
-import { updateAction } from "../redux/actions/userActions";
+import { updateAction, uploadImageAction } from "../redux/actions/userActions";
 import { useDispatch } from "react-redux";
 import { CustomizedSnackbars } from "./CustomizedSnackbars";
 import { useParams } from "react-router-dom";
@@ -16,8 +16,22 @@ export const UpdateProfile = ({ userInfo }: any) => {
     const [snackbars, setSnackbars] = useState(false);
     const [statusError, setStatusError] = useState(false);
     const { id } = useParams();
-
+    const [displayImg, setDisplayImg] = useState(true)
+    const [profileImg, setProfileImg] = useState('')
     const dispatch = useDispatch()
+
+    const onFileChange = (e: any) => {
+        setProfileImg(e.target.files[0])
+        console.log("FilesUploadComponent e.target.files[0] :", e.target.files[0])
+    }
+
+    const uploadImage = () => {
+        const formData = new FormData()
+        formData.append('file', profileImg)
+        console.log("FilesUploadComponent formData :", formData)
+        dispatch(uploadImageAction(formData, userInfo.access_token));
+        setDisplayImg(true)
+    }
     // const ref_default_img = "/game/test/test_42.jpg"
     // const ref_default_img = "/shared/avatar/mgarcia-.png"
 
@@ -38,6 +52,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
         else {
             setStatusError(false);
         }
+        setDisplayImg(true);
         console.log("UpdateProfile :", {
             firstname: firstname,
             lastname: lastname,
@@ -67,19 +82,34 @@ export const UpdateProfile = ({ userInfo }: any) => {
                     :
                     null
                 }
-                <FilesUploadComponent userInfo={userInfo} />
-                <h1 className="userName">{userInfo.username}</h1>
-                <h3 className="userNickName">{userInfo.login42}</h3>
-                <h5 className="userNickName">{userInfo.firstname}</h5>
-                <h5 className="userNickName">{userInfo.lastname}</h5>
-                {!id ?
+                {displayImg ?
                     <div>
-                        <Button onClick={handleClickOpen} >
-                            Edit Profile
+                        <Button onClick={() => setDisplayImg(false)} >
+                            <img src={userInfo.avatar} alt="Profile Image" className="userImage" />
                         </Button>
+                        <h1 className="userName">{userInfo.username}</h1>
+                        <h3 className="userNickName">{userInfo.login42}</h3>
+                        <h5 className="userNickName">{userInfo.firstname}</h5>
+                        <h5 className="userNickName">{userInfo.lastname}</h5>
+                        {!id ?
+                            <div>
+                                <Button onClick={handleClickOpen} >
+                                    Edit Profile
+                                </Button>
+                            </div>
+                            :
+                            null
+                        }
                     </div>
                     :
-                    null
+                    <div>
+                        <div className="form-group">
+                            <input type="file" onChange={onFileChange} />
+                        </div>
+                        <div className="form-group">
+                            <button className="btn btn-primary" onClick={() => uploadImage()}>Upload</button>
+                        </div>
+                    </div>
                 }
             </div>
             :
