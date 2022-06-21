@@ -65,13 +65,15 @@ export const Pong = () => {
     }
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        // console.log("onKeyDownHandler event code :", event.code)
+        console.log("onKeyDownHandler event code :", event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
+                console.log("socket.emit -1 id.toString()", id.toString(), "playerSide :", playerSide, "roomId:", roomId);
                 socket.emit('move', id.toString(), playerSide, roomId, 1);
                 setId(id + 1);
                 break;
             case 'KeyW' || 'ArrowUp':
+                console.log("socket.emit +1 id.toString()", id.toString(), "playerSide :", playerSide, "roomId:", roomId);
                 socket.emit('move', id.toString(), playerSide, roomId, -1);
                 setId(id + 1);
                 break;
@@ -118,10 +120,6 @@ export const Pong = () => {
         // console.log(side);
         setRoomId(args[0])
         setPlayerSide(args[1])
-        if (args[0] === 'leftPlayer') {
-            setRoomId(args[1])
-            setPlayerSide(args[0])
-        }
         setGameStarted(true);
     });
 
