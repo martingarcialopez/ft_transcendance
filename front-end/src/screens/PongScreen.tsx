@@ -23,7 +23,7 @@ const window_size = {
 export const Pong = () => {
     const [progress, setProgress] = useState(10);
     const [colorBackground, setColorBackground] = useState('white');
-    const [difficulty, setDifficulty] = useState(1);
+    const [difficulty, setDifficulty] = useState("Normal");
     const [searchOpponent, setSearchOpponent] = useState("Waiting for an opponent");
     // Use a ref to access the Canvas
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -103,8 +103,8 @@ export const Pong = () => {
 
     function handleClick() {
         if (userInfo) {
-            console.log("socket.emit lookingForplay / userInfo.id: ", userInfo.id);
-            socket.emit('lookingForplay', userInfo.id);
+            console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
+            socket.emit('lookingForAGame', userInfo.id, difficulty);
         }
 
         // console.log("HANDKE CKUC")
@@ -220,9 +220,9 @@ export const Pong = () => {
                     >
                         <Grid item xs={3}>
                             <ButtonGroup variant="text" aria-label="text button group">
-                                <Button onClick={() => setDifficulty(1)}>Niveau 1</Button>
-                                <Button onClick={() => setDifficulty(2)}>Niveau 2</Button>
-                                <Button onClick={() => setDifficulty(3)}>Niveau 3</Button>
+                                <Button onClick={() => setDifficulty("Easy")}>Easy</Button>
+                                <Button onClick={() => setDifficulty("Normal")}>Normal</Button>
+                                <Button onClick={() => setDifficulty("Hard")}>Hard</Button>
                             </ButtonGroup>
                         </Grid>
                         <Grid item xs={6}>
@@ -238,7 +238,7 @@ export const Pong = () => {
                         <div style={{ backgroundColor: colorBackground }}>
                             {colorBackground}
                         </div>
-                        Difficulty level {difficulty}
+                        Difficulty {difficulty}
                         <Grid item xs={6}>
 
                             <div>
