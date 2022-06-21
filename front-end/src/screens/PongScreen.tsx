@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
+import { BALL_RADIUS, GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
 import { Button, Grid } from '@mui/material';
 import Canvas from '../components/Canvas';
@@ -95,12 +95,13 @@ export const Pong = () => {
             console.log("winnerPlayer :", winnerPlayer)
             setWinner(winnerPlayer);
             setGameStarted(false);
+            endGame();
         });
     }
 
     function handleClick() {
         if (userInfo) {
-            console.log("socket.emit lookingForplay");
+            console.log("socket.emit lookingForplay / userInfo.id: ", userInfo.id);
             socket.emit('lookingForplay', userInfo.id);
         }
 
@@ -112,11 +113,16 @@ export const Pong = () => {
     socket.on('GameInfo', (...args) => {
         console.log("socket.on GameInfo");
         console.log("roomId / side", args);
+        // console.log("args[0]: ", args[0]);
+        // console.log("args[1]: ", args[1]);
         // console.log(side);
         setRoomId(args[0])
         setPlayerSide(args[1])
+        if (args[0] === 'leftPlayer') {
+            setRoomId(args[1])
+            setPlayerSide(args[0])
+        }
         setGameStarted(true);
-        endGame();
     });
 
     socket.on('GamePlayerName', (...args) => {
@@ -132,10 +138,10 @@ export const Pong = () => {
 
     const endGame = () => {
         console.log("socket.removeAllListeners gameState gameOver GameInfo GamePlayerName");
-        socket.removeAllListeners('gameState')
-        socket.removeAllListeners('gameOver')
-        socket.removeAllListeners('GameInfo')
-        socket.removeAllListeners('GamePlayerName')
+        // socket.removeAllListeners('gameState')
+        // socket.removeAllListeners('gameOver')
+        // socket.removeAllListeners('GameInfo')
+        // socket.removeAllListeners('GamePlayerName')
     }
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
@@ -159,11 +165,11 @@ export const Pong = () => {
 
             // // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
             // ctx.beginPath();
-            // ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
-            // ctx.closePath();
+            ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
+            ctx.closePath();
 
-            ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI)
             ctx.fillStyle = 'black';
+            ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI)
             ctx.fill();
 
             ctx.fillStyle = "green";
