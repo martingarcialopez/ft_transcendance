@@ -88,15 +88,16 @@ export class PongService {
 	// 	}
     // }
 
-	async managePlayer(socket: Socket, server: Server, userId : number) :Promise<void> {
+	async managePlayer(socket: Socket, server: Server, userId : number, difficulty: string) :Promise<void> {
 
-		let bbdd = await this.pongRepository.find();
+		let bbdd = await this.pongRepository.find( { "difficulty": difficulty } );
 
 		if (!bbdd.length) {
 
 			const player: Matchmaking = new Matchmaking();
 
 			player.userId = userId;
+			player.difficulty = difficulty;
 			player.roomName = uuidv4();
 			await this.pongRepository.save(player);
 
@@ -129,14 +130,14 @@ export class PongService {
 			console.log(`left player is ${gameResult.leftPlayer}`);
 			console.log(`right player is ${gameResult.rightPlayer}`);
 			
-			this.playGame(server, opponent.roomName);
+			this.playGame(server, opponent.roomName, difficulty);
 
 		}
 	}
 	
 
 
-	async playGame(socket: Server, socketRoom: string) {
+	async playGame(socket: Server, socketRoom: string, difficulty: string) {
 
 		console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
 
