@@ -9,6 +9,9 @@ import { Relationship } from '../models/friends.entity';
 import { unlinkSync } from 'fs';
 import * as bcrypt from 'bcrypt';
 import { GameHistory } from '../models/gamehistory.entity';
+import { Multer } from 'multer';
+import * as fs from "fs";
+import { promisify } from 'util';
 
 @Injectable()
 export class UserService {
@@ -216,5 +219,34 @@ export class UserService {
             .execute();
     }
 
+    uploadProfileImage(req, uploadedFile: Express.Multer.File) {
+
+        console.log(uploadedFile);
+
+        const unlinkAsync = promisify(fs.unlink)
+
+        const files: string[] = fs.readdirSync("public/shared/avatar");
+
+        const uploadedFileName = uploadedFile.filename.split('.').slice(0, -1).join('.');
+        const uploadedFileExtension = uploadedFile.filename.split('.').pop();
+
+        files.forEach(file => {
+            const filename = file.split('.').slice(0, -1).join('.');
+            const extension = file.split('.').pop();
+            if (filename === uploadedFileName && extension != uploadedFileExtension)
+                unlinkAsync(`public/shared/avatar/${file}`);
+        });
+
+        console.log(files);
+
+        const response = {
+            originalname: uploadedFile.originalname,
+            filename: `/shared/avatar/${uploadedFile.filename}`,
+        };
+
+        this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
+
+        return response;
+    }
 
 }
