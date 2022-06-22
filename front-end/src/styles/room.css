@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@1,600&display=swap');
+
+*{
+	margin:0;
+	padding:0;
+}
+
+html 
+{
+  font-size: 16px;
+}
+
+
+
+/*input[type=text], input[type=password],select {
+* modifier par ça */
+
+.inputRoom{
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+	text-align: center;
+
+}
+
+.btn-new-room {
+  width: 30%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+	font-size: 100%;
+	position: relative;
+	/* left: 10%; */
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.frm-add-room{
+		/* position: relative; */
+		/* left: 25%; */
+		overflow: hidden;
+		/* background-color: black; */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+				
+
+
+}
+
+.box-btn{
+		/* background-color: black; */
+		width: 50vw;
+		display: flex;
+		justify-content: space-evenly;
+}
+.btn1, .btn2{
+		left: 0%;
+		width: 30%;
+}
+
+@media all and (max-width: 768px) {
+ul li {
+				font-size:2vw;
+				
+}
+
+.box-btn{
+		/* background-color: black; */
+		width: 50%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		
+}
+
+.btn1, .btn2{
+		width: 50%;
+}
+
+}
+
+input::placeholder {
+        color: #1c87c9;
+        opacity: 1;
+      }
+
+.box-Room{
+		display: flex;
+		/* background-color: chartreuse; */
+		flex-direction: column;
+		align-items:stretch;
+		align-content:flex-end;
+
+}
+
+.roomList{
+		font-size: 100%;
+		position: relative;
+		left: 25%;
+		margin: 10px;
+		padding: 10px;
+		background-color: #E8F8F5;
+		width: 50%;
+		cursor: pointer;
+}
+
+/* Set all odd list items to a different color (zebra-stripes) */
+.roomList:nth-child(odd) {
+  background: #f9f9f9;
+}
+
+/* Darker background-color on hover */
+.roomList:hover {
+  background: #ddd;
+}
+
+.btn-join-room{
+		position: relative;
+		margin-right: 35%;
+		left: 30%;
+		cursor: pointer;
+
+}
+
+.box-fom-procted{
+		display: flex;
+		flex-direction: column;
+		align-items:center;
+}
+
+.roomProtected, .btn-Protected
+{
+		/* position: relative; */
+		/* left: 25%; */
+
+}
+
+
+
+.box-fom-option{
+		display: flex;
+		flex-direction: column;
+		/* background-color: cornflowerblue; */
+		align-items: center;
+
+}
+
+
+.opt1, .opt2, .opt3{
+		width: 20vw;
+}
+
+.opt1
+{
+		  background-color:#DE3163;
+}
+.opt2
+{
+		  background-color:#FFBF00;
+}
+
+.opt3
+{
+		  background-color:#FF7F50;
+}
+
+.TitleOptionRoom{
+		position: relative;
+		left: 25%;
+		text-align: center;
+		width: 50vw;
+	  font-size: calc(70% + 1vw + 1vh);
+		text-transform: uppercase; 
+
+
+
+}
+
+
+.TitleModal{
+		width: 25vw;
+		position: relative;
+		left: 25%;
+	  font-size: calc(100% + 1vw + 1vh);		
+}
+
+/*message when user fill the form*/
+.MsgError{
+		position: relative;
+		left: 25%;		
+}
+
+/*time to mute user*/
+.time{
+
+		width:8%;
+}
+
+/*name of user in the chat message*/
+.userName{
+	  font-weight: bold;
+
+}
+.search-box{
+		display: none;
+}
+.col-md-4{
+		    overflow: auto;
+    height: 100vh;
+}
+
+.test{
+		cursor: pointer;
+}
