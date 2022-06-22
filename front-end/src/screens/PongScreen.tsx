@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
+import { BALL_RADIUS, GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
 import { Button, Grid } from '@mui/material';
 import Canvas from '../components/Canvas';
@@ -23,7 +23,7 @@ const window_size = {
 export const Pong = () => {
     const [progress, setProgress] = useState(10);
     const [colorBackground, setColorBackground] = useState('white');
-    const [difficulty, setDifficulty] = useState(1);
+    const [difficulty, setDifficulty] = useState("Normal");
     const [searchOpponent, setSearchOpponent] = useState("Waiting for an opponent");
     // Use a ref to access the Canvas
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -45,6 +45,7 @@ export const Pong = () => {
     const [roomId, setRoomId] = useState('');
     const [opponent, setOpponent] = useState('');
     const { userInfo }: UserState = userLogin;
+    const [playerName, setPlayerName] = useState(userInfo?.username);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -65,13 +66,15 @@ export const Pong = () => {
     }
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        // console.log("onKeyDownHandler event code :", event.code)
+        console.log("onKeyDownHandler event code :", event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
+                console.log("socket.emit -1 id.toString()", id.toString(), "playerSide :", playerSide, "roomId:", roomId);
                 socket.emit('move', id.toString(), playerSide, roomId, 1);
                 setId(id + 1);
                 break;
             case 'KeyW' || 'ArrowUp':
+                console.log("socket.emit +1 id.toString()", id.toString(), "playerSide :", playerSide, "roomId:", roomId);
                 socket.emit('move', id.toString(), playerSide, roomId, -1);
                 setId(id + 1);
                 break;
@@ -95,37 +98,41 @@ export const Pong = () => {
             console.log("winnerPlayer :", winnerPlayer)
             setWinner(winnerPlayer);
             setGameStarted(false);
+            endGame();
         });
     }
 
     function handleClick() {
         if (userInfo) {
-            console.log("socket.emit lookingForplay");
-            socket.emit('lookingForplay', userInfo.id);
+            console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
+            socket.emit('lookingForAGame', userInfo.id, difficulty);
         }
 
         // console.log("HANDKE CKUC")
-        setWinner('');
+        setGameStarted(true);
+        setOpponent('')
+        setWinner('')
         receive_socket_info();
     }
 
     socket.on('GameInfo', (...args) => {
         console.log("socket.on GameInfo");
         console.log("roomId / side", args);
+        // console.log("args[0]: ", args[0]);
+        // console.log("args[1]: ", args[1]);
         // console.log(side);
         setRoomId(args[0])
         setPlayerSide(args[1])
         setGameStarted(true);
-        endGame();
     });
 
     socket.on('GamePlayerName', (...args) => {
         console.log("socket.on GamePlayerName");
         console.log("GamePlayerName args: ", args);
-        userInfo.username = args[0];
+        setPlayerName(args[0])
         setOpponent(args[1])
         if (playerSide === 'leftPlayer') {
-            userInfo.username = args[1];
+            setPlayerName(args[1])
             setOpponent(args[0])
         }
     });
@@ -136,34 +143,52 @@ export const Pong = () => {
         socket.removeAllListeners('gameOver')
         socket.removeAllListeners('GameInfo')
         socket.removeAllListeners('GamePlayerName')
+        setGameState(({
+            ballPos: { x: window_size.canvasWidth / 2, y: window_size.canvasHeight / 2 },
+            ballVel: { x: 10, y: 10 },
+            leftPaddle: window_size.canvasHeight / 2,
+            rightPaddle: window_size.canvasHeight / 2,
+            leftScore: 0,
+            rightScore: 0,
+        }))
     }
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
         var img = new Image();
+        ctx.imageSmoothingEnabled = false
         if (winner !== '') {
-            if (winner === 'leftPlayer')
+            console.log("drawGame winner:", winner)
+            if (winner === 'leftplayer')
                 img.src = "./game/left_win.jpeg"
             else
                 img.src = "./game/right_win.jpeg"
 
             ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
         }
-        // else if (gameStarted === false) {
-        //     img.src = "./game/cyberpong.jpeg"
+        else if (opponent === '') {
+            img.src = "./game/cyberpong.jpeg"
 
-        //     ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
-        // }
+            ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
+        }
         else {
+            ctx.beginPath();
+            ctx.clearRect(0, 0, window_size.canvasWidth, window_size.canvasHeight);
+            ctx.closePath();
+
             ctx.fillStyle = colorBackground;
             ctx.fillRect(0, 0, window_size.canvasWidth, window_size.canvasHeight);
 
-            // // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
+            // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
             // ctx.beginPath();
             // ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
             // ctx.closePath();
 
-            ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI)
+            ctx.fillStyle = colorBackground;
+            ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 5, 0, 2 * Math.PI)
+            ctx.fill();
+
             ctx.fillStyle = 'black';
+            ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI)
             ctx.fill();
 
             ctx.fillStyle = "green";
@@ -196,9 +221,9 @@ export const Pong = () => {
                     >
                         <Grid item xs={3}>
                             <ButtonGroup variant="text" aria-label="text button group">
-                                <Button onClick={() => setDifficulty(1)}>Niveau 1</Button>
-                                <Button onClick={() => setDifficulty(2)}>Niveau 2</Button>
-                                <Button onClick={() => setDifficulty(3)}>Niveau 3</Button>
+                                <Button onClick={() => setDifficulty("Easy")}>Easy</Button>
+                                <Button onClick={() => setDifficulty("Normal")}>Normal</Button>
+                                <Button onClick={() => setDifficulty("Hard")}>Hard</Button>
                             </ButtonGroup>
                         </Grid>
                         <Grid item xs={6}>
@@ -214,18 +239,25 @@ export const Pong = () => {
                         <div style={{ backgroundColor: colorBackground }}>
                             {colorBackground}
                         </div>
-                        Difficulty level {difficulty}
-                    </Grid>
+                        Difficulty {difficulty}
+                        <Grid item xs={6}>
 
-                    <Grid
-                        container
-                        rowSpacing={10}
-                        direction="column"
-                        alignItems="center"
-                        justifyContent="space-around"
-                        style={{ minHeight: '70vh' }}
-                    >
-                        <Grid item xs={3}>
+                            <div>
+                                <div className='gamePong' tabIndex={0} onKeyDown={onKeyDownHandler}>
+                                    <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
+
+                                </div>
+                                {opponent ?
+                                    <ColumnGroupingTable side={playerSide} username={playerName} opponent={opponent} />
+                                    :
+                                    null
+                                }
+                            </div>
+                        </Grid>
+
+                        <Grid
+                            rowSpacing={10}
+                        >
                             <Button variant="outlined" onClick={handleClick}>
                                 {winner === '' ? (
                                     <div>
@@ -263,7 +295,7 @@ export const Pong = () => {
                                 <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
 
                             </div>
-                            <ColumnGroupingTable side={playerSide} username={userInfo.username} opponent={opponent} />
+                            <ColumnGroupingTable side={playerSide} username={playerName} opponent={opponent} />
                         </div>
 
                     )}

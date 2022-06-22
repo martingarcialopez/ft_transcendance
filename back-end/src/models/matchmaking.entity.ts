@@ -10,6 +10,9 @@ export class Matchmaking {
 	userId: number;
 
 	@Column()
+	difficulty: string;
+
+	@Column()
 	roomName: string;
 
 	@Column( {nullable:true, default: null} )
