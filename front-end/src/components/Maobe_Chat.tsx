@@ -1513,7 +1513,7 @@ function Chat(props: any) {
 
         <div id="main">
           <RoomHeaderBar roomsList={rooms} currRoomId={currRoomId} />
-          <div className="content">
+          <div className="content msgContent">
             <MessagePanel
               roomsList={rooms}
               currRoomId={currRoomId}
