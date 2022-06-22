@@ -651,7 +651,7 @@ function ParticipantsPanel(props: any) {
     <div>
       <div id="profile">
         <img src="" alt="" />
-        <span className="titlePArticipants">Participants</span>
+        <a>Participants</a>
       </div>
 
       {Html_participants}
