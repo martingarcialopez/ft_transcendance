@@ -49,7 +49,7 @@ export function CreateInvitation() {
   const handleClose = () => setOpen(false);
   return (
     <>
-      <div className=" test" onClick={handleOpen}>
+      <div className="test" onClick={handleOpen}>
         Invitation
       </div>
       <Modal
