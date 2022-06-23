@@ -1,0 +1,38 @@
+import { Repository } from 'typeorm';
+import { RoomDto } from '../dtos/in/room.dto';
+import { RoomSnippetDto } from '../dtos/out/RoomSnippetDto.dto';
+import { User } from '../models/user.entity';
+import { Room } from '../models/room.entity';
+import { Participant } from '../models/participant.entity';
+import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
+import { RoomPwDto } from '../dtos/in/room_password.dto';
+import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
+import { ParticipantDto } from '../dtos/in/participant.dto';
+import { BanUserDto } from '../dtos/in/banUser.dto';
+export declare class RoomService {
+    private readonly roomRepository;
+    private readonly participantRepository;
+    private readonly userRepository;
+    private readonly userService;
+    private readonly messageService;
+    private readonly participantService;
+    constructor(roomRepository: Repository<Room>, participantRepository: Repository<Participant>, userRepository: Repository<User>);
+    createRoom(roomDto: RoomDto): Promise<RoomSnippetDto>;
+    getRoom(room_Id: number): Promise<Room>;
+    deleteRoom(id: number): Promise<void>;
+    participant_already_exist(participantDto: ParticipantDto): Promise<boolean>;
+    joinRoom(joinRoomDto: JoinRoomDto): Promise<boolean>;
+    updateRoomPw(body: RoomPwDto): Promise<boolean>;
+    deleteRoomPw(body: RoomPwDto): Promise<boolean>;
+    get_hash_pw(password: string): Promise<string>;
+    get_RoomAdmins(roomId: number): Promise<number[] | undefined>;
+    userIsAdmin(roomId: number, userId: number): Promise<boolean>;
+    manageAdmin(body: UpdateAdminDto): Promise<boolean>;
+    AdminleaveRoom(body: ParticipantDto): Promise<void>;
+    getRoomId(roomName: string): Promise<number>;
+    IsRoomName_Unique(roomName: string): Promise<boolean>;
+    allRoomInfos(): Promise<Room[] | undefined>;
+    userId_fromLogin(login: string): Promise<User | undefined>;
+    get_Room_banList(roomId: number): Promise<number[]>;
+    banUser(body: BanUserDto): Promise<void>;
+}

@@ -1,0 +1,34 @@
+import { Socket, Server } from 'socket.io';
+import { MaobeRoomService } from '../services/maobe_room.service';
+import { MaobeParticipantService } from '../services/maobe_participant.service';
+import { RoomDto } from '../dtos/in/maobe_room.dto';
+import { ParticipantDto } from '../dtos/in/participant.dto';
+import { JoinRoomDto } from '../dtos/in/maobe_JoinRoom.dto';
+import { MaobeMessageService } from '../services/maobe_message.service';
+import { UserService } from '../services/user.service';
+import { AdminDto } from '../dtos/in/maobe_admin.dto';
+export declare class MaobeChatGateway {
+    private readonly participantService;
+    private readonly roomService;
+    private readonly messageService;
+    private readonly userService;
+    server: Server;
+    constructor(participantService: MaobeParticipantService, roomService: MaobeRoomService, messageService: MaobeMessageService, userService: UserService);
+    handleMessage(client: Socket, payload: string): Promise<boolean>;
+    createRoom(client: Socket, body: RoomDto): Promise<boolean>;
+    deleteRoom(socket: Socket, roomId: number): boolean;
+    banUser(socket: Socket, infos: ParticipantDto): Promise<boolean>;
+    getUsers(socket: Socket): Promise<boolean>;
+    getRoomUsers(socket: Socket, roomId: number): Promise<boolean>;
+    getDispoRooms(socket: Socket): Promise<boolean>;
+    createParticipant(socket: Socket, dto: JoinRoomDto): Promise<boolean>;
+    blockUser(socket: Socket, b_userId: number): Promise<boolean>;
+    directMessage(socket: Socket, infos: any): boolean;
+    createMessage(socket: Socket, message: any): Promise<boolean>;
+    updateRoom(socket: Socket, roomInfos: any): Promise<boolean>;
+    getMessage(socket: Socket, roomId: number): Promise<boolean>;
+    leaveRoom(socket: Socket, roomId: number): Promise<boolean>;
+    setAsAdmin(socket: Socket, dto: AdminDto): Promise<boolean>;
+    kickUser(participantDto: ParticipantDto): Promise<boolean>;
+    muteUser(participantDto: ParticipantDto): Promise<boolean>;
+}

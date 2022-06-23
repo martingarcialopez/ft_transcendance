@@ -1,0 +1,33 @@
+import { RoomService } from '../services/room.service';
+import { Socket, Server } from 'socket.io';
+import { RoomDto } from '../dtos/in/room.dto';
+import { JoinRoomDto } from '../dtos/in/JoinRoom.dto';
+import { RoomPwDto } from '../dtos/in/room_password.dto';
+import { UpdateAdminDto } from '../dtos/in/update_admin.dto';
+import { ParticipantDto } from '../dtos/in/participant.dto';
+import { BlockUserDto } from '../dtos/in/blockUser.dto';
+import { BanUserDto } from '../dtos/in/banUser.dto';
+import { ReturnStatusDto } from '../dtos/out/return_status.dto';
+import { UserService } from '../services/user.service';
+import { MessageService } from '../services/message.service';
+import { ParticipantService } from '../services/participant.service';
+export declare class RoomGateway {
+    private readonly roomService;
+    private readonly userService;
+    private readonly messageService;
+    private readonly participantService;
+    server: Server;
+    constructor(roomService: RoomService, userService: UserService, messageService: MessageService, participantService: ParticipantService);
+    createRoom(socket: Socket, body: RoomDto): Promise<void>;
+    JoinRoom(socket: Socket, body: JoinRoomDto): Promise<void>;
+    getRoom(socket: Socket, room_id: number): Promise<void>;
+    deleteRoom(id: number): Promise<void>;
+    updateRoomPw(socket: Socket, body: RoomPwDto): Promise<void>;
+    deleteRoomPw(socket: Socket, body: RoomPwDto): Promise<void>;
+    manageAdmin(body: UpdateAdminDto): Promise<void>;
+    getMessage(socket: Socket, body: ParticipantDto): Promise<void>;
+    blockUser(body: BlockUserDto): Promise<void>;
+    leaveRoom(body: ParticipantDto): Promise<void>;
+    allRoomInfos(socket: Socket): Promise<void | undefined>;
+    banUser(socket: Socket, body: BanUserDto): Promise<ReturnStatusDto>;
+}
