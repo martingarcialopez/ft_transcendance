@@ -606,12 +606,12 @@ body{
 @media all and (max-width: 768px) {
 .container{
     display: flex;
-
 		flex-direction:column ;
 		max-width: 100vw;/*lenox*/
     background-color: #000;
-		gap: 10px;
-		  align-items: stretch;
+		gap: 20px;
+		align-items: stretch;
+		height: auto;
 
 }
 
@@ -643,7 +643,7 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
-		flex-grow: 1;
+
     /* height: 60vh; */		
 }
 
@@ -653,6 +653,7 @@ body{
     display: flex;
     flex-direction: column;
 		width: 100vw;
+		/* display: none; */
 
 
 }
@@ -661,10 +662,6 @@ body{
 		width: 100vw;
 }
 
-
-#left-bars, #middle-box, #participants{
-		flex-grow: 1;
-}
 
 
 .content {
@@ -693,5 +690,11 @@ body{
 	height: 100%;
   margin-top: 30px;
 }
-
+#participants{
+		height: 50vh;
+		width: 100vw;
+}
+.test{
+		height: 50vh;
+}
 }
