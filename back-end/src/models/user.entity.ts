@@ -35,8 +35,8 @@ export class User {
   @Column({ nullable: true })
   avatar: string;
 
-  @Column({ default: false })
-  isActive: boolean;
+  @Column({ default: "offline"})
+  status: string;
 
   @Column("int", { nullable: true, array: true, default: "{}" })
   blockList: number[];

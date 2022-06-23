@@ -129,15 +129,18 @@ export class PongService {
 			server.to(opponent.roomName).emit("GamePlayerName", gameResult.leftPlayer, gameResult.rightPlayer);
 			console.log(`left player is ${gameResult.leftPlayer}`);
 			console.log(`right player is ${gameResult.rightPlayer}`);
+
+			this.userService.updateUser( { status: "in a game" }, opponent.id.toString());
+			this.userService.updateUser( { status: "in a game" }, userId.toString());
 			
-			this.playGame(server, opponent.roomName, difficulty);
+			this.playGame(server, opponent.roomName, difficulty, opponent.id, userId);
 
 		}
 	}
 	
 
 
-	async playGame(socket: Server, socketRoom: string, difficulty: string) {
+	async playGame(socket: Server, socketRoom: string, difficulty: string, player1Id: number, player2Id: number) {
 
 		console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
 
@@ -176,6 +179,9 @@ export class PongService {
 
 				console.log('result is');
 				console.log(updateResult);
+
+				this.userService.updateUser( { status: "online" }, player1Id.toString());
+				this.userService.updateUser( { status: "online" }, player2Id.toString());
 
 				return ;
 			}
