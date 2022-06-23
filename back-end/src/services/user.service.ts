@@ -60,7 +60,6 @@ export class UserService {
         user.password = hash;
 
         user.login42 = null;
-        user.isActive = false;
 
         const db_user: User = await this.userRepository.save(user);
         const { password, ...result } = db_user;
@@ -221,7 +220,7 @@ export class UserService {
 
     uploadProfileImage(req, uploadedFile: Express.Multer.File) {
 
-        console.log(uploadedFile);
+        // console.log(uploadedFile);
 
         const unlinkAsync = promisify(fs.unlink)
 
@@ -237,7 +236,7 @@ export class UserService {
                 unlinkAsync(`public/shared/avatar/${file}`);
         });
 
-        console.log(files);
+        // console.log(files);
 
         const response = {
             originalname: uploadedFile.originalname,

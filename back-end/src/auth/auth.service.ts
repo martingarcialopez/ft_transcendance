@@ -1,6 +1,7 @@
 import { Injectable, Inject, ImATeapotException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/services/user.service';
+import { User } from "../models/user.entity";
 import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
 import * as bcrypt from 'bcrypt';
@@ -38,12 +39,20 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
-  const db_user = await this.usersService.getUser(user.username);
+  async login(user) {
+  const db_user: User = await this.usersService.getUser(user.username);
+  this.usersService.updateUser( { "status": "online" }, db_user.id.toString() );
   const payload = { username: user.username, sub: db_user.id/*, sub: user.userId*/ };
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async logout(user) {
+
+  const db_user: User = await this.usersService.getUser(user.username);
+  this.usersService.updateUser( { "status": "offline" }, db_user.id.toString() );
+
   }
 
 async updateSecret(code: string, id: string) {
