@@ -130,8 +130,8 @@ export class PongService {
 			console.log(`left player is ${gameResult.leftPlayer}`);
 			console.log(`right player is ${gameResult.rightPlayer}`);
 
-			this.userService.updateUser( { status: "in a game" }, opponent.id.toString());
-			this.userService.updateUser( { status: "in a game" }, userId.toString());
+			this.userService.updateUser( { status: opponent.roomName }, opponent.id.toString());
+			this.userService.updateUser( { status: opponent.roomName }, userId.toString());
 			
 			this.playGame(server, opponent.roomName, difficulty, opponent.id, userId);
 
