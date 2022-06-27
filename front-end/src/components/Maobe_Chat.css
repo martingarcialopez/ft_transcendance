@@ -2,15 +2,17 @@ body{
     margin: 0;
 }
 
-html{
-    overflow-y: hidden;
-    overflow-x: hidden;
-}
+/* html{ */
+/*     overflow-y: hidden; */
+/*     overflow-x: hidden; */
+/* } */
 
 .container{
     display: flex;
+		max-width: 100vw;/*lenox*/
+		/* height: 100vh; */
+		background-color: #36393f;
 }
-
 
 /* LEFT-BAR */
 #left-bars{
@@ -23,6 +25,7 @@ html{
     align-items: center;
 
     padding-top: 10px;
+		display: none;
 }
 
 #left-bars img{
@@ -67,7 +70,6 @@ html{
 #middle-box{
     height: 100vh;
     width: 250px;
-
     background-color: #2F3136;
     display: flex;
     flex-direction: column;
@@ -85,7 +87,6 @@ html{
 #middle-box #search-conversa input{
     background-color: #202225;
     width: 210px;
-
     border-radius: 5px;
     border: none;
     padding: 5px;
@@ -269,6 +270,7 @@ html{
     flex: 1;
     display: flex;
     flex-direction: column;
+		/* height: 100vh; */
 }
 
 .top-bar{
@@ -422,25 +424,39 @@ html{
     color: #dcddde;
 }
 
-#send-message{
+/* #send-message{ */
+/*     padding-top: 35px; */
+/*     padding-bottom: 35px; */
+
+/*     display: flex; */
+/*     align-items: center; */
+
+/*     padding-right: 5px; */
+/*     padding-left: 5px; */
+/*     height: 1695px; */
+/*     position: absolute; */
+/* } */
+
+#send-message {
     padding-top: 35px;
     padding-bottom: 35px;
-
     display: flex;
     align-items: center;
-
     padding-right: 5px;
     padding-left: 5px;
-    height: 1695px;
-    position: absolute;
+    position: relative;
+    /* top: 60%; */
+		left: 30%;
+		width: 50%;
+
+
 }
+
 
 #send-message img{
     height: 26px;
     width: 25px;
-
     padding: 11px;
-
     background-color: #40444B;
 }
 
@@ -475,6 +491,7 @@ html{
 	opacity: 65%;
 }
 
+
 .mao-btn-add-room {
 	top: 10px;
 	right: 0;
@@ -484,6 +501,7 @@ html{
 	opacity: 0.3;
 	transition: opacity 0.2s linear;
 	background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMCAxMCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTguOTksMy45OUg2LjAxVjEuMDFDNi4wMSwwLjQ1Miw1LjU1OCwwLDUsMFMzLjk5LDAuNDUyLDMuOTksMS4wMVYzLjk5SDEuMDFDMC40NTIsMy45OSwwLDQuNDQyLDAsNWMwLDAuNTU4LDAuNDUyLDEuMDEsMS4wMSwxLjAxSDMuOTlWOC45OUMzLjk5LDkuNTQ4LDQuNDQyLDEwLDUsMTBzMS4wMS0wLjQ1MiwxLjAxLTEuMDFWNi4wMUg4Ljk5QzkuNTQ4LDYuMDEsMTAsNS41NTgsMTAsNUMxMCw0LjQ0Miw5LjU0OCwzLjk5LDguOTksMy45OXoiLz48L3N2Zz4=) no-repeat 50%;
+
 }
 
 .mao-btn-join-room {
@@ -502,7 +520,7 @@ html{
 	overflow: auto;
 	overflow-x:auto;
 	height: 770px;
-    margin-top: 30px;
+  margin-top: 30px;
 }
 
 #mao-room-names :focus {
@@ -552,7 +570,8 @@ html{
 }
 
 .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
-    max-width: 1920px;
+    /* max-width: 1920px; */
+
     margin: 0px auto;
 }
 
@@ -562,6 +581,7 @@ html{
     display: flex;
     flex-direction: column;
     margin-bottom: 0px;
+		height: 100vh
 }
 
 ::-webkit-scrollbar-thumb {
@@ -584,4 +604,100 @@ html{
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
+}
+
+
+@media all and (max-width: 768px) {
+.container{
+    display: flex;
+		flex-direction:column ;
+		max-width: 100vw;/*lenox*/
+		gap: 10vw;
+		align-items: stretch;
+		height: auto;
+		background-color: #292b2f;
+		/* background-color: #36393f;		 */
+}
+
+/* MIDDLE BOX  */
+#middle-box{
+    height: 30vh;
+    width: 100vw;
+    background-color: #2F3136;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* LEFT-BAR */
+#left-bars{
+    width: 100vw;
+    background-color: #202225;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+		display: none;
+    padding-top: 10px;
+    /* height: 150vh;		 */
+}
+
+
+#middle-box {
+    width: 100vw;
+    background-color: #2F3136;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* height: 60vh; */		
+}
+
+
+#main {
+
+    display: flex;
+    flex-direction: column;
+		width: 100vw;
+		/* display: none; */
+
+
+}
+
+.top-bar{
+		width: 100vw;
+}
+
+
+
+.content {
+    background-color: #36393F;
+		
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0px;
+    height: 100vh;
+}
+
+#send-message {
+    padding-top: 35px;
+    padding-bottom: 35px;
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
+    padding-left: 5px;
+    top: 0%;
+		width:60%;
+}
+
+#mao-room-names {
+	color: #8A8E94;
+	overflow: auto;
+	overflow-x:auto;
+	height: 100%;
+  margin-top: 30px;
+}
+#participants{
+		height: 50vh;
+		width: 100vw;
+}
+
 }

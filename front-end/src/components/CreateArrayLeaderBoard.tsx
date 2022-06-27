@@ -2,68 +2,59 @@ import { T_LeaderBoard, T_game } from "../type/pongType";
 
 let ArrayGame: T_game[] = [
   {
-    rightPlayer: "a",
-    leftPlayer: "b",
-    leftPlayerScore: "3",
-    rightPlayerScore: "1",
-    losser: "a",
-    winner: "b",
+    rightPlayer: "50cent",
+    leftPlayer: "kiki",
+    leftPlayerScore: "2",
+    rightPlayerScore: "3",
+    losser: "kiki",
+    winner: "50cent",
     id: 0,
   },
   {
-    rightPlayer: "a",
-    leftPlayer: "b",
-    leftPlayerScore: "3",
-    rightPlayerScore: "1",
-    losser: "a",
-    winner: "b",
+    rightPlayer: "50cent",
+    leftPlayer: "max",
+    leftPlayerScore: "2",
+    rightPlayerScore: "4",
+    losser: "max",
+    winner: "50cent",
     id: 1,
   },
   {
-    rightPlayer: "a",
-    leftPlayer: "b",
+    rightPlayer: "50cent",
+    leftPlayer: "max",
     leftPlayerScore: "1",
     rightPlayerScore: "3",
-    losser: "b",
-    winner: "a",
+    losser: "max",
+    winner: "50cent",
     id: 2,
   },
   {
-    rightPlayer: "c",
-    leftPlayer: "a",
-    leftPlayerScore: "1",
+    rightPlayer: "50cent",
+    leftPlayer: "kiki",
+    leftPlayerScore: "5",
     rightPlayerScore: "3",
-    losser: "a",
-    winner: "c",
+    losser: "50cent",
+    winner: "kiki",
     id: 3,
   },
   {
-    rightPlayer: "a",
-    leftPlayer: "b",
-    leftPlayerScore: "1",
+    rightPlayer: "50cent",
+    leftPlayer: "max",
+    leftPlayerScore: "5",
     rightPlayerScore: "3",
-    losser: "b",
-    winner: "a",
+    losser: "50cent",
+    winner: "max",
     id: 4,
   },
 
   {
-    rightPlayer: "a",
-    leftPlayer: "b",
+    rightPlayer: "max",
+    leftPlayer: "kiki",
     leftPlayerScore: "1",
     rightPlayerScore: "3",
-    losser: "b",
-    winner: "a",
+    losser: "kiki",
+    winner: "max",
     id: 5,
-  },
-  {
-    rightPlayer: "c",
-    leftPlayer: "a",
-    leftPlayerScore: "1",
-    rightPlayerScore: "3",
-    losser: "a",
-    winner: "c",
-    id: 6,
   },
 ];
 
@@ -117,7 +108,9 @@ function SortLeaderboard(arrayLeaderboard: T_LeaderBoard[]) {
 
 /**
  * create a array of leaderboard and sort it
- * step one : create a empty array typeof T_LeaderBoard "arrayLeaderboard"
+ * step one : 
+     -get all user name from data base
+     -step  create a empty array typeof T_LeaderBoard "arrayLeaderboard"
  * step two : fill that array created in step one
  * step three : set the score into array arrayLeaderboard
  * step four : sort arrayLeaderboard
@@ -126,22 +119,21 @@ export async function CreateLeader(allGame: T_game[] = ArrayGame) {
   //step one
   let arrayLeaderboard: T_LeaderBoard[] = [];
   let tmpLeaderBoard: T_LeaderBoard;
+  const url = "http://localhost:3000/user/all";
+  let response = await fetch(url);
+  let usersList = await response.json();
+
   //step two
-  allGame.forEach((item: T_game) => {
-    if (CheckDuplicate(arrayLeaderboard, item.leftPlayer) === false) {
-      tmpLeaderBoard = AddNEw(item.leftPlayer);
-      arrayLeaderboard.push(tmpLeaderBoard);
-    }
-    if (CheckDuplicate(arrayLeaderboard, item.rightPlayer) === false) {
-      tmpLeaderBoard = AddNEw(item.rightPlayer);
-      arrayLeaderboard.push(tmpLeaderBoard);
-    }
-  });
+  for (let i in usersList) {
+    tmpLeaderBoard = AddNEw(usersList[i]);
+    arrayLeaderboard.push(tmpLeaderBoard);
+  }
 
   //step three
   CountScore(allGame, arrayLeaderboard);
   console.log(arrayLeaderboard);
   //step four
   SortLeaderboard(arrayLeaderboard);
+
   return arrayLeaderboard;
 }

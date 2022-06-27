@@ -1,6 +1,6 @@
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, VersionColumn } from 'typeorm';
 
 import {v4 as uuidv4} from 'uuid';
 import { Socket, Server } from 'socket.io'
@@ -129,19 +129,22 @@ export class PongService {
 			server.to(opponent.roomName).emit("GamePlayerName", gameResult.leftPlayer, gameResult.rightPlayer);
 			console.log(`left player is ${gameResult.leftPlayer}`);
 			console.log(`right player is ${gameResult.rightPlayer}`);
+
+			this.userService.updateUser( { status: opponent.roomName }, opponent.id.toString());
+			this.userService.updateUser( { status: opponent.roomName }, userId.toString());
 			
-			this.playGame(server, opponent.roomName, difficulty);
+			this.playGame(server, opponent.roomName, difficulty, opponent.id, userId);
 
 		}
 	}
 	
 
 
-	async playGame(socket: Server, socketRoom: string, difficulty: string) {
+	async playGame(socket: Server, socketRoom: string, difficulty: string, player1Id: number, player2Id: number) {
 
 		console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
 
-		let state: State = initGameState();
+		let state: State = initGameState(difficulty);
 		let lastMove: number = 0;
 		let winner: string;
 
@@ -176,6 +179,9 @@ export class PongService {
 
 				console.log('result is');
 				console.log(updateResult);
+
+				this.userService.updateUser( { status: "online" }, player1Id.toString());
+				this.userService.updateUser( { status: "online" }, player2Id.toString());
 
 				return ;
 			}
@@ -238,12 +244,20 @@ export class PongService {
 
 
 
-function initGameState(): State {
+function initGameState(difficulty: string): State {
+
+	var vel: number = 10;
+
+	if (difficulty === "easy")
+		vel = 5;
+	else if (difficulty === "hard")
+		vel = 20;
 
 	return new State(
 		{
+			initial_velocity: vel,
 			ballPos: new Point(board_x_size / 2, board_y_size / 2),
-			ballVel: new Point(initial_velocity, Math.floor(Math.random() * (initial_velocity + 1))),
+			ballVel: new Point(vel, Math.floor(Math.random() * (vel + 1))),
 			leftPaddle: board_y_size / 2,
 			rightPaddle: board_y_size / 2,
 			leftScore: 0,
@@ -262,7 +276,6 @@ var paddle_size: number = 70;
 var paddle_width: number = 20;
 var ball_radius: number = 10;
 
-var initial_velocity: number = 10;
 
 class Point {
 
@@ -286,6 +299,7 @@ class State {
 		Object.assign(this, data)
 	}
 
+	initial_velocity: number;
 	ballPos: Point; // ball position
 	ballVel: Point; // ball velocity
 	leftPaddle: number; // left paddle position (only y component, we know leftPaddle.x will be 0)
@@ -343,9 +357,9 @@ function updateBallPosition(current: State, next: State) {
 			next.ballPos.x = board_x_size / 2 + 50;
 			next.ballPos.y = board_y_size / 2;
 			// Ball also heads in the direction of player that have just scored
-			next.ballVel.x = initial_velocity;
+			next.ballVel.x = current.initial_velocity;
 			// We randomize y component so that the ball will not move on a straight line
-			next.ballVel.y = Math.floor(Math.random() * (initial_velocity + 1));
+			next.ballVel.y = Math.floor(Math.random() * (current.initial_velocity + 1));
 		}
 	}
 	else if (next.ballPos.x + ball_radius >= (board_x_size - paddle_width - 2)) { // exact same calculations on the other field
@@ -360,8 +374,8 @@ function updateBallPosition(current: State, next: State) {
 			next.leftScore += 1;
 			next.ballPos.x = board_x_size / 2;
 			next.ballPos.y = board_y_size / 2;
-			next.ballVel.x = -initial_velocity;
-			next.ballVel.y = Math.floor(Math.random() * (initial_velocity + 1));
+			next.ballVel.x = -current.initial_velocity;
+			next.ballVel.y = Math.floor(Math.random() * (current.initial_velocity + 1));
 		}
 	}
 }
