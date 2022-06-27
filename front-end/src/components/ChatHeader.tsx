@@ -34,7 +34,12 @@ function PrintParticipants({ participant }: PropsParticipant) {
 function AccepGame() {
   return (
     <>
-      <span className="accepte" onClick={Pong}>
+      <span
+        className="accepte"
+        onClick={(event) =>
+          (window.location.href = "http://localhost:8080/pong")
+        }
+      >
         Accepte
       </span>
     </>
