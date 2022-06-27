@@ -169,7 +169,14 @@ export class UserService {
         if (!reponse)
             throw new NotFoundException();
 
-        return reponse;
+        var allUsernames: Array<string> = [];
+
+        for (const user of reponse) {
+            // console.log(user.friend_username);
+            allUsernames.push(user.friend_username);
+        }
+
+        return allUsernames;
     }
 
     async getUserGames(username: string) {
