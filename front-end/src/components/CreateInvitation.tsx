@@ -17,20 +17,24 @@ export function FormInvitation({ roomSelectedId }: Props) {
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   );
-
   const { userInfo }: UserState = userLogin;
   if (!userInfo) {
     return <h1>Loading...</h1>;
   }
-  E_CreateMessage(
-    userInfo.id,
-    "Invitation to play",
-    roomSelectedId,
-    userInfo.username
-  );
+
   return (
     <>
-      <form className="box-fom-procted" onSubmit={handleSubmit((data) => {})}>
+      <form
+        className="box-fom-procted"
+        onSubmit={handleSubmit((data) => {
+          E_CreateMessage(
+            userInfo.id,
+            "Invitation to play",
+            roomSelectedId,
+            userInfo.username
+          );
+        })}
+      >
         <select className="inputRoom" id="pet-select" {...register("level")}>
           <option value="public">Easy</option>
           <option value="private">Normal</option>
