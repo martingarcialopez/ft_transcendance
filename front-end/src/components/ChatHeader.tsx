@@ -3,7 +3,9 @@ import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { T_Room, T_Participant } from "../type/chat";
 import { CreateInvitation } from "./CreateInvitation";
-import { Pong } from "../screens/PongScreen";
+/* import { Pong } from "../screens/PongScreen"; */
+/* import { useHistory } from "react-router-dom"; */
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   roomSelectedId: number;
@@ -32,16 +34,26 @@ function PrintParticipants({ participant }: PropsParticipant) {
 }
 
 function AccepGame() {
+  const navigate = useNavigate();
+
   return (
     <>
-      <span
+      <button
         className="accepte"
-        onClick={(event) =>
-          (window.location.href = "http://localhost:8080/pong")
-        }
+        onClick={() => navigate("http://localhost:8080/pong/")}
       >
-        Accepte
-      </span>
+        accept
+      </button>
+
+      {/* 
+			<span
+			className="accepte"
+			onClick={(event) =>
+				(window.location.href = "http://localhost:8080/pong")
+				}
+			>
+				Accepte
+			</span> */}
     </>
   );
 }
