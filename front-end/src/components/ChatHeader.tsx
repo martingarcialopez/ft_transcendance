@@ -3,6 +3,8 @@ import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { T_Room, T_Participant } from "../type/chat";
 import { CreateInvitation } from "./CreateInvitation";
+import { Pong } from "../screens/PongScreen";
+
 type Props = {
   roomSelectedId: number;
 };
@@ -29,6 +31,16 @@ function PrintParticipants({ participant }: PropsParticipant) {
   );
 }
 
+function AccepGame() {
+  return (
+    <>
+      <span className="accepte" onClick={Pong}>
+        Accepte
+      </span>
+    </>
+  );
+}
+
 /**
  * this function represent the header with the avatar of  message recipients
  * item is user either a group
@@ -50,6 +62,7 @@ export function ChatHeader({ roomSelectedId }: Props) {
             </p>
           </div>
           <span className="settings-tray--right">
+            <AccepGame />
             <CreateInvitation />
             {/* <i className="material-icons" >cached</i> */}
           </span>

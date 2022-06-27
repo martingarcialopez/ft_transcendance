@@ -168,6 +168,10 @@ hr {
 
 }
 
-.{
 
+.accepte{
+		position: relative;
+		right: 200%;
+		cursor: pointer;
+		background-color: aqua;
 }
