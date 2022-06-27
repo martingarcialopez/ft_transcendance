@@ -14,7 +14,7 @@ export function ChatTempate() {
 
   return (
     <div>
-      <div className="container">
+      <div className="container-template">
         <div className="row no-gutters ">
           <div className="col-md-4 border-right ">
             <div className="settings-tray">
