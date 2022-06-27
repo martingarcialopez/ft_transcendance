@@ -1,17 +1,33 @@
 import { useForm } from "react-hook-form";
-
-//import { FiSettings } from "react-icons/fi";
-//import { Tb3DCubeSphere } from "react-icons/tb";
-//import { MdAccessible } from "react-icons/md";
-//import { GiPingPongBat } from "react-icons/gi";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import "../styles/room.css";
+import { useSelector } from "react-redux";
+import { UserState } from "../redux/reducers/userReducers";
+import { RootState } from "../redux/store";
+import { E_CreateMessage } from "./Event";
 
-export function FormInvitation() {
+type Props = {
+  roomSelectedId: number;
+};
+
+export function FormInvitation({ roomSelectedId }: Props) {
   const { register, handleSubmit } = useForm();
+  const userLogin = useSelector<RootState, UserState>(
+    (state: RootState) => state.userLogin
+  );
 
+  const { userInfo }: UserState = userLogin;
+  if (!userInfo) {
+    return <h1>Loading...</h1>;
+  }
+  E_CreateMessage(
+    userInfo.id,
+    "Invitation to play",
+    roomSelectedId,
+    userInfo.username
+  );
   return (
     <>
       <form className="box-fom-procted" onSubmit={handleSubmit((data) => {})}>
@@ -43,10 +59,11 @@ const style = {
   p: 4,
 };
 
-export function CreateInvitation() {
+export function CreateInvitation({ roomSelectedId }: Props) {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   return (
     <>
       <div className="test" onClick={handleOpen}>
@@ -59,7 +76,7 @@ export function CreateInvitation() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <FormInvitation />
+          <FormInvitation roomSelectedId={roomSelectedId} />
         </Box>
       </Modal>
     </>

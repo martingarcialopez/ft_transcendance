@@ -77,7 +77,7 @@ export function ChatHeader({ roomSelectedId }: Props) {
           </div>
           <span className="settings-tray--right">
             <AccepGame />
-            <CreateInvitation />
+            <CreateInvitation roomSelectedId={roomSelectedId} />
             {/* <i className="material-icons" >cached</i> */}
           </span>
         </div>
