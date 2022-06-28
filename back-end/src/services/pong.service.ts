@@ -130,14 +130,28 @@ export class PongService {
 			console.log(`left player is ${gameResult.leftPlayer}`);
 			console.log(`right player is ${gameResult.rightPlayer}`);
 
-			this.userService.updateUser( { status: opponent.roomName }, opponent.id.toString());
-			this.userService.updateUser( { status: opponent.roomName }, userId.toString());
+			console.log(`update user, status: ${opponent.roomName}, userId: ${opponent.userId.toString()}`);
+
+			let updatedUser = await this.userService.updateUser( { status: opponent.roomName }, opponent.userId.toString());
+			if (!updatedUser)
+				console.log(`AAAAAH opponent id was ${opponent.id.toString()}`);
+			updatedUser = await this.userService.updateUser( { status: opponent.roomName }, userId.toString());
+			if (!updatedUser)
+				console.log(`EEEEEH my id was ${userId.toString()}`);
 			
-			this.playGame(server, opponent.roomName, difficulty, opponent.id, userId);
+			this.playGame(server, opponent.roomName, difficulty, opponent.userId, userId);
 
 		}
 	}
 	
+	async joinPongRoom(socket: Socket, server: Server, userId: string, roomId: string) {
+
+		var room = server.sockets.adapter.rooms[roomId];
+
+		// if (room.length > 1)
+			socket.join(roomId);
+
+	}
 
 
 	async playGame(socket: Server, socketRoom: string, difficulty: string, player1Id: number, player2Id: number) {
