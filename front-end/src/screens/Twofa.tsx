@@ -29,16 +29,18 @@ export const Twofa = () => {
 
   useEffect(() => {
     console.log("Twofa useEffect setImg")
-    if (userInfo?.code2FA)
+    if (userInfo?.code2FA && img === "")
       setImg(userInfo?.code2FA);
-  }, [userInfo])
+  }, [userInfo?.code2FA])
 
   useEffect(() => {
     console.log("Twofa useEffect done")
-    dispatch(enable2FAAction(userInfo?.access_token))
-    if (userInfo?.code2FA)
-      setImg(userInfo?.code2FA);
-  }, [userInfo, dispatch])
+    if (img === "") {
+      dispatch(enable2FAAction(userInfo?.access_token))
+      if (userInfo?.code2FA)
+        setImg(userInfo?.code2FA);
+    }
+  }, [userInfo?.code2FA, dispatch])
 
   if (userLogin.showLoading) {
     return <h1>Loading...</h1>;
