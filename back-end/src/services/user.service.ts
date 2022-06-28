@@ -262,7 +262,7 @@ export class UserService {
             .execute();
     }
 
-    uploadProfileImage(req, uploadedFile: Express.Multer.File): Promise<User> {
+    uploadProfileImage(req, uploadedFile: Express.Multer.File) {
 
         // console.log(uploadedFile);
 
@@ -287,9 +287,9 @@ export class UserService {
             filename: `/shared/avatar/${uploadedFile.filename}`,
         };
 
-        return this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
+        this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
 
-        // return response;
+        return response;
 
     }
 
