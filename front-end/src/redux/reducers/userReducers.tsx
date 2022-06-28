@@ -36,8 +36,9 @@ export interface UserInfo {
   expiresIn?: any,
   access_token?: string,
   friends: string[],
-  twofa: boolean,
-  code2FA: string,
+  twofa?: boolean,
+  code2FA?: string,
+  status?: string,
   id?: any
 }
 
@@ -153,11 +154,10 @@ export const userLoginReducer = (
         userInfo: { ...state.userInfo, twofa: false, code2FA: '' },
       };
     case UPLOAD_IMAGE_CONFIRMED_ACTION:
-      console.log("UPLOAD_IMAGE_CONFIRMED_ACTION action.payload", action.payload)
+      console.log("UPLOAD_IMAGE_CONFIRMED_ACTION action.payload")
       return {
         ...state,
         showLoading: false,
-        userInfo: { ...state.userInfo, avatar: action.payload },
         errorMessage: "",
         successMessage: "Image Successfully Upload",
       };

@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
-import { URL_back, URL_test } from '../constants/url';
 import { Image, ImageBackdrop, ImageButton, ImageMarked, ImageSrc } from './Button';
 
 const images = [

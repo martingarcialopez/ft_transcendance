@@ -12,7 +12,7 @@ export const OtherProfileScreen = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
 
-    console.log("id:", id)
+    console.log("OtherProfileScreen id:", id)
     //   const userLogin = //Function from Martin to have all user informations
     const userLogin = useSelector<RootState, UserState>(
         (state: RootState) => state.userLogin
@@ -20,7 +20,7 @@ export const OtherProfileScreen = () => {
     const allMatch = useSelector<RootState, AllMatchState>(
         (state: RootState) => state.allMatch
     )
-    console.log("userLogin Profile:", userLogin)
+    console.log("OtherProfileScreen userLogin Profile:", userLogin)
 
     const { userInfo } = userLogin;
 
@@ -40,7 +40,7 @@ export const OtherProfileScreen = () => {
         return <h1>Loading...</h1>;
     }
 
-    console.log("ProfilePage allMatch", allMatch)
+    console.log("OtherProfileScreen allMatch", allMatch)
 
     return (
         <div className="backgroundProfile">
@@ -49,7 +49,7 @@ export const OtherProfileScreen = () => {
             </div>
             <div className="profileContainer">
                 <aside className="sideBar">
-                    <img src={friendInfo.avatar} alt="Profile Image" className="userImage" />
+                    <img src={friendInfo.avatar} alt="Profile avatar" className="userImage" />
                     <h1 className="userName">{friendInfo.username}</h1>
                     <h3 className="userNickName">{friendInfo.login42}</h3>
                     <h5 className="userNickName">{friendInfo.firstname}</h5>

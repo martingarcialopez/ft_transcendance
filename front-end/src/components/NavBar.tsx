@@ -10,12 +10,12 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { UserState } from "../redux/reducers/userReducers";
 import { MouseEvent, SyntheticEvent, useState } from "react";
-import { logout } from "../redux/actions/userActions";
+import { logoutAction } from "../redux/actions/userActions";
 
 const pages = ["Home", "Chat", "Room", "Pong", "Leaderboard", "Maobe_Chat"];
 const settings = ["Profile", "Account", "Logout"];
@@ -23,6 +23,7 @@ const settings = ["Profile", "Account", "Logout"];
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+	const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -51,7 +52,7 @@ const ResponsiveAppBar = () => {
   const logoutHandler = async (e: SyntheticEvent) => {
     e.preventDefault();
     console.log("NavBar call logout function");
-    dispatch(logout());
+    dispatch(logoutAction(userInfo?.access_token, navigate));
   };
 
   return (

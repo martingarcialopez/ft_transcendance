@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { URL_test } from '../../constants/url';
-import { loginConfirmedAction, logout } from '../actions/userActions';
 
 export function signUp(firstname: any, lastname: any, username: any, password: any) {
     const postData = {
@@ -59,6 +58,16 @@ export function uploadImage(image: any, access_token: any) {
 export function disable2FA(access_token: any) {
     return axios.post(
         `${URL_test}/auth/disable2FA`,
+        null,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
+
+export function logout(access_token: any) {
+    return axios.post(
+        `${URL_test}/auth/logout`,
         null,
         {
             headers: { 'Authorization': `Bearer ${access_token}` }
@@ -192,32 +201,4 @@ export function saveTokenInLocalStorage(access_token: any, tokenDetails: any) {
     console.log("Dans saveToken apres expireDate add + tokenAdd token :", tokenDetails)
     console.log("Dans saveToken JSON mode :", JSON.stringify(tokenDetails))
     localStorage.setItem('userInfo', JSON.stringify(tokenDetails));
-}
-
-export function runLogoutTimer(dispatch: any, timer: any) {
-    setTimeout(() => {
-        dispatch(logout());
-    }, timer);
-}
-
-export function checkAutoLogin(dispatch: any) {
-    const tokenDetailsString = localStorage.getItem('userInfo');
-    let tokenDetails: any = '';
-    if (!tokenDetailsString) {
-        dispatch(logout());
-        return;
-    }
-
-    tokenDetails = JSON.parse(tokenDetailsString);
-    let expireDate = new Date(tokenDetails.expireDate);
-    let todaysDate = new Date();
-
-    if (todaysDate > expireDate) {
-        dispatch(logout());
-        return;
-    }
-    dispatch(loginConfirmedAction(tokenDetails));
-
-    const timer = expireDate.getTime() - todaysDate.getTime();
-    runLogoutTimer(dispatch, timer);
 }

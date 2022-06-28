@@ -6,7 +6,6 @@ import { updateAction, uploadImageAction } from "../redux/actions/userActions";
 import { useDispatch } from "react-redux";
 import { CustomizedSnackbars } from "./CustomizedSnackbars";
 import { useParams } from "react-router-dom";
-import { FilesUploadComponent } from "./FilesUploadComponent";
 
 export const UpdateProfile = ({ userInfo }: any) => {
     const [firstname, setFirstname] = useState(userInfo.firstname)
@@ -40,6 +39,12 @@ export const UpdateProfile = ({ userInfo }: any) => {
         setSnackbars(false);
     };
 
+    const changeImage = () => {
+        setOpen(true);
+        setDisplayImg(false);
+        setSnackbars(false);
+    };
+
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -60,32 +65,18 @@ export const UpdateProfile = ({ userInfo }: any) => {
         });
     }
 
-    // const handleSetImage = (event: ChangeEvent<HTMLInputElement>) => {
-    //     const { files } = event.target;
-
-    //     console.log("files:", files);
-    //     if (files && files[0]) {
-    //         var img: any = document.querySelector('img');
-    //         img.src = URL.createObjectURL(files[0]); // set src to blob url
-    //     }
-    //     // Or if you don't prefer Object destructuring assignment...
-    //     // const files = event.target.files;
-
-    //     // Rest of the logic here
-    // }
-
     return (
-        !open ?
-            <div>
-                {snackbars ?
-                    <CustomizedSnackbars status={statusError} />
-                    :
-                    null
-                }
-                {displayImg ?
+        <div>
+            {!open ?
+                <div>
+                    {snackbars ?
+                        <CustomizedSnackbars status={statusError} />
+                        :
+                        null
+                    }
                     <div>
-                        <Button onClick={() => setDisplayImg(false)} >
-                            <img src={userInfo.avatar} alt="Profile Image" className="userImage" />
+                        <Button onClick={changeImage} >
+                            <img src={userInfo.avatar} alt="Profile avatar" className="userImage" />
                         </Button>
                         <h1 className="userName">{userInfo.username}</h1>
                         <h3 className="userNickName">{userInfo.login42}</h3>
@@ -101,7 +92,9 @@ export const UpdateProfile = ({ userInfo }: any) => {
                             null
                         }
                     </div>
-                    :
+                </div>
+                :
+                !displayImg ?
                     <div>
                         <div className="form-group">
                             <input type="file" onChange={onFileChange} />
@@ -110,65 +103,65 @@ export const UpdateProfile = ({ userInfo }: any) => {
                             <button className="btn btn-primary" onClick={() => uploadImage()}>Upload</button>
                         </div>
                     </div>
-                }
-            </div>
-            :
-            <div>
-                <Box
-                    component="form"
-                    onSubmit={handleSubmit}
-                    noValidate
-                    sx={{ mt: 3 }}
-                >
-                    <Grid container spacing={2}>
-                        {/* <input type="file" name="image" placeholder='Image' onChange={e => handleSetImage(e)} /> */}
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                autoComplete="given-name"
-                                name="firstname"
-                                required
+                    :
+                    <div>
+                        <Box
+                            component="form"
+                            onSubmit={handleSubmit}
+                            noValidate
+                            sx={{ mt: 3 }}
+                        >
+                            <Grid container spacing={2}>
+                                {/* <input type="file" name="image" placeholder='Image' onChange={e => handleSetImage(e)} /> */}
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        autoComplete="given-name"
+                                        name="firstname"
+                                        required
+                                        fullWidth
+                                        id="firstname"
+                                        label="First Name"
+                                        autoFocus
+                                        value={firstname}
+                                        onChange={(e) => setFirstname(e.target.value)}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="lastname"
+                                        label="Last Name"
+                                        name="lastname"
+                                        autoComplete="family-name"
+                                        value={lastname}
+                                        onChange={(e) => setLastname(e.target.value)}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="username"
+                                        label="Pseudo"
+                                        name="username"
+                                        autoComplete="username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Button
+                                type="submit"
                                 fullWidth
-                                id="firstname"
-                                label="First Name"
-                                autoFocus
-                                value={firstname}
-                                onChange={(e) => setFirstname(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                required
-                                fullWidth
-                                id="lastname"
-                                label="Last Name"
-                                name="lastname"
-                                autoComplete="family-name"
-                                value={lastname}
-                                onChange={(e) => setLastname(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                fullWidth
-                                id="username"
-                                label="Pseudo"
-                                name="username"
-                                autoComplete="username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                    >
-                        Validate change
-                    </Button>
-                </Box>
-            </div>
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                Validate change
+                            </Button>
+                        </Box>
+                    </div>
+            }
+        </div>
     );
 };

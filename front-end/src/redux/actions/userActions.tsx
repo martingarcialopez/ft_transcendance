@@ -16,7 +16,7 @@ import {
   DISABLE_2FA_CONFIRMED_ACTION,
   UPLOAD_IMAGE_CONFIRMED_ACTION,
 } from '../constants/userConstants'
-import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, runLogoutTimer, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42 } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42, logout } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -57,7 +57,7 @@ export function updateAction(firstname: any, lastname: any, username: any, id: a
   };
 }
 
-export function getInfoAction(access_token: any) {
+export function getInfoAction(access_token: any, navigate: NavigateFunction) {
   return (dispatch: any) => {
     getInfo(access_token)
       .then((response) => {
@@ -68,6 +68,8 @@ export function getInfoAction(access_token: any) {
         runLogoutTimer(
           dispatch,
           5000000000 * 1000,
+          access_token,
+          navigate
         );
         console.log("signupAction response : ")
         console.log(response)
@@ -229,10 +231,24 @@ export function removeFriendAction(username: any, access_token: any) {
       });
   };
 }
-export function logout() {
-  localStorage.removeItem('userInfo');
-  return {
-    type: LOGOUT_ACTION,
+export function logoutAction(access_token: any, navigate: NavigateFunction) {
+  return (dispatch: any) => {
+    logout(access_token)
+      .then((response) => {
+        console.log("logoutAction qui fct :")
+        console.log(response)
+        console.log("logoutAction data qui fct :")
+        console.log(response.data)
+        dispatch(logoutSuccess());
+        navigate('/home')
+      })
+      .catch((error) => {
+        console.log("ceci est une error dans logoutAction :")
+        console.log(error);
+        const errorMessage = formatError(error.message);
+        console.log("ceci est une errorMessage return de formatError dans logoutAction :" + errorMessage)
+        dispatch(ActionFailed(errorMessage));
+      });
   };
 }
 
@@ -249,7 +265,7 @@ export function loginAction(username: any, password: any, code: any, navigate: N
         console.log(response.data)
         console.log("loginAction data access qui fct :")
         console.log(response.data.access_token)
-        dispatch(getInfoAction(response.data.access_token));
+        dispatch(getInfoAction(response.data.access_token, navigate));
         navigate('/home')
       })
       .catch((error) => {
@@ -273,7 +289,7 @@ export function login42Action(code: any, navigate: NavigateFunction) {
         console.log(response.data)
         console.log("login42Action data access qui fct :")
         console.log(response.data.access_token)
-        dispatch(getInfoAction(response.data.access_token));
+        dispatch(getInfoAction(response.data.access_token, navigate));
         navigate('/home')
       })
       .catch((error) => {
@@ -283,6 +299,41 @@ export function login42Action(code: any, navigate: NavigateFunction) {
         console.log("ceci est une errorMessage return de formatError dans login42Action :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
+  };
+}
+
+export function runLogoutTimer(dispatch: any, timer: any, access_token: any, navigate: NavigateFunction) {
+  setTimeout(() => {
+      dispatch(logoutAction(access_token, navigate));
+  }, timer);
+}
+
+export function checkAutoLogin(dispatch: any, access_token: any, navigate: NavigateFunction) {
+  const tokenDetailsString = localStorage.getItem('userInfo');
+  let tokenDetails: any = '';
+  if (!tokenDetailsString) {
+      dispatch(logoutAction(access_token, navigate));
+      return;
+  }
+
+  tokenDetails = JSON.parse(tokenDetailsString);
+  let expireDate = new Date(tokenDetails.expireDate);
+  let todaysDate = new Date();
+
+  if (todaysDate > expireDate) {
+      dispatch(logoutAction(access_token, navigate));
+      return;
+  }
+  dispatch(loginConfirmedAction(tokenDetails));
+
+  const timer = expireDate.getTime() - todaysDate.getTime();
+  runLogoutTimer(dispatch, timer, access_token, navigate);
+}
+
+export function logoutSuccess() {
+  localStorage.removeItem('userInfo');
+  return {
+    type: LOGOUT_ACTION,
   };
 }
 
@@ -323,6 +374,7 @@ export function getFriendInfosAction(data: any) {
 }
 
 export function uploadImageActionConfirmedAction(data: any) {
+  console.log("uploadImageActionConfirmedAction data", data)
   return {
     type: UPLOAD_IMAGE_CONFIRMED_ACTION,
     payload: data,

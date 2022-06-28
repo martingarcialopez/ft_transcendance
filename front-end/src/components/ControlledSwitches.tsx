@@ -3,7 +3,7 @@ import Switch from '@mui/material/Switch';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { disable2FAAction, updateAction } from '../redux/actions/userActions';
+import { disable2FAAction } from '../redux/actions/userActions';
 
 export const ControlledSwitches = ({ userInfo }: any) => {
   const dispatch = useDispatch();
@@ -12,7 +12,7 @@ export const ControlledSwitches = ({ userInfo }: any) => {
 
   useEffect(() => {
     userInfo.twofa ? setChecked(true) : setChecked(false)
-  }, [])
+  }, [userInfo.twofa])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);

@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import SignUp from "./screens/SignUpScreen";
 import SignIn from "./screens/SigninScreen";
@@ -9,9 +9,8 @@ import { Pong } from "./screens/PongScreen";
 import ResponsiveAppBar from "./components/NavBar";
 import { MyProfileScreen } from "./screens/MyProfileScreen";
 import { Room } from "./screens/Room";
-import { useDispatch, useSelector } from "react-redux";
-import { Suspense, useEffect } from "react";
-import { checkAutoLogin } from "./redux/services/userServices";
+import { useSelector } from "react-redux";
+import { Suspense } from "react";
 import { RootState } from "./redux";
 import { UserState } from "./redux/reducers/userReducers";
 import { OtherProfileScreen } from "./screens/OtherProfileScreen";
@@ -21,15 +20,9 @@ import { Twofa } from "./screens/Twofa";
 import { RedirectPage } from "./screens/RedirectPage";
 
 const App = () => {
-	const dispatch = useDispatch();
-	useEffect(() => {
-		checkAutoLogin(dispatch);
-	}, [dispatch]);
-
 	const userLogin = useSelector<RootState, UserState>(
 		(state: RootState) => state.userLogin
 	);
-
 	const { userInfo } = userLogin;
 	const isAuthenticated = userInfo ? userInfo : null;
 
@@ -57,7 +50,7 @@ const App = () => {
 				<Route path="/leaderboard" element={<LeaderBoard />} />
 				<Route path="/home" element={<HomeScreen />} />
 				<Route path="/logout" element={<HomeScreen />} />
-				<Route path="/twofa" element={<Twofa check={false} />} />
+				<Route path="/twofa" element={<Twofa />} />
 				<Route path="/" element={<HomeScreen />} />
 				<Route path="*" element={<Navigate to="/" replace />} />
 			</Routes>
