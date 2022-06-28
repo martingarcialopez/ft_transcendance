@@ -13,6 +13,9 @@ export class Matchmaking {
 	difficulty: string;
 
 	@Column()
+	winningScore: number;
+
+	@Column()
 	roomName: string;
 
 	@Column( {nullable:true, default: null} )

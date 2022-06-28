@@ -89,7 +89,8 @@ export function login(username: any, password: any, code: any) {
 }
 
 export function login42(code: any) {
-    return axios.post(
+    console.log(` GETTING ${URL_test}/auth/redirect${code}`);
+    return axios.get(
         `${URL_test}/auth/redirect${code}`,
     );
 }
