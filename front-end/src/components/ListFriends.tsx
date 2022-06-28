@@ -9,24 +9,10 @@ import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { useEffect, useState } from "react";
 import { addFriendAction, getFriendListStatusAction, getUserInfoAction, removeFriendAction } from "../redux/actions/userActions";
+import socketio from "socket.io-client";
+import { URL_test } from '../constants/url';
 
-// const friends = [
-//     {
-//         username: 'Lillon1',
-//         connected: "true"
-//     },
-//     {
-//         username: 'q',
-//         connected: "false"
-//     },
-//     {
-//         username: 'a',
-//     },
-//     {
-//         username: 'b',
-//         connected: "true"
-//     },
-// ];
+export const socket = socketio(`${URL_test}`)
 
 export const ListFriends = ({ userPageInfo }: any) => {
     const { id } = useParams();
@@ -76,9 +62,18 @@ export const ListFriends = ({ userPageInfo }: any) => {
 
     }, [])
 
-    const handleClick = (id: any) => {
-        console.log("id :", id)
-        navigate(`/profile/${id}`)
+    const handleClick = (friend: any) => {
+        if (friend.status !== "online" && friend.status !== "offline") {
+            if (userInfo) {
+                console.log("socket.emit joinPongRoom / userPageInfo.username:", userPageInfo.username, ", friend.status", friend.status);
+                socket.emit('joinPongRoom', userPageInfo.username, friend.status);
+                navigate("/pong")
+            }
+        }
+        else {
+            console.log("id :", friend.username)
+            navigate(`/profile/${friend.username}`)
+        }
     }
 
     //Faire un check si la personne est déjà en amis changer par RETIRER DE CES AMIS.
@@ -124,7 +119,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
             <List>
                 {userPageInfo && userPageInfo.friends && userPageInfo.friends.map((item: any) => (
                     <ListItem key={item.username}>
-                        <Button onClick={() => handleClick(item.username)} >
+                        <Button onClick={() => handleClick(item)} >
                             <ListItemAvatar>
                                 {item.status === "online" ?
                                     <StyledBadgeGreen

@@ -44,7 +44,7 @@ const App = () => {
 				<Route path="/chat" element={<Chat />} />
 				<Route path="/profile/:id" element={<OtherProfileScreen />} />
 				<Route path="/profile" element={<MyProfileScreen />} />
-				<Route path="pong" element={<Pong />} />
+				<Route path="/pong" element={<Pong />} />
 				<Route path="/room" element={<Room />} />
 				<Route path="/maobe_chat" element={<Maobe_Chat />} />
 				<Route path="/leaderboard" element={<LeaderBoard />} />
