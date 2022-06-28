@@ -13,8 +13,8 @@ import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 
 const whitelist = [
     'image/png',
-    'image/jpeg',
-    'image/jpg'
+    // 'image/jpeg',
+    // 'image/jpg'
 ]
 
 @Controller('user')
@@ -65,6 +65,12 @@ export class UserController {
     @Get('/friends')
     getUserFriends(@Request() req) {
         return this.userService.getUserFriends(req.user.userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/friends/status')
+    getUserFriendsStatus(@Request() req) {
+        return this.userService.getUserFriendsStatus(req.user.userId);
     }
 
     @UseGuards(JwtAuthGuard)
