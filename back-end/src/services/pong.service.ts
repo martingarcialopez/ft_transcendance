@@ -88,7 +88,7 @@ export class PongService {
 	// 	}
     // }
 
-	async managePlayer(socket: Socket, server: Server, userId : number, difficulty: string) :Promise<void> {
+	async managePlayer(socket: Socket, server: Server, userId : number, difficulty: string, winningScore: number) :Promise<void> {
 
 		let bbdd = await this.pongRepository.find( { "difficulty": difficulty } );
 
@@ -130,17 +130,31 @@ export class PongService {
 			console.log(`left player is ${gameResult.leftPlayer}`);
 			console.log(`right player is ${gameResult.rightPlayer}`);
 
-			this.userService.updateUser( { status: opponent.roomName }, opponent.id.toString());
-			this.userService.updateUser( { status: opponent.roomName }, userId.toString());
+			console.log(`update user, status: ${opponent.roomName}, userId: ${opponent.userId.toString()}`);
+
+			let updatedUser = await this.userService.updateUser( { status: opponent.roomName }, opponent.userId.toString());
+			if (!updatedUser)
+				console.log(`AAAAAH opponent id was ${opponent.id.toString()}`);
+			updatedUser = await this.userService.updateUser( { status: opponent.roomName }, userId.toString());
+			if (!updatedUser)
+				console.log(`EEEEEH my id was ${userId.toString()}`);
 			
-			this.playGame(server, opponent.roomName, difficulty, opponent.id, userId);
+			this.playGame(server, opponent.roomName, difficulty, opponent.userId, userId, winningScore);
 
 		}
 	}
 	
+	async joinPongRoom(socket: Socket, server: Server, userId: string, roomId: string) {
+
+		var room = server.sockets.adapter.rooms[roomId];
+
+		// if (room.length > 1)
+			socket.join(roomId);
+
+	}
 
 
-	async playGame(socket: Server, socketRoom: string, difficulty: string, player1Id: number, player2Id: number) {
+	async playGame(socket: Server, socketRoom: string, difficulty: string, player1Id: number, player2Id: number, winningScore: number) {
 
 		console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
 
@@ -152,11 +166,11 @@ export class PongService {
 
 		 while (true) {
 
-			if (state.leftScore >= 3 || state.rightScore >= 3) {
+			if (state.leftScore >= winningScore || state.rightScore >= winningScore) {
 
-				if (state.leftScore >= 3)
+				if (state.leftScore >= winningScore)
 					winner = 'leftplayer';
-				else if (state.rightScore >= 3)
+				else if (state.rightScore >= winningScore)
 					winner = 'rightplayer';
 				socket.to(socketRoom).emit('gameOver', winner);
 				const move = this.gameService.getAll();

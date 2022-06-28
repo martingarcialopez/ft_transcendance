@@ -40,14 +40,15 @@ export class PongGateway
 	async lookingForplay(socket: Socket, data) : Promise<void> {
 		console.log('lookingForAGame Gateway');
     console.log(`uerId is ${data[0]} and difficulty is ${data[1]}`)
-		let value = await this.pongService.managePlayer(socket, this.server, data[0], data[1]);
+		let value = await this.pongService.managePlayer(socket, this.server, data[0], data[1], data[2]);
 
 	}
 
 
 	@SubscribeMessage('joinPongRoom')
-	async join(socket: Socket, pongDto: PongDto): Promise<void> {
+	async join(socket: Socket, data): Promise<void> {
 		console.log('joinPongRoom Gateway');
+      this.pongService.joinPongRoom(socket, this.server, data[0], data[1]);
         // let value = await this.pongService.moveAction(pongDto);
         // this.server.emit('EVENT_TO_FRONT', value);
     }
