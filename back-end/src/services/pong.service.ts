@@ -90,7 +90,7 @@ export class PongService {
 
 	async managePlayer(socket: Socket, server: Server, userId : number, difficulty: string, winningScore: number) :Promise<void> {
 
-		let bbdd = await this.pongRepository.find( { "difficulty": difficulty } );
+		let bbdd = await this.pongRepository.find( { "difficulty": difficulty, "winningScore": winningScore } );
 
 		if (!bbdd.length) {
 
@@ -98,6 +98,7 @@ export class PongService {
 
 			player.userId = userId;
 			player.difficulty = difficulty;
+			player.winningScore = winningScore;
 			player.roomName = uuidv4();
 			await this.pongRepository.save(player);
 
@@ -146,10 +147,12 @@ export class PongService {
 	
 	async joinPongRoom(socket: Socket, server: Server, userId: string, roomId: string) {
 
-		var room = server.sockets.adapter.rooms[roomId];
+		// var room = server.sockets.adapter.rooms[roomId];
+
+		// console.log (`number of people inside room is ${room.length()}`)
 
 		// if (room.length > 1)
-			socket.join(roomId);
+		socket.join(roomId);
 
 	}
 
