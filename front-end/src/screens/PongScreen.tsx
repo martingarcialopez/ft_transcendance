@@ -106,7 +106,7 @@ export const Pong = () => {
     function handleClick() {
         if (userInfo) {
             console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
-            socket.emit('lookingForAGame', userInfo.id, difficulty, but);
+            socket.emit('lookingForAGame', userInfo.id, difficulty, parseInt(but));
         }
 
         // console.log("HANDKE CKUC")
