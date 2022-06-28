@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import socketio from "socket.io-client";
-import { Button, Grid } from '@mui/material';
+import { Button, Grid, TextField } from '@mui/material';
 import Canvas from '../components/Canvas';
 import "../styles/gameStyle.css";
 import { useSelector } from 'react-redux';
@@ -24,6 +24,7 @@ export const Pong = () => {
     const [progress, setProgress] = useState(10);
     const [colorBackground, setColorBackground] = useState('white');
     const [difficulty, setDifficulty] = useState("Normal");
+    const [but, setBut] = useState("20");
     const [searchOpponent, setSearchOpponent] = useState("Waiting for an opponent");
     // Use a ref to access the Canvas
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -105,7 +106,7 @@ export const Pong = () => {
     function handleClick() {
         if (userInfo) {
             console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
-            socket.emit('lookingForAGame', userInfo.id, difficulty);
+            socket.emit('lookingForAGame', userInfo.id, difficulty, but);
         }
 
         // console.log("HANDKE CKUC")
@@ -225,6 +226,18 @@ export const Pong = () => {
                                 <Button onClick={() => setDifficulty("Normal")}>Normal</Button>
                                 <Button onClick={() => setDifficulty("Hard")}>Hard</Button>
                             </ButtonGroup>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField
+                                id="outlined-number"
+                                label="Number"
+                                type="number"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                value={but}
+                                onChange={(e) => setBut(e.target.value)}
+                                />
                         </Grid>
                         <Grid item xs={6}>
                             <ButtonGroup variant="text" aria-label="text button group">
