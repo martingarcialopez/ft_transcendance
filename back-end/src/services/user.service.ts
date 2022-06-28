@@ -12,6 +12,7 @@ import { GameHistory } from '../models/gamehistory.entity';
 import { Multer } from 'multer';
 import * as fs from "fs";
 import { promisify } from 'util';
+import { friendsStatusDto } from 'src/dtos/out/friendsStatus.dto';
 
 @Injectable()
 export class UserService {
@@ -177,6 +178,42 @@ export class UserService {
         }
 
         return allUsernames;
+    }
+
+    async getUserFriendsStatus(userId: string) {
+
+        const user: User = await this.getUserById(userId);
+
+        if (!user)
+            throw new NotFoundException();
+
+        const reponse = await this.friendsRepository.find({ where: { member_username: user.username } });
+
+        if (!reponse)
+            throw new NotFoundException();
+
+        var allUsernames: Array<string> = [];
+
+        for (const user of reponse) {
+            // console.log(user.friend_username);
+            allUsernames.push(user.friend_username);
+        }
+
+        let friendsStatus: Array<friendsStatusDto> = [];
+
+        for (const user of allUsernames) {
+
+            const userStatus = await this.userRepository.find( { select: ["status"], where: { username: user } } );
+
+            let tmp: friendsStatusDto = new friendsStatusDto();
+
+            tmp.username = user;
+            tmp.status = userStatus[0].status;
+            friendsStatus.push(tmp);
+        }
+
+        return friendsStatus;
+
     }
 
     async getUserGames(username: string) {
