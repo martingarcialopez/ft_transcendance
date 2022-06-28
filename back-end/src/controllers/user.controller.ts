@@ -68,9 +68,9 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('/friends/status')
-    getUserFriendsStatus(@Request() req) {
-        return this.userService.getUserFriendsStatus(req.user.userId);
+    @Get('/friends/status/:username')
+    getUserFriendsStatus(@Request() req, @Param('username') username: string) {
+        return this.userService.getUserFriendsStatus(username);
     }
 
     @UseGuards(JwtAuthGuard)
