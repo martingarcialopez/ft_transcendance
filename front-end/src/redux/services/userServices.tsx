@@ -115,12 +115,22 @@ export function getUserInfo(username: any, access_token: any) {
     });
 }
 
-export function getFriendList(access_token: any) {
-    console.log("getFriendList TOKEN :")
-    console.log(access_token)
+// export function getFriendList(access_token: any) {
+//     console.log("getFriendList TOKEN :")
+//     console.log(access_token)
+//     return axios({
+//         method: 'get',
+//         url: `${URL_test}/user/friends`,
+//         headers: { 'Authorization': `Bearer ${access_token}` }
+//     });
+// }
+
+export function getFriendListStatus(access_token: any, username: any) {
+    console.log("getFriendListStatus TOKEN :", access_token)
+    console.log("getFriendListStatus username :", username)
     return axios({
         method: 'get',
-        url: `${URL_test}/user/friends`,
+        url: `${URL_test}/user/friends/status/${username}`,
         headers: { 'Authorization': `Bearer ${access_token}` }
     });
 }

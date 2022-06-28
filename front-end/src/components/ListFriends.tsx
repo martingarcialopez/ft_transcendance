@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { useEffect, useState } from "react";
-import { addFriendAction, getUserInfoAction, removeFriendAction } from "../redux/actions/userActions";
+import { addFriendAction, getFriendListStatusAction, getUserInfoAction, removeFriendAction } from "../redux/actions/userActions";
 
 // const friends = [
 //     {
@@ -33,6 +33,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
     const dispatch = useDispatch()
     const [buttonFriend, setButtonFriend] = useState('')
     const [listFriend, setListFriend] = useState({ friend: "", status: "" })
+    const friendId = !id ? true : false
 
     const navigate = useNavigate();
     const userLogin = useSelector<RootState, UserState>(
@@ -45,34 +46,29 @@ export const ListFriends = ({ userPageInfo }: any) => {
 
     useEffect(() => {
         if (userInfo)
-            console.log("ListFriends userInfo.friends = ", userInfo.friends)
+            console.log("0000 ListFriends userInfo.friends = ", userInfo.friends)
         console.log("ListFriends userPageInfo.username = ", userPageInfo.username)
         // if (userInfo)
         //     getFriendInfosAction(userInfo.access_token)
-        if (userInfo && userInfo.friends && userInfo.friends.find(friend => friend === userPageInfo.username)) {
+        if (userInfo && userInfo.friends && userInfo.friends.find(friend => friend.username === userPageInfo.username)) {
             setButtonFriend("REMOVE FRIEND")
         }
         else {
             setButtonFriend("ADD FRIEND")
         }
-    }, [userInfo])
+    }, [userInfo, userPageInfo])
 
     useEffect(() => {
         console.log("11111 ListFriends userPageInfo = ", userPageInfo)
         console.log("ListFriends userPageInfo.friends = ", userPageInfo.friends)
-        if (userPageInfo && userPageInfo.friends) {
-            console.log("ListFriends userPageInfo.friends.map", userPageInfo.friends.map((item: any) => {
-                console.log("item:", item)
-                if (userInfo) {
-                    console.log("dispatch getUserInfoAction:")
-                    dispatch(getUserInfoAction(item, userInfo.access_token))
-                    console.log("userLogin.friendInfo", userLogin.friendInfo)
-                    if (userLogin && userLogin.friendInfo && userLogin.friendInfo.username && userLogin.friendInfo.status) {
-                        console.log("setListFriend:")
-                        setListFriend({ friend: userLogin.friendInfo.username, status: userLogin.friendInfo.status })
-                    }
-                }
-            }));
+        if (userPageInfo && userInfo) {
+            console.log("dispatch getFriendListStatusAction")
+            dispatch(getFriendListStatusAction(userInfo.access_token, userPageInfo.username, friendId))
+            console.log("userLogin.friendInfo", userLogin.friendInfo)
+            if (userLogin && userLogin.friendInfo && userLogin.friendInfo.username && userLogin.friendInfo.status) {
+                console.log("setListFriend:")
+                setListFriend({ friend: userLogin.friendInfo.username, status: userLogin.friendInfo.status })
+            }
             console.log("ListFriends 2222 listFriend", listFriend)
             console.log("ListFriends 2222 listFriend", listFriend.friend)
             console.log("ListFriends 2222 listFriend", listFriend.status)
@@ -92,9 +88,9 @@ export const ListFriends = ({ userPageInfo }: any) => {
 
     const AddFriend = () => {
         console.log("ListFriends addFriend button clicked")
-        console.log("ListFriends userInfo :", userInfo)
-        console.log("ListFriends userPageInfo :", userPageInfo)
-        console.log("ListFriends buttonFriend :", buttonFriend)
+        console.log("ListFriends AddFriend userInfo :", userInfo)
+        console.log("ListFriends AddFriend userPageInfo :", userPageInfo)
+        console.log("ListFriends AddFriend buttonFriend :", buttonFriend)
         if (userInfo && buttonFriend === "ADD FRIEND") {
             console.log("case 111")
             dispatch(addFriendAction(userPageInfo.username, userInfo))
@@ -127,8 +123,8 @@ export const ListFriends = ({ userPageInfo }: any) => {
             </Typography>
             <List>
                 {userPageInfo && userPageInfo.friends && userPageInfo.friends.map((item: any) => (
-                    <ListItem key={item}>
-                        <Button onClick={() => handleClick(item)} >
+                    <ListItem key={item.username}>
+                        <Button onClick={() => handleClick(item.username)} >
                             <ListItemAvatar>
                                 {item.status === "online" ?
                                     <StyledBadgeGreen
@@ -137,7 +133,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
                                         variant="dot"
                                     >
                                         <Avatar>
-                                            {item}
+                                            {item.username}
                                         </Avatar>
                                     </StyledBadgeGreen>
                                     :
@@ -149,7 +145,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
                                             variant="dot"
                                         >
                                             <Avatar>
-                                                {item}
+                                                {item.username}
                                             </Avatar>
                                         </StyledBadgeRed>
                                         :
@@ -159,7 +155,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
                                             variant="dot"
                                         >
                                             <Avatar>
-                                                {item}
+                                                {item.username}
                                             </Avatar>
                                         </StyledBadgeGrey>
                                 }

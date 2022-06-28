@@ -4,6 +4,7 @@ import {
   ENABLE_2FA_CONFIRMED_ACTION,
   GET_ALL_GAMES_ACTION,
   GET_FRIENDS_LIST_ACTION,
+  GET_FRIENDS_LIST_FOR_FRIEND_ACTION,
   GET_FRIEND_INFOS_ACTION,
   LOADING_TOGGLE_ACTION,
   LOGIN_CONFIRMED_ACTION,
@@ -26,6 +27,11 @@ export interface MatchInfo {
   id?: number,
 }
 
+export interface Friend {
+  username?: string,
+  status?: string,
+}
+
 export interface UserInfo {
   login42?: string,
   username?: string,
@@ -35,7 +41,7 @@ export interface UserInfo {
   avatar?: string,
   expiresIn?: any,
   access_token?: string,
-  friends: string[],
+  friends: Friend[],
   twofa?: boolean,
   code2FA?: string,
   status?: string,
@@ -126,6 +132,14 @@ export const userLoginReducer = (
         showLoading: false,
         errorMessage: "",
         userInfo: { ...state.userInfo, twofa: true, code2FA: action.payload },
+      };
+    case GET_FRIENDS_LIST_FOR_FRIEND_ACTION:
+      console.log("GET_FRIENDS_LIST_FOR_FRIEND_ACTION action.payload", action.payload)
+      return {
+        ...state,
+        showLoading: false,
+        errorMessage: "",
+        friendInfo: { ...state.friendInfo, friends: action.payload },
       };
     case GET_FRIENDS_LIST_ACTION:
       console.log("GET_FRIENDS_LIST_ACTION action.payload", action.payload)

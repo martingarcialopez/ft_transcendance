@@ -17,10 +17,10 @@ const HomeScreen = () => {
   const username = userInfo ? userInfo.username : null
 
   useEffect(() => {
-    if (userInfo) {
+    if (userInfo?.access_token) {
       checkAutoLogin(dispatch, userInfo?.access_token, navigate);
     }
-  }, [userInfo?.access_token, dispatch, navigate]);
+  }, [dispatch, navigate, userInfo?.access_token]);
 
   return (
     <div>

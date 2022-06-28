@@ -15,8 +15,9 @@ import {
   ENABLE_2FA_CONFIRMED_ACTION,
   DISABLE_2FA_CONFIRMED_ACTION,
   UPLOAD_IMAGE_CONFIRMED_ACTION,
+  GET_FRIENDS_LIST_FOR_FRIEND_ACTION,
 } from '../constants/userConstants'
-import { addFriend, removeFriend, formatError, getFriendList, getInfo, getUserInfo, login, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42, logout } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getInfo, getUserInfo, login, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42, logout, getFriendListStatus } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -189,9 +190,31 @@ export function getAllPlayerGamesAction(username: any) {
   };
 }
 
+export function getFriendListStatusAction(access_token: any, username: any, friend: boolean) {
+  console.log("getFriendListStatusAction access_token", access_token)
+  console.log("getFriendListStatusAction username", username)
+  return (dispatch: any) => {
+    getFriendListStatus(access_token, username)
+      .then((response) => {
+        if (friend) {
+          console.log("getFriendListStatusAction response => getFriendListStatusConfirmedAction", response)
+          dispatch(getFriendListStatusConfirmedAction(response.data));
+        }
+        else {
+          console.log("getFriendListStatusAction response => getFriendListStatusForFriendConfirmedAction", response)
+          dispatch(getFriendListStatusForFriendConfirmedAction(response.data));
+        }
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
 export function getFriendListAction(userInfo: any) {
   return (dispatch: any) => {
-    getFriendList(userInfo.access_token)
+    getFriendListStatus(userInfo.access_token, userInfo.username)
       .then((response) => {
         console.log("getFriendListAction response", response)
         dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, userInfo.access_token, response.data));
@@ -209,7 +232,8 @@ export function addFriendAction(username: any, userInfo: any) {
     console.log("addFriendAction username", username)
     console.log("addFriendAction userInfo", userInfo)
     addFriend(username, userInfo.access_token)
-      .then(() => {
+      .then((response) => {
+        console.log("addFriendAction response", response)
         dispatch(getFriendListAction(userInfo));
       })
       .catch((error) => {
@@ -304,7 +328,7 @@ export function login42Action(code: any, navigate: NavigateFunction) {
 
 export function runLogoutTimer(dispatch: any, timer: any, access_token: any, navigate: NavigateFunction) {
   setTimeout(() => {
-      dispatch(logoutAction(access_token, navigate));
+    dispatch(logoutAction(access_token, navigate));
   }, timer);
 }
 
@@ -312,8 +336,8 @@ export function checkAutoLogin(dispatch: any, access_token: any, navigate: Navig
   const tokenDetailsString = localStorage.getItem('userInfo');
   let tokenDetails: any = '';
   if (!tokenDetailsString) {
-      dispatch(logoutAction(access_token, navigate));
-      return;
+    dispatch(logoutAction(access_token, navigate));
+    return;
   }
 
   tokenDetails = JSON.parse(tokenDetailsString);
@@ -321,8 +345,8 @@ export function checkAutoLogin(dispatch: any, access_token: any, navigate: Navig
   let todaysDate = new Date();
 
   if (todaysDate > expireDate) {
-      dispatch(logoutAction(access_token, navigate));
-      return;
+    dispatch(logoutAction(access_token, navigate));
+    return;
   }
   dispatch(loginConfirmedAction(tokenDetails));
 
@@ -358,13 +382,19 @@ export function updateFailedAction(message: any) {
   };
 }
 
-export function getFriendListConfirmedAction(friendList: any) {
+export function getFriendListStatusConfirmedAction(friendList: any) {
   return {
     type: GET_FRIENDS_LIST_ACTION,
     payload: friendList,
   };
 }
 
+export function getFriendListStatusForFriendConfirmedAction(friendList: any) {
+  return {
+    type: GET_FRIENDS_LIST_FOR_FRIEND_ACTION,
+    payload: friendList,
+  };
+}
 
 export function getFriendInfosAction(data: any) {
   return {

@@ -20,7 +20,7 @@ export const OtherProfileScreen = () => {
     const allMatch = useSelector<RootState, AllMatchState>(
         (state: RootState) => state.allMatch
     )
-    console.log("OtherProfileScreen userLogin Profile:", userLogin)
+    console.log("OtherProfileScreen userLogin:", userLogin)
 
     const { userInfo } = userLogin;
 
