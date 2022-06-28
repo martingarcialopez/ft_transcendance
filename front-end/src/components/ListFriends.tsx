@@ -67,7 +67,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
             if (userInfo) {
                 console.log("socket.emit joinPongRoom / userPageInfo.username:", userPageInfo.username, ", friend.status", friend.status);
                 socket.emit('joinPongRoom', userPageInfo.username, friend.status);
-                navigate("/pong")
+                navigate("/pong", { state: { spectator: true } })
             }
         }
         else {

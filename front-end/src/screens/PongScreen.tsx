@@ -12,6 +12,7 @@ import { ColumnGroupingTable } from '../components/ColumnGroupingTable';
 import { ResponsiveDialog } from '../components/ResponsiveDialog';
 // import Canvas from '../components/Canvas';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import { useLocation } from 'react-router-dom';
 
 export const socket = socketio(`${URL_test}`)
 
@@ -47,6 +48,22 @@ export const Pong = () => {
     const [opponent, setOpponent] = useState('');
     const { userInfo }: UserState = userLogin;
     const [playerName, setPlayerName] = useState(userInfo?.username);
+    const { state } = useLocation();
+
+    // console.log("Pong useLocation => state:", state)
+
+    useEffect(() => {
+        console.log("888888 useLocation => state:", state)
+        if (state) {
+            // if (state.spectator === true) {
+            console.log("888888 spectator call receive_socket_info")
+            setGameStarted(true);
+            setOpponent('test')
+            setWinner('')
+            receive_socket_info();
+            // }
+        }
+    }, []);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -237,7 +254,7 @@ export const Pong = () => {
                                 }}
                                 value={but}
                                 onChange={(e) => setBut(e.target.value)}
-                                />
+                            />
                         </Grid>
                         <Grid item xs={6}>
                             <ButtonGroup variant="text" aria-label="text button group">
