@@ -109,7 +109,7 @@ export class UserService {
             throw new HttpException('user not found', HttpStatus.NOT_FOUND); // user does not exist
 
         if (user.avatar) {
-            const path = `/usr/src/app/avatar/${user.login42}.png`;
+            const path = `/usr/src/app/public/shared/avatar/${user.login42}.png`;
             try {
                 unlinkSync(path); //file removed
             } catch (err) {
