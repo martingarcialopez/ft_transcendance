@@ -13,8 +13,8 @@ import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 
 const whitelist = [
     'image/png',
-    'image/jpeg',
-    'image/jpg'
+    // 'image/jpeg',
+    // 'image/jpg'
 ]
 
 @Controller('user')

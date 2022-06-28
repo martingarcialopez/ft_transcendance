@@ -287,9 +287,10 @@ export class UserService {
             filename: `/shared/avatar/${uploadedFile.filename}`,
         };
 
-        this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
+        return this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
 
-        return response;
+        // return response;
+
     }
 
 }
