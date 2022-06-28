@@ -40,7 +40,7 @@ export class PongGateway
 	async lookingForplay(socket: Socket, data) : Promise<void> {
 		console.log('lookingForAGame Gateway');
     console.log(`uerId is ${data[0]} and difficulty is ${data[1]}`)
-		let value = await this.pongService.managePlayer(socket, this.server, data[0], data[1]);
+		let value = await this.pongService.managePlayer(socket, this.server, data[0], data[1], data[2]);
 
 	}
 
