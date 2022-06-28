@@ -180,9 +180,9 @@ export class UserService {
         return allUsernames;
     }
 
-    async getUserFriendsStatus(userId: string) {
+    async getUserFriendsStatus(username: string) {
 
-        const user: User = await this.getUserById(userId);
+        const user: User = await this.getUser(username);
 
         if (!user)
             throw new NotFoundException();
@@ -262,7 +262,7 @@ export class UserService {
             .execute();
     }
 
-    uploadProfileImage(req, uploadedFile: Express.Multer.File) {
+    uploadProfileImage(req, uploadedFile: Express.Multer.File): Promise<User> {
 
         // console.log(uploadedFile);
 
