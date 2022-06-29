@@ -122,7 +122,10 @@ export function uploadImageAction(image: any, access_token: any) {
         console.log("ceci est une error dans uploadImageAction :")
         console.log(error);
         const errorMessage = formatError(error.code);
-        console.log("ceci est une errorMessage return de formatError dans uploadImageAction :" + errorMessage)
+          console.log("ceci est une errorMessage return de formatError dans uploadImageAction :" + errorMessage)
+		  if (error.response.data.statusCode === 415) {
+			  alert('Only png images are supported.');
+		  }
         dispatch(ActionFailed(errorMessage));
       });
   };

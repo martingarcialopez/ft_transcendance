@@ -19,9 +19,18 @@ export const UpdateProfile = ({ userInfo }: any) => {
     const [profileImg, setProfileImg] = useState('')
     const dispatch = useDispatch()
 
+	const [isValidFileFormat, setIsValidFileFormat] = useState(true);
+
     const onFileChange = (e: any) => {
-        setProfileImg(e.target.files[0])
-        console.log("FilesUploadComponent e.target.files[0] :", e.target.files[0])
+		if (e.target.files[0].type !== 'image/png') {
+			alert('[Warning] Only PNG files are supported.');
+			setIsValidFileFormat(false);
+		}
+		else {
+			setIsValidFileFormat(true);
+			setProfileImg(e.target.files[0].type)
+			console.log("FilesUploadComponent e.target.files[0] :", e.target.files[0])
+		}
     }
 
     const uploadImage = () => {
@@ -45,9 +54,13 @@ export const UpdateProfile = ({ userInfo }: any) => {
         setSnackbars(false);
     };
 
+
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
+		if (isValidFileFormat === false) {
+			alert('[ERROR] Invalid file format. Only PNG is supported.');
+			return ;
+		}
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
             dispatch(updateAction(firstname, lastname, username, userInfo.id, userInfo.access_token, userInfo.friends))
@@ -97,10 +110,17 @@ export const UpdateProfile = ({ userInfo }: any) => {
                 !displayImg ?
                     <div>
                         <div className="form-group">
-                            <input type="file" onChange={onFileChange} />
+                            <input type="file" onChange={onFileChange} accept=".png" />
                         </div>
                         <div className="form-group">
-                            <button className="btn btn-primary" onClick={() => uploadImage()}>Upload</button>
+                <button className="btn btn-primary" onClick={() => {
+					if (isValidFileFormat === false) {
+						alert('[ERROR] Invalid file format. Only PNG is supported.');
+					}
+					else {
+						uploadImage()
+					}
+				}}>Upload</button>
                         </div>
                     </div>
                     :
