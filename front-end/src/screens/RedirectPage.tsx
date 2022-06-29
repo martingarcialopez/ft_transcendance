@@ -14,7 +14,7 @@ export const RedirectPage = () => {
     let code = window.location.href.slice(35, window.location.href.length);
     console.log("RedirectPage code", code)
     dispatch(login42Action(code, navigate))
-  }, [dispatch, navigate])
+  }, [])
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, width: '100%' }}>
