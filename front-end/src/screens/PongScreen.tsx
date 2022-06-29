@@ -63,7 +63,7 @@ export const Pong = () => {
             receive_socket_info();
             // }
         }
-    }, []);
+    }, [state]);
 
     useEffect(() => {
         const timer = setInterval(() => {

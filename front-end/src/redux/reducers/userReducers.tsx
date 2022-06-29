@@ -202,7 +202,10 @@ export const userLoginReducer = (
         errorMessage: "",
         successMessage: "Signup Successfully Completed",
       };
-    case LOGIN_FAILED_ACTION || SIGNUP_FAILED_ACTION || UPDATE_FAILED_ACTION:
+    case LOGIN_FAILED_ACTION:
+    case SIGNUP_FAILED_ACTION:
+    case UPDATE_FAILED_ACTION:
+      console.log("SIGNUP_FAILED_ACTION action.payload", action.payload)
       return {
         ...state,
         showLoading: false,

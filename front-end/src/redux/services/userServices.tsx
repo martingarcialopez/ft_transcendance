@@ -183,15 +183,21 @@ export function formatError(errorResponse: any) {
     console.log(errorResponse)
     switch (errorResponse) {
         case 'Request failed with status code 418':
-            return 'Write the 6 digit code you\'re seen on Google Authenticator'
-        case 'EMAIL_EXISTS':
-            return 'Email already exists';
-        case 'EMAIL_NOT_FOUND':
-            return 'Email not found';
+            return 'Write the 6 digit code you\'re seen on Google Authenticator';
+        case 'username already in use':
+            return 'Pseudo already in use';
+        case 'username should not be empty':
+            return 'Pseudo should not be empty';
+        case 'username should not be empty,password should not be empty':
+            return 'Pseudo and password should not be empty';
+        case 'firstname should not be empty':
+            return 'Firstname should not be empty';
+        case 'lastname should not be empty':
+            return 'Lastname should not be empty';
+        case 'firstname should not be empty,lastname should not be empty,username should not be empty,password should not be empty':
+            return 'Fill all the informations to create your account';
         case 'INVALID_PASSWORD':
             return 'Invalid Password';
-        case 'USER_DISABLED':
-            return 'User Disabled';
         case 'ERR_BAD_REQUEST':
             return 'Username or password invalid';
         default:

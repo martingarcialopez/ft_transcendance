@@ -28,9 +28,9 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
         dispatch(loginAction(username, password, null, navigate))
       })
       .catch((error) => {
-        console.log("ceci est une error dans signupAction :")
-        console.log(error);
-        const errorMessage = formatError(error.code);
+        console.log("ceci est une error dans signupAction error.response.data.message:", error.response.data.message)
+        console.log("error :", error);
+        const errorMessage = formatError(error.response.data.message.toString());
         console.log("ceci est une errorMessage return de formatError dans signupAction :" + errorMessage)
         dispatch(signupFailedAction(errorMessage));
       });
@@ -446,6 +446,7 @@ export function confirmedSignupAction(payload: any) {
 }
 
 export function signupFailedAction(message: any) {
+  console.log("signupFailedAction message:", message)
   return {
     type: SIGNUP_FAILED_ACTION,
     payload: message,

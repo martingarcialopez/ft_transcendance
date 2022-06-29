@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { useEffect, useState } from "react";
-import { addFriendAction, getFriendListStatusAction, getUserInfoAction, removeFriendAction } from "../redux/actions/userActions";
+import { addFriendAction, getFriendListStatusAction, removeFriendAction } from "../redux/actions/userActions";
 import socketio from "socket.io-client";
 import { URL_test } from '../constants/url';
 
@@ -18,7 +18,6 @@ export const ListFriends = ({ userPageInfo }: any) => {
     const { id } = useParams();
     const dispatch = useDispatch()
     const [buttonFriend, setButtonFriend] = useState('')
-    const [listFriend, setListFriend] = useState({ friend: "", status: "" })
     const friendId = !id ? true : false
 
     const navigate = useNavigate();
@@ -45,19 +44,14 @@ export const ListFriends = ({ userPageInfo }: any) => {
     }, [userInfo, userPageInfo])
 
     useEffect(() => {
-        console.log("11111 ListFriends userPageInfo = ", userPageInfo)
-        console.log("ListFriends userPageInfo.friends = ", userPageInfo.friends)
+        // console.log("11111 ListFriends userPageInfo = ", userPageInfo)
+        // console.log("ListFriends userPageInfo.friends = ", userPageInfo.friends)
         if (userPageInfo && userInfo) {
             console.log("dispatch getFriendListStatusAction")
             dispatch(getFriendListStatusAction(userInfo.access_token, userPageInfo.username, friendId))
-            console.log("userLogin.friendInfo", userLogin.friendInfo)
-            if (userLogin && userLogin.friendInfo && userLogin.friendInfo.username && userLogin.friendInfo.status) {
-                console.log("setListFriend:")
-                setListFriend({ friend: userLogin.friendInfo.username, status: userLogin.friendInfo.status })
-            }
-            console.log("ListFriends 2222 listFriend", listFriend)
-            console.log("ListFriends 2222 listFriend", listFriend.friend)
-            console.log("ListFriends 2222 listFriend", listFriend.status)
+            // console.log("userLogin.friendInfo", userLogin.friendInfo)
+            // if (userLogin && userLogin.friendInfo && userLogin.friendInfo.username && userLogin.friendInfo.status) {
+            // }
         }
 
     }, [])
