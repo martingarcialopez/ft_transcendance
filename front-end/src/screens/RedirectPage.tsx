@@ -1,11 +1,10 @@
 import { Box, CircularProgress, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login42Action } from "../redux/actions/userActions";
 
 export const RedirectPage = () => {
-  const [oneTime, setOneTime] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
@@ -14,10 +13,8 @@ export const RedirectPage = () => {
 
     let code = window.location.href.slice(35, window.location.href.length);
     console.log("RedirectPage code", code)
-    if (oneTime === 0)
-      dispatch(login42Action(code, navigate))
-    setOneTime(1);
-  }, [dispatch, navigate, oneTime])
+    dispatch(login42Action(code, navigate))
+  }, [dispatch, navigate])
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, width: '100%' }}>
