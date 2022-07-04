@@ -35,8 +35,12 @@ export const LeaderBoard = () => {
             <div className="board">
                 <h1 className='leaderboard'>Leaderboard</h1>
 
-                <LeaderboardProfiles Leaderboard={between(Leaderboard)}></LeaderboardProfiles>
-                {/* <LeaderboardProfiles Leaderboard={allMatch.MatchInfo}></LeaderboardProfiles> */}
+                {/* <LeaderboardProfiles Leaderboard={between(Leaderboard)}></LeaderboardProfiles> */}
+                {allMatch && allMatch.MatchInfo ?
+                    <LeaderboardProfiles Leaderboard={allMatch.MatchInfo}></LeaderboardProfiles>
+                    :
+                    null
+                }
             </div>
 
         </div>
