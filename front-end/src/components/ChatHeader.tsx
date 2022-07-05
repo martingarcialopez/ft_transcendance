@@ -33,7 +33,7 @@ function PrintParticipants({ participant }: PropsParticipant) {
   );
 }
 
-function AccepGame() {
+export function AccepGame() {
   const navigate = useNavigate();
 
   return (
@@ -41,16 +41,6 @@ function AccepGame() {
       <button className="accepte" onClick={() => navigate("/pong")}>
         accept
       </button>
-
-      {/* 
-				<span
-				className="accepte"
-				onClick={(event) =>
-				(window.location.href = "http://localhost:8080/pong")
-				}
-				>
-				Accepte
-				</span> */}
     </>
   );
 }
@@ -76,9 +66,7 @@ export function ChatHeader({ roomSelectedId }: Props) {
             </p>
           </div>
           <span className="settings-tray--right">
-            <AccepGame />
             <CreateInvitation roomSelectedId={roomSelectedId} />
-            {/* <i className="material-icons" >cached</i> */}
           </span>
         </div>
       </div>
