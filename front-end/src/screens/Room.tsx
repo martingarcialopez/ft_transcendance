@@ -59,7 +59,7 @@ export function Room() {
   //init arrayRoom
   E_AllRoomInfos(ac_InitRoomArray);
   /* SortLeaderboard(); */
-  CreateLeader();
+
   return (
     <>
       <SettingRoom />
