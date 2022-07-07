@@ -43,6 +43,9 @@ export class User {
   @Column({ default: "offline"})
   status: string;
 
+  @Column( {nullable: true} )
+  socketId: string;
+
   @Column("int", { nullable: true, array: true, default: "{}" })
   blockList: number[];
 

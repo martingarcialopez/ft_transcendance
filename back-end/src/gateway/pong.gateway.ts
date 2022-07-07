@@ -19,57 +19,71 @@ import { PongService } from '../services/pong.service';
 import { moveDto } from 'src/dtos/in/move.dto';
 import { GameEntity } from 'src/models/game.entity';
 import { lookingForAGameDto } from 'src/dtos/in/lookingForAGame.dto';
+import { createCustomGameDto } from 'src/dtos/in/createCustomGame.dto';
+import { joinPongRoomDto } from 'src/dtos/in/joinPongRoom.dto';
+import { UserService } from 'src/services/user.service';
 
 /*this declarator gives us access to the socket.io functionality*/
-@WebSocketGateway({
-  cors: {
-    origin: '*',
-  },
-})
+@WebSocketGateway({ path: '/pongSocketServer', cors: { origin: '*' }})
+export class PongGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  
+  constructor(private readonly pongService: PongService, private userService: UserService) {}
 
-export class PongGateway
-{
   @WebSocketServer() server: Server;
 
-  constructor(
-    private readonly pongService: PongService,
-  ) {}
+  afterInit(server: Server) {
+    console.log('Pong socket server Initialized:');
+  }
 
-	@SubscribeMessage('lookingForAGame')
-	async lookingForplay(socket: Socket, data) : Promise<void> {
+  handleConnection(client: Socket) {
+    console.log(`client with id: ${client.id} connected !`);
+    
+  }
+
+  handleDisconnect(client: Socket) {
+    console.log(`Client with id: ${client.id} disconnected!`);
+    // this.pongService.handleDisconnect();
+  }
+
+  @SubscribeMessage('setSocketId')
+  async setSocketId(socket: Socket, username: string) : Promise<string> {
+    console.log(`in set socket id, username is ${username}`)
+
+    return await this.pongService.setSocketId(socket, username);
+  }
+
+	@SubscribeMessage('lookingForAGame') 
+    async lookingForplay(socket: Socket, data: lookingForAGameDto) : Promise<void> {
 		console.log('lookingForAGame Gateway');
-    console.log(`uerId is ${data[0]} and difficulty is ${data[1]}`)
+    console.log(`uerId is ${data.userId}, difficulty is ${data.difficulty} and maxScore is ${data.maxScore}`)
     console.log(data);
-		let value = await this.pongService.managePlayer(socket, this.server, data[0], data[1], data[2]);
+		let value = await this.pongService.managePlayer(socket, this.server, data.userId, data.difficulty, data.maxScore);
 
 	}
 
+
+  @SubscribeMessage('createCustomGame')
+  async createCustomGame(client: Socket, data: createCustomGameDto) {
+
+      const roomId: string = await this.pongService.createCustomGame(client, data.userId, data.difficulty, data.maxScore);
+
+      this.server.to(client.id).emit('customGameId', roomId);
+  }
+
 	@SubscribeMessage('joinPongRoom')
-	async join(socket: Socket, data): Promise<void> {
+	async join(socket: Socket, data: joinPongRoomDto): Promise<void> {
 
 		console.log('joinPongRoom Gateway');
 
     console.log(data);
 
-    this.pongService.joinPongRoom(socket, this.server, data[0], data[1]);
-        // let value = await this.pongService.moveAction(pongDto);
-        // this.server.emit('EVENT_TO_FRONT', value);
+    this.pongService.joinPongRoom(socket, this.server, data.userId, data.roomId);
     }
 
 	@SubscribeMessage('move')
 	async moveAction(socket: Socket, move: GameEntity): Promise<void> {
-		// let value = await this.pongService.moveAction(pongDto);
-		// this.server.emit('EVENT_TO_FRONT', value);
-    //console.log('in move event with move');
-    //console.log(move);
 
     await this.pongService.registerMove(move);
-
 	}
 
-  // @SubscribeMessage('startGame')
-  // startPongGame(client: Socket) {
-
-  //   this.pongService.playGame(client);
-  // }
 }

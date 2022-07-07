@@ -8,9 +8,15 @@ export class GameHistory {
 	id: string;
 
     @Column()
-    leftPlayer: string;
+    difficulty: string;
 
     @Column()
+    maxScore: number;
+
+    @Column()
+    leftPlayer: string;
+
+    @Column( { nullable: true } )
     rightPlayer: string;
 
     @Column( { nullable: true } )
@@ -24,5 +30,6 @@ export class GameHistory {
 
     @Column( { nullable: true } )
     losser: string;
+
 
 }

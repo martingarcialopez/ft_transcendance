@@ -6,7 +6,7 @@ import Canvas from '../components/Canvas';
 import "../styles/gameStyle.css";
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux';
-import { UserState } from '../redux/reducers/userReducers';
+import { userLoginReducer, UserState } from '../redux/reducers/userReducers';
 import { URL_test } from '../constants/url';
 import { ColumnGroupingTable } from '../components/ColumnGroupingTable';
 import { ResponsiveDialog } from '../components/ResponsiveDialog';
@@ -14,7 +14,8 @@ import { ResponsiveDialog } from '../components/ResponsiveDialog';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { useLocation } from 'react-router-dom';
 
-export const socket = socketio(`${URL_test}`)
+
+export const socket = socketio(`${URL_test}`, { path: '/pongSocketServer' });
 
 const window_size = {
     canvasWidth: 600,
@@ -22,6 +23,7 @@ const window_size = {
 }
 
 export const Pong = () => {
+
     const [progress, setProgress] = useState(10);
     const [colorBackground, setColorBackground] = useState('white');
     const [difficulty, setDifficulty] = useState("Normal");
@@ -51,19 +53,20 @@ export const Pong = () => {
     const { state } = useLocation();
 
     // console.log("Pong useLocation => state:", state)
+    // socket.emit('setSocketId', userInfo?.username);
 
-    useEffect(() => {
-        console.log("888888 useLocation => state:", state)
-        if (state) {
-            // if (state.spectator === true) {
-            console.log("888888 spectator call receive_socket_info")
-            setGameStarted(true);
-            setOpponent('test')
-            setWinner('')
-            receive_socket_info();
-            // }
-        }
-    }, [state]);
+    // useEffect(() => {
+    //     console.log("888888 useLocation => state:", state)
+    //     if (state) {
+    //         // if (state.spectator === true) {
+    //         console.log("888888 spectator call receive_socket_info")
+    //         setGameStarted(true);
+    //         // setOpponent('test')
+    //         // setWinner('')
+    //         receive_socket_info();
+    //         // }
+    //     }
+    // }, [state]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -123,7 +126,7 @@ export const Pong = () => {
     function handleClick() {
         if (userInfo) {
             console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
-            socket.emit('lookingForAGame', userInfo.id, difficulty, parseInt(but));
+            socket.emit('lookingForAGame', { userId: userInfo.id, difficulty: difficulty, maxScore: parseInt(but) });
         }
 
         // console.log("HANDKE CKUC")
@@ -144,9 +147,9 @@ export const Pong = () => {
         setGameStarted(true);
     });
 
-    socket.on('GamePlayerName', (...args) => {
-        console.log("socket.on GamePlayerName");
-        console.log("GamePlayerName args: ", args);
+    socket.on('GamePlayersName', (...args) => {
+        console.log("socket.on GamePlayersName");
+        console.log("GamePlayersName args: ", args);
         setPlayerName(args[0])
         setOpponent(args[1])
         if (playerSide === 'leftPlayer') {
@@ -156,11 +159,11 @@ export const Pong = () => {
     });
 
     const endGame = () => {
-        console.log("socket.removeAllListeners gameState gameOver GameInfo GamePlayerName");
+        console.log("socket.removeAllListeners gameState gameOver GameInfo GamePlayersName");
         socket.removeAllListeners('gameState')
         socket.removeAllListeners('gameOver')
         socket.removeAllListeners('GameInfo')
-        socket.removeAllListeners('GamePlayerName')
+        socket.removeAllListeners('GamePlayersName')
         setGameState(({
             ballPos: { x: window_size.canvasWidth / 2, y: window_size.canvasHeight / 2 },
             ballVel: { x: 10, y: 10 },

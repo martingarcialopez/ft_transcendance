@@ -1,5 +1,5 @@
 import { HttpStatus, HttpException, Injectable, NotFoundException, BadRequestException, HttpCode } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { RelationId, Repository } from 'typeorm';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
@@ -11,8 +11,10 @@ import * as bcrypt from 'bcrypt';
 import { GameHistory } from '../models/gamehistory.entity';
 import { Multer } from 'multer';
 import * as fs from "fs";
-import { promisify } from 'util';
+import { isNull, promisify } from 'util';
 import { friendsStatusDto } from 'src/dtos/out/friendsStatus.dto';
+import * as typeorm from "typeorm";
+import { type } from 'os';
 
 @Injectable()
 export class UserService {
@@ -224,15 +226,16 @@ export class UserService {
             throw new NotFoundException();
 
         const games = await this.GameHistoryRepository.find(
-            { where : [{ leftPlayer: username }, { rightPlayer: username }] } );
+            { where : [{ leftPlayer: username }, { rightPlayer: username }, {winner: typeorm.Not(typeorm.IsNull()) }] } );
 
         return games;
 
     }
 
+
     async getAllGames() {
 
-        return await this.GameHistoryRepository.find();
+        return await this.GameHistoryRepository.find( { where : { winner: typeorm.Not(typeorm.IsNull()) } } );
     }
 
     async getBlockList(userId: number): Promise<number[]> | null {

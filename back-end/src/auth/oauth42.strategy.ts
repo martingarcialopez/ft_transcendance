@@ -11,6 +11,7 @@ import { UserService } from "src/services/user.service";
 export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
 
 
+
     constructor(private httpService: HttpService, private authService: AuthService, private userService: UserService) {
         super({
 
@@ -66,5 +67,4 @@ export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
 
         return this.userService.create42User(user);
     }
-
 }

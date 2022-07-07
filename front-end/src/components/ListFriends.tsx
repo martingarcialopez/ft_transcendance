@@ -12,7 +12,7 @@ import { addFriendAction, getFriendListStatusAction, removeFriendAction } from "
 import socketio from "socket.io-client";
 import { URL_test } from '../constants/url';
 
-export const socket = socketio(`${URL_test}`)
+export const socket = socketio(`${URL_test}`, { path: '/pongSocketServer'})
 
 export const ListFriends = ({ userPageInfo }: any) => {
     const { id } = useParams();
@@ -26,6 +26,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
     )
     console.log("ListFriends userLogin:", userLogin);
     // console.log("ListFriends userPageInfo.friends.length:", userPageInfo.friends.length);
+
 
     const { userInfo } = userLogin;
 
@@ -60,7 +61,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
         if (friend.status !== "online" && friend.status !== "offline") {
             if (userInfo) {
                 console.log("socket.emit joinPongRoom / userPageInfo.username:", userPageInfo.username, ", friend.status", friend.status);
-                socket.emit('joinPongRoom', userPageInfo.username, friend.status);
+                socket.emit('joinPongRoom', { userId: userPageInfo.username, roomId: friend.status } );
                 navigate("/pong", { state: { spectator: true } })
             }
         }

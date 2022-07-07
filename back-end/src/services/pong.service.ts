@@ -1,4 +1,4 @@
-import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, VersionColumn } from 'typeorm';
 
@@ -12,7 +12,8 @@ import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { GameEntity } from '../models/game.entity';
 import { UserService } from './user.service';
 import { GameHistory } from 'src/models/gamehistory.entity';
-import { throwError } from 'rxjs';
+import { first, throwError } from 'rxjs';
+import { User } from 'src/models/user.entity';
 
 @Injectable()
 export class PongService {
@@ -77,10 +78,10 @@ export class PongService {
 	// 		const player = await this.userService.getUserById(userId.toString());
 
 	// 		// if (player) {
-	// 		// 	server.to(socket.id).emit("GamePlayerName", "raph", "martin");//, opponent[0].username, player.username);
-	// 		// 	//console.log(`emit GamePlayerName ${opponent[0].username}, ${player.username}`);
+	// 		// 	server.to(socket.id).emit("GamePlayersName", "raph", "martin");//, opponent[0].username, player.username);
+	// 		// 	//console.log(`emit GamePlayersName ${opponent[0].username}, ${player.username}`);
 	// 		// }
-	// 			server.to(socket.id).emit("GamePlayerName", "raph", "martin");//, opponent[0].username, player.username);
+	// 			server.to(socket.id).emit("GamePlayersName", "raph", "martin");//, opponent[0].username, player.username);
 
 	// 		console.log(`second player arrived and joined room ${roomName}`);
 	// 		this.playGame(server, roomName);
@@ -88,9 +89,22 @@ export class PongService {
 	// 	}
     // }
 
-	async managePlayer(socket: Socket, server: Server, userId : number, difficulty: string, winningScore: number) :Promise<void> {
+	async setSocketId(client: Socket, username: string) : Promise<string> {
 
-		let bbdd = await this.pongRepository.find( { "difficulty": difficulty, "winningScore": winningScore } );
+		const user: User = await this.userService.getUser(username);
+		if (!user)
+			throw new NotFoundException();
+
+		const updatedUser = await this.userService.updateUser( { socketId: client.id}, user.id.toString())	
+
+		console.log(`user ${username} got socket id ${client.id}`);
+
+		return updatedUser.socketId;
+	}
+
+	async managePlayer(socket: Socket, server: Server, userId : number, difficulty: string, maxScore: number) :Promise<void> {
+
+		let bbdd = await this.pongRepository.find( { "difficulty": difficulty, "winningScore": maxScore} );
 
 		if (!bbdd.length) {
 
@@ -98,12 +112,12 @@ export class PongService {
 
 			player.userId = userId;
 			player.difficulty = difficulty;
-			player.winningScore = winningScore;
+			player.winningScore = maxScore;
 			player.roomName = uuidv4();
 			await this.pongRepository.save(player);
 
 			socket.join(player.roomName);
-			server.to(socket.id).emit('GameInfo', 'leftPlayer', player.roomName);
+			server.to(socket.id).emit('GameInfo', 'leftPlayer');
 			console.log(`first player arrived and joined room ${player.roomName}`);
 
 		} else {
@@ -112,7 +126,7 @@ export class PongService {
 			this.pongRepository.delete( { userId: opponent.userId });
 
 			socket.join(opponent.roomName);
-			server.to(socket.id).emit('GameInfo', 'rightPlayer', opponent.roomName);
+			server.to(socket.id).emit('GameInfo', 'rightPlayer');
 			console.log(`second player arrived and joined room ${opponent.roomName}`);
 			console.log(`GAME STARTED in room ${opponent.roomName}`);
 
@@ -122,12 +136,14 @@ export class PongService {
 			console.log(`my user id is ${userId}`);
 
 			gameResult.id = opponent.roomName;
+			gameResult.difficulty = difficulty;
+			gameResult.maxScore = maxScore;
 			gameResult.leftPlayer = (await this.userService.getUserById(opponent.userId.toString())).username;
 			gameResult.rightPlayer = (await this.userService.getUserById(userId.toString())).username;
 
 			this.gameHistoryRepository.save(gameResult);
 
-			server.to(opponent.roomName).emit("GamePlayerName", gameResult.leftPlayer, gameResult.rightPlayer);
+			server.to(opponent.roomName).emit("GamePlayersName", gameResult.leftPlayer, gameResult.rightPlayer);
 			console.log(`left player is ${gameResult.leftPlayer}`);
 			console.log(`right player is ${gameResult.rightPlayer}`);
 
@@ -140,22 +156,70 @@ export class PongService {
 			if (!updatedUser)
 				console.log(`EEEEEH my id was ${userId.toString()}`);
 			
-			this.playGame(server, opponent.roomName, difficulty, opponent.userId, userId, winningScore);
+			this.playGame(server, opponent.roomName, difficulty, opponent.userId, userId, maxScore);
 
 		}
 	}
-	
-	async joinPongRoom(socket: Socket, server: Server, userId: string, roomId: string) {
 
-		// var room = server.sockets.adapter.rooms[roomId];
+	async createCustomGame(client: Socket, userId: string, difficulty: string, maxScore: number) : Promise<string> {
 
-		// console.log (`number of people inside room is ${room.length()}`)
+		const game: GameHistory = new GameHistory();
 
-		// if (room.length > 1)
-		socket.join(roomId);
+		game.id = uuidv4();
+		game.difficulty = difficulty;
+		game.maxScore = maxScore;
+		game.leftPlayer = (await this.userService.getUserById(userId.toString())).username;
+
+		await this.gameHistoryRepository.save(game);
+
+		client.join(game.id);
+		client.emit('GameInfo', 'leftPlayer');
+
+		return game.id;
 
 	}
+	
+	async joinPongRoom(client: Socket, server: Server, userId: string, roomId: string) {
 
+		const roomSize = server.sockets.adapter.rooms.get(roomId).size;
+		const game: GameHistory = await this.gameHistoryRepository.findOne( { where: { id: roomId } } );
+
+		console.log (`room size is ${roomSize}`)
+
+		if (roomSize >= 2) {
+
+			client.emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
+			client.join(roomId);
+			console.log(`emiting ->GamePLayersName, ${game.leftPlayer}, ${game.rightPlayer}<- to spectator`);
+			console.log('joining client to the socket room');
+
+		} else {
+
+			const firstPlayer: User = await this.userService.getUser(game.leftPlayer);
+			if (!firstPlayer)
+				throw new NotFoundException();
+
+			const secondPlayer: User = await this.userService.getUserById(userId);
+			if (!secondPlayer)
+				throw new NotFoundException();
+			
+
+			game.rightPlayer = secondPlayer.username;
+
+			this.gameHistoryRepository.save(game);
+
+			client.emit('GameInfo', 'rightPlayer');
+
+			client.join(roomId);
+
+			server.to(roomId).emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
+
+			let updatedUser = await this.userService.updateUser( { status: game.id }, firstPlayer.id.toString());
+			updatedUser = await this.userService.updateUser( { status: game.id }, secondPlayer.id.toString());
+			
+			this.playGame(server, game.id, game.difficulty, firstPlayer.id, secondPlayer.id, game.maxScore);
+		}
+	}
 
 	async playGame(socket: Server, socketRoom: string, difficulty: string, player1Id: number, player2Id: number, winningScore: number) {
 
