@@ -48,20 +48,24 @@ export const Pong = () => {
     const [opponent, setOpponent] = useState('');
     const { userInfo }: UserState = userLogin;
     const [playerName, setPlayerName] = useState(userInfo?.username);
-    const { state } = useLocation();
+    const { state }: any = useLocation();
 
     // console.log("Pong useLocation => state:", state)
 
     useEffect(() => {
         console.log("888888 useLocation => state:", state)
-        if (state) {
+        if (userInfo && state) {
+            if (state && state.spectator) {
+                console.log("Pong socket.emit joinPongRoom / userInfo.username:", userInfo.username, ", friend.status", state.spectator);
+                socket.emit('joinPongRoom', userInfo.username, state.spectator);
+            }
             // if (state.spectator === true) {
-            console.log("888888 spectator call receive_socket_info")
+            console.log("888888 spectator call socket.on('gameState'")
             setGameStarted(true);
-            setOpponent('test')
-            setWinner('')
+            // setWinner('')
             receive_socket_info();
-            // }
+            // NEED real name of Opponent + realname of PlayerName
+            setOpponent('test')
         }
     }, [state]);
 
@@ -100,7 +104,10 @@ export const Pong = () => {
     };
 
     const receive_socket_info = () => {
+
         socket.on('gameState', (...args) => {
+            console.log("receive_socket_info gameState ...args", ...args);
+
             console.log("socket.on gameState");
             setGameState(args[0])
             setGameStarted(true);
