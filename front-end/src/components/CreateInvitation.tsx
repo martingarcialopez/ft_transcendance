@@ -6,7 +6,7 @@ import "../styles/room.css";
 import { useSelector } from "react-redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { RootState } from "../redux/store";
-import { E_CreateMessage } from "./Event";
+import { E_CreateMessage, E_createCustomGame } from "./Event";
 
 type Props = {
   roomSelectedId: number;
@@ -27,19 +27,22 @@ export function FormInvitation({ roomSelectedId }: Props) {
       <form
         className="box-fom-procted"
         onSubmit={handleSubmit((data) => {
-          E_CreateMessage(
-            userInfo.id,
-            "Invitation to play",
-            roomSelectedId,
-            userInfo.username
-          );
+          E_createCustomGame(userInfo.id, data.difficulty, data.maxScore);
         })}
       >
-        <select className="inputRoom" id="pet-select" {...register("level")}>
-          <option value="public">Easy</option>
-          <option value="private">Normal</option>
-          <option value="protected">Hard</option>
+        <select
+          className="inputRoom"
+          id="pet-select"
+          {...register("difficulty")}
+        >
+          <optgroup label="Difficulty" />
+
+          <option value="easy">Easy</option>
+          <option value="noraml">Normal</option>
+          <option value="hard">Hard</option>
         </select>
+
+        <input type="number" min="1" max="11" {...register("maxScore")} />
 
         <input
           className="btn1 btn-new-room btn-Protected"

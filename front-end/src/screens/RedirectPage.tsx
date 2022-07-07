@@ -1,11 +1,10 @@
 import { Box, CircularProgress, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login42Action } from "../redux/actions/userActions";
 
 export const RedirectPage = () => {
-  const [oneTime, setOneTime] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch()
 

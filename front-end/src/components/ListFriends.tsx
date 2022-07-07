@@ -60,9 +60,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
     const handleClick = (friend: any) => {
         if (friend.status !== "online" && friend.status !== "offline") {
             if (userInfo) {
-                console.log("socket.emit joinPongRoom / userPageInfo.username:", userPageInfo.username, ", friend.status", friend.status);
-                socket.emit('joinPongRoom', { userId: userPageInfo.username, roomId: friend.status } );
-                navigate("/pong", { state: { spectator: true } })
+                navigate("/pong", { state: { spectator: friend.status } })
             }
         }
         else {

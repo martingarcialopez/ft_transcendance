@@ -40,7 +40,6 @@ const App = () => {
 	if (isAuthenticated) {
 		routes = (
 			<Routes>
-				<Route path="/auth/redirect" element={<RedirectPage />} />
 				<Route path="/chat" element={<Chat />} />
 				<Route path="/profile/:id" element={<OtherProfileScreen />} />
 				<Route path="/profile" element={<MyProfileScreen />} />

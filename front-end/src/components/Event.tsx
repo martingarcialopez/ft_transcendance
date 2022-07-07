@@ -192,3 +192,24 @@ export function E_MuteUser(
     time: time,
   });
 }
+
+export function E_createCustomGame(
+  userId: number,
+  difficulty: string,
+  maxScore: string
+) {
+  socket.emit("createCustomGame", {
+    userId: userId,
+    difficulty: difficulty,
+    maxScore: maxScore,
+  });
+}
+
+export function E_printInvitation(userId: number, roomId: string) {
+  socket.on(
+    "printInvitation",
+    (receive: { userName: string; roomId: number }) => {
+      console.log("printIvitation: ", receive);
+    }
+  );
+}

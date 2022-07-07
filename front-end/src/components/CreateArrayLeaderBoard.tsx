@@ -1,6 +1,7 @@
-import { T_LeaderBoard, T_game } from "../type/pongType";
+import { T_LeaderBoard } from "../type/pongType";
+import { MatchInfo } from "../redux/reducers/userReducers";
 
-let ArrayGame: T_game[] = [
+let ArrayGame: MatchInfo[] = [
   {
     rightPlayer: "50cent",
     leftPlayer: "kiki",
@@ -60,12 +61,15 @@ let ArrayGame: T_game[] = [
 
 /**
  * verify if username is already into arrayLeaderboard
+ * return false if @username doesn't exist into arrayLeaderboard
+ * return alse if @username  exist into arrayLeaderboard
  */
-function CheckDuplicate(arrayLeaderboard: T_LeaderBoard[], username: string) {
+
+function IsDuplicate(arrayLeaderboard: string[], username: string) {
   let existed: boolean = false;
   if (arrayLeaderboard.length === 0) return false;
-  arrayLeaderboard.forEach((item: T_LeaderBoard) => {
-    if (item.name == username) existed = true;
+  arrayLeaderboard.forEach((item: string) => {
+    if (item === username) existed = true;
   });
   return existed;
 }
@@ -75,7 +79,8 @@ function AddNEw(name: string): T_LeaderBoard {
     name: name,
     username: "",
     score: 0,
-    avatar: "",
+    avatar:
+      "https://www.futbox.com/img/v1/5b1/ecb/e69/e45/09b75491e5ae71f116e9.png",
   };
 }
 
@@ -85,55 +90,75 @@ function AddNEw(name: string): T_LeaderBoard {
  * the inner loop it go to find the winner of the game to add his score by one
  */
 function CountScore(
-  allGame: T_game[] = ArrayGame,
+  allGame: MatchInfo[] = ArrayGame,
   arrayLeaderboard: T_LeaderBoard[]
 ) {
-  allGame.forEach((item: T_game) => {
+  allGame.forEach((item: MatchInfo) => {
     for (let i = 0; i < arrayLeaderboard.length; i++) {
       if (arrayLeaderboard[i].name === item.winner)
         arrayLeaderboard[i].score += 1;
     }
   });
+  return arrayLeaderboard;
 }
 
-/**
- *
- */
 function SortLeaderboard(arrayLeaderboard: T_LeaderBoard[]) {
   let resultat = arrayLeaderboard.sort(
     (item1, item2) => item2.score - item1.score
   );
   return resultat;
 }
+/*
+ * async function getUsers() {
+ *   const url = "http://localhost:3000/user/all";
+ *   try {
+ *     let res = await fetch(url);
+ *     return await res.json();
+ *   } catch (error) {
+ *     console.log("error:", error);
+ *   }
+ * }
+ *  */
+function createUserList(allGame: MatchInfo[] | undefined) {
+  if (typeof allGame === "undefined" || !allGame) return ["empty"];
+  let userList: string[] = [];
+  for (let i = 0; i < allGame.length; i++) {
+    if (IsDuplicate(userList, allGame[i].leftPlayer) === false) {
+      userList.push(allGame[i].leftPlayer);
+    }
+    if (IsDuplicate(userList, allGame[i].rightPlayer) === false) {
+      userList.push(allGame[i].rightPlayer);
+    }
+  }
+  return userList;
+}
 
 /**
  * create a array of leaderboard and sort it
  * step one : 
-     -get all user name from data base
-     -step  create a empty array typeof T_LeaderBoard "arrayLeaderboard"
+	 -get all user name of game to put them into array 
+	 -step  create a empty array typeof T_LeaderBoard "arrayLeaderboard"
  * step two : fill that array created in step one
  * step three : set the score into array arrayLeaderboard
  * step four : sort arrayLeaderboard
  */
-export async function CreateLeader(allGame: T_game[] = ArrayGame) {
-  //step one
+/* export async function CreateLeader(allGame: T_game[] = ArrayGame | MatchInfo) { */
+export function CreateLeader(allGame: MatchInfo[] | undefined) {
+  if (typeof allGame === "undefined") return [];
   let arrayLeaderboard: T_LeaderBoard[] = [];
   let tmpLeaderBoard: T_LeaderBoard;
-  const url = "http://localhost:3000/user/all";
-  let response = await fetch(url);
-  let usersList = await response.json();
+
+  //step one
+  let usersList = createUserList(allGame);
 
   //step two
   for (let i in usersList) {
     tmpLeaderBoard = AddNEw(usersList[i]);
     arrayLeaderboard.push(tmpLeaderBoard);
   }
-
   //step three
-  CountScore(allGame, arrayLeaderboard);
-  console.log(arrayLeaderboard);
-  //step four
-  SortLeaderboard(arrayLeaderboard);
+  arrayLeaderboard = CountScore(allGame, arrayLeaderboard);
+  arrayLeaderboard = SortLeaderboard(arrayLeaderboard);
 
   return arrayLeaderboard;
 }
