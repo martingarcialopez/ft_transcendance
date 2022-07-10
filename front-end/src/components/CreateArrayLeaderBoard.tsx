@@ -108,6 +108,7 @@ function SortLeaderboard(arrayLeaderboard: T_LeaderBoard[]) {
   );
   return resultat;
 }
+
 /*
  * async function getUsers() {
  *   const url = "http://localhost:3000/user/all";
@@ -119,6 +120,7 @@ function SortLeaderboard(arrayLeaderboard: T_LeaderBoard[]) {
  *   }
  * }
  *  */
+
 function createUserList(allGame: MatchInfo[] | undefined) {
   if (typeof allGame === "undefined" || !allGame) return ["empty"];
   let userList: string[] = [];
@@ -159,6 +161,6 @@ export function CreateLeader(allGame: MatchInfo[] | undefined) {
   //step three
   arrayLeaderboard = CountScore(allGame, arrayLeaderboard);
   arrayLeaderboard = SortLeaderboard(arrayLeaderboard);
-
+  //http://localhost:3000/user/games/all
   return arrayLeaderboard;
 }
