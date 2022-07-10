@@ -16,7 +16,7 @@ export const LeaderBoard = () => {
     dispatch(getAllGamesAction());
   }, [dispatch]);
 
-  console.log("LeaderBoard allMatch", allMatch.MatchInfo);
+  //  console.log("LeaderBoard allMatch", allMatch.MatchInfo);
 
   const between = (data: any) => {
     // sort with asending order
@@ -31,7 +31,7 @@ export const LeaderBoard = () => {
 
   if (typeof allMatch.MatchInfo != undefined) {
     let SortedLeaderBoard = CreateLeader(allMatch.MatchInfo);
-    //  console.log("size arrayLeaderboard:", SortedLeaderBoard);
+    console.log("sorted Leaderboard:", SortedLeaderBoard);
     return (
       <div className="main">
         <div className="board">

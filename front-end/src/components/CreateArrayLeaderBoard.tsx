@@ -79,8 +79,7 @@ function AddNEw(name: string): T_LeaderBoard {
     name: name,
     username: "",
     score: 0,
-    avatar:
-      "https://www.futbox.com/img/v1/5b1/ecb/e69/e45/09b75491e5ae71f116e9.png",
+    avatar: "",
   };
 }
 
@@ -109,18 +108,23 @@ function SortLeaderboard(arrayLeaderboard: T_LeaderBoard[]) {
   return resultat;
 }
 
+async function getUsers() {
+  const url = "http://localhost:3000/user/all";
+  let res = await fetch(url);
+  return await res.json();
+}
+
 /*
  * async function getUsers() {
  *   const url = "http://localhost:3000/user/all";
- *   try {
- *     let res = await fetch(url);
- *     return await res.json();
- *   } catch (error) {
- *     console.log("error:", error);
- *   }
+ *   fetch(url).then((response) => {
+ *     if (!response.ok) {
+ *       throw new Error("Network response was not OK");
+ *     }
+ *     return response.json();
+ *   });
  * }
  *  */
-
 function createUserList(allGame: MatchInfo[] | undefined) {
   if (typeof allGame === "undefined" || !allGame) return ["empty"];
   let userList: string[] = [];
@@ -145,11 +149,11 @@ function createUserList(allGame: MatchInfo[] | undefined) {
  * step four : sort arrayLeaderboard
  */
 /* export async function CreateLeader(allGame: T_game[] = ArrayGame | MatchInfo) { */
+
 export function CreateLeader(allGame: MatchInfo[] | undefined) {
   if (typeof allGame === "undefined") return [];
   let arrayLeaderboard: T_LeaderBoard[] = [];
   let tmpLeaderBoard: T_LeaderBoard;
-
   //step one
   let usersList = createUserList(allGame);
 
@@ -161,6 +165,15 @@ export function CreateLeader(allGame: MatchInfo[] | undefined) {
   //step three
   arrayLeaderboard = CountScore(allGame, arrayLeaderboard);
   arrayLeaderboard = SortLeaderboard(arrayLeaderboard);
-  //http://localhost:3000/user/games/all
+
+  const url = "http://localhost:3000/user/all";
+  fetch(url)
+    .then((response) => response.json())
+    .then(function copy(data) {
+      data.forEach((item: any, it: number) => {
+        arrayLeaderboard[it].avatar = item.avatar;
+        /* console.log("pendant :", arrayLeaderboard[it].avatar); */
+      });
+    });
   return arrayLeaderboard;
 }
