@@ -85,7 +85,7 @@ export class UserController {
         return this.userService.deleteFriend(req.user.userId, username);
     }
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get('/:username')
     getUser(@Param('username') username: string): Promise<User> {
         console.log('in get user');

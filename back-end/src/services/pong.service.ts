@@ -89,6 +89,7 @@ export class PongService {
 	// 	}
     // }
 
+
 	async setSocketId(client: Socket, username: string) : Promise<string> {
 
 		const user: User = await this.userService.getUser(username);

@@ -15,6 +15,7 @@ import { isNull, promisify } from 'util';
 import { friendsStatusDto } from 'src/dtos/out/friendsStatus.dto';
 import * as typeorm from "typeorm";
 import { type } from 'os';
+import { allUsersDto } from 'src/dtos/out/allUsers.dto';
 
 @Injectable()
 export class UserService {
@@ -32,14 +33,19 @@ export class UserService {
 
         const all = await this.userRepository.find();
 
-        var allUsernames: Array<string> = [];
+        var allUsers: Array<allUsersDto> = [];
+
+        var userInfo: allUsersDto;
 
         for (const user of all) {
-            console.log(user.username);
-            allUsernames.push(user.username);
+            console.log(`username is ${user.username} and avatar is ${user.avatar}`)
+            userInfo = new allUsersDto();
+            userInfo.username = user.username;
+            userInfo.avatar = user.avatar;
+            allUsers.push(userInfo);
         }
 
-        return allUsernames;
+        return allUsers;
 
     }
 
