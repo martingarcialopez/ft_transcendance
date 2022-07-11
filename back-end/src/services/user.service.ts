@@ -48,6 +48,7 @@ export class UserService {
         return allUsers;
     }
 
+
     async createUser(payload: CreateUserDto): Promise<any> {
 
         const existing_user = await this.userRepository.findOne({ username: payload.username });
@@ -236,7 +237,6 @@ export class UserService {
         return games;
 
     }
-
 
 
     async getAllGames() {

@@ -4,8 +4,11 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne
 @Entity()
 export class GameHistory {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
 	id: string;
+
+    @Column()
+    roomId: string;
 
     @Column()
     difficulty: string;
