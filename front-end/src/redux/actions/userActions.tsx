@@ -285,11 +285,8 @@ export function logoutAction(access_token: any, navigate: NavigateFunction) {
         navigate('/home')
       })
       .catch((error) => {
-        console.log("ceci est une error dans logoutAction :")
-        console.log(error);
-        const errorMessage = formatError(error.message);
-        console.log("ceci est une errorMessage return de formatError dans logoutAction :" + errorMessage)
-        dispatch(ActionFailed(errorMessage));
+        dispatch(logoutSuccess());
+        navigate('/home')
       });
   };
 }

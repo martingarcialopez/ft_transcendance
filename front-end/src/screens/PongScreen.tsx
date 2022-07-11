@@ -73,7 +73,7 @@ export const Pong = () => {
             // setWinner('')
             receive_socket_info();
             // NEED real name of Opponent + realname of PlayerName
-            setOpponent('test')
+            // setOpponent('test')
         }
     }, [state]);
 
@@ -140,7 +140,9 @@ export const Pong = () => {
             // console.log(args[0].ballPos);
             // console.log(args[0].ballPos.x);
             // console.log(args[0].ballPos.y);
-            // console.log(gameState);
+            console.log("gameState", gameState);
+            console.log("playerSide", playerSide);
+            console.log("opponent", opponent);
         });
         socket.on('gameOver', (winnerPlayer) => {
             console.log("socket.on gameOver");
