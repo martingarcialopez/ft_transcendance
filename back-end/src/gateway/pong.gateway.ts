@@ -83,6 +83,8 @@ export class PongGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('move')
 	async moveAction(socket: Socket, move: GameEntity): Promise<void> {
 
+    console.log(move);
+
     await this.pongService.registerMove(move);
 	}
 

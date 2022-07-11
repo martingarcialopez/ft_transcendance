@@ -105,12 +105,8 @@ export class PongService {
 	async managePlayer(socket: Socket, server: Server, userId : number, difficulty: string, maxScore: number) :Promise<void> {
 
 		let existingGame: Matchmaking = await this.pongRepository.findOne ( { userId: userId } );
-		console.log ("existing Game")
-		console.log(existingGame)
-		if (existingGame) {
+		if (existingGame)
 			await this.pongRepository.delete( { userId: userId } );
-			console.log(`del existing game of user ${userId}`);
-		}
 
 		let bbdd = await this.pongRepository.find( { "difficulty": difficulty, "winningScore": maxScore} );
 
@@ -322,12 +318,13 @@ export class PongService {
 		// console.log(move);
 
 		const created: GameEntity = this.gameService.create({
-			// id: move[0],
-			id: uuidv4(),
-			room: move[1],
-			player: move[2],
-			move: move[3]
+			id: uuidv4(), ...move
 		});
+			// id: move[0],
+			// room: move[1],
+			// player: move[2],
+			// move: move[3]
+
 		// console.log('from register move, created entity is');
 		// console.log(created);
 	}
