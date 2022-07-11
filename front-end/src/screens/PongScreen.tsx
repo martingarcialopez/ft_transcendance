@@ -53,11 +53,59 @@ export const Pong = () => {
     const [leftPlayer, setLeftPlayer] = useState('');
     const [playerSide, setPlayerSide] = useState('');
     const [roomId, setRoomId] = useState('');
-    const [opponent, setOpponent] = useState('');
     const { userInfo }: UserState = userLogin;
     const { state }: any = useLocation();
 
     // console.log("Pong useLocation => state:", state)
+
+    const receive_socket_info = () => {
+        console.log("receive_socket_info function called")
+        if (socket) {
+            console.log("socket existed")
+
+            socket.on('gameState', (...args) => {
+                // console.log("receive_socket_info gameState ...args", ...args);
+
+                console.log("socket.on gameState");
+                setGameState(args[0])
+                setGameStarted(true);
+                setRightPlayer(args[0].rightPlayer)
+                setLeftPlayer(args[0].leftPlayer)
+                setRoomId(args[0].roomId)
+                if (playerSide === "") {
+                    if (userInfo) {
+                        if (userInfo.username === args[0].rightPlayer) {
+                            setPlayerSide('rightPlayer')
+                        }
+                        else if (userInfo.username === args[0].leftPlayer) {
+                            setPlayerSide('leftPlayer')
+                        }
+                        else {
+                            setPlayerSide('spectator')
+                        }
+                    }
+                }
+                // console.log(args);
+                // console.log(args[0]);
+                // console.log(args[0].ballPos);
+                // console.log(args[0].ballPos.x);
+                // console.log(args[0].ballPos.y);
+                // console.log("gameState", gameState);
+                // console.log("playerSide", playerSide);
+                // console.log("opponent", opponent);
+                // console.log("args[0].roomId", args[0].roomId);
+                // console.log("gameState.roomId", gameState.roomId);
+                // console.log("roomId", roomId);
+            });
+            socket.on('gameOver', (winnerPlayer) => {
+                console.log("socket.on gameOver");
+                console.log("winnerPlayer :", winnerPlayer)
+                setWinner(winnerPlayer);
+                setGameStarted(false);
+                endGame();
+            });
+        }
+    }
 
     useEffect(() => {
         console.log("888888 useLocation => state:", state)
@@ -72,6 +120,7 @@ export const Pong = () => {
             setGameStarted(true);
             // setWinner('')
             receive_socket_info();
+            setPlayerSide('spectator')
             // NEED real name of Opponent + realname of PlayerName
             // setOpponent('test')
         }
@@ -115,48 +164,6 @@ export const Pong = () => {
         }
     };
 
-    const receive_socket_info = () => {
-
-        socket.on('gameState', (...args) => {
-            // console.log("receive_socket_info gameState ...args", ...args);
-
-            console.log("socket.on gameState");
-            setGameState(args[0])
-            setGameStarted(true);
-            setRightPlayer(args[0].rightPlayer)
-            setLeftPlayer(args[0].leftPlayer)
-            setRoomId(args[0].roomId)
-            if (playerSide === "") {
-                if (userInfo.username === args[0].rightPlayer) {
-                    setPlayerSide('rightPlayer')
-                    setOpponent(args[0].leftPlayer)
-                }
-                else {
-                    setPlayerSide('leftPlayer')
-                    setOpponent(args[0].rightPlayer)
-                }
-            }
-            // console.log(args);
-            // console.log(args[0]);
-            // console.log(args[0].ballPos);
-            // console.log(args[0].ballPos.x);
-            // console.log(args[0].ballPos.y);
-            // console.log("gameState", gameState);
-            // console.log("playerSide", playerSide);
-            // console.log("opponent", opponent);
-            // console.log("args[0].roomId", args[0].roomId);
-            // console.log("gameState.roomId", gameState.roomId);
-            // console.log("roomId", roomId);
-        });
-        socket.on('gameOver', (winnerPlayer) => {
-            console.log("socket.on gameOver");
-            console.log("winnerPlayer :", winnerPlayer)
-            setWinner(winnerPlayer);
-            setGameStarted(false);
-            endGame();
-        });
-    }
-
     function handleClick() {
         if (userInfo) {
             console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
@@ -166,8 +173,9 @@ export const Pong = () => {
 
         // console.log("HANDKE CKUC")
         setGameStarted(true);
-        setOpponent('')
         setWinner('')
+        setLeftPlayer('')
+        setRightPlayer('')
         receive_socket_info();
     }
 
@@ -226,7 +234,7 @@ export const Pong = () => {
 
             ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
         }
-        else if (opponent === '') {
+        else if (playerSide === '') {
             img.src = "./game/cyberpong.jpeg"
 
             ctx.drawImage(img, 0, 0, window_size.canvasWidth, window_size.canvasHeight);
@@ -320,8 +328,8 @@ export const Pong = () => {
                                     <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
 
                                 </div>
-                                {opponent ?
-                                    <ColumnGroupingTable side={playerSide} username={userInfo.username} opponent={opponent} />
+                                {playerSide ?
+                                    <ColumnGroupingTable leftPlayer={leftPlayer} rightPlayer={rightPlayer} />
                                     :
                                     null
                                 }
@@ -348,7 +356,7 @@ export const Pong = () => {
                 </div>
                 :
                 <div>
-                    {!opponent ? (
+                    {!playerSide ? (
                         <Grid
                             container
                             rowSpacing={10}
@@ -368,7 +376,7 @@ export const Pong = () => {
                                 <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
 
                             </div>
-                            <ColumnGroupingTable side={playerSide} username={userInfo.username} opponent={opponent} />
+                            <ColumnGroupingTable leftPlayer={leftPlayer} rightPlayer={rightPlayer} />
                         </div>
 
                     )}
