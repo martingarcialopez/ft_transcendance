@@ -71,45 +71,6 @@ export const Pong = () => {
                 setRoomId(state.spectator)
             }
             // if (state.spectator === true) {
-            if (socket) {
-                console.log("888888 spectator call socket.on('gameState'")
-                socket.on('gameState', (...args) => {
-                    // console.log("receive_socket_info gameState ...args", ...args);
-
-                    console.log("socket.on gameState");
-                    setGameState(args[0])
-                    setGameStarted(true);
-                    setRightPlayer(args[0].rightPlayer)
-                    setLeftPlayer(args[0].leftPlayer)
-                    setRoomId(args[0].roomId)
-                    if (playerSide === "") {
-                        if (userInfo) {
-                            if (userInfo.username === args[0].rightPlayer) {
-                                setPlayerSide('rightPlayer')
-                            }
-                            else if (userInfo.username === args[0].leftPlayer) {
-                                setPlayerSide('leftPlayer')
-                            }
-                            else {
-                                setPlayerSide('spectator')
-                            }
-                        }
-                    }
-                    // console.log(args);
-                    // console.log(args[0]);
-                    // console.log(args[0].ballPos);
-                    // console.log(args[0].ballPos.x);
-                    // console.log(args[0].ballPos.y);
-                    // console.log("gameState", gameState);
-                    // console.log("playerSide", playerSide);
-                    // console.log("opponent", opponent);
-                    // console.log("args[0].roomId", args[0].roomId);
-                    // console.log("gameState.roomId", gameState.roomId);
-                    // console.log("roomId", roomId);
-                });
-            }
-            setGameStarted(true);
-            setPlayerSide('spectator')
             // setWinner('')
             // NEED real name of Opponent + realname of PlayerName
             // setOpponent('test')
@@ -141,7 +102,7 @@ export const Pong = () => {
     socket.on('gameState', (...args) => {
         // console.log("receive_socket_info gameState ...args", ...args);
 
-        console.log("socket.on gameState");
+        // console.log("socket.on gameState");
         setGameState(args[0])
         setGameStarted(true);
         setRightPlayer(args[0].rightPlayer)
