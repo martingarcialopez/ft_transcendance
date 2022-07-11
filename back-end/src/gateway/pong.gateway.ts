@@ -75,6 +75,8 @@ export class PongGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 		console.log('joinPongRoom Gateway');
 
+    console.log('in joinPongRoom Gateway');
+    console.log('data is')
     console.log(data);
 
     this.pongService.joinPongRoom(socket, this.server, data.userId, data.roomId);

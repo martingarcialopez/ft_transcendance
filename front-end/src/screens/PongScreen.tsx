@@ -23,7 +23,7 @@ const window_size = {
 }
 
 export const Pong = () => {
-    const socket = pongSocketService.connect();
+    let socket = pongSocketService.connect();
 
     const [progress, setProgress] = useState(10);
     const [colorBackground, setColorBackground] = useState('white');
@@ -108,10 +108,13 @@ export const Pong = () => {
     }
 
     useEffect(() => {
+
+        socket = pongSocketService.connect();
+
         console.log("888888 useLocation => state:", state)
         if (userInfo && state) {
             if (state && state.spectator) {
-                console.log("Pong socket.emit joinPongRoom / userInfo.username:", userInfo.username, ", friend.status", state.spectator);
+                console.log("Pong socket.emit joinPongRoom ", userInfo.username, ", friend.status", state.spectator);
                 if (socket)
                     socket.emit('joinPongRoom', { userId: userInfo.username, roomId: state.spectator });
             }
@@ -153,12 +156,12 @@ export const Pong = () => {
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
                 console.log("socket.emit -1 playerSide :", playerSide, "roomId:", roomId);
-                socket.emit('move', { room: roomId, player: playerSide, move: 1 });
+                socket?.emit('move', { room: roomId, player: playerSide, move: 1 });
                 setId(id + 1);
                 break;
             case 'KeyW' || 'ArrowUp':
                 console.log("socket.emit +1 playerSide :", playerSide, "roomId:", roomId);
-                socket.emit('move', { room: roomId, player: playerSide, move: -1 });
+                socket?.emit('move', { room: roomId, player: playerSide, move: -1 });
                 setId(id + 1);
                 break;
         }
@@ -203,10 +206,10 @@ export const Pong = () => {
 
     const endGame = () => {
         console.log("socket.removeAllListeners gameState gameOver GameInfo GamePlayersName");
-        socket.removeAllListeners('gameState')
-        socket.removeAllListeners('gameOver')
-        socket.removeAllListeners('GameInfo')
-        socket.removeAllListeners('GamePlayersName')
+        socket?.removeAllListeners('gameState')
+        socket?.removeAllListeners('gameOver')
+        socket?.removeAllListeners('GameInfo')
+        socket?.removeAllListeners('GamePlayersName')
         setGameState(({
             ballPos: { x: window_size.canvasWidth / 2, y: window_size.canvasHeight / 2 },
             ballVel: { x: 10, y: 10 },

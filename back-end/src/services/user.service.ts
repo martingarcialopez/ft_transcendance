@@ -231,11 +231,12 @@ export class UserService {
             throw new NotFoundException();
 
         const games = await this.GameHistoryRepository.find(
-            { where : [{ leftPlayer: username }, { rightPlayer: username }, {winner: typeorm.Not(typeorm.IsNull()) }] } );
+            { where : [{ leftPlayer: username }, { rightPlayer: username }/*, {winner: typeorm.Not(typeorm.IsNull()) }*/] } );
 
         return games;
 
     }
+
 
 
     async getAllGames() {
