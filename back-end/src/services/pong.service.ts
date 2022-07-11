@@ -315,24 +315,9 @@ export class PongService {
 
 	async registerMove(move: GameEntity): Promise<void> {
 
-		// console.log(move);
-
-		const created: GameEntity = this.gameService.create({
-			id: uuidv4(), ...move
-		});
-			// id: move[0],
-			// room: move[1],
-			// player: move[2],
-			// move: move[3]
-
-		// console.log('from register move, created entity is');
-		// console.log(created);
+		const created: GameEntity = this.gameService.create({ id: uuidv4(), ...move });
 	}
 }
-
-
-
-
 
 
 function initGameState(difficulty: string, player1: string, player2: string, roomId: string): State {
