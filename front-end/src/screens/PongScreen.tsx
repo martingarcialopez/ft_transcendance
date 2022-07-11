@@ -13,9 +13,9 @@ import { ResponsiveDialog } from '../components/ResponsiveDialog';
 // import Canvas from '../components/Canvas';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { useLocation } from 'react-router-dom';
+import pongSocketService from '../services/pongSocketService';
 
-
-export const socket = socketio(`${URL_test}`, { path: '/pongSocketServer' });
+// export const socket = socketio(`${URL_test}`, { path: '/pongSocketServer' });
 
 const window_size = {
     canvasWidth: 600,
@@ -23,6 +23,7 @@ const window_size = {
 }
 
 export const Pong = () => {
+    const socket = pongSocketService.connect();
 
     const [progress, setProgress] = useState(10);
     const [colorBackground, setColorBackground] = useState('white');
@@ -63,7 +64,8 @@ export const Pong = () => {
         if (userInfo && state) {
             if (state && state.spectator) {
                 console.log("Pong socket.emit joinPongRoom / userInfo.username:", userInfo.username, ", friend.status", state.spectator);
-                socket.emit('joinPongRoom', { userId: userInfo.username, roomId: state.spectator });
+                if (socket)
+                    socket.emit('joinPongRoom', { userId: userInfo.username, roomId: state.spectator });
             }
             // if (state.spectator === true) {
             console.log("888888 spectator call socket.on('gameState'")
@@ -90,6 +92,10 @@ export const Pong = () => {
     }, [progress]);
 
     if (userLogin.showLoading || !userInfo) {
+        return <h1>Loading...</h1>;
+    }
+
+    if (!socket) {
         return <h1>Loading...</h1>;
     }
 
@@ -148,7 +154,8 @@ export const Pong = () => {
     function handleClick() {
         if (userInfo) {
             console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
-            socket.emit('lookingForAGame', { userId: userInfo.id, difficulty: difficulty, maxScore: parseInt(but) });
+            if (socket)
+                socket.emit('lookingForAGame', { userId: userInfo.id, difficulty: difficulty, maxScore: parseInt(but) });
         }
 
         // console.log("HANDKE CKUC")
