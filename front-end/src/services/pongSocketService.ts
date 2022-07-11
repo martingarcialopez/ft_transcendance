@@ -12,7 +12,7 @@ class pongSocketServiceImplementation {
     connect() {
         if (!this.connection) {
 
-            this.connection = socketio(`${URL_test}`, { path: '/pongSocketServer'});
+            this.connection = socketio(`${URL_test}`, { path: '/pongSocketServer' });
         
         } else {
 
