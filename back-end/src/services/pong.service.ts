@@ -1,5 +1,5 @@
 import { Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository, VersionColumn } from 'typeorm';
 
 import {v4 as uuidv4} from 'uuid';
@@ -14,6 +14,7 @@ import { UserService } from './user.service';
 import { GameHistory } from 'src/models/gamehistory.entity';
 import { first, throwError } from 'rxjs';
 import { User } from 'src/models/user.entity';
+import * as typeorm from "typeorm";
 
 @Injectable()
 export class PongService {
@@ -89,7 +90,6 @@ export class PongService {
 	// 	}
     // }
 
-
 	async setSocketId(client: Socket, username: string) : Promise<string> {
 
 		const user: User = await this.userService.getUser(username);
@@ -98,12 +98,30 @@ export class PongService {
 
 		const updatedUser = await this.userService.updateUser( { socketId: client.id}, user.id.toString())	
 
+		const game: GameHistory = await this.gameHistoryRepository.findOne(
+			{ 
+				where: [ 
+					{ winner: typeorm.IsNull(), leftPlayer: username },
+					{ winner: typeorm.IsNull(), rightPlayer: username}
+				],
+				order: { id: 'DESC' }
+			});
+		
+		if (game) {
+			client.join(game.roomId);
+			console.log(`user joined room ${game.roomId}`);
+		}
+
 		console.log(`user ${username} got socket id ${client.id}`);
 
 		return updatedUser.socketId;
 	}
 
 	async managePlayer(socket: Socket, server: Server, userId : number, difficulty: string, maxScore: number) :Promise<void> {
+
+		let existingGame: Matchmaking = await this.pongRepository.findOne ( { userId: userId } );
+		if (existingGame)
+			await this.pongRepository.delete( { userId: userId } );
 
 		let bbdd = await this.pongRepository.find( { "difficulty": difficulty, "winningScore": maxScore} );
 
@@ -117,8 +135,9 @@ export class PongService {
 			player.roomName = uuidv4();
 			await this.pongRepository.save(player);
 
+
 			socket.join(player.roomName);
-			server.to(socket.id).emit('GameInfo', 'leftPlayer');
+			// server.to(socket.id).emit('GameInfo', 'leftPlayer');
 			console.log(`first player arrived and joined room ${player.roomName}`);
 
 		} else {
@@ -136,7 +155,7 @@ export class PongService {
 			console.log(`opponent id is ${opponent.userId}`);
 			console.log(`my user id is ${userId}`);
 
-			gameResult.id = opponent.roomName;
+			gameResult.roomId = opponent.roomName;
 			gameResult.difficulty = difficulty;
 			gameResult.maxScore = maxScore;
 			gameResult.leftPlayer = (await this.userService.getUserById(opponent.userId.toString())).username;
@@ -166,15 +185,15 @@ export class PongService {
 
 		const game: GameHistory = new GameHistory();
 
-		game.id = uuidv4();
+		game.roomId = uuidv4();
 		game.difficulty = difficulty;
 		game.maxScore = maxScore;
 		game.leftPlayer = (await this.userService.getUserById(userId.toString())).username;
 
 		await this.gameHistoryRepository.save(game);
 
-		client.join(game.id);
-		client.emit('GameInfo', 'leftPlayer');
+		client.join(game.roomId);
+		// client.emit('GameInfo', 'leftPlayer');
 
 		return game.id;
 
@@ -183,16 +202,16 @@ export class PongService {
 	async joinPongRoom(client: Socket, server: Server, userId: string, roomId: string) {
 
 		const roomSize = server.sockets.adapter.rooms.get(roomId).size;
-		const game: GameHistory = await this.gameHistoryRepository.findOne( { where: { id: roomId } } );
+		const game: GameHistory = await this.gameHistoryRepository.findOne( { where: { roomId: roomId } } );
 
 		console.log (`room size is ${roomSize}`)
 
 		if (roomSize >= 2) {
 
-			client.emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
+			// client.emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
 			client.join(roomId);
-			console.log(`emiting ->GamePLayersName, ${game.leftPlayer}, ${game.rightPlayer}<- to spectator`);
-			console.log('joining client to the socket room');
+			// console.log(`emiting ->GamePLayersName, ${game.leftPlayer}, ${game.rightPlayer}<- to spectator`);
+			console.log(`joining client to the socket room ${roomId}`);
 
 		} else {
 
@@ -209,11 +228,11 @@ export class PongService {
 
 			this.gameHistoryRepository.save(game);
 
-			client.emit('GameInfo', 'rightPlayer');
+			// client.emit('GameInfo', 'rightPlayer');
 
 			client.join(roomId);
 
-			server.to(roomId).emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
+			// server.to(roomId).emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
 
 			let updatedUser = await this.userService.updateUser( { status: game.id }, firstPlayer.id.toString());
 			updatedUser = await this.userService.updateUser( { status: game.id }, secondPlayer.id.toString());
@@ -226,7 +245,12 @@ export class PongService {
 
 		console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
 
-		let state: State = initGameState(difficulty);
+		const user1: User = await this.userService.getUserById(player1Id.toString());
+		const user2: User = await this.userService.getUserById(player2Id.toString());
+		if (!user1 || !user2)
+			throw new NotFoundException();
+
+		let state: State = initGameState(difficulty, user1.username, user2.username, socketRoom);
 		let lastMove: number = 0;
 		let winner: string;
 
@@ -268,7 +292,6 @@ export class PongService {
 				return ;
 			}
 
-
 			// const move : GameEntity[] = this.gameService.query((record) => record.room === socketRoom);
 			const move : GameEntity[] = this.gameService.getAll();
 
@@ -307,26 +330,11 @@ export class PongService {
 
 	async registerMove(move: GameEntity): Promise<void> {
 
-		// console.log(move);
-
-		const created: GameEntity = this.gameService.create({
-			// id: move[0],
-			id: uuidv4(),
-			room: move[1],
-			player: move[2],
-			move: move[3]
-		});
-		// console.log('from register move, created entity is');
-		// console.log(created);
+		const created: GameEntity = this.gameService.create({ id: uuidv4(), ...move });
 	}
 }
 
-
-
-
-
-
-function initGameState(difficulty: string): State {
+function initGameState(difficulty: string, player1: string, player2: string, roomId: string): State {
 
 	var vel: number = 10;
 
@@ -343,7 +351,10 @@ function initGameState(difficulty: string): State {
 			leftPaddle: board_y_size / 2,
 			rightPaddle: board_y_size / 2,
 			leftScore: 0,
-			rightScore: 0
+			rightScore: 0,
+			leftPlayer: player1,
+			rightPlayer: player2,
+			roomId: roomId
 		}
 	);
 }
@@ -381,6 +392,7 @@ class State {
 		Object.assign(this, data)
 	}
 
+	roomId: string;
 	initial_velocity: number;
 	ballPos: Point; // ball position
 	ballVel: Point; // ball velocity
@@ -388,6 +400,8 @@ class State {
 	rightPaddle: number; // right paddle position (only y component, we know rightPaddle.x will be board_x_size)
 	leftScore: number;
 	rightScore: number;
+	leftPlayer: string;
+	rightPlayer: string;
 }
 
 // Paddle Position will represent the center of the paddle on the y axis, regardless of its size

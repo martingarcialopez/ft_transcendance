@@ -136,6 +136,14 @@ export function getFriendListStatus(access_token: any, username: any) {
     });
 }
 
+export function getAllPlayers() {
+    console.log("getAllPlayers :")
+    return axios({
+        method: 'get',
+        url: `${URL_test}/user/all`,
+    });
+}
+
 export function getAllGames() {
     console.log("getAllGames :")
     return axios({
@@ -182,6 +190,8 @@ export function formatError(errorResponse: any) {
     console.log("Ceci est l err return dans la fct formatError :")
     console.log(errorResponse)
     switch (errorResponse) {
+        case 'Request failed with status code 401':
+            return 'Account doesn\'t exist';
         case 'Request failed with status code 418':
             return 'Write the 6 digit code you\'re seen on Google Authenticator';
         case 'username already in use':

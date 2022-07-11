@@ -43,6 +43,10 @@ export class PongGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   handleDisconnect(client: Socket) {
     console.log(`Client with id: ${client.id} disconnected!`);
     // this.pongService.handleDisconnect();
+
+
+    // search wich user have the correspondant client.id, and end the current game or remove from matchmaking
+
   }
 
   @SubscribeMessage('setSocketId')
@@ -75,6 +79,8 @@ export class PongGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 		console.log('joinPongRoom Gateway');
 
+    console.log('in joinPongRoom Gateway');
+    console.log('data is')
     console.log(data);
 
     this.pongService.joinPongRoom(socket, this.server, data.userId, data.roomId);

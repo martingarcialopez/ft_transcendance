@@ -38,7 +38,7 @@ export class UserService {
         var userInfo: allUsersDto;
 
         for (const user of all) {
-            console.log(`username is ${user.username} and avatar is ${user.avatar}`)
+            // console.log(`username is ${user.username} and avatar is ${user.avatar}`)
             userInfo = new allUsersDto();
             userInfo.username = user.username;
             userInfo.avatar = user.avatar;
@@ -46,8 +46,8 @@ export class UserService {
         }
 
         return allUsers;
-
     }
+
 
     async createUser(payload: CreateUserDto): Promise<any> {
 
@@ -232,7 +232,7 @@ export class UserService {
             throw new NotFoundException();
 
         const games = await this.GameHistoryRepository.find(
-            { where : [{ leftPlayer: username }, { rightPlayer: username }, {winner: typeorm.Not(typeorm.IsNull()) }] } );
+            { where : [{ leftPlayer: username }, { rightPlayer: username }/*, {winner: typeorm.Not(typeorm.IsNull()) }*/] } );
 
         return games;
 

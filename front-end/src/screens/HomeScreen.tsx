@@ -5,6 +5,7 @@ import ButtonBases from '../components/ButtonBases'
 import { checkAutoLogin } from '../redux/actions/userActions'
 import { UserState } from '../redux/reducers/userReducers'
 import { RootState } from '../redux/store'
+import pongSocketService from '../services/pongSocketService'
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -19,8 +20,9 @@ const HomeScreen = () => {
   useEffect(() => {
     if (userInfo?.access_token) {
       checkAutoLogin(dispatch, userInfo?.access_token, navigate);
+      const socket = pongSocketService.connect();
     }
-  }, [dispatch, navigate, userInfo?.access_token]);
+  }, [dispatch, navigate, userInfo?.access_token, username]);
 
   return (
     <div>
@@ -36,5 +38,6 @@ const HomeScreen = () => {
     </div>
   )
 }
+
 
 export default HomeScreen

@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
-  Menu,
-  SubMenu,
-  MenuButton,
   ControlledMenu,
   MenuItem,
   useMenuState,
@@ -66,8 +63,8 @@ function JoinRoomMenu(props: any) {
               );
             }}
           >
-            <a id="messages">
-              <img src={room.image} />
+            <a href="messages">
+              <img alt="Room" src={room.image} />
               <label>{room.name}</label>
             </a>
             {Html_password}
@@ -100,7 +97,7 @@ function JoinRoomMenu(props: any) {
         <label> Public Rooms </label>
         <hr />
         <FocusableItem>
-          {({ ref }) => <div ref={ref}>{Html_AvailableRooms}</div>}
+          {({ ref }: any) => <div ref={ref}>{Html_AvailableRooms}</div>}
         </FocusableItem>
       </ControlledMenu>
     </div>
@@ -121,7 +118,7 @@ function CreateRoomMenu(props: any) {
             type="checkbox"
             onChange={(e) => props.onChange_selectParticipant(e, user)}
           />
-          <img src={user.avatar} />
+          <img alt="User avatar" src={user.avatar} />
           <label>{user.username}</label>
         </div>
       );
@@ -147,7 +144,7 @@ function CreateRoomMenu(props: any) {
         {/* ---------- */}
         <label> Room Name </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <input
               ref={ref}
               required
@@ -164,7 +161,7 @@ function CreateRoomMenu(props: any) {
         {/* ---------- */}
         <label> Room Image </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <input
               ref={ref}
               required
@@ -180,7 +177,7 @@ function CreateRoomMenu(props: any) {
         {/* ---------- */}
         <label> Room Type </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <select
               value={props.roomType}
               onChange={(e) => {
@@ -198,7 +195,7 @@ function CreateRoomMenu(props: any) {
         {/* ---------- */}
         <label> Password </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <input
               disabled={disablePassword}
               ref={ref}
@@ -214,7 +211,7 @@ function CreateRoomMenu(props: any) {
         {/* ---------- */}
         <label> Participants </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <div ref={ref} className="room-participants-mgt">
               {Html_AvailableUser}
             </div>
@@ -224,7 +221,7 @@ function CreateRoomMenu(props: any) {
 
         {/* ---------- */}
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <button
               onClick={() => {
                 props.onSubmit_createRoom();
@@ -263,7 +260,7 @@ function EditRoomMenu(props: any) {
             type="checkbox"
             onChange={(e) => props.onChange_selectRoomParticipant(e, user)}
           />
-          <img src={user.avatar} />
+          <img alt="User avatar" src={user.avatar} />
           <label>{user.username}</label>
         </div>
       );
@@ -273,6 +270,7 @@ function EditRoomMenu(props: any) {
   return (
     <div>
       <a
+        href="mao-btn-join-room"
         ref={ref}
         className="mao-btn-join-room"
         onClick={() => {
@@ -292,7 +290,7 @@ function EditRoomMenu(props: any) {
         {/* ---------- */}
         <label> Room Name </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <input
               ref={ref}
               className="mao-menu-input"
@@ -309,7 +307,7 @@ function EditRoomMenu(props: any) {
         {/* ---------- */}
         <label> Room Type </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <select
               value={props.updateTypeRoom}
               onChange={(e) => {
@@ -327,7 +325,7 @@ function EditRoomMenu(props: any) {
         {/* ---------- */}
         <label> Password </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <input
               disabled={disablePassword}
               className="mao-menu-input"
@@ -344,7 +342,7 @@ function EditRoomMenu(props: any) {
         {/* ---------- */}
         <label> Participants </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <div ref={ref} className="room-participants-mgt">
               {Html_AvailableUser}
             </div>
@@ -354,7 +352,7 @@ function EditRoomMenu(props: any) {
 
         {/* ---------- */}
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <button
               onClick={() => {
                 props.onSubmit_updateRoom();
@@ -400,7 +398,7 @@ function RoomsPanel(props: any) {
         }}
       >
         <img alt="room logo" src={room.image} />
-        <a>{room.name}</a>
+        <a href="room-name" >{room.name}</a>
         <EditRoomMenu currRoom={room} {...props} />
         <LeaveRoomButton currRoom={room} {...props} />
       </div>
@@ -414,7 +412,7 @@ function RoomsPanel(props: any) {
       </div>
 
       <div id="mensagens-diretas">
-        <a> Chat Rooms</a>
+        <a href="Chat Rooms" > Chat Rooms</a>
         <JoinRoomMenu {...props} />
         <CreateRoomMenu {...props} />
       </div>
@@ -596,7 +594,7 @@ function ParticipantContextMenu(props: any) {
         <img src={props.currentUser.avatar} alt="" />
         <div id="column-message">
           <div id="message-send">
-            <a>
+            <a href="message-send" >
               {props.currentUser.username} {userRole} {isMute}
             </a>
           </div>
@@ -651,7 +649,7 @@ function ParticipantsPanel(props: any) {
     <div>
       <div id="profile">
         <img src="" alt="" />
-        <a>Participants</a>
+        <a href="Participants">Participants</a>
       </div>
 
       {Html_participants}
@@ -695,7 +693,7 @@ function StatusBar(props: any) {
         <img src={props.connectedUser.avatar} alt="ProfilePhoto" />
 
         <div id="name-id">
-          <a> {props.connectedUser.username}</a>
+          <a href="name-id"> {props.connectedUser.username}</a>
         </div>
 
         <div id="icons">
@@ -730,7 +728,7 @@ function RoomHeaderBar(props: any) {
     <div className="top-bar">
       <div id="nome-conversa">
         <img src={arroba} alt="" />
-        <a>{currentRoom.name} </a>
+        <a href="currentRoom name" >{currentRoom.name} </a>
         <img src={ocupado} alt="" />
       </div>
 
@@ -799,17 +797,17 @@ function MessagePanel(props: any) {
 
               <div id="column-message">
                 <div id="name-date-message">
-                  <a>{currentUser.username}</a>
-                  <a>{message.createdDate}</a>
+                  <a href="user-username">{currentUser.username}</a>
+                  <a href="message-date">{message.createdDate}</a>
                 </div>
                 <div id="message-send">
-                  <a>{message.content}</a>
+                  <a href="message-content">{message.content}</a>
                 </div>
               </div>
             </div>
             <div id="risco">
               <hr />
-              <a> ------------------- </a>
+              <a href="-------------------"> ------------------- </a>
               <hr />
             </div>
             <div ref={messagesEndRef} />
@@ -823,12 +821,12 @@ function MessagePanel(props: any) {
     <div id="mao-messages-panel">
       <div id="profile">
         <img src={currentRoom.image} alt="" />
-        <a>{currentRoom.name}</a>
+        <a href="room-name" >{currentRoom.name}</a>
       </div>
 
       <div id="risco">
         <hr />
-        <a> Lets the chat begin </a>
+        <a href="welcome-message"> Lets the chat begin </a>
         <hr />
       </div>
 
@@ -1062,13 +1060,13 @@ function Chat(props: any) {
     console.log(rooms, `Blocking ${userId} in ${roomId}`);
   };
   const onClick_directMessage = (userId: number, username: string) => {
-    let possibleRooms = [];
+    // let possibleRooms = [];
     let roomFounded = false;
     rooms.forEach((room) => {
       if (roomFounded === true) {
         return;
       }
-      if (room.participants.length == 2) {
+      if (room.participants.length === 2) {
         const userMatch = room.participants.filter(
           (obj: any) => obj.userId === userId
         );
@@ -1549,7 +1547,7 @@ function Chat(props: any) {
   );
 }
 
-function Maobe_Chat() {
+export const MaobeChat = () => {
   const userInfo = GetUserInfo();
   if (userInfo === undefined) {
     return <div></div>;
@@ -1573,5 +1571,3 @@ function Maobe_Chat() {
     </div>
   );
 }
-
-export default Maobe_Chat;

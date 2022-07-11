@@ -17,7 +17,7 @@ import { FilterType } from "../components/FilterRoom";
 import { FilterAdmin } from "../components/FilterRoom";
 import { GetUserInfo } from "../components/GetUserInfo";
 /* import { SortLeaderboard } from "../components/SortLeaderboard"; */
-import { CreateLeader } from "../components/CreateArrayLeaderBoard";
+// import { CreateLeader } from "../components/CreateArrayLeaderBoard";
 
 function SettingRoom() {
   const { arrayRoom } = useSelector((state: RootState) => state);

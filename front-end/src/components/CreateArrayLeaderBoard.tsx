@@ -1,5 +1,6 @@
 import { T_LeaderBoard } from "../type/pongType";
-import { MatchInfo } from "../redux/reducers/userReducers";
+import { AllMatchState, MatchInfo } from "../redux/reducers/userReducers";
+import { Player } from "../redux/reducers/userReducers";
 
 let ArrayGame: MatchInfo[] = [
   {
@@ -125,18 +126,6 @@ async function getUsers() {
  *   });
  * }
  *  */
-
-async function all() {
-  const url = "http://localhost:3000/user/all";
-  try {
-    let response = await fetch(url);
-    let user = await response.json();
-    return user;
-  } catch (err) {
-    // catches errors both in fetch and response.json
-    alert(err);
-  }
-}
 function createUserList(allGame: MatchInfo[] | undefined) {
   if (typeof allGame === "undefined" || !allGame) return ["empty"];
   let userList: string[] = [];
@@ -154,20 +143,23 @@ function createUserList(allGame: MatchInfo[] | undefined) {
 /**
  * create a array of leaderboard and sort it
  * step one : 
-	 -get all user name of game to put them into array 
-	 -step  create a empty array typeof T_LeaderBoard "arrayLeaderboard"
+   -get all user name of game to put them into array 
+   -step  create a empty array typeof T_LeaderBoard "arrayLeaderboard"
  * step two : fill that array created in step one
  * step three : set the score into array arrayLeaderboard
  * step four : sort arrayLeaderboard
  */
 /* export async function CreateLeader(allGame: T_game[] = ArrayGame | MatchInfo) { */
 
-export function CreateLeader(allGame: MatchInfo[] | undefined) {
-  if (typeof allGame === "undefined") return [];
+export function CreateLeader(allLeaderboardInfo: AllMatchState | undefined) {
+  if (!allLeaderboardInfo) return [];
+
+  // console.log("CreateLeader allLeaderboardInfo", allLeaderboardInfo)
+
   let arrayLeaderboard: T_LeaderBoard[] = [];
   let tmpLeaderBoard: T_LeaderBoard;
   //step one
-  let usersList = createUserList(allGame);
+  let usersList = createUserList(allLeaderboardInfo.MatchInfo);
 
   //step two
   for (let i in usersList) {
@@ -175,15 +167,34 @@ export function CreateLeader(allGame: MatchInfo[] | undefined) {
     arrayLeaderboard.push(tmpLeaderBoard);
   }
   //step three
-  arrayLeaderboard = CountScore(allGame, arrayLeaderboard);
+  arrayLeaderboard = CountScore(allLeaderboardInfo.MatchInfo, arrayLeaderboard);
   arrayLeaderboard = SortLeaderboard(arrayLeaderboard);
 
-  all().then(function copy(data) {
-    data.map((item: any, it: number) => {
-      console.log(item);
-      arrayLeaderboard[it].avatar = item.avatar;
+  if (allLeaderboardInfo && allLeaderboardInfo.Players) {
+    allLeaderboardInfo.Players.forEach((item: Player, it: number) => {
+      // console.log("CreateLeader item:", item)
+      if (item && arrayLeaderboard[it]) {
+        if (item.avatar) arrayLeaderboard[it].avatar = item.avatar;
+        else arrayLeaderboard[it].avatar = "/shared/avatar/avatar_chat.jpeg";
+      }
+      /* console.log("pendant :", arrayLeaderboard[it].avatar); */
     });
-  });
-
+  }
+  // const url = "http://localhost:3000/user/all";
+  // fetch(url)
+  //   .then((response) => response.json())
+  //   .then(function copy(data) {
+  //     console.log("CreateLeader data", data)
+  //     data.forEach((item: Player, it: number) => {
+  //       console.log("CreateLeader item:", item)
+  //       if (item) {
+  //         if (item.avatar)
+  //           arrayLeaderboard[it].avatar = item.avatar;
+  //         else
+  //           arrayLeaderboard[it].avatar = '/shared/avatar/avatar_chat.jpeg';
+  //       }
+  //       /* console.log("pendant :", arrayLeaderboard[it].avatar); */
+  //     });
+  //   });
   return arrayLeaderboard;
 }
