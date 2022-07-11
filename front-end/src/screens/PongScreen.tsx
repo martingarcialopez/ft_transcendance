@@ -6,7 +6,7 @@ import Canvas from '../components/Canvas';
 import "../styles/gameStyle.css";
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux';
-import { userLoginReducer, UserState } from '../redux/reducers/userReducers';
+import { UserState } from '../redux/reducers/userReducers';
 import { URL_test } from '../constants/url';
 import { ColumnGroupingTable } from '../components/ColumnGroupingTable';
 import { ResponsiveDialog } from '../components/ResponsiveDialog';

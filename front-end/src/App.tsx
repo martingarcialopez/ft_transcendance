@@ -15,7 +15,7 @@ import { RootState } from "./redux";
 import { UserState } from "./redux/reducers/userReducers";
 import { OtherProfileScreen } from "./screens/OtherProfileScreen";
 import { LeaderBoard } from "./screens/LeaderBoard";
-import Maobe_Chat from "./components/Maobe_Chat";
+import { MaobeChat } from "./components/Maobe_Chat";
 import { Twofa } from "./screens/Twofa";
 import { RedirectPage } from "./screens/RedirectPage";
 
@@ -45,7 +45,7 @@ const App = () => {
 				<Route path="/profile" element={<MyProfileScreen />} />
 				<Route path="/pong" element={<Pong />} />
 				<Route path="/room" element={<Room />} />
-				<Route path="/maobe_chat" element={<Maobe_Chat />} />
+				<Route path="/maobe_chat" element={<MaobeChat />} />
 				<Route path="/leaderboard" element={<LeaderBoard />} />
 				<Route path="/home" element={<HomeScreen />} />
 				<Route path="/logout" element={<HomeScreen />} />

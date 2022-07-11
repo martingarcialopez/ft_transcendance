@@ -6,7 +6,7 @@ import "../styles/room.css";
 import { useSelector } from "react-redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { RootState } from "../redux/store";
-import { E_CreateMessage, E_createCustomGame } from "./Event";
+import { E_createCustomGame } from "./Event";
 
 type Props = {
   roomSelectedId: number;
