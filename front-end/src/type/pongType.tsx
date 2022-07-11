@@ -15,6 +15,9 @@ export type GameState = {
   rightPaddle: number;
   leftScore: number;
   rightScore: number;
+  roomId: string;
+  leftPlayer: string;
+  rightPlayer: string;
 };
 
 export type CanvasType = React.DetailedHTMLProps<
