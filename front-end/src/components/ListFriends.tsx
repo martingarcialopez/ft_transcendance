@@ -12,7 +12,6 @@ import { addFriendAction, getFriendListStatusAction, removeFriendAction } from "
 import socketio from "socket.io-client";
 import { URL_test } from '../constants/url';
 
-export const socket = socketio(`${URL_test}`, { path: '/pongSocketServer'})
 
 export const ListFriends = ({ userPageInfo }: any) => {
     const { id } = useParams();
