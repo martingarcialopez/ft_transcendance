@@ -125,6 +125,18 @@ async function getUsers() {
  *   });
  * }
  *  */
+
+async function all() {
+  const url = "http://localhost:3000/user/all";
+  try {
+    let response = await fetch(url);
+    let user = await response.json();
+    return user;
+  } catch (err) {
+    // catches errors both in fetch and response.json
+    alert(err);
+  }
+}
 function createUserList(allGame: MatchInfo[] | undefined) {
   if (typeof allGame === "undefined" || !allGame) return ["empty"];
   let userList: string[] = [];
@@ -166,14 +178,12 @@ export function CreateLeader(allGame: MatchInfo[] | undefined) {
   arrayLeaderboard = CountScore(allGame, arrayLeaderboard);
   arrayLeaderboard = SortLeaderboard(arrayLeaderboard);
 
-  const url = "http://localhost:3000/user/all";
-  fetch(url)
-    .then((response) => response.json())
-    .then(function copy(data) {
-      data.forEach((item: any, it: number) => {
-        arrayLeaderboard[it].avatar = item.avatar;
-        /* console.log("pendant :", arrayLeaderboard[it].avatar); */
-      });
+  all().then(function copy(data) {
+    data.map((item: any, it: number) => {
+      console.log(item);
+      arrayLeaderboard[it].avatar = item.avatar;
     });
+  });
+
   return arrayLeaderboard;
 }
