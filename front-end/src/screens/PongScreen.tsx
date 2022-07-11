@@ -52,7 +52,7 @@ export const Pong = () => {
     const [rightPlayer, setRightPlayer] = useState('');
     const [leftPlayer, setLeftPlayer] = useState('');
     const [playerSide, setPlayerSide] = useState('');
-    // const [roomId, setRoomId] = useState('');
+    const [roomId, setRoomId] = useState('');
     const [opponent, setOpponent] = useState('');
     const { userInfo }: UserState = userLogin;
     const { state }: any = useLocation();
@@ -103,13 +103,13 @@ export const Pong = () => {
         console.log("onKeyDownHandler event code :", event.code)
         switch (event.code) {
             case 'KeyS' || 'ArrowDown':
-                console.log("socket.emit -1 id.toString()", id.toString(), "playerSide :", playerSide, "roomId:", gameState.roomId);
-                socket.emit('move', id.toString(), playerSide, gameState.roomId, 1);
+                console.log("socket.emit -1 playerSide :", playerSide, "roomId:", roomId);
+                socket.emit('move', { room: roomId, player: playerSide, move: 1 });
                 setId(id + 1);
                 break;
             case 'KeyW' || 'ArrowUp':
-                console.log("socket.emit +1 id.toString()", id.toString(), "playerSide :", playerSide, "roomId:", gameState.roomId);
-                socket.emit('move', id.toString(), playerSide, gameState.roomId, -1);
+                console.log("socket.emit +1 playerSide :", playerSide, "roomId:", roomId);
+                socket.emit('move', { room: roomId, player: playerSide, move: -1 });
                 setId(id + 1);
                 break;
         }
@@ -118,13 +118,14 @@ export const Pong = () => {
     const receive_socket_info = () => {
 
         socket.on('gameState', (...args) => {
-            console.log("receive_socket_info gameState ...args", ...args);
+            // console.log("receive_socket_info gameState ...args", ...args);
 
             console.log("socket.on gameState");
             setGameState(args[0])
             setGameStarted(true);
             setRightPlayer(args[0].rightPlayer)
             setLeftPlayer(args[0].leftPlayer)
+            setRoomId(args[0].roomId)
             if (playerSide === "") {
                 if (userInfo.username === args[0].rightPlayer) {
                     setPlayerSide('rightPlayer')
@@ -140,9 +141,12 @@ export const Pong = () => {
             // console.log(args[0].ballPos);
             // console.log(args[0].ballPos.x);
             // console.log(args[0].ballPos.y);
-            console.log("gameState", gameState);
-            console.log("playerSide", playerSide);
-            console.log("opponent", opponent);
+            // console.log("gameState", gameState);
+            // console.log("playerSide", playerSide);
+            // console.log("opponent", opponent);
+            // console.log("args[0].roomId", args[0].roomId);
+            // console.log("gameState.roomId", gameState.roomId);
+            // console.log("roomId", roomId);
         });
         socket.on('gameOver', (winnerPlayer) => {
             console.log("socket.on gameOver");
@@ -202,13 +206,15 @@ export const Pong = () => {
             rightPaddle: window_size.canvasHeight / 2,
             leftScore: 0,
             rightScore: 0,
-            roomId: '',
+            roomId: roomId,
             leftPlayer: leftPlayer,
             rightPlayer: rightPlayer,
         }))
     }
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
+        // console.log("drawGame gameState", gameState);
+        // console.log("drawGame roomId", roomId);
         var img = new Image();
         ctx.imageSmoothingEnabled = false
         if (winner !== '') {
