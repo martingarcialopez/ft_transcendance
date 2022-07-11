@@ -155,7 +155,7 @@ export function CreateLeader(allLeaderboardInfo: AllMatchState | undefined) {
   if (!allLeaderboardInfo)
     return [];
 
-  console.log("CreateLeader allLeaderboardInfo", allLeaderboardInfo)
+  // console.log("CreateLeader allLeaderboardInfo", allLeaderboardInfo)
 
   let arrayLeaderboard: T_LeaderBoard[] = [];
   let tmpLeaderBoard: T_LeaderBoard;
@@ -173,7 +173,7 @@ export function CreateLeader(allLeaderboardInfo: AllMatchState | undefined) {
 
   if (allLeaderboardInfo && allLeaderboardInfo.Players) {
     allLeaderboardInfo.Players.forEach((item: Player, it: number) => {
-      console.log("CreateLeader item:", item)
+      // console.log("CreateLeader item:", item)
       if (item && arrayLeaderboard[it]) {
         if (item.avatar)
           arrayLeaderboard[it].avatar = item.avatar;
