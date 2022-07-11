@@ -105,6 +105,10 @@ export class PongService {
 
 	async managePlayer(socket: Socket, server: Server, userId : number, difficulty: string, maxScore: number) :Promise<void> {
 
+		let existingGame = await this.pongRepository.findOne ( { userId: userId} );
+		if (existingGame)
+			this.pongRepository.delete( { userId: userId } );
+
 		let bbdd = await this.pongRepository.find( { "difficulty": difficulty, "winningScore": maxScore} );
 
 		if (!bbdd.length) {
@@ -267,7 +271,6 @@ export class PongService {
 
 				return ;
 			}
-
 
 			// const move : GameEntity[] = this.gameService.query((record) => record.room === socketRoom);
 			const move : GameEntity[] = this.gameService.getAll();
