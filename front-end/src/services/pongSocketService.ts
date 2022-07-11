@@ -12,20 +12,16 @@ class pongSocketServiceImplementation {
     connect() {
         if (!this.connection) {
 
-            this.connection = socketio(`${URL_test}`, { path: '/pongSocketServer' });
-            // console.log('in PONG SOCKET SERVER IMPLEMENTATION... connection is')
-            // console.log(this.connection)
+            this.connection = socketio(`${URL_test}`, { path: '/pongSocketServer'});
         
         } else {
-
-            // console.log('RETURNING EXISTING CONNECTION')
 
             return this.connection;            
         }
     }
 }
 
-const pongSocketService = new pongSocketServiceImplementation();
 
+const pongSocketService = new pongSocketServiceImplementation();
 
 export default pongSocketService;

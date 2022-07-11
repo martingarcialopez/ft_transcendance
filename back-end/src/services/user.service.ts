@@ -38,7 +38,7 @@ export class UserService {
         var userInfo: allUsersDto;
 
         for (const user of all) {
-            console.log(`username is ${user.username} and avatar is ${user.avatar}`)
+            // console.log(`username is ${user.username} and avatar is ${user.avatar}`)
             userInfo = new allUsersDto();
             userInfo.username = user.username;
             userInfo.avatar = user.avatar;
