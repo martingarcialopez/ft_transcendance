@@ -118,7 +118,7 @@ export class PongService {
 			await this.pongRepository.save(player);
 
 			socket.join(player.roomName);
-			server.to(socket.id).emit('GameInfo', 'leftPlayer');
+			// server.to(socket.id).emit('GameInfo', 'leftPlayer');
 			console.log(`first player arrived and joined room ${player.roomName}`);
 
 		} else {
@@ -174,7 +174,7 @@ export class PongService {
 		await this.gameHistoryRepository.save(game);
 
 		client.join(game.id);
-		client.emit('GameInfo', 'leftPlayer');
+		// client.emit('GameInfo', 'leftPlayer');
 
 		return game.id;
 
@@ -189,10 +189,10 @@ export class PongService {
 
 		if (roomSize >= 2) {
 
-			client.emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
+			// client.emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
 			client.join(roomId);
-			console.log(`emiting ->GamePLayersName, ${game.leftPlayer}, ${game.rightPlayer}<- to spectator`);
-			console.log('joining client to the socket room');
+			// console.log(`emiting ->GamePLayersName, ${game.leftPlayer}, ${game.rightPlayer}<- to spectator`);
+			// console.log('joining client to the socket room');
 
 		} else {
 
@@ -209,11 +209,11 @@ export class PongService {
 
 			this.gameHistoryRepository.save(game);
 
-			client.emit('GameInfo', 'rightPlayer');
+			// client.emit('GameInfo', 'rightPlayer');
 
 			client.join(roomId);
 
-			server.to(roomId).emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
+			// server.to(roomId).emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
 
 			let updatedUser = await this.userService.updateUser( { status: game.id }, firstPlayer.id.toString());
 			updatedUser = await this.userService.updateUser( { status: game.id }, secondPlayer.id.toString());
@@ -226,7 +226,12 @@ export class PongService {
 
 		console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
 
-		let state: State = initGameState(difficulty);
+		const user1: User = await this.userService.getUserById(player1Id.toString());
+		const user2: User = await this.userService.getUserById(player2Id.toString());
+		if (!user1 || !user2)
+			throw new NotFoundException();
+
+		let state: State = initGameState(difficulty, user1.username, user2.username, socketRoom);
 		let lastMove: number = 0;
 		let winner: string;
 
@@ -326,7 +331,7 @@ export class PongService {
 
 
 
-function initGameState(difficulty: string): State {
+function initGameState(difficulty: string, player1: string, player2: string, roomId: string): State {
 
 	var vel: number = 10;
 
@@ -343,7 +348,10 @@ function initGameState(difficulty: string): State {
 			leftPaddle: board_y_size / 2,
 			rightPaddle: board_y_size / 2,
 			leftScore: 0,
-			rightScore: 0
+			rightScore: 0,
+			leftplayer: player1,
+			rightplayer: player2,
+			roomId: roomId
 		}
 	);
 }
@@ -381,6 +389,7 @@ class State {
 		Object.assign(this, data)
 	}
 
+	roomId: string;
 	initial_velocity: number;
 	ballPos: Point; // ball position
 	ballVel: Point; // ball velocity
@@ -388,6 +397,8 @@ class State {
 	rightPaddle: number; // right paddle position (only y component, we know rightPaddle.x will be board_x_size)
 	leftScore: number;
 	rightScore: number;
+	leftplayer: string;
+	rightplayer: string;
 }
 
 // Paddle Position will represent the center of the paddle on the y axis, regardless of its size
