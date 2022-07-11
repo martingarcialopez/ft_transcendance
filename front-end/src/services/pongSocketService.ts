@@ -1,3 +1,4 @@
+import { UserInfo } from "os";
 import { useSelector } from "react-redux";
 import socketio, { Socket } from "socket.io-client";
 import { URL_test } from "../constants/url";
@@ -14,17 +15,18 @@ class pongSocketServiceImplementation {
 
     connect() {
 
-        const userLogin: UserState = useSelector<RootState, UserState>(
-            (state: RootState) => state.userLogin
-        )
-        const { userInfo }: UserState = userLogin;
-
-        console.log("pongSocketServiceImplementation userInfo", userInfo)
-        console.log("pongSocketServiceImplementation userInfo.username", userInfo?.username)
-
         if (!this.connection) {
 
             this.connection = socketio(`${URL_test}`, { path: '/pongSocketServer' });
+
+            const storage = localStorage.getItem('userInfo')
+            if (!storage)
+                return;
+            const user = JSON.parse(storage);
+
+            this.connection.emit('setSocketId', user.username);
+
+            console.log(`OPENING A CONNECTION FOR USER ${user.username} with socketId ${this.connection.id}`)
 
         } else {
 

@@ -1,5 +1,5 @@
 import { Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository, VersionColumn } from 'typeorm';
 
 import {v4 as uuidv4} from 'uuid';
@@ -14,6 +14,7 @@ import { UserService } from './user.service';
 import { GameHistory } from 'src/models/gamehistory.entity';
 import { first, throwError } from 'rxjs';
 import { User } from 'src/models/user.entity';
+import * as typeorm from "typeorm";
 
 @Injectable()
 export class PongService {
@@ -97,6 +98,20 @@ export class PongService {
 
 		const updatedUser = await this.userService.updateUser( { socketId: client.id}, user.id.toString())	
 
+		const game: GameHistory = await this.gameHistoryRepository.findOne(
+			{ 
+				where: [ 
+					{ winner: typeorm.IsNull(), leftPlayer: username },
+					{ winner: typeorm.IsNull(), rightPlayer: username}
+				],
+				order: { id: 'DESC' }
+			});
+		
+		if (game) {
+			client.join(game.roomId);
+			console.log(`user joined room ${game.roomId}`);
+		}
+
 		console.log(`user ${username} got socket id ${client.id}`);
 
 		return updatedUser.socketId;
@@ -140,7 +155,7 @@ export class PongService {
 			console.log(`opponent id is ${opponent.userId}`);
 			console.log(`my user id is ${userId}`);
 
-			gameResult.id = opponent.roomName;
+			gameResult.roomId = opponent.roomName;
 			gameResult.difficulty = difficulty;
 			gameResult.maxScore = maxScore;
 			gameResult.leftPlayer = (await this.userService.getUserById(opponent.userId.toString())).username;
@@ -170,14 +185,14 @@ export class PongService {
 
 		const game: GameHistory = new GameHistory();
 
-		game.id = uuidv4();
+		game.roomId = uuidv4();
 		game.difficulty = difficulty;
 		game.maxScore = maxScore;
 		game.leftPlayer = (await this.userService.getUserById(userId.toString())).username;
 
 		await this.gameHistoryRepository.save(game);
 
-		client.join(game.id);
+		client.join(game.roomId);
 		// client.emit('GameInfo', 'leftPlayer');
 
 		return game.id;
@@ -187,7 +202,7 @@ export class PongService {
 	async joinPongRoom(client: Socket, server: Server, userId: string, roomId: string) {
 
 		const roomSize = server.sockets.adapter.rooms.get(roomId).size;
-		const game: GameHistory = await this.gameHistoryRepository.findOne( { where: { id: roomId } } );
+		const game: GameHistory = await this.gameHistoryRepository.findOne( { where: { roomId: roomId } } );
 
 		console.log (`room size is ${roomSize}`)
 

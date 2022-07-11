@@ -21,10 +21,6 @@ const HomeScreen = () => {
     if (userInfo?.access_token) {
       checkAutoLogin(dispatch, userInfo?.access_token, navigate);
       const socket = pongSocketService.connect();
-      socket?.emit('setSocketId', username);
-      console.log('socket is')
-      console.log(socket);
-      console.log('emmiting socket.setSocketId')
     }
   }, [dispatch, navigate, userInfo?.access_token, username]);
 
