@@ -3,6 +3,7 @@ import {
   DISABLE_2FA_CONFIRMED_ACTION,
   ENABLE_2FA_CONFIRMED_ACTION,
   GET_ALL_GAMES_ACTION,
+  GET_ALL_PLAYERS_ACTION,
   GET_FRIENDS_LIST_ACTION,
   GET_FRIENDS_LIST_FOR_FRIEND_ACTION,
   GET_FRIEND_INFOS_ACTION,
@@ -41,6 +42,11 @@ export interface MatchInfo {
   id?: number;
 }
 
+export interface Player {
+  username?: string;
+  avatar?: string;
+}
+
 export interface Friend {
   username?: string;
   status?: string;
@@ -73,6 +79,7 @@ export interface UserState {
 
 export interface AllMatchState {
   MatchInfo?: MatchInfo[];
+  Players?: Player[]
 }
 
 interface Action {
@@ -87,6 +94,11 @@ export const allMatchReducer = (state: AllMatchState = {}, action: Action) => {
         ...state,
         MatchInfo: action.payload,
       };
+      case GET_ALL_PLAYERS_ACTION:
+        return {
+          ...state,
+          Players: action.payload,
+        };
     default:
       return state;
   }

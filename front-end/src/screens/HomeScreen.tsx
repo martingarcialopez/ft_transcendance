@@ -26,7 +26,7 @@ const HomeScreen = () => {
       console.log(socket);
       console.log('emmiting socket.setSocketId')
     }
-  }, [dispatch, navigate, userInfo?.access_token]);
+  }, [dispatch, navigate, userInfo?.access_token, username]);
 
   return (
     <div>

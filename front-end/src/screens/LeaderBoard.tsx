@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LeaderboardProfiles } from "../components/LeaderboardProfiles";
 import { RootState } from "../redux";
-import { getAllGamesAction } from "../redux/actions/userActions";
+import { getAllGamesAction, getAllPlayersAction } from "../redux/actions/userActions";
 import { AllMatchState } from "../redux/reducers/userReducers";
 import "../styles/leaderboardStyles.css";
 import { CreateLeader } from "../components/CreateArrayLeaderBoard";
+
 export const LeaderBoard = () => {
   const dispatch = useDispatch();
   const allMatch = useSelector<RootState, AllMatchState>(
@@ -14,10 +15,11 @@ export const LeaderBoard = () => {
 
   useEffect(() => {
     dispatch(getAllGamesAction());
+    dispatch(getAllPlayersAction());
   }, [dispatch]);
 
   if (allMatch.MatchInfo) {
-    let SortedLeaderBoard = CreateLeader(allMatch.MatchInfo);
+    let SortedLeaderBoard = CreateLeader(allMatch);
     console.log("sorted Leaderboard:", SortedLeaderBoard);
     return (
       <div className="main">

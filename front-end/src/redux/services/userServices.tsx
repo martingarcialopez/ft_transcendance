@@ -136,6 +136,14 @@ export function getFriendListStatus(access_token: any, username: any) {
     });
 }
 
+export function getAllPlayers() {
+    console.log("getAllPlayers :")
+    return axios({
+        method: 'get',
+        url: `${URL_test}/user/all`,
+    });
+}
+
 export function getAllGames() {
     console.log("getAllGames :")
     return axios({

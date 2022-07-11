@@ -40,7 +40,7 @@ export type T_LeaderBoard = {
   name: string;
   username: string;
   score: number;
-  avatar: String;
+  avatar: string;
 };
 
 export type T_game = {

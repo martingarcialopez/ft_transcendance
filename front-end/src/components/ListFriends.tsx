@@ -9,9 +9,6 @@ import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { useEffect, useState } from "react";
 import { addFriendAction, getFriendListStatusAction, removeFriendAction } from "../redux/actions/userActions";
-import socketio from "socket.io-client";
-import { URL_test } from '../constants/url';
-
 
 export const ListFriends = ({ userPageInfo }: any) => {
     const { id } = useParams();

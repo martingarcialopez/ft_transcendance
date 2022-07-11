@@ -16,8 +16,9 @@ import {
   DISABLE_2FA_CONFIRMED_ACTION,
   UPLOAD_IMAGE_CONFIRMED_ACTION,
   GET_FRIENDS_LIST_FOR_FRIEND_ACTION,
+  GET_ALL_PLAYERS_ACTION,
 } from '../constants/userConstants'
-import { addFriend, removeFriend, formatError, getInfo, getUserInfo, login, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42, logout, getFriendListStatus } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getInfo, getUserInfo, login, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42, logout, getFriendListStatus, getAllPlayers } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -157,6 +158,20 @@ export function getUserInfoAction(username: any, access_token: any) {
     getUserInfo(username, access_token)
       .then((response) => {
         dispatch(getFriendInfosAction(response.data));
+      })
+      .catch((error) => {
+        const errorMessage = formatError(error.response.data);
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
+export function getAllPlayersAction() {
+  return (dispatch: any) => {
+    getAllPlayers()
+      .then((response) => {
+        console.log("getAllPlayersAction response", response)
+        dispatch(getAllPlayersSuccess(response.data));
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);
@@ -361,6 +376,13 @@ export function logoutSuccess() {
   localStorage.removeItem('userInfo');
   return {
     type: LOGOUT_ACTION,
+  };
+}
+
+export function getAllPlayersSuccess(data: any) {
+  return {
+    type: GET_ALL_PLAYERS_ACTION,
+    payload: data,
   };
 }
 
