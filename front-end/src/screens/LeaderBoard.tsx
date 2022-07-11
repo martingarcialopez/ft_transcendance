@@ -16,20 +16,7 @@ export const LeaderBoard = () => {
     dispatch(getAllGamesAction());
   }, [dispatch]);
 
-  //  console.log("LeaderBoard allMatch", allMatch.MatchInfo);
-
-  const between = (data: any) => {
-    // sort with asending order
-    return data.sort((a: any, b: any) => {
-      if (a.score === b.score) {
-        return b.score - a.score;
-      } else {
-        return b.score - a.score;
-      }
-    });
-  };
-
-  if (typeof allMatch.MatchInfo != undefined) {
+  if (allMatch.MatchInfo) {
     let SortedLeaderBoard = CreateLeader(allMatch.MatchInfo);
     console.log("sorted Leaderboard:", SortedLeaderBoard);
     return (
