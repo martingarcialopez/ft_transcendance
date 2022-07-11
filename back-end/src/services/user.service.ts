@@ -46,7 +46,6 @@ export class UserService {
         }
 
         return allUsers;
-
     }
 
     async createUser(payload: CreateUserDto): Promise<any> {

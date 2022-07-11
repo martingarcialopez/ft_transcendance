@@ -89,7 +89,6 @@ export class PongService {
 	// 	}
     // }
 
-
 	async setSocketId(client: Socket, username: string) : Promise<string> {
 
 		const user: User = await this.userService.getUser(username);
@@ -105,9 +104,13 @@ export class PongService {
 
 	async managePlayer(socket: Socket, server: Server, userId : number, difficulty: string, maxScore: number) :Promise<void> {
 
-		let existingGame = await this.pongRepository.findOne ( { userId: userId} );
-		if (existingGame)
-			this.pongRepository.delete( { userId: userId } );
+		let existingGame: Matchmaking = await this.pongRepository.findOne ( { userId: userId } );
+		console.log ("existing Game")
+		console.log(existingGame)
+		if (existingGame) {
+			await this.pongRepository.delete( { userId: userId } );
+			console.log(`del existing game of user ${userId}`);
+		}
 
 		let bbdd = await this.pongRepository.find( { "difficulty": difficulty, "winningScore": maxScore} );
 
@@ -120,6 +123,7 @@ export class PongService {
 			player.winningScore = maxScore;
 			player.roomName = uuidv4();
 			await this.pongRepository.save(player);
+
 
 			socket.join(player.roomName);
 			// server.to(socket.id).emit('GameInfo', 'leftPlayer');
@@ -352,8 +356,8 @@ function initGameState(difficulty: string, player1: string, player2: string, roo
 			rightPaddle: board_y_size / 2,
 			leftScore: 0,
 			rightScore: 0,
-			leftplayer: player1,
-			rightplayer: player2,
+			leftPlayer: player1,
+			rightPlayer: player2,
 			roomId: roomId
 		}
 	);
@@ -400,8 +404,8 @@ class State {
 	rightPaddle: number; // right paddle position (only y component, we know rightPaddle.x will be board_x_size)
 	leftScore: number;
 	rightScore: number;
-	leftplayer: string;
-	rightplayer: string;
+	leftPlayer: string;
+	rightPlayer: string;
 }
 
 // Paddle Position will represent the center of the paddle on the y axis, regardless of its size
