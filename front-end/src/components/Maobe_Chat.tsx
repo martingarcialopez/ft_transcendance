@@ -97,7 +97,7 @@ function JoinRoomMenu(props: any) {
         <label> Public Rooms </label>
         <hr />
         <FocusableItem>
-          {({ ref }) => <div ref={ref}>{Html_AvailableRooms}</div>}
+          {({ ref }: any) => <div ref={ref}>{Html_AvailableRooms}</div>}
         </FocusableItem>
       </ControlledMenu>
     </div>
@@ -144,7 +144,7 @@ function CreateRoomMenu(props: any) {
         {/* ---------- */}
         <label> Room Name </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <input
               ref={ref}
               required
@@ -161,7 +161,7 @@ function CreateRoomMenu(props: any) {
         {/* ---------- */}
         <label> Room Image </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <input
               ref={ref}
               required
@@ -177,7 +177,7 @@ function CreateRoomMenu(props: any) {
         {/* ---------- */}
         <label> Room Type </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <select
               value={props.roomType}
               onChange={(e) => {
@@ -195,7 +195,7 @@ function CreateRoomMenu(props: any) {
         {/* ---------- */}
         <label> Password </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <input
               disabled={disablePassword}
               ref={ref}
@@ -211,7 +211,7 @@ function CreateRoomMenu(props: any) {
         {/* ---------- */}
         <label> Participants </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <div ref={ref} className="room-participants-mgt">
               {Html_AvailableUser}
             </div>
@@ -221,7 +221,7 @@ function CreateRoomMenu(props: any) {
 
         {/* ---------- */}
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <button
               onClick={() => {
                 props.onSubmit_createRoom();
@@ -290,7 +290,7 @@ function EditRoomMenu(props: any) {
         {/* ---------- */}
         <label> Room Name </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <input
               ref={ref}
               className="mao-menu-input"
@@ -307,7 +307,7 @@ function EditRoomMenu(props: any) {
         {/* ---------- */}
         <label> Room Type </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <select
               value={props.updateTypeRoom}
               onChange={(e) => {
@@ -325,7 +325,7 @@ function EditRoomMenu(props: any) {
         {/* ---------- */}
         <label> Password </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <input
               disabled={disablePassword}
               className="mao-menu-input"
@@ -342,7 +342,7 @@ function EditRoomMenu(props: any) {
         {/* ---------- */}
         <label> Participants </label>
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <div ref={ref} className="room-participants-mgt">
               {Html_AvailableUser}
             </div>
@@ -352,7 +352,7 @@ function EditRoomMenu(props: any) {
 
         {/* ---------- */}
         <FocusableItem>
-          {({ ref }) => (
+          {({ ref }: any) => (
             <button
               onClick={() => {
                 props.onSubmit_updateRoom();

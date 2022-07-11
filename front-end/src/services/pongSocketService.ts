@@ -1,4 +1,3 @@
-import { DefaultEventsMap } from "@socket.io/component-emitter";
 import socketio, { Socket } from "socket.io-client";
 import { URL_test } from "../constants/url";
 
