@@ -58,69 +58,57 @@ export const Pong = () => {
 
     // console.log("Pong useLocation => state:", state)
 
-    const receive_socket_info = () => {
-        console.log("receive_socket_info function called")
-        if (socket) {
-            console.log("socket existed")
-
-            socket.on('gameState', (...args) => {
-                // console.log("receive_socket_info gameState ...args", ...args);
-
-                console.log("socket.on gameState");
-                setGameState(args[0])
-                setGameStarted(true);
-                setRightPlayer(args[0].rightPlayer)
-                setLeftPlayer(args[0].leftPlayer)
-                setRoomId(args[0].roomId)
-                if (playerSide === "") {
-                    if (userInfo) {
-                        if (userInfo.username === args[0].rightPlayer) {
-                            setPlayerSide('rightPlayer')
-                        }
-                        else if (userInfo.username === args[0].leftPlayer) {
-                            setPlayerSide('leftPlayer')
-                        }
-                        else {
-                            setPlayerSide('spectator')
-                        }
-                    }
-                }
-                // console.log(args);
-                // console.log(args[0]);
-                // console.log(args[0].ballPos);
-                // console.log(args[0].ballPos.x);
-                // console.log(args[0].ballPos.y);
-                // console.log("gameState", gameState);
-                // console.log("playerSide", playerSide);
-                // console.log("opponent", opponent);
-                // console.log("args[0].roomId", args[0].roomId);
-                // console.log("gameState.roomId", gameState.roomId);
-                // console.log("roomId", roomId);
-            });
-            socket.on('gameOver', (winnerPlayer) => {
-                console.log("socket.on gameOver");
-                console.log("winnerPlayer :", winnerPlayer)
-                setWinner(winnerPlayer);
-                setGameStarted(false);
-                endGame();
-            });
-        }
-    }
-
     useEffect(() => {
         console.log("888888 useLocation => state:", state)
         if (userInfo && state) {
             if (state && state.spectator) {
-                console.log("Pong socket.emit joinPongRoom / userInfo.username:", userInfo.username, ", friend.status", state.spectator);
-                if (socket)
+                if (socket) {
+                    console.log("Pong socket.emit joinPongRoom / userInfo.username:", userInfo.username, ", friend.status", state.spectator);
                     socket.emit('joinPongRoom', { userId: userInfo.username, roomId: state.spectator });
+                }
+                setRoomId(state.spectator)
             }
             // if (state.spectator === true) {
-            console.log("888888 spectator call socket.on('gameState'")
+            if (socket) {
+                console.log("888888 spectator call socket.on('gameState'")
+                socket.on('gameState', (...args) => {
+                    // console.log("receive_socket_info gameState ...args", ...args);
+
+                    console.log("socket.on gameState");
+                    setGameState(args[0])
+                    setGameStarted(true);
+                    setRightPlayer(args[0].rightPlayer)
+                    setLeftPlayer(args[0].leftPlayer)
+                    setRoomId(args[0].roomId)
+                    if (playerSide === "") {
+                        if (userInfo) {
+                            if (userInfo.username === args[0].rightPlayer) {
+                                setPlayerSide('rightPlayer')
+                            }
+                            else if (userInfo.username === args[0].leftPlayer) {
+                                setPlayerSide('leftPlayer')
+                            }
+                            else {
+                                setPlayerSide('spectator')
+                            }
+                        }
+                    }
+                    // console.log(args);
+                    // console.log(args[0]);
+                    // console.log(args[0].ballPos);
+                    // console.log(args[0].ballPos.x);
+                    // console.log(args[0].ballPos.y);
+                    // console.log("gameState", gameState);
+                    // console.log("playerSide", playerSide);
+                    // console.log("opponent", opponent);
+                    // console.log("args[0].roomId", args[0].roomId);
+                    // console.log("gameState.roomId", gameState.roomId);
+                    // console.log("roomId", roomId);
+                });
+            }
             setGameStarted(true);
-            // setWinner('')
-            receive_socket_info();
             setPlayerSide('spectator')
+            // setWinner('')
             // NEED real name of Opponent + realname of PlayerName
             // setOpponent('test')
         }
@@ -147,6 +135,49 @@ export const Pong = () => {
     if (!socket) {
         return <h1>Loading...</h1>;
     }
+
+    socket.on('gameState', (...args) => {
+        // console.log("receive_socket_info gameState ...args", ...args);
+
+        console.log("socket.on gameState");
+        setGameState(args[0])
+        setGameStarted(true);
+        setRightPlayer(args[0].rightPlayer)
+        setLeftPlayer(args[0].leftPlayer)
+        setRoomId(args[0].roomId)
+        if (playerSide === "") {
+            if (userInfo) {
+                if (userInfo.username === args[0].rightPlayer) {
+                    setPlayerSide('rightPlayer')
+                }
+                else if (userInfo.username === args[0].leftPlayer) {
+                    setPlayerSide('leftPlayer')
+                }
+                else {
+                    setPlayerSide('spectator')
+                }
+            }
+        }
+        // console.log(args);
+        // console.log(args[0]);
+        // console.log(args[0].ballPos);
+        // console.log(args[0].ballPos.x);
+        // console.log(args[0].ballPos.y);
+        // console.log("gameState", gameState);
+        // console.log("playerSide", playerSide);
+        // console.log("opponent", opponent);
+        // console.log("args[0].roomId", args[0].roomId);
+        // console.log("gameState.roomId", gameState.roomId);
+        // console.log("roomId", roomId);
+    });
+
+    socket.on('gameOver', (winnerPlayer) => {
+        console.log("socket.on gameOver");
+        console.log("winnerPlayer :", winnerPlayer)
+        setWinner(winnerPlayer);
+        setGameStarted(false);
+        endGame();
+    });
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         console.log("onKeyDownHandler event code :", event.code)
@@ -176,7 +207,6 @@ export const Pong = () => {
         setWinner('')
         setLeftPlayer('')
         setRightPlayer('')
-        receive_socket_info();
     }
 
     // socket.on('GameInfo', (...args) => {
