@@ -40,7 +40,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
         // formData.append('file', profileImg)
         // console.log("FilesUploadComponent formData :", formData)
         console.log (`in UpdateProfile, profileImg is ${profileImg}`)
-        dispatch(uploadImageAction(profileImg, userInfo.access_token));
+        dispatch(uploadImageAction(userInfo, profileImg, userInfo.access_token));
         setDisplayImg(true)
         setOpen(false);
     }
@@ -67,7 +67,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
         }
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
-            dispatch(updateAction(firstname, lastname, username, userInfo.id, userInfo.access_token, userInfo.friends))
+            dispatch(updateAction(firstname, lastname, username, userInfo.id, userInfo.avatar, userInfo.status, userInfo.access_token, userInfo.friends))
             setStatusError(true);
             setSnackbars(true);
         }
