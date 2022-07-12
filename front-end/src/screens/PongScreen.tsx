@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 // import socketio from "socket.io-client";
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, CircularProgress, Grid, TextField } from '@mui/material';
 import Canvas from '../components/Canvas';
 import "../styles/gameStyle.css";
 import { useSelector } from 'react-redux';
@@ -134,7 +134,7 @@ export const Pong = () => {
         // console.log("roomId", roomId);
     });
 
-    socket.on('gameOver', (winnerPlayer) => {
+    socket.on('gameOver', (winnerPlayer: string) => {
         console.log("socket.on gameOver");
         console.log("winnerPlayer :", winnerPlayer)
         setWinner(winnerPlayer);
@@ -158,6 +158,22 @@ export const Pong = () => {
         }
     };
 
+    function stopSearchingOpponent() {
+        if (userInfo) {
+            console.log("stopSearchingOpponent socket.emit move ZERO roomId", roomId, "player:", playerSide);
+            if (socket)
+                socket.emit('move', { room: roomId, player: playerSide, move: 0 });
+        }
+    }
+
+    function giveUpPong() {
+        if (userInfo) {
+            console.log("giveUpPong socket.emit move ZERO roomId", roomId, "player:", playerSide);
+            if (socket)
+                socket.emit('move', { room: roomId, player: playerSide, move: 0 });
+        }
+    }
+
     function handleClick() {
         if (userInfo) {
             console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
@@ -171,28 +187,6 @@ export const Pong = () => {
         setLeftPlayer('')
         setRightPlayer('')
     }
-
-    // socket.on('GameInfo', (...args) => {
-    //     console.log("socket.on GameInfo");
-    //     console.log("roomId / side", args);
-    //     // console.log("args[0]: ", args[0]);
-    //     // console.log("args[1]: ", args[1]);
-    //     // console.log(side);
-    //     setRoomId(args[0])
-    //     setPlayerSide(args[1])
-    //     setGameStarted(true);
-    // });
-
-    // socket.on('GamePlayersName', (...args) => {
-    //     console.log("socket.on GamePlayersName");
-    //     console.log("GamePlayersName args: ", args);
-    //     setPlayerName(args[0])
-    //     setOpponent(args[1])
-    //     if (playerSide === 'leftPlayer') {
-    //         setPlayerName(args[1])
-    //         setOpponent(args[0])
-    //     }
-    // });
 
     const endGame = () => {
         console.log("socket.removeAllListeners gameState gameOver GameInfo GamePlayersName");
@@ -239,11 +233,6 @@ export const Pong = () => {
 
             ctx.fillStyle = colorBackground;
             ctx.fillRect(0, 0, window_size.canvasWidth, window_size.canvasHeight);
-
-            // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
-            // ctx.beginPath();
-            // ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
-            // ctx.closePath();
 
             ctx.fillStyle = colorBackground;
             ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 5, 0, 2 * Math.PI)
@@ -358,10 +347,13 @@ export const Pong = () => {
                             justifyContent="center"
                             style={{ minHeight: '100vh' }}
                         >
-                            {/* <CircularProgress size={window_size.canvasWidth / 6} /> */}
+                            <CircularProgress size={window_size.canvasWidth / 6} />
                             <Grid item xs={3}>
                                 {searchOpponent}
                             </Grid>
+                            <Button onClick={stopSearchingOpponent}>
+                                Stop searching opponent
+                            </Button>
                         </Grid>
                     ) : (
                         <div>
@@ -370,6 +362,9 @@ export const Pong = () => {
 
                             </div>
                             <ColumnGroupingTable leftPlayer={leftPlayer} rightPlayer={rightPlayer} />
+                            <Button onClick={giveUpPong}>
+                                Give up
+                            </Button>
                         </div>
 
                     )}

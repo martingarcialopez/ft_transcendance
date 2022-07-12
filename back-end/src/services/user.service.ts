@@ -48,7 +48,6 @@ export class UserService {
         return allUsers;
     }
 
-
     async createUser(payload: CreateUserDto): Promise<any> {
 
         const existing_user = await this.userRepository.findOne({ username: payload.username });
@@ -273,7 +272,8 @@ export class UserService {
 
     uploadProfileImage(req, uploadedFile: Express.Multer.File) {
 
-        // console.log(uploadedFile);
+        if (!uploadedFile || !uploadedFile.filename)
+            throw new BadRequestException();
 
         const unlinkAsync = promisify(fs.unlink)
 

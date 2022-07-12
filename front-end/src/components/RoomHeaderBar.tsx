@@ -1,7 +1,6 @@
 import arroba from "../styles/assets/arroba.svg";
 import call from "../styles/assets/call.svg";
 import video from "../styles/assets/video.svg";
-import criarServidor from "../styles/assets/criarServidor.svg";
 import fix from "../styles/assets/fix.svg";
 import add from "../styles/assets/add.svg";
 import duvidas from "../styles/assets/duvidas.svg";

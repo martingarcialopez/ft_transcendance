@@ -2,10 +2,9 @@ import {
 ControlledMenu,
 MenuItem,
 useMenuState,
-
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/core.css";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function ParticipantAdminContextMenu(props: any) {

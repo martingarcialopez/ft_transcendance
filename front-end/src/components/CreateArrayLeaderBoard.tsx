@@ -109,12 +109,6 @@ function SortLeaderboard(arrayLeaderboard: T_LeaderBoard[]) {
   return resultat;
 }
 
-async function getUsers() {
-  const url = "http://localhost:3000/user/all";
-  let res = await fetch(url);
-  return await res.json();
-}
-
 /*
  * async function getUsers() {
  *   const url = "http://localhost:3000/user/all";
