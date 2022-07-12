@@ -4,7 +4,7 @@ import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 import { Button, CircularProgress, Grid, TextField } from '@mui/material';
 import Canvas from '../components/Canvas';
 import "../styles/gameStyle.css";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux';
 import { UserState } from '../redux/reducers/userReducers';
 // import { URL_test } from '../constants/url';
@@ -14,7 +14,7 @@ import { ResponsiveDialog } from '../components/ResponsiveDialog';
 import { useLocation } from 'react-router-dom';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import pongSocketService from '../services/pongSocketService';
-import onPageStartService from '../services/onPageStartService';
+import { updateAction } from '../redux/actions/userActions';
 // import { clearInterval } from 'timers';
 
 // export const socket = socketio(`${URL_test}`, { path: '/pongSocketServer' });
@@ -31,7 +31,7 @@ export const Pong = () => {
     const [progress, setProgress] = useState(10);
     const [colorBackground, setColorBackground] = useState('white');
     const [difficulty, setDifficulty] = useState("Normal");
-    const [but, setBut] = useState("20");
+    const [but, setBut] = useState("5");
     const [searchOpponent, setSearchOpponent] = useState("Waiting for an opponent");
     // Use a ref to access the Canvas
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -58,13 +58,23 @@ export const Pong = () => {
     const [roomId, setRoomId] = useState('');
     const { userInfo }: UserState = userLogin;
     const { state }: any = useLocation();
+    const dispatch = useDispatch()
 
     // console.log("Pong useLocation => state:", state)
+    socket = pongSocketService.connect();
 
     useEffect(() => {
+        console.log("333333")
+        if (userInfo) {
+            console.log("333333 userInfo.status", userInfo.status)
 
-        socket = pongSocketService.connect();
+            if (userInfo.status === "looking") {
+                setGameStarted(true);
+            }
+        }
+    }, []);
 
+    useEffect(() => {
         console.log("888888 useLocation => state:", state)
         if (userInfo && state) {
             if (state && state.spectator) {
@@ -78,7 +88,7 @@ export const Pong = () => {
             // NEED real name of Opponent + realname of PlayerName
             // setOpponent('test')
         }
-    }, [state]);
+    }, [socket, state]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -142,6 +152,7 @@ export const Pong = () => {
         console.log("winnerPlayer :", winnerPlayer)
         setWinner(winnerPlayer);
         setGameStarted(false);
+        setPlayerSide('');
         endGame();
     });
 
@@ -183,6 +194,7 @@ export const Pong = () => {
             console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
             if (socket)
                 socket.emit('lookingForAGame', { userId: userInfo.id, difficulty: difficulty, maxScore: parseInt(but) });
+            dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, userInfo.avatar, "looking", userInfo.access_token, userInfo.friends));
         }
 
         // console.log("HANDKE CKUC")
