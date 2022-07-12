@@ -241,6 +241,7 @@ export class PongService {
 		}
 	}
 
+
 	async playGame(socket: Server, socketRoom: string, difficulty: string, player1Id: number, player2Id: number, winningScore: number) {
 
 		console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
@@ -260,15 +261,16 @@ export class PongService {
 
 			if (state.playerGiveUp || state.leftScore >= winningScore || state.rightScore >= winningScore) {
 
-				if (state.playerGiveUp === 'rightplayer' || state.leftScore >= winningScore)
+				if (state.playerGiveUp === 'rightPlayer' || state.leftScore >= winningScore)
 					winner = 'leftplayer';
-				else if (state.playerGiveUp === 'leftplayer' || state.rightScore >= winningScore)
+				else if (state.playerGiveUp === 'leftPlayer' || state.rightScore >= winningScore)
 					winner = 'rightplayer';
+				console.log(`winner is ${winner}`)
 				socket.to(socketRoom).emit('gameOver', winner);
 				const move = this.gameService.getAll();
 				move.filter(elem => elem.room === socketRoom).forEach(elem => this.gameService.delete(elem.id));
 
-				const gameResult: GameHistory = (await this.gameHistoryRepository.find( { where : { id: socketRoom } } )).at(0) ;
+				const gameResult: GameHistory = (await this.gameHistoryRepository.find( { where : { roomId: socketRoom } } )).at(0) ;
 
 				if (!gameResult)
 					throw new InternalServerErrorException();

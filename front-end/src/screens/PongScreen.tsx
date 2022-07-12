@@ -134,7 +134,7 @@ export const Pong = () => {
         // console.log("roomId", roomId);
     });
 
-    socket.on('gameOver', (winnerPlayer) => {
+    socket.on('gameOver', (winnerPlayer: string) => {
         console.log("socket.on gameOver");
         console.log("winnerPlayer :", winnerPlayer)
         setWinner(winnerPlayer);
