@@ -17,6 +17,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
     const { id } = useParams();
     const [displayImg, setDisplayImg] = useState(true)
     const [profileImg, setProfileImg] = useState('')
+    // const [profileImgType, setProfileImgType] = useState('')
     const dispatch = useDispatch()
 
 	const [isValidFileFormat, setIsValidFileFormat] = useState(true);
@@ -28,16 +29,18 @@ export const UpdateProfile = ({ userInfo }: any) => {
 		}
 		else {
 			setIsValidFileFormat(true);
-			setProfileImg(e.target.files[0].type)
+            console.log(e.target.files[0]);
+			setProfileImg(e.target.files[0])
 			console.log("FilesUploadComponent e.target.files[0] :", e.target.files[0])
 		}
     }
 
     const uploadImage = () => {
-        const formData = new FormData()
-        formData.append('file', profileImg)
-        console.log("FilesUploadComponent formData :", formData)
-        dispatch(uploadImageAction(formData, userInfo.access_token));
+        // const formData = new FormData()
+        // formData.append('file', profileImg)
+        // console.log("FilesUploadComponent formData :", formData)
+        console.log (`in UpdateProfile, profileImg is ${profileImg}`)
+        dispatch(uploadImageAction(profileImg, userInfo.access_token));
         setDisplayImg(true)
     }
     // const ref_default_img = "/game/test/test_42.jpg"

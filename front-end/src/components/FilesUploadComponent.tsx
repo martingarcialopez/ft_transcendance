@@ -15,10 +15,12 @@ export const FilesUploadComponent = ({ userInfo }: any) => {
     }
 
     const uploadImage = () => {
-        const formData = new FormData()
-        formData.append('file', profileImg)
-        console.log("FilesUploadComponent formData :", formData)
-        dispatch(uploadImageAction(formData, userInfo.access_token));
+        // const formData = new FormData()
+        // formData.append('name', 'file')
+        // formData.append('filename', profileImg)
+        // console.log("FilesUploadComponent formData :", formData)
+        // console.log(`in FilesUploadComponent.tsx, profileImg is ${profileImg}`);
+        // dispatch(uploadImageAction(profileImg, userInfo.access_token));
         setDisplayImg(true)
     }
 

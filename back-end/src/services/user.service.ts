@@ -298,6 +298,9 @@ export class UserService {
 
         this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
 
+        console.log(`returning...`)
+        console.log(response)
+
         return response;
 
     }

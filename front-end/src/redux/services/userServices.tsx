@@ -47,11 +47,20 @@ export function enable2FA(access_token: any) {
 }
 
 export function uploadImage(image: any, access_token: any) {
+
+    const formData = new FormData();
+    formData.append('name', 'file');
+    formData.append('filename', image.filename)
+    formData.append('file', image)
+
     return axios.post(
         `${URL_test}/user/uploadProfileImage`,
-        image,
+        formData,
         {
-            headers: { 'Authorization': `Bearer ${access_token}` }
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'content-type': 'multipart/form-data'
+            }
         }
     );
 }
