@@ -85,26 +85,6 @@ export function Chat(props: any) {
 	/*      Participants actions       */
 	/* ------------------------------- */
 
-	const onClick_setAsAdmin = (
-		userId: number,
-		roomId: number,
-		toAdd: boolean
-	) => {
-		props.appSocket.emit(
-			"F_setAsAdmin",
-			{
-				userId: userId,
-				roomId: roomId,
-				toAdd: toAdd,
-			},
-			(isSet: boolean) => {
-				if (isSet !== true) {
-					alert("Something went wrong");
-				}
-			}
-		);
-	};
-
 	const setAsAdmin_listener = () => {
 		props.appSocket.emit("F_getRooms", "");
 	};
@@ -502,7 +482,6 @@ export function Chat(props: any) {
 				  setCurrRoomId={setCurrRoomId}
 				  messages={messages}
 				  setMessages={setMessages}
-				  onClick_setAsAdmin={onClick_setAsAdmin}
 				  />
 			  </div>
 			</div>
