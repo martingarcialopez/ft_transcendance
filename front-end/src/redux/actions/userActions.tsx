@@ -38,9 +38,9 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
   };
 }
 
-export function updateAction(firstname: any, lastname: any, username: any, id: any, access_token: any, friends: any) {
+export function updateAction(firstname: any, lastname: any, username: any, id: any, avatar: any, status: any, access_token: any, friends: any) {
   return (dispatch: any) => {
-    update(firstname, lastname, username, id, access_token, friends)
+    update(firstname, lastname, username, id, avatar, status, access_token, friends)
       .then((response) => {
         console.log("updateAction response : ")
         console.log(response)
@@ -107,7 +107,7 @@ export function enable2FAAction(access_token: any) {
   };
 }
 
-export function uploadImageAction(image: any, access_token: any) {
+export function uploadImageAction(userInfo: any, image: any, access_token: any) {
   return (dispatch: any) => {
     uploadImage(image, access_token)
       .then((response) => {
@@ -117,7 +117,17 @@ export function uploadImageAction(image: any, access_token: any) {
         console.log(response.data)
         console.log("uploadImageAction data filename qui fct :")
         console.log(response.data.filename)
-        dispatch(uploadImageActionConfirmedAction(response.data.filename));
+
+        // const storage = localStorage.getItem('userInfo');
+        // if (storage) {
+        //     const user = JSON.parse(storage);
+        //     console.log(`previous avatar was ${user.avatar}`)
+        //     user.avatar = response.data.filename;
+        //     console.log(`new avatar is ${response.data.filename}`)
+        //     localStorage.setItem('userInfo', JSON.stringify(user));
+        // }
+
+        dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, response.data.filename, userInfo.status, userInfo.access_token, userInfo.friends));
       })
       .catch((error) => {
         console.log("ceci est une error dans uploadImageAction :")
@@ -235,7 +245,7 @@ export function getFriendListAction(userInfo: any) {
     getFriendListStatus(userInfo.access_token, userInfo.username)
       .then((response) => {
         console.log("getFriendListAction response", response)
-        dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, userInfo.access_token, response.data));
+        dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, userInfo.avatar, userInfo.status, userInfo.access_token, response.data));
         // dispatch(getFriendListConfirmedAction(response.data));
       })
       .catch((error) => {

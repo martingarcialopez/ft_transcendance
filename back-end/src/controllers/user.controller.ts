@@ -40,6 +40,8 @@ export class UserController {
         }))
     uploadProfileImage(@UploadedFile() uploadedFile: Express.Multer.File, @Request() req) {
 
+        console.log('in upload profile image');
+
         return this.userService.uploadProfileImage(req, uploadedFile);
     }
 

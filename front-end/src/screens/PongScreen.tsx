@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 // import socketio from "socket.io-client";
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, CircularProgress, Grid, TextField } from '@mui/material';
 import Canvas from '../components/Canvas';
 import "../styles/gameStyle.css";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux';
 import { UserState } from '../redux/reducers/userReducers';
 // import { URL_test } from '../constants/url';
@@ -14,6 +14,8 @@ import { ResponsiveDialog } from '../components/ResponsiveDialog';
 import { useLocation } from 'react-router-dom';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import pongSocketService from '../services/pongSocketService';
+import { updateAction } from '../redux/actions/userActions';
+// import { clearInterval } from 'timers';
 
 // export const socket = socketio(`${URL_test}`, { path: '/pongSocketServer' });
 
@@ -23,12 +25,13 @@ const window_size = {
 }
 
 export const Pong = () => {
+
     let socket = pongSocketService.connect();
 
     const [progress, setProgress] = useState(10);
     const [colorBackground, setColorBackground] = useState('white');
     const [difficulty, setDifficulty] = useState("Normal");
-    const [but, setBut] = useState("20");
+    const [but, setBut] = useState("5");
     const [searchOpponent, setSearchOpponent] = useState("Waiting for an opponent");
     // Use a ref to access the Canvas
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -55,13 +58,23 @@ export const Pong = () => {
     const [roomId, setRoomId] = useState('');
     const { userInfo }: UserState = userLogin;
     const { state }: any = useLocation();
+    const dispatch = useDispatch()
 
     // console.log("Pong useLocation => state:", state)
+    socket = pongSocketService.connect();
 
     useEffect(() => {
+        console.log("333333")
+        if (userInfo) {
+            console.log("333333 userInfo.status", userInfo.status)
 
-        socket = pongSocketService.connect();
+            if (userInfo.status === "looking") {
+                setGameStarted(true);
+            }
+        }
+    }, []);
 
+    useEffect(() => {
         console.log("888888 useLocation => state:", state)
         if (userInfo && state) {
             if (state && state.spectator) {
@@ -75,7 +88,7 @@ export const Pong = () => {
             // NEED real name of Opponent + realname of PlayerName
             // setOpponent('test')
         }
-    }, [state]);
+    }, [socket, state]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -134,11 +147,12 @@ export const Pong = () => {
         // console.log("roomId", roomId);
     });
 
-    socket.on('gameOver', (winnerPlayer) => {
+    socket.on('gameOver', (winnerPlayer: string) => {
         console.log("socket.on gameOver");
         console.log("winnerPlayer :", winnerPlayer)
         setWinner(winnerPlayer);
         setGameStarted(false);
+        setPlayerSide('');
         endGame();
     });
 
@@ -158,11 +172,29 @@ export const Pong = () => {
         }
     };
 
+    function stopSearchingOpponent() {
+
+        if (userInfo) {
+            if (socket)
+                socket.emit('iDontWannaPlayAnymore', userInfo.id);
+        }
+        setGameStarted(false);
+    }
+
+    function giveUpPong() {
+        if (userInfo) {
+            console.log("giveUpPong socket.emit move ZERO roomId", roomId, "player:", playerSide);
+            if (socket)
+                socket.emit('move', { room: roomId, player: playerSide, move: 0 });
+        }
+    }
+
     function handleClick() {
         if (userInfo) {
             console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
             if (socket)
                 socket.emit('lookingForAGame', { userId: userInfo.id, difficulty: difficulty, maxScore: parseInt(but) });
+            dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, userInfo.avatar, "looking", userInfo.access_token, userInfo.friends));
         }
 
         // console.log("HANDKE CKUC")
@@ -171,28 +203,6 @@ export const Pong = () => {
         setLeftPlayer('')
         setRightPlayer('')
     }
-
-    // socket.on('GameInfo', (...args) => {
-    //     console.log("socket.on GameInfo");
-    //     console.log("roomId / side", args);
-    //     // console.log("args[0]: ", args[0]);
-    //     // console.log("args[1]: ", args[1]);
-    //     // console.log(side);
-    //     setRoomId(args[0])
-    //     setPlayerSide(args[1])
-    //     setGameStarted(true);
-    // });
-
-    // socket.on('GamePlayersName', (...args) => {
-    //     console.log("socket.on GamePlayersName");
-    //     console.log("GamePlayersName args: ", args);
-    //     setPlayerName(args[0])
-    //     setOpponent(args[1])
-    //     if (playerSide === 'leftPlayer') {
-    //         setPlayerName(args[1])
-    //         setOpponent(args[0])
-    //     }
-    // });
 
     const endGame = () => {
         console.log("socket.removeAllListeners gameState gameOver GameInfo GamePlayersName");
@@ -239,11 +249,6 @@ export const Pong = () => {
 
             ctx.fillStyle = colorBackground;
             ctx.fillRect(0, 0, window_size.canvasWidth, window_size.canvasHeight);
-
-            // ctx.fillRect(gameState.ballPos.x, gameState.ballPos.y, 20, 15)
-            // ctx.beginPath();
-            // ctx.clearRect(gameState.ballPos.x - BALL_RADIUS - 1, gameState.ballPos.y - BALL_RADIUS - 1, BALL_RADIUS * 2 + 2, BALL_RADIUS * 2 + 2);
-            // ctx.closePath();
 
             ctx.fillStyle = colorBackground;
             ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 5, 0, 2 * Math.PI)
@@ -335,11 +340,11 @@ export const Pong = () => {
                             <Button variant="outlined" onClick={handleClick}>
                                 {winner === '' ? (
                                     <div>
-                                        Search an opponent
+                                        Search for an opponent
                                     </div>
                                 ) : (
                                     <div>
-                                        Restart Game
+                                        Play again
                                     </div>
                                 )}
                             </Button>
@@ -358,10 +363,13 @@ export const Pong = () => {
                             justifyContent="center"
                             style={{ minHeight: '100vh' }}
                         >
-                            {/* <CircularProgress size={window_size.canvasWidth / 6} /> */}
+                            <CircularProgress size={window_size.canvasWidth / 6} />
                             <Grid item xs={3}>
                                 {searchOpponent}
                             </Grid>
+                            <Button onClick={stopSearchingOpponent}>
+                                Stop searching for a Game
+                            </Button>
                         </Grid>
                     ) : (
                         <div>
@@ -370,6 +378,9 @@ export const Pong = () => {
 
                             </div>
                             <ColumnGroupingTable leftPlayer={leftPlayer} rightPlayer={rightPlayer} />
+                            <Button onClick={giveUpPong}>
+                                Give up
+                            </Button>
                         </div>
 
                     )}

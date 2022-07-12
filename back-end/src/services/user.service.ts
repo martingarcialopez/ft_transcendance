@@ -48,7 +48,6 @@ export class UserService {
         return allUsers;
     }
 
-
     async createUser(payload: CreateUserDto): Promise<any> {
 
         const existing_user = await this.userRepository.findOne({ username: payload.username });
@@ -211,12 +210,13 @@ export class UserService {
 
         for (const user of allUsernames) {
 
-            const userStatus = await this.userRepository.find( { select: ["status"], where: { username: user } } );
+            const dbUser = await this.userRepository.findOne( { username: user } );
 
             let tmp: friendsStatusDto = new friendsStatusDto();
 
             tmp.username = user;
-            tmp.status = userStatus[0].status;
+            tmp.status = dbUser.status;
+            tmp.avatar = dbUser.avatar
             friendsStatus.push(tmp);
         }
 
@@ -232,10 +232,15 @@ export class UserService {
             throw new NotFoundException();
 
         const games = await this.GameHistoryRepository.find(
-            { where : [{ leftPlayer: username }, { rightPlayer: username }/*, {winner: typeorm.Not(typeorm.IsNull()) }*/] } );
+            {
+                where : 
+                [
+                    { leftPlayer: username, winner: typeorm.Not(typeorm.IsNull()) },
+                    { rightPlayer: username, winner: typeorm.Not(typeorm.IsNull()) }
+                ]
+            });
 
         return games;
-
     }
 
 
@@ -273,7 +278,8 @@ export class UserService {
 
     uploadProfileImage(req, uploadedFile: Express.Multer.File) {
 
-        // console.log(uploadedFile);
+        if (!uploadedFile || !uploadedFile.filename)
+            throw new BadRequestException();
 
         const unlinkAsync = promisify(fs.unlink)
 
@@ -297,6 +303,9 @@ export class UserService {
         };
 
         this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
+
+        console.log(`returning...`)
+        console.log(response)
 
         return response;
 

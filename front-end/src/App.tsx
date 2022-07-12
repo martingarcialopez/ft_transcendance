@@ -15,7 +15,7 @@ import { RootState } from "./redux";
 import { UserState } from "./redux/reducers/userReducers";
 import { OtherProfileScreen } from "./screens/OtherProfileScreen";
 import { LeaderBoard } from "./screens/LeaderBoard";
-import { MaobeChat } from "./components/Maobe_Chat";
+import { MaobeChat } from "./screens/MaobeChat";
 import { Twofa } from "./screens/Twofa";
 import { RedirectPage } from "./screens/RedirectPage";
 
