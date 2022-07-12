@@ -5,51 +5,8 @@ useMenuState,
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/core.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-function ParticipantAdminContextMenu(props: any) {
-  if (
-    (props.currentRoom.owner !== props.connectedUser.userId &&
-      props.currentRoom.admin.indexOf(props.connectedUser.userId) === -1) ||
-    props.currentRoom.owner === props.currentUser.userId ||
-    props.currentUser.userId === props.connectedUser.userId
-  ) {
-    return <div></div>;
-  }
-  return (
-    <div>
-      {/* ----- KICK ----- */}
-      <MenuItem
-        onClick={() =>
-          props.onClick_kick(props.currentUser.userId, props.currRoomId)
-        }
-      >
-        Kick {props.currentUser.username}
-      </MenuItem>
-      <hr />
-
-      {/* ----- BAN ----- */}
-      <MenuItem
-        onClick={() =>
-          props.onClick_ban(props.currentUser.userId, props.currRoomId)
-        }
-      >
-        Ban {props.currentUser.username}
-      </MenuItem>
-      <hr />
-
-      {/* ----- MUTE ----- */}
-      <MenuItem
-        onClick={() =>
-          props.onClick_mute(props.currentUser.userId, props.currRoomId)
-        }
-      >
-        Mute {props.currentUser.username}
-      </MenuItem>
-      <hr />
-    </div>
-  );
-}
+import { ParticipantAdminContextMenu } from './ParticipantAdminContextMenu';
+import { ParticipantBasicContextMenu } from './ParticipantBasicContextMenu';
 
 function ParticipantSetAsAdminContextMenu(props: any) {
   if (
@@ -78,50 +35,6 @@ function ParticipantSetAsAdminContextMenu(props: any) {
         }
       >
         {label}
-      </MenuItem>
-      <hr />
-    </div>
-  );
-}
-
-function ParticipantBasicContextMenu(props: any) {
-  const navigate = useNavigate();
-
-  if (props.currentUser.userId === props.connectedUser.userId) {
-    return <div></div>;
-  }
-  return (
-    <div>
-      {/* ----- BLOCK ----- */}
-      <MenuItem
-        onClick={() =>
-          props.onClick_block(props.currentUser.userId, props.currRoomId)
-        }
-      >
-        Block {props.currentUser.username}
-      </MenuItem>
-      <hr />
-
-      {/* ----- ACCESS PROFILE ----- */}
-      <MenuItem
-        onClick={() => {
-          navigate(`/profile/${props.currentUser.username}`);
-        }}
-      >
-        Access {props.currentUser.username} profile
-      </MenuItem>
-      <hr />
-
-      {/* ----- Direct Message ----- */}
-      <MenuItem
-        onClick={() =>
-          props.onClick_directMessage(
-            props.currentUser.userId,
-            props.currentUser.username
-          )
-        }
-      >
-        Send Message {props.currentUser.username}
       </MenuItem>
       <hr />
     </div>

@@ -81,7 +81,6 @@ function JoinRoomMenu(props: any) {
 function CreateRoomMenu(props: any) {
   const ref = useRef(null);
   const [isOpen, setOpen] = useState(false);
-  const [disablePassword, setDisablePassword] = useState(false);
 
   let Html_AvailableUser = <div></div>;
   if (props.availableUsers !== undefined && props.availableUsers.length > 0) {
@@ -171,7 +170,6 @@ function CreateRoomMenu(props: any) {
         <FocusableItem>
           {({ ref }: any) => (
             <input
-              disabled={disablePassword}
               ref={ref}
               type="password"
               placeholder="Room password"
@@ -215,7 +213,6 @@ function CreateRoomMenu(props: any) {
 function EditRoomMenu(props: any) {
   const ref = useRef(null);
   const [isOpen, setOpen] = useState(false);
-  const [disablePassword, setDisablePassword] = useState(false);
 
   if (
     props.currRoom.owner !== props.connectedUser.userId &&
@@ -301,7 +298,6 @@ function EditRoomMenu(props: any) {
         <FocusableItem>
           {({ ref }: any) => (
             <input
-              disabled={disablePassword}
               className="mao-menu-input"
               ref={ref}
               type="password"

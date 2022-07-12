@@ -84,143 +84,7 @@ export function Chat(props: any) {
 	/* ------------------------------- */
 	/*      Participants actions       */
 	/* ------------------------------- */
-	const onClick_kick = (userId: number, roomId: number) => {
-		props.appSocket.emit(
-			"F_kickUser",
-			{
-				userId: userId,
-				roomId: roomId,
-			},
-			(isKicked: boolean) => {
-				if (isKicked === true) {
-					let newRooms = rooms.slice();
-					var index = newRooms.findIndex((obj: any) => obj.id === roomId);
-					var unkicked_participants = newRooms[index].participants.filter(
-						(obj: any) => obj.userId !== userId
-					);
-					newRooms[index].participants = unkicked_participants;
-					setRooms(newRooms);
-				} else {
-					alert("Something went wrong");
-				}
-			}
-		);
-	};
-	const onClick_ban = (userId: number, roomId: number) => {
-		console.log(`Banning ${userId} in ${roomId}`);
-		props.appSocket.emit(
-			"F_banUser",
-			{
-				userId: userId,
-				roomId: roomId,
-			},
-			(isBanned: boolean) => {
-				if (isBanned === true) {
-					let newRooms = rooms.slice();
-					var index = newRooms.findIndex((obj: any) => obj.id === roomId);
-					var unbaned_participants = newRooms[index].participants.filter(
-						(obj: any) => obj.userId !== userId
-					);
-					newRooms[index].participants = unbaned_participants;
-					setRooms(newRooms);
-				} else {
-					alert("Something went wrong");
-				}
-			}
-		);
-	};
-	const onClick_mute = (userId: number, roomId: number) => {
-		props.appSocket.emit(
-			"F_muteUser",
-			{
-				userId: userId,
-				roomId: roomId,
-			},
-			(isMuted: boolean) => {
-				if (isMuted === true) {
-					let newRooms = rooms.slice();
-					var index = newRooms.findIndex((obj: any) => obj.id === roomId);
-					var user_index = newRooms[index].participants.findIndex(
-						(obj: any) => obj.userId === userId
-					);
-					newRooms[index].participants[user_index]["mute"] = true;
-					setRooms(newRooms);
-				} else {
-					alert("Something went wrong");
-				}
-			}
-		);
 
-		console.log(`Muting ${userId} in ${roomId}`);
-	};
-	const onClick_block = (userId: number, roomId: number) => {
-		props.appSocket.emit("F_blockUser", userId, (isBlocked: boolean) => {
-			if (isBlocked === true) {
-				let newRooms = rooms.slice();
-				var index = newRooms.findIndex((obj: any) => obj.id === roomId);
-				var user_index = newRooms[index].participants.findIndex(
-					(obj: any) => obj.userId === userId
-				);
-				var unbaned_participants = newRooms[index].participants.filter(
-					(obj: any) => obj.userId !== userId
-				);
-				newRooms[index].participants = unbaned_participants;
-				setRooms(newRooms);
-
-				const tmpCurrRoom = newRooms.filter((obj) => obj.id === currRoomId);
-				if (tmpCurrRoom.length !== 1) {
-					setCurrRoomId(-1);
-				}
-
-				if (messages !== undefined) {
-					let room_message = messages.get(roomId);
-					if (room_message !== undefined) {
-						let res = room_message.filter((obj: any) => obj.userId !== userId);
-						const newMessages = new Map(messages);
-						newMessages.set(roomId, res);
-						setMessages(newMessages);
-					}
-				}
-				props.appSocket.emit("F_getRooms", "");
-			} else {
-				alert("Something went wrong");
-			}
-		});
-
-		console.log(rooms, `Blocking ${userId} in ${roomId}`);
-	};
-	const onClick_directMessage = (userId: number, username: string) => {
-		// let possibleRooms = [];
-		let roomFounded = false;
-		rooms.forEach((room) => {
-			if (roomFounded === true) {
-				return;
-			}
-			if (room.participants.length === 2) {
-				const userMatch = room.participants.filter(
-					(obj: any) => obj.userId === userId
-				);
-				if (userMatch.length === 1) {
-					setCurrRoomId(room.id);
-					roomFounded = true;
-				}
-			}
-		});
-		if (roomFounded === false) {
-			const newPmRoom = {
-				name: `PM ${username}`,
-				image: "",
-				typeRoom: "private",
-				password: "",
-				users: [{ id: userId }],
-			};
-			props.appSocket.emit("F_createRoom", newPmRoom, (isCreated: boolean) => {
-				if (isCreated !== true) {
-					alert("Something went wrong");
-				}
-			});
-		}
-	};
 	const onClick_setAsAdmin = (
 		userId: number,
 		roomId: number,
@@ -240,8 +104,6 @@ export function Chat(props: any) {
 			}
 		);
 	};
-
-	const onClick_say_hi=()=>{console.log('hello, petit chat')};
 
 	const setAsAdmin_listener = () => {
 		props.appSocket.emit("F_getRooms", "");
@@ -637,13 +499,10 @@ export function Chat(props: any) {
 				  roomsList={rooms}
 				  currRoomId={currRoomId}
 				  connectedUser={props.connectedUser}
+				  setCurrRoomId={setCurrRoomId}
+				  messages={messages}
+				  setMessages={setMessages}
 				  onClick_setAsAdmin={onClick_setAsAdmin}
-				  onClick_kick={onClick_kick}
-				  onClick_ban={onClick_ban}
-				  onClick_mute={onClick_mute}
-				  onClick_block={onClick_block}
-				  onClick_directMessage={onClick_directMessage}
-				  onClick_say_hi={onClick_say_hi}
 				  />
 			  </div>
 			</div>

@@ -39,8 +39,6 @@ export function SendMessageBar(props: any) {
 		);
 	};
 
-
-
   const currentRoom = props.roomsList.filter(
     (obj: any) => obj.id === props.currentRoomId
   )[0];
