@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from '../type/pongType';
 // import socketio from "socket.io-client";
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, CircularProgress, Grid, TextField } from '@mui/material';
 import Canvas from '../components/Canvas';
 import "../styles/gameStyle.css";
 import { useSelector } from 'react-redux';
@@ -339,7 +339,7 @@ export const Pong = () => {
                             justifyContent="center"
                             style={{ minHeight: '100vh' }}
                         >
-                            {/* <CircularProgress size={window_size.canvasWidth / 6} /> */}
+                            <CircularProgress size={window_size.canvasWidth / 6} />
                             <Grid item xs={3}>
                                 {searchOpponent}
                             </Grid>
