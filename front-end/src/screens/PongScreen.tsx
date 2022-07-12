@@ -158,9 +158,17 @@ export const Pong = () => {
         }
     };
 
+    function stopSearchingOpponent() {
+        if (userInfo) {
+            console.log("stopSearchingOpponent socket.emit move ZERO roomId", roomId, "player:", playerSide);
+            if (socket)
+                socket.emit('move', { room: roomId, player: playerSide, move: 0 });
+        }
+    }
+
     function giveUpPong() {
         if (userInfo) {
-            console.log("socket.emit move ZERO roomId", roomId, "player:", playerSide);
+            console.log("giveUpPong socket.emit move ZERO roomId", roomId, "player:", playerSide);
             if (socket)
                 socket.emit('move', { room: roomId, player: playerSide, move: 0 });
         }
@@ -343,6 +351,9 @@ export const Pong = () => {
                             <Grid item xs={3}>
                                 {searchOpponent}
                             </Grid>
+                            <Button onClick={stopSearchingOpponent}>
+                                Stop searching opponent
+                            </Button>
                         </Grid>
                     ) : (
                         <div>
