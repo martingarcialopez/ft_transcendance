@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   ControlledMenu,
-  MenuItem,
-  useMenuState,
   FocusableItem,
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/core.css";

@@ -158,6 +158,14 @@ export const Pong = () => {
         }
     };
 
+    function giveUpPong() {
+        if (userInfo) {
+            console.log("socket.emit giveUp roomId", roomId);
+            if (socket)
+                socket.emit('giveUp', roomId);
+        }
+    }
+
     function handleClick() {
         if (userInfo) {
             console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
@@ -370,6 +378,9 @@ export const Pong = () => {
 
                             </div>
                             <ColumnGroupingTable leftPlayer={leftPlayer} rightPlayer={rightPlayer} />
+                            <Button onClick={giveUpPong}>
+                                Give up
+                            </Button>
                         </div>
 
                     )}
