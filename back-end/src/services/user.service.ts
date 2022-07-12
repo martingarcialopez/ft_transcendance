@@ -210,12 +210,13 @@ export class UserService {
 
         for (const user of allUsernames) {
 
-            const userStatus = await this.userRepository.find( { select: ["status"], where: { username: user } } );
+            const dbUser = await this.userRepository.findOne( { username: user } );
 
             let tmp: friendsStatusDto = new friendsStatusDto();
 
             tmp.username = user;
-            tmp.status = userStatus[0].status;
+            tmp.status = dbUser.status;
+            tmp.avatar = dbUser.avatar
             friendsStatus.push(tmp);
         }
 

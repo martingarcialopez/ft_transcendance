@@ -5,4 +5,6 @@ export class friendsStatusDto {
 
     status: string;
 
+    avatar: string;
+
 }
