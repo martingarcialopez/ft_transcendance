@@ -17,7 +17,8 @@ class pongSocketServiceImplementation {
 
             const storage = localStorage.getItem('userInfo')
             if (!storage)
-                return;
+                return null;
+
             const user = JSON.parse(storage);
 
             this.connection.emit('setSocketId', user.username);
