@@ -240,7 +240,6 @@ export class UserService {
             });
 
         return games;
-
     }
 
 
