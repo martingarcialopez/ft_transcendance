@@ -198,7 +198,7 @@ export class PongService {
 		return game.id;
 
 	}
-	
+
 	async joinPongRoom(client: Socket, server: Server, userId: string, roomId: string) {
 
 		const roomSize = server.sockets.adapter.rooms.get(roomId).size;
@@ -258,11 +258,11 @@ export class PongService {
 
 		 while (true) {
 
-			if (state.leftScore >= winningScore || state.rightScore >= winningScore) {
+			if (state.playerGiveUp || state.leftScore >= winningScore || state.rightScore >= winningScore) {
 
-				if (state.leftScore >= winningScore)
+				if (state.playerGiveUp === 'rightplayer' || state.leftScore >= winningScore)
 					winner = 'leftplayer';
-				else if (state.rightScore >= winningScore)
+				else if (state.playerGiveUp === 'leftplayer' || state.rightScore >= winningScore)
 					winner = 'rightplayer';
 				socket.to(socketRoom).emit('gameOver', winner);
 				const move = this.gameService.getAll();
@@ -303,7 +303,9 @@ export class PongService {
 			if (move.length > lastMove) {
 
 				for (let i: number = lastMove; i < move.length ; i++) {
-					if (move[i].player === "leftPlayer")
+					if (move[i].move  === 0)
+						state.playerGiveUp = move[i].player;
+					else if (move[i].player === "leftPlayer")
 						leftPlayerMove += move[i].move;
 					else if (move[i].player === "rightPlayer")
 						rightPlayerMove += move[i].move;
@@ -354,7 +356,8 @@ function initGameState(difficulty: string, player1: string, player2: string, roo
 			rightScore: 0,
 			leftPlayer: player1,
 			rightPlayer: player2,
-			roomId: roomId
+			roomId: roomId,
+			playerGiveUp: ""
 		}
 	);
 }
@@ -401,7 +404,9 @@ class State {
 	leftScore: number;
 	rightScore: number;
 	leftPlayer: string;
-	rightPlayer: string;
+	rightPlayer: string
+	playerGiveUp: string;
+
 }
 
 // Paddle Position will represent the center of the paddle on the y axis, regardless of its size
