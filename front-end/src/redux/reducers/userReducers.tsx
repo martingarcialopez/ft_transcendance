@@ -49,6 +49,7 @@ export interface Player {
 
 export interface Friend {
   username?: string;
+  avatar?: string;
   status?: string;
 }
 

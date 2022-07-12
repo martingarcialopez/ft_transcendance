@@ -150,7 +150,10 @@ export const Pong = () => {
     socket.on('gameOver', (winnerPlayer: string) => {
         console.log("socket.on gameOver");
         console.log("winnerPlayer :", winnerPlayer)
-        setWinner(winnerPlayer);
+        if (winnerPlayer === "leftplayer")
+            setWinner(leftPlayer);
+        else
+            setWinner(rightPlayer);
         setGameStarted(false);
         setPlayerSide('');
         endGame();
@@ -319,6 +322,13 @@ export const Pong = () => {
                             {colorBackground}
                         </div>
                         Difficulty {difficulty}
+                        {winner ?
+                            <div>
+                                Winner {winner}
+                            </div>
+                            :
+                            null
+                        }
                         <Grid item xs={6}>
 
                             <div>
@@ -373,6 +383,13 @@ export const Pong = () => {
                         </Grid>
                     ) : (
                         <div>
+                            {winner ?
+                                <div>
+                                    Winner : {winner}
+                                </div>
+                                :
+                                null
+                            }
                             <div className='gamePong' tabIndex={0} onKeyDown={onKeyDownHandler}>
                                 <Canvas ref={canvasRef} draw={drawGame} width={window_size.canvasWidth} height={window_size.canvasHeight} />
 
