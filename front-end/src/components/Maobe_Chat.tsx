@@ -470,10 +470,14 @@ export function Chat(props: any) {
     e.preventDefault();
     if (messageBarValues === undefined) {
       return;
-    }
+	  }
+
+	var tmp_content = messageBarValues.get(currRoomId);
+	if (tmp_content !== undefined && tmp_content.toUpperCase() === "MIAO")
+	   tmp_content = "😻";
     let messageToCreate = {
       roomId: currRoomId,
-      content: messageBarValues.get(currRoomId),
+      content: tmp_content
     };
 
     props.appSocket.emit(
