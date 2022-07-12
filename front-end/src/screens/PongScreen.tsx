@@ -14,6 +14,8 @@ import { ResponsiveDialog } from '../components/ResponsiveDialog';
 import { useLocation } from 'react-router-dom';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import pongSocketService from '../services/pongSocketService';
+import onPageStartService from '../services/onPageStartService';
+// import { clearInterval } from 'timers';
 
 // export const socket = socketio(`${URL_test}`, { path: '/pongSocketServer' });
 
@@ -23,6 +25,7 @@ const window_size = {
 }
 
 export const Pong = () => {
+
     let socket = pongSocketService.connect();
 
     const [progress, setProgress] = useState(10);
@@ -159,11 +162,12 @@ export const Pong = () => {
     };
 
     function stopSearchingOpponent() {
+
         if (userInfo) {
-            console.log("stopSearchingOpponent socket.emit move ZERO roomId", roomId, "player:", playerSide);
             if (socket)
-                socket.emit('move', { room: roomId, player: playerSide, move: 0 });
+                socket.emit('iDontWannaPlayAnymore', userInfo.id);
         }
+        setGameStarted(false);
     }
 
     function giveUpPong() {
@@ -324,11 +328,11 @@ export const Pong = () => {
                             <Button variant="outlined" onClick={handleClick}>
                                 {winner === '' ? (
                                     <div>
-                                        Search an opponent
+                                        Search for an opponent
                                     </div>
                                 ) : (
                                     <div>
-                                        Restart Game
+                                        Play again
                                     </div>
                                 )}
                             </Button>
@@ -352,7 +356,7 @@ export const Pong = () => {
                                 {searchOpponent}
                             </Grid>
                             <Button onClick={stopSearchingOpponent}>
-                                Stop searching opponent
+                                Stop searching for a Game
                             </Button>
                         </Grid>
                     ) : (
