@@ -4,9 +4,42 @@ import gif from "../styles/assets/gif.svg";
 import plus from "../styles/assets/plus.svg";
 
 export function SendMessageBar(props: any) {
-  if (props.messageBarValues === undefined || props.currentRoomId === -1) {
+	if (props.messageBarValues === undefined || props.currentRoomId === -1) {
     return <div></div>;
   }
+	const onChange_setMessageBarValue = (value: string) => {
+		if (props.messageBarValues !== undefined) {
+			let newVarValues = new Map(props.messageBarValues);
+			newVarValues.set(props.currRoomId, value);
+			props.setMessageBarValue(newVarValues);
+		}
+	};
+	const onSubmit_messageBar = (e: any) => {
+		e.preventDefault();
+		if (props.messageBarValues === undefined) {
+			return;
+		}
+
+		var tmp_content = props.messageBarValues.get(props.currRoomId);
+		if (tmp_content !== undefined && tmp_content.toUpperCase() === "MIAO")
+			tmp_content = "😻";
+		let messageToCreate = {
+			roomId: props.currRoomId,
+			content: tmp_content
+		};
+
+		props.appSocket.emit(
+			"F_createMessage",
+			messageToCreate,
+			(isOk: boolean) => {
+				if (isOk) {
+					onChange_setMessageBarValue("");
+				}
+			}
+		);
+	};
+
+
 
   const currentRoom = props.roomsList.filter(
     (obj: any) => obj.id === props.currentRoomId
@@ -31,7 +64,7 @@ export function SendMessageBar(props: any) {
   return (
     <div id="send-message" key={props.currentRoomId}>
       <img src={plus} alt="" />
-      <form action="#" onSubmit={props.onSubmit}>
+      <form action="#" onSubmit={onSubmit_messageBar}>
         <input
           type="text"
           disabled={isLocked}
@@ -39,7 +72,7 @@ export function SendMessageBar(props: any) {
           placeholder={placeholder_val}
           required
           onChange={(e) => {
-            props.onChange(e.target.value);
+            onChange_setMessageBarValue(e.target.value);
           }}
         />
       </form>

@@ -12,671 +12,642 @@ import { RoomsPanel } from "./RoomsPanel";
 
 
 interface I_Room {
-  id: number;
-  name: string;
-  image: string;
-  roomType: string;
-  participants: any[];
+	id: number;
+	name: string;
+	image: string;
+	roomType: string;
+	participants: any[];
 }
 
 interface I_Messages {
-  roomId: number;
-  messages: I_Message[];
+	roomId: number;
+	messages: I_Message[];
 }
 
 interface I_Message {
-  userId: number;
-  roomId: number;
-  content: string;
-  createdDate: string;
-  id: number;
+	userId: number;
+	roomId: number;
+	content: string;
+	createdDate: string;
+	id: number;
 }
 
 interface I_LeaveRoom {
-  userId: number;
-  roomId: number;
+	userId: number;
+	roomId: number;
 }
 
 
 export function Chat(props: any) {
-  /* ------------------------------- */
-  /*        Get existing rooms       */
-  /* ------------------------------- */
-  const [currRoomId, setCurrRoomId] = useState(-1);
-  const [rooms, setRooms] = useState<any[]>([]);
-  const getRooms_listener = (receivedRooms: any[]) => {
-    if (receivedRooms.length === 0) {
-      return;
-    }
-    if (currRoomId === -1) {
-      setCurrRoomId(receivedRooms[0].id);
-    }
-    setRooms(receivedRooms);
+	/* ------------------------------- */
+	/*        Get existing rooms       */
+	/* ------------------------------- */
+	const [currRoomId, setCurrRoomId] = useState(-1);
+	const [rooms, setRooms] = useState<any[]>([]);
+	const getRooms_listener = (receivedRooms: any[]) => {
+		if (receivedRooms.length === 0) {
+			return;
+		}
+		if (currRoomId === -1) {
+			setCurrRoomId(receivedRooms[0].id);
+		}
+		setRooms(receivedRooms);
 
-    if (messageBarValues && currRoomId !== undefined) {
-      const currMessageBarValue = messageBarValues.get(currRoomId);
-      if (
-        currMessageBarValue !== undefined &&
-        currMessageBarValue.length === 0
-      ) {
-        let sendMessageBarValues = new Map<number, string>();
-        receivedRooms.map((room: I_Room, i: any) => {
-          sendMessageBarValues.set(room.id, "");
-        });
-        setMessageBarValue(sendMessageBarValues);
-      }
-    } else {
-      let sendMessageBarValues = new Map<number, string>();
-      receivedRooms.map((room: I_Room, i: any) => {
-        sendMessageBarValues.set(room.id, "");
-      });
-      setMessageBarValue(sendMessageBarValues);
-    }
-    props.appSocket.emit("F_getMessages", receivedRooms[0].id);
-  };
-  const onClick_Room = (roomId: number) => {
-    setCurrRoomId(roomId);
-  };
-  useEffect(() => {
-    props.appSocket.emit("F_getMessages", currRoomId);
-  }, [currRoomId]);
+		if (messageBarValues && currRoomId !== undefined) {
+			const currMessageBarValue = messageBarValues.get(currRoomId);
+			if (
+				currMessageBarValue !== undefined &&
+					currMessageBarValue.length === 0
+			) {
+				let sendMessageBarValues = new Map<number, string>();
+				receivedRooms.map((room: I_Room, i: any) => {
+					sendMessageBarValues.set(room.id, "");
+				});
+				setMessageBarValue(sendMessageBarValues);
+			}
+		} else {
+			let sendMessageBarValues = new Map<number, string>();
+			receivedRooms.map((room: I_Room, i: any) => {
+				sendMessageBarValues.set(room.id, "");
+			});
+			setMessageBarValue(sendMessageBarValues);
+		}
+		props.appSocket.emit("F_getMessages", receivedRooms[0].id);
+	};
+	const onClick_Room = (roomId: number) => {
+		setCurrRoomId(roomId);
+	};
+	useEffect(() => {
+		props.appSocket.emit("F_getMessages", currRoomId);
+	}, [currRoomId]);
 
-  /* ------------------------------- */
-  /*      Participants actions       */
-  /* ------------------------------- */
-  const onClick_kick = (userId: number, roomId: number) => {
-    props.appSocket.emit(
-      "F_kickUser",
-      {
-        userId: userId,
-        roomId: roomId,
-      },
-      (isKicked: boolean) => {
-        if (isKicked === true) {
-          let newRooms = rooms.slice();
-          var index = newRooms.findIndex((obj: any) => obj.id === roomId);
-          var unkicked_participants = newRooms[index].participants.filter(
-            (obj: any) => obj.userId !== userId
-          );
-          newRooms[index].participants = unkicked_participants;
-          setRooms(newRooms);
-        } else {
-          alert("Something went wrong");
-        }
-      }
-    );
-  };
-  const onClick_ban = (userId: number, roomId: number) => {
-    console.log(`Banning ${userId} in ${roomId}`);
-    props.appSocket.emit(
-      "F_banUser",
-      {
-        userId: userId,
-        roomId: roomId,
-      },
-      (isBanned: boolean) => {
-        if (isBanned === true) {
-          let newRooms = rooms.slice();
-          var index = newRooms.findIndex((obj: any) => obj.id === roomId);
-          var unbaned_participants = newRooms[index].participants.filter(
-            (obj: any) => obj.userId !== userId
-          );
-          newRooms[index].participants = unbaned_participants;
-          setRooms(newRooms);
-        } else {
-          alert("Something went wrong");
-        }
-      }
-    );
-  };
-  const onClick_mute = (userId: number, roomId: number) => {
-    props.appSocket.emit(
-      "F_muteUser",
-      {
-        userId: userId,
-        roomId: roomId,
-      },
-      (isMuted: boolean) => {
-        if (isMuted === true) {
-          let newRooms = rooms.slice();
-          var index = newRooms.findIndex((obj: any) => obj.id === roomId);
-          var user_index = newRooms[index].participants.findIndex(
-            (obj: any) => obj.userId === userId
-          );
-          newRooms[index].participants[user_index]["mute"] = true;
-          setRooms(newRooms);
-        } else {
-          alert("Something went wrong");
-        }
-      }
-    );
+	/* ------------------------------- */
+	/*      Participants actions       */
+	/* ------------------------------- */
+	const onClick_kick = (userId: number, roomId: number) => {
+		props.appSocket.emit(
+			"F_kickUser",
+			{
+				userId: userId,
+				roomId: roomId,
+			},
+			(isKicked: boolean) => {
+				if (isKicked === true) {
+					let newRooms = rooms.slice();
+					var index = newRooms.findIndex((obj: any) => obj.id === roomId);
+					var unkicked_participants = newRooms[index].participants.filter(
+						(obj: any) => obj.userId !== userId
+					);
+					newRooms[index].participants = unkicked_participants;
+					setRooms(newRooms);
+				} else {
+					alert("Something went wrong");
+				}
+			}
+		);
+	};
+	const onClick_ban = (userId: number, roomId: number) => {
+		console.log(`Banning ${userId} in ${roomId}`);
+		props.appSocket.emit(
+			"F_banUser",
+			{
+				userId: userId,
+				roomId: roomId,
+			},
+			(isBanned: boolean) => {
+				if (isBanned === true) {
+					let newRooms = rooms.slice();
+					var index = newRooms.findIndex((obj: any) => obj.id === roomId);
+					var unbaned_participants = newRooms[index].participants.filter(
+						(obj: any) => obj.userId !== userId
+					);
+					newRooms[index].participants = unbaned_participants;
+					setRooms(newRooms);
+				} else {
+					alert("Something went wrong");
+				}
+			}
+		);
+	};
+	const onClick_mute = (userId: number, roomId: number) => {
+		props.appSocket.emit(
+			"F_muteUser",
+			{
+				userId: userId,
+				roomId: roomId,
+			},
+			(isMuted: boolean) => {
+				if (isMuted === true) {
+					let newRooms = rooms.slice();
+					var index = newRooms.findIndex((obj: any) => obj.id === roomId);
+					var user_index = newRooms[index].participants.findIndex(
+						(obj: any) => obj.userId === userId
+					);
+					newRooms[index].participants[user_index]["mute"] = true;
+					setRooms(newRooms);
+				} else {
+					alert("Something went wrong");
+				}
+			}
+		);
 
-    console.log(`Muting ${userId} in ${roomId}`);
-  };
-  const onClick_block = (userId: number, roomId: number) => {
-    props.appSocket.emit("F_blockUser", userId, (isBlocked: boolean) => {
-      if (isBlocked === true) {
-        let newRooms = rooms.slice();
-        var index = newRooms.findIndex((obj: any) => obj.id === roomId);
-        var user_index = newRooms[index].participants.findIndex(
-          (obj: any) => obj.userId === userId
-        );
-        var unbaned_participants = newRooms[index].participants.filter(
-          (obj: any) => obj.userId !== userId
-        );
-        newRooms[index].participants = unbaned_participants;
-        setRooms(newRooms);
+		console.log(`Muting ${userId} in ${roomId}`);
+	};
+	const onClick_block = (userId: number, roomId: number) => {
+		props.appSocket.emit("F_blockUser", userId, (isBlocked: boolean) => {
+			if (isBlocked === true) {
+				let newRooms = rooms.slice();
+				var index = newRooms.findIndex((obj: any) => obj.id === roomId);
+				var user_index = newRooms[index].participants.findIndex(
+					(obj: any) => obj.userId === userId
+				);
+				var unbaned_participants = newRooms[index].participants.filter(
+					(obj: any) => obj.userId !== userId
+				);
+				newRooms[index].participants = unbaned_participants;
+				setRooms(newRooms);
 
-        const tmpCurrRoom = newRooms.filter((obj) => obj.id === currRoomId);
-        if (tmpCurrRoom.length !== 1) {
-          setCurrRoomId(-1);
-        }
+				const tmpCurrRoom = newRooms.filter((obj) => obj.id === currRoomId);
+				if (tmpCurrRoom.length !== 1) {
+					setCurrRoomId(-1);
+				}
 
-        if (messages !== undefined) {
-          let room_message = messages.get(roomId);
-          if (room_message !== undefined) {
-            let res = room_message.filter((obj: any) => obj.userId !== userId);
-            const newMessages = new Map(messages);
-            newMessages.set(roomId, res);
-            setMessages(newMessages);
-          }
-        }
-        props.appSocket.emit("F_getRooms", "");
-      } else {
-        alert("Something went wrong");
-      }
-    });
+				if (messages !== undefined) {
+					let room_message = messages.get(roomId);
+					if (room_message !== undefined) {
+						let res = room_message.filter((obj: any) => obj.userId !== userId);
+						const newMessages = new Map(messages);
+						newMessages.set(roomId, res);
+						setMessages(newMessages);
+					}
+				}
+				props.appSocket.emit("F_getRooms", "");
+			} else {
+				alert("Something went wrong");
+			}
+		});
 
-    console.log(rooms, `Blocking ${userId} in ${roomId}`);
-  };
-  const onClick_directMessage = (userId: number, username: string) => {
-    // let possibleRooms = [];
-    let roomFounded = false;
-    rooms.forEach((room) => {
-      if (roomFounded === true) {
-        return;
-      }
-      if (room.participants.length === 2) {
-        const userMatch = room.participants.filter(
-          (obj: any) => obj.userId === userId
-        );
-        if (userMatch.length === 1) {
-          setCurrRoomId(room.id);
-          roomFounded = true;
-        }
-      }
-    });
-    if (roomFounded === false) {
-      const newPmRoom = {
-        name: `PM ${username}`,
-        image: "",
-        typeRoom: "private",
-        password: "",
-        users: [{ id: userId }],
-      };
-      props.appSocket.emit("F_createRoom", newPmRoom, (isCreated: boolean) => {
-        if (isCreated !== true) {
-          alert("Something went wrong");
-        }
-      });
-    }
-  };
-  const onClick_setAsAdmin = (
-    userId: number,
-    roomId: number,
-    toAdd: boolean
-  ) => {
-    props.appSocket.emit(
-      "F_setAsAdmin",
-      {
-        userId: userId,
-        roomId: roomId,
-        toAdd: toAdd,
-      },
-      (isSet: boolean) => {
-        if (isSet !== true) {
-          alert("Something went wrong");
-        }
-      }
-    );
-  };
-  const setAsAdmin_listener = () => {
-    props.appSocket.emit("F_getRooms", "");
-  };
+		console.log(rooms, `Blocking ${userId} in ${roomId}`);
+	};
+	const onClick_directMessage = (userId: number, username: string) => {
+		// let possibleRooms = [];
+		let roomFounded = false;
+		rooms.forEach((room) => {
+			if (roomFounded === true) {
+				return;
+			}
+			if (room.participants.length === 2) {
+				const userMatch = room.participants.filter(
+					(obj: any) => obj.userId === userId
+				);
+				if (userMatch.length === 1) {
+					setCurrRoomId(room.id);
+					roomFounded = true;
+				}
+			}
+		});
+		if (roomFounded === false) {
+			const newPmRoom = {
+				name: `PM ${username}`,
+				image: "",
+				typeRoom: "private",
+				password: "",
+				users: [{ id: userId }],
+			};
+			props.appSocket.emit("F_createRoom", newPmRoom, (isCreated: boolean) => {
+				if (isCreated !== true) {
+					alert("Something went wrong");
+				}
+			});
+		}
+	};
+	const onClick_setAsAdmin = (
+		userId: number,
+		roomId: number,
+		toAdd: boolean
+	) => {
+		props.appSocket.emit(
+			"F_setAsAdmin",
+			{
+				userId: userId,
+				roomId: roomId,
+				toAdd: toAdd,
+			},
+			(isSet: boolean) => {
+				if (isSet !== true) {
+					alert("Something went wrong");
+				}
+			}
+		);
+	};
 
-  /* ------------------------------- */
-  /*        Create new room          */
-  /* ------------------------------- */
-  const [newRoomName, setNewRoomName] = useState("");
-  const [typeRoom, setTypeRoom] = useState("public");
-  const [passWord, setPassword] = useState("");
-  const [roomImage, setRoomImage] = useState("");
-  const [availableUsers, setAvailableUsers] = useState<any[]>([]);
-  const onClick_getAvailableUsers = () => {
-    props.appSocket.emit("F_getAvailableUsers", true);
-  };
-  const getAvailableUsers_listener = (userList: any) => {
-    setAvailableUsers(userList);
-  };
-  const [selectedNewParticipants, setSelectedNewParticipants] = useState<any[]>(
-    []
-  );
-  const onChange_selectParticipant = (e: any, user: any) => {
-    if (e.currentTarget.checked) {
-      let newParticipants = selectedNewParticipants.slice();
-      newParticipants.push(user);
-      setSelectedNewParticipants(newParticipants);
-    } else {
-      let newParticipants = selectedNewParticipants.filter(
-        (obj) => obj.userId !== user.userId
-      );
-      setSelectedNewParticipants(newParticipants);
-    }
-  };
-  const onSubmit_createRoom = () => {
-    let tmpRoomName = newRoomName;
-    if (tmpRoomName.length === 0) {
-      tmpRoomName = "undefined";
-    }
+	const onClick_say_hi=()=>{console.log('hello, petit chat')};
 
-    const RoomToCreate = {
-      name: tmpRoomName,
-      image: roomImage,
-      typeRoom: typeRoom,
-      password: passWord,
-      users: selectedNewParticipants,
-    };
-    console.log(RoomToCreate);
-    props.appSocket.emit("F_createRoom", RoomToCreate, (isCreated: boolean) => {
-      if (isCreated !== true) {
-        alert("Something went wrong");
-      } else {
-        setNewRoomName("");
-        setRoomImage("");
-        setTypeRoom("public");
-        setPassword("");
-        setSelectedNewParticipants([]);
-      }
-    });
-  };
-  const createRoom_listener = (newRoom: I_Room) => {
-    let newRooms = rooms.slice();
+	const setAsAdmin_listener = () => {
+		props.appSocket.emit("F_getRooms", "");
+	};
 
-    let tmpNewParticipants: any = [];
-    if (newRoom.participants.length > 0) {
-      newRoom.participants.forEach((tmp_user) => {
-        tmpNewParticipants.push({
-          userId: tmp_user.id,
-          username: tmp_user.username,
-          avatar: tmp_user.avatar,
-        });
-      });
-      newRoom.participants = tmpNewParticipants;
-    }
+	/* ------------------------------- */
+	/*        Create new room          */
+	/* ------------------------------- */
+	const [newRoomName, setNewRoomName] = useState("");
+	const [typeRoom, setTypeRoom] = useState("public");
+	const [passWord, setPassword] = useState("");
+	const [roomImage, setRoomImage] = useState("");
+	const [availableUsers, setAvailableUsers] = useState<any[]>([]);
+	const onClick_getAvailableUsers = () => {
+		props.appSocket.emit("F_getAvailableUsers", true);
+	};
+	const getAvailableUsers_listener = (userList: any) => {
+		setAvailableUsers(userList);
+	};
+	const [selectedNewParticipants, setSelectedNewParticipants] = useState<any[]>(
+		[]
+	);
+	const onChange_selectParticipant = (e: any, user: any) => {
+		if (e.currentTarget.checked) {
+			let newParticipants = selectedNewParticipants.slice();
+			newParticipants.push(user);
+			setSelectedNewParticipants(newParticipants);
+		} else {
+			let newParticipants = selectedNewParticipants.filter(
+				(obj) => obj.userId !== user.userId
+			);
+			setSelectedNewParticipants(newParticipants);
+		}
+	};
+	const onSubmit_createRoom = () => {
+		let tmpRoomName = newRoomName;
+		if (tmpRoomName.length === 0) {
+			tmpRoomName = "undefined";
+		}
 
-    newRooms.unshift(newRoom);
-    setRooms(newRooms);
-    setCurrRoomId(newRoom.id);
+		const RoomToCreate = {
+			name: tmpRoomName,
+			image: roomImage,
+			typeRoom: typeRoom,
+			password: passWord,
+			users: selectedNewParticipants,
+		};
+		console.log(RoomToCreate);
+		props.appSocket.emit("F_createRoom", RoomToCreate, (isCreated: boolean) => {
+			if (isCreated !== true) {
+				alert("Something went wrong");
+			} else {
+				setNewRoomName("");
+				setRoomImage("");
+				setTypeRoom("public");
+				setPassword("");
+				setSelectedNewParticipants([]);
+			}
+		});
+	};
+	const createRoom_listener = (newRoom: I_Room) => {
+		let newRooms = rooms.slice();
 
-    let newMessageBarValues = new Map(messageBarValues);
-    newMessageBarValues.set(newRoom.id, "");
-    setMessageBarValue(newMessageBarValues);
-  };
+		let tmpNewParticipants: any = [];
+		if (newRoom.participants.length > 0) {
+			newRoom.participants.forEach((tmp_user) => {
+				tmpNewParticipants.push({
+					userId: tmp_user.id,
+					username: tmp_user.username,
+					avatar: tmp_user.avatar,
+				});
+			});
+			newRoom.participants = tmpNewParticipants;
+		}
 
-  /* ------------------------- */
-  /*        Join room          */
-  /* ------------------------- */
-  const [roomsDispoToJoin, setRoomsDispoToJoin] = useState<any[]>([]);
-  const onClick_getRoomsDispoToJoin = () => {
-    props.appSocket.emit("F_getDispoRooms", true);
-  };
-  const getRoomsDispoToJoin_listener = (dispoRooms: I_Room[]) => {
-    setRoomsDispoToJoin(dispoRooms);
-  };
-  const onSubmit_joinRoom = (
-    roomId: number,
-    password: string,
-    isProtected: boolean
-  ) => {
-    console.log(roomId, password, isProtected);
-    props.appSocket.emit(
-      "F_joinRoom",
-      {
-        roomId: roomId,
-        password: password,
-        isProtected: isProtected,
-      },
-      (isJoined: boolean) => {
-        if (isJoined !== true) {
-          alert("Invalid Password");
-        }
-      }
-    );
-  };
-  const joinRoom_listener = (newRoom: I_Room) => {
-    let newRooms = rooms.slice();
-    newRooms.unshift(newRoom);
-    setRooms(newRooms);
-    setCurrRoomId(newRoom.id);
+		newRooms.unshift(newRoom);
+		setRooms(newRooms);
+		setCurrRoomId(newRoom.id);
 
-    let newMessageBarValues = new Map(messageBarValues);
-    newMessageBarValues.set(newRoom.id, "");
-    setMessageBarValue(newMessageBarValues);
-  };
+		let newMessageBarValues = new Map(messageBarValues);
+		newMessageBarValues.set(newRoom.id, "");
+		setMessageBarValue(newMessageBarValues);
+	};
 
-  const onClick_leaveRoom = (roomId: number) => {
-    props.appSocket.emit("F_leaveRoom", roomId, (isLeft: boolean) => {
-      if (isLeft !== true) {
-        alert("Something went wrong");
-      }
-    });
-  };
-  const leaveRoom_listener = (leaveRoom: I_LeaveRoom) => {
-    const tmp_newRooms = rooms.filter((obj) => obj.id !== leaveRoom.roomId);
-    if (tmp_newRooms.length > 0) {
-      setCurrRoomId(tmp_newRooms[0].id);
-    } else {
-      setCurrRoomId(-1);
-    }
-    setRooms(tmp_newRooms);
-  };
+	/* ------------------------- */
+	/*        Join room          */
+	/* ------------------------- */
+	const [roomsDispoToJoin, setRoomsDispoToJoin] = useState<any[]>([]);
+	const onClick_getRoomsDispoToJoin = () => {
+		props.appSocket.emit("F_getDispoRooms", true);
+	};
+	const getRoomsDispoToJoin_listener = (dispoRooms: I_Room[]) => {
+		setRoomsDispoToJoin(dispoRooms);
+	};
+	const onSubmit_joinRoom = (
+		roomId: number,
+		password: string,
+		isProtected: boolean
+	) => {
+		console.log(roomId, password, isProtected);
+		props.appSocket.emit(
+			"F_joinRoom",
+			{
+				roomId: roomId,
+				password: password,
+				isProtected: isProtected,
+			},
+			(isJoined: boolean) => {
+				if (isJoined !== true) {
+					alert("Invalid Password");
+				}
+			}
+		);
+	};
+	const joinRoom_listener = (newRoom: I_Room) => {
+		let newRooms = rooms.slice();
+		newRooms.unshift(newRoom);
+		setRooms(newRooms);
+		setCurrRoomId(newRoom.id);
 
-  /* ------------------------------- */
-  /*          Update Room            */
-  /* ------------------------------- */
-  const [updateRoomName, setUpdateRoomName] = useState("");
-  const [updateTypeRoom, setUpdateTypeRoom] = useState("public");
-  const [updatePassWord, setUpdatePassword] = useState("");
-  const onClick_updateRoom = (currRoom: I_Room) => {
-    props.appSocket.emit("F_getRoomAvailableUsers", currRoom.id);
-    setUpdateRoomName(currRoom.name);
-    setUpdateTypeRoom(currRoom.roomType);
-  };
+		let newMessageBarValues = new Map(messageBarValues);
+		newMessageBarValues.set(newRoom.id, "");
+		setMessageBarValue(newMessageBarValues);
+	};
 
-  const [roomAvailableUsers, setRoomAvailableUsers] = useState<any[]>([]);
-  const [selectedNewRoomParticipants, setSelectedNewRoomParticipants] =
-    useState<any[]>([]);
-  const onChange_selectRoomParticipant = (e: any, user: any) => {
-    if (e.currentTarget.checked) {
-      let newParticipants = selectedNewRoomParticipants.slice();
-      newParticipants.push(user);
-      setSelectedNewRoomParticipants(newParticipants);
-    } else {
-      let newParticipants = selectedNewRoomParticipants.filter(
-        (obj) => obj.userId !== user.userId
-      );
-      setSelectedNewRoomParticipants(newParticipants);
-    }
-  };
-  const getRoomAvailableUsers_listener = (userList: any) => {
-    setRoomAvailableUsers(userList);
-  };
-  const onSubmit_updateRoom = () => {
-    const tmpRoomInfos = {
-      name: updateRoomName,
-      roomId: currRoomId,
-      roomType: updateTypeRoom !== undefined ? updateTypeRoom : "public",
-      password: updatePassWord,
-      newParticipants: selectedNewRoomParticipants,
-    };
-    props.appSocket.emit("F_updateRoom", tmpRoomInfos, (isUpdated: boolean) => {
-      if (isUpdated !== true) {
-        alert("Something went wrong");
-      } else {
-        setUpdateRoomName("");
-        setUpdateTypeRoom("public");
-        setUpdatePassword("");
-        setSelectedNewRoomParticipants([]);
-      }
-    });
-  };
-  const updateRoom_listener = (updatedRoom: I_Room) => {
-    let newRooms = rooms.filter((obj: any) => obj.id !== updatedRoom.id);
-    let oldRoom = rooms.filter((obj: any) => obj.id === updatedRoom.id)[0];
+	const onClick_leaveRoom = (roomId: number) => {
+		props.appSocket.emit("F_leaveRoom", roomId, (isLeft: boolean) => {
+			if (isLeft !== true) {
+				alert("Something went wrong");
+			}
+		});
+	};
+	const leaveRoom_listener = (leaveRoom: I_LeaveRoom) => {
+		const tmp_newRooms = rooms.filter((obj) => obj.id !== leaveRoom.roomId);
+		if (tmp_newRooms.length > 0) {
+			setCurrRoomId(tmp_newRooms[0].id);
+		} else {
+			setCurrRoomId(-1);
+		}
+		setRooms(tmp_newRooms);
+	};
 
-    let tmpNewParticipants: any = [];
-    if (updatedRoom.participants.length > 0) {
-      updatedRoom.participants.forEach((tmp_user) => {
-        tmpNewParticipants.push({
-          userId: tmp_user.id,
-          username: tmp_user.username,
-          avatar: tmp_user.avatar,
-        });
-      });
-    }
-    updatedRoom.participants = [...oldRoom.participants, ...tmpNewParticipants];
-    newRooms.unshift(updatedRoom);
-    setRooms(newRooms);
-  };
+	/* ------------------------------- */
+	/*          Update Room            */
+	/* ------------------------------- */
+	const [updateRoomName, setUpdateRoomName] = useState("");
+	const [updateTypeRoom, setUpdateTypeRoom] = useState("public");
+	const [updatePassWord, setUpdatePassword] = useState("");
+	const onClick_updateRoom = (currRoom: I_Room) => {
+		props.appSocket.emit("F_getRoomAvailableUsers", currRoom.id);
+		setUpdateRoomName(currRoom.name);
+		setUpdateTypeRoom(currRoom.roomType);
+	};
 
-  /* ------------------------------- */
-  /*         Messages                */
-  /* ------------------------------- */
-  const [messages, setMessages] = useState<Map<number, any[]>>();
+	const [roomAvailableUsers, setRoomAvailableUsers] = useState<any[]>([]);
+	const [selectedNewRoomParticipants, setSelectedNewRoomParticipants] =
+		  useState<any[]>([]);
+	const onChange_selectRoomParticipant = (e: any, user: any) => {
+		if (e.currentTarget.checked) {
+			let newParticipants = selectedNewRoomParticipants.slice();
+			newParticipants.push(user);
+			setSelectedNewRoomParticipants(newParticipants);
+		} else {
+			let newParticipants = selectedNewRoomParticipants.filter(
+				(obj) => obj.userId !== user.userId
+			);
+			setSelectedNewRoomParticipants(newParticipants);
+		}
+	};
+	const getRoomAvailableUsers_listener = (userList: any) => {
+		setRoomAvailableUsers(userList);
+	};
+	const onSubmit_updateRoom = () => {
+		const tmpRoomInfos = {
+			name: updateRoomName,
+			roomId: currRoomId,
+			roomType: updateTypeRoom !== undefined ? updateTypeRoom : "public",
+			password: updatePassWord,
+			newParticipants: selectedNewRoomParticipants,
+		};
+		props.appSocket.emit("F_updateRoom", tmpRoomInfos, (isUpdated: boolean) => {
+			if (isUpdated !== true) {
+				alert("Something went wrong");
+			} else {
+				setUpdateRoomName("");
+				setUpdateTypeRoom("public");
+				setUpdatePassword("");
+				setSelectedNewRoomParticipants([]);
+			}
+		});
+	};
+	const updateRoom_listener = (updatedRoom: I_Room) => {
+		let newRooms = rooms.filter((obj: any) => obj.id !== updatedRoom.id);
+		let oldRoom = rooms.filter((obj: any) => obj.id === updatedRoom.id)[0];
 
-  /* ------------------------------- */
-  /*       Send Messages Bar         */
-  /* ------------------------------- */
-  const [messageBarValues, setMessageBarValue] =
-    useState<Map<number, string>>();
-  const onChange_setMessageBarValue = (value: string) => {
-    if (messageBarValues !== undefined) {
-      let newVarValues = new Map(messageBarValues);
-      newVarValues.set(currRoomId, value);
-      setMessageBarValue(newVarValues);
-    }
-  };
-  const onSubmit_messageBar = (e: any) => {
-    e.preventDefault();
-    if (messageBarValues === undefined) {
-      return;
-	  }
+		let tmpNewParticipants: any = [];
+		if (updatedRoom.participants.length > 0) {
+			updatedRoom.participants.forEach((tmp_user) => {
+				tmpNewParticipants.push({
+					userId: tmp_user.id,
+					username: tmp_user.username,
+					avatar: tmp_user.avatar,
+				});
+			});
+		}
+		updatedRoom.participants = [...oldRoom.participants, ...tmpNewParticipants];
+		newRooms.unshift(updatedRoom);
+		setRooms(newRooms);
+	};
 
-	var tmp_content = messageBarValues.get(currRoomId);
-	if (tmp_content !== undefined && tmp_content.toUpperCase() === "MIAO")
-	   tmp_content = "😻";
-    let messageToCreate = {
-      roomId: currRoomId,
-      content: tmp_content
-    };
+	/* ------------------------------- */
+	/*         Messages                */
+	/* ------------------------------- */
+	const [messages, setMessages] = useState<Map<number, any[]>>();
 
-    props.appSocket.emit(
-      "F_createMessage",
-      messageToCreate,
-      (isOk: boolean) => {
-        if (isOk) {
-          onChange_setMessageBarValue("");
-        }
-      }
-    );
-  };
+	/* ------------------------------- */
+	/*       Send Messages Bar         */
+	/* ------------------------------- */
+	const [messageBarValues, setMessageBarValue] =
+		  useState<Map<number, string>>();
 
-   /* ------------------------------- */
-  /*       SOCKET.IO listeners       */
-  /* ------------------------------- */
-  useEffect(() => {
-    const getMessages_listener = (newMessages: I_Messages) => {
-      const messageRoomId = newMessages.roomId;
-      let newVarValues = new Map(messages);
-      newVarValues.set(messageRoomId, newMessages.messages);
-      if (newVarValues !== messages) {
-        setMessages(newVarValues);
-      }
-    };
-    const createMessage_listener = (newMessageInfos: I_Message) => {
-      if (messages !== undefined) {
-        let intendedRoomMessages = messages.get(newMessageInfos.roomId);
-        const newMessage: any = {
-          userId: newMessageInfos.userId,
-          content: newMessageInfos.content,
-          createdDate: newMessageInfos.createdDate,
-        };
-        if (intendedRoomMessages !== undefined) {
-          intendedRoomMessages.push(newMessage);
-        } else {
-          intendedRoomMessages = [newMessage];
-        }
-        let newVarValues = new Map(messages);
-        newVarValues.set(newMessageInfos.roomId, intendedRoomMessages);
-        setMessages(newVarValues);
-      }
-    };
+	/* ------------------------------- */
+	/*       SOCKET.IO listeners       */
+	/* ------------------------------- */
+	useEffect(() => {
+		const getMessages_listener = (newMessages: I_Messages) => {
+			const messageRoomId = newMessages.roomId;
+			let newVarValues = new Map(messages);
+			newVarValues.set(messageRoomId, newMessages.messages);
+			if (newVarValues !== messages) {
+				setMessages(newVarValues);
+			}
+		};
+		const createMessage_listener = (newMessageInfos: I_Message) => {
+			if (messages !== undefined) {
+				let intendedRoomMessages = messages.get(newMessageInfos.roomId);
+				const newMessage: any = {
+					userId: newMessageInfos.userId,
+					content: newMessageInfos.content,
+					createdDate: newMessageInfos.createdDate,
+				};
+				if (intendedRoomMessages !== undefined) {
+					intendedRoomMessages.push(newMessage);
+				} else {
+					intendedRoomMessages = [newMessage];
+				}
+				let newVarValues = new Map(messages);
+				newVarValues.set(newMessageInfos.roomId, intendedRoomMessages);
+				setMessages(newVarValues);
+			}
+		};
 
-    if (
-      props.appSocket.__callbacks === undefined ||
-      props.appSocket._callbacks["getRooms_listener"] === undefined
-    ) {
-      props.appSocket.on("B_getRooms", getRooms_listener);
-      if (rooms.length === 0) {
-        props.appSocket.emit("F_getRooms", "");
-      }
-    }
-    if (props.appSocket._callbacks["getMessages_listener"] === undefined) {
-      props.appSocket.on("B_getMessages", getMessages_listener);
-    }
-    if (props.appSocket._callbacks["createMessage_listener"] === undefined) {
-      props.appSocket.on("B_createMessage", createMessage_listener);
-    }
-    if (props.appSocket._callbacks["createRoom_listener"] === undefined) {
-      props.appSocket.on("B_createRoom", createRoom_listener);
-    }
-    if (props.appSocket._callbacks["updateRoom_listener"] === undefined) {
-      props.appSocket.on("B_updateRoom", updateRoom_listener);
-    }
-    if (
-      props.appSocket._callbacks["getAvailableUsers_listener"] === undefined
-    ) {
-      props.appSocket.on("B_getAvailableUsers", getAvailableUsers_listener);
-    }
-    if (
-      props.appSocket._callbacks["getRoomAvailableUsers_listener"] === undefined
-    ) {
-      props.appSocket.on(
-        "B_getRoomAvailableUsers",
-        getRoomAvailableUsers_listener
-      );
-    }
-    if (
-      props.appSocket._callbacks["getRoomsDispoToJoin_listener"] === undefined
-    ) {
-      props.appSocket.on("B_getDispoRooms", getRoomsDispoToJoin_listener);
-    }
-    if (props.appSocket._callbacks["joinRoom_listener"] === undefined) {
-      props.appSocket.on("B_joinRoom", joinRoom_listener);
-    }
-    if (props.appSocket._callbacks["leaveRoom_listener"] === undefined) {
-      props.appSocket.on("B_leaveRoom", leaveRoom_listener);
-    }
-    if (props.appSocket._callbacks["setAsAdmin_listener"] === undefined) {
-      props.appSocket.on("B_setAsAdmin", setAsAdmin_listener);
-    }
-    return () => {
-      props.appSocket.removeAllListeners("B_getRooms");
-      props.appSocket.removeAllListeners("B_getMessages");
-      props.appSocket.removeAllListeners("B_createMessage");
-      props.appSocket.removeAllListeners("B_createRoom");
-      props.appSocket.removeAllListeners("B_updateRoom");
-      props.appSocket.removeAllListeners("B_getAvailableUsers");
-      props.appSocket.removeAllListeners("B_getRoomAvailableUsers");
-      props.appSocket.removeAllListeners("B_getDispoRooms");
-      props.appSocket.removeAllListeners("B_joinRoom");
-      props.appSocket.removeAllListeners("B_leaveRoom");
-      props.appSocket.removeAllListeners("B_setAsAdmin");
-    };
-  });
+		if (
+			props.appSocket.__callbacks === undefined ||
+				props.appSocket._callbacks["getRooms_listener"] === undefined
+		) {
+			props.appSocket.on("B_getRooms", getRooms_listener);
+			if (rooms.length === 0) {
+				props.appSocket.emit("F_getRooms", "");
+			}
+		}
+		if (props.appSocket._callbacks["getMessages_listener"] === undefined) {
+			props.appSocket.on("B_getMessages", getMessages_listener);
+		}
+		if (props.appSocket._callbacks["createMessage_listener"] === undefined) {
+			props.appSocket.on("B_createMessage", createMessage_listener);
+		}
+		if (props.appSocket._callbacks["createRoom_listener"] === undefined) {
+			props.appSocket.on("B_createRoom", createRoom_listener);
+		}
+		if (props.appSocket._callbacks["updateRoom_listener"] === undefined) {
+			props.appSocket.on("B_updateRoom", updateRoom_listener);
+		}
+		if (
+			props.appSocket._callbacks["getAvailableUsers_listener"] === undefined
+		) {
+			props.appSocket.on("B_getAvailableUsers", getAvailableUsers_listener);
+		}
+		if (
+			props.appSocket._callbacks["getRoomAvailableUsers_listener"] === undefined
+		) {
+			props.appSocket.on(
+				"B_getRoomAvailableUsers",
+				getRoomAvailableUsers_listener
+			);
+		}
+		if (
+			props.appSocket._callbacks["getRoomsDispoToJoin_listener"] === undefined
+		) {
+			props.appSocket.on("B_getDispoRooms", getRoomsDispoToJoin_listener);
+		}
+		if (props.appSocket._callbacks["joinRoom_listener"] === undefined) {
+			props.appSocket.on("B_joinRoom", joinRoom_listener);
+		}
+		if (props.appSocket._callbacks["leaveRoom_listener"] === undefined) {
+			props.appSocket.on("B_leaveRoom", leaveRoom_listener);
+		}
+		if (props.appSocket._callbacks["setAsAdmin_listener"] === undefined) {
+			props.appSocket.on("B_setAsAdmin", setAsAdmin_listener);
+		}
+		return () => {
+			props.appSocket.removeAllListeners("B_getRooms");
+			props.appSocket.removeAllListeners("B_getMessages");
+			props.appSocket.removeAllListeners("B_createMessage");
+			props.appSocket.removeAllListeners("B_createRoom");
+			props.appSocket.removeAllListeners("B_updateRoom");
+			props.appSocket.removeAllListeners("B_getAvailableUsers");
+			props.appSocket.removeAllListeners("B_getRoomAvailableUsers");
+			props.appSocket.removeAllListeners("B_getDispoRooms");
+			props.appSocket.removeAllListeners("B_joinRoom");
+			props.appSocket.removeAllListeners("B_leaveRoom");
+			props.appSocket.removeAllListeners("B_setAsAdmin");
+		};
+	});
 
-  useEffect(() => {
-    props.appSocket.emit("F_getRooms", "", (isOk: boolean) => {
-      if (isOk === false) {
-        alert("Something went wrong during event 'F_getRooms'");
-      }
-    });
-  }, []);
+	useEffect(() => {
+		props.appSocket.emit("F_getRooms", "", (isOk: boolean) => {
+			if (isOk === false) {
+				alert("Something went wrong during event 'F_getRooms'");
+			}
+		});
+	}, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      props.appSocket.emit("F_getRooms", "");
-    }, 1500);
-    return () => clearInterval(interval);
-  }, []);
+	useEffect(() => {
+		const interval = setInterval(() => {
+			props.appSocket.emit("F_getRooms", "");
+		}, 1500);
+		return () => clearInterval(interval);
+	}, []);
 
-  /* ------------------------------- */
-  /*         Component HTML          */
-  /* ------------------------------- */
-  return (
-    <div>
-      <div className="container">
-        <ChannelPanel />
+	/* ------------------------------- */
+	/*         Component HTML          */
+	/* ------------------------------- */
+	return (
+		<div>
+		  <div className="container">
+			<ChannelPanel />
 
-        <div id="middle-box">
-          <RoomsPanel
-            roomsList={rooms}
-            onClick={onClick_Room}
-            connectedUser={props.connectedUser}
-            roomsDispoToJoin={roomsDispoToJoin}
-            onClick_getRoomsDispoToJoin={onClick_getRoomsDispoToJoin}
-            onSubmit_joinRoom={onSubmit_joinRoom}
-            onSubmit_createRoom={onSubmit_createRoom}
-            newRoomName={newRoomName}
-            setNewRoomName={setNewRoomName}
-            typeRoom={typeRoom}
-            roomImage={roomImage}
-            setRoomImage={setRoomImage}
-            setTypeRoom={setTypeRoom}
-            password={passWord}
-            setPassword={setPassword}
-            availableUsers={availableUsers}
-            onClick_getAvailableUsers={onClick_getAvailableUsers}
-            onChange_selectParticipant={onChange_selectParticipant}
-            updateRoomName={updateRoomName}
-            setUpdateRoomName={setUpdateRoomName}
-            updateTypeRoom={updateTypeRoom}
-            setUpdateTypeRoom={setUpdateTypeRoom}
-            updatePassWord={updatePassWord}
-            setUpdatePassword={setUpdatePassword}
-            onSubmit_updateRoom={onSubmit_updateRoom}
-            onClick_updateRoom={onClick_updateRoom}
-            roomAvailableUsers={roomAvailableUsers}
-            onChange_selectRoomParticipant={onChange_selectRoomParticipant}
-            onClick_leaveRoom={onClick_leaveRoom}
-          />
-          <StatusBar connectedUser={props.connectedUser} />
-        </div>
+			<div id="middle-box">
+			  <RoomsPanel
+				roomsList={rooms}
+				onClick={onClick_Room}
+				connectedUser={props.connectedUser}
+				roomsDispoToJoin={roomsDispoToJoin}
+				onClick_getRoomsDispoToJoin={onClick_getRoomsDispoToJoin}
+				onSubmit_joinRoom={onSubmit_joinRoom}
+				onSubmit_createRoom={onSubmit_createRoom}
+				newRoomName={newRoomName}
+				setNewRoomName={setNewRoomName}
+				typeRoom={typeRoom}
+				roomImage={roomImage}
+				setRoomImage={setRoomImage}
+				setTypeRoom={setTypeRoom}
+				password={passWord}
+				setPassword={setPassword}
+				availableUsers={availableUsers}
+				onClick_getAvailableUsers={onClick_getAvailableUsers}
+				onChange_selectParticipant={onChange_selectParticipant}
+				updateRoomName={updateRoomName}
+				setUpdateRoomName={setUpdateRoomName}
+				updateTypeRoom={updateTypeRoom}
+				setUpdateTypeRoom={setUpdateTypeRoom}
+				updatePassWord={updatePassWord}
+				setUpdatePassword={setUpdatePassword}
+				onSubmit_updateRoom={onSubmit_updateRoom}
+				onClick_updateRoom={onClick_updateRoom}
+				roomAvailableUsers={roomAvailableUsers}
+				onChange_selectRoomParticipant={onChange_selectRoomParticipant}
+				onClick_leaveRoom={onClick_leaveRoom}
+				/>
+			  <StatusBar connectedUser={props.connectedUser} />
+			</div>
 
-        <div id="main">
-          <RoomHeaderBar roomsList={rooms} currRoomId={currRoomId} />
-          <div className="content">
-            <MessagePanel
-              roomsList={rooms}
-              currRoomId={currRoomId}
-              messages={messages}
-            />
-            <SendMessageBar
-              messageBarValues={messageBarValues}
-              currentRoomId={currRoomId}
-              roomsList={rooms}
-              connectedUser={props.connectedUser}
-              onChange={onChange_setMessageBarValue}
-              onSubmit={onSubmit_messageBar}
-            />
-          </div>
-        </div>
-        <div id="main">
-          <div className="content">
-            <ParticipantsPanel
-              roomsList={rooms}
-              currRoomId={currRoomId}
-              connectedUser={props.connectedUser}
-              onClick_setAsAdmin={onClick_setAsAdmin}
-              onClick_kick={onClick_kick}
-              onClick_ban={onClick_ban}
-              onClick_mute={onClick_mute}
-              onClick_block={onClick_block}
-              onClick_directMessage={onClick_directMessage}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+			<div id="main">
+			  <RoomHeaderBar roomsList={rooms} currRoomId={currRoomId} />
+			  <div className="content">
+				<MessagePanel
+				  roomsList={rooms}
+				  currRoomId={currRoomId}
+				  messages={messages}
+				  />
+				<SendMessageBar
+				  currentRoomId={currRoomId}
+				  roomsList={rooms}
+				  messageBarValues={messageBarValues}
+				  {...props}
+				  />
+			  </div>
+			</div>
+			<div id="main">
+			  <div className="content">
+				<ParticipantsPanel
+				  roomsList={rooms}
+				  currRoomId={currRoomId}
+				  connectedUser={props.connectedUser}
+				  onClick_setAsAdmin={onClick_setAsAdmin}
+				  onClick_kick={onClick_kick}
+				  onClick_ban={onClick_ban}
+				  onClick_mute={onClick_mute}
+				  onClick_block={onClick_block}
+				  onClick_directMessage={onClick_directMessage}
+				  onClick_say_hi={onClick_say_hi}
+				  />
+			  </div>
+			</div>
+		  </div>
+		</div>
+	);
 }
