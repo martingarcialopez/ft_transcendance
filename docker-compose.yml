@@ -19,7 +19,8 @@ services:
     volumes:
       - ./front-end:/usr/src/app
       - /usr/src/app/node_modules
-       
+      - ./shared:/usr/src/app/public/shared/
+
     restart: always
 
 # ####################### NestJS #########################
@@ -41,6 +42,7 @@ services:
     volumes:
        - ./back-end:/usr/src/app
        - /usr/src/app/node_modules
+       - ./shared:/usr/src/app/public/shared
     command: npm run start:dev
     restart: always
 
@@ -68,6 +70,8 @@ services:
   pgadmin:
     container_name: "container-pgadmin4"
     image: dpage/pgadmin4
+    # logging:
+    #   driver: none
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com

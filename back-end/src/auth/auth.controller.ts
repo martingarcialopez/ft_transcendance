@@ -1,4 +1,4 @@
-import { Controller, Request, UseGuards, Post, Get } from '@nestjs/common';
+import { Controller, Request, UseGuards, Post, Get, Redirect } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -15,10 +15,29 @@ export class AuthController {
         return this.authService.login(req.user); // returns a JWT
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Post('/logout')
+    async logout (@Request() req) {
+        this.authService.logout(req.user);
+    }
+
     @UseGuards(Oauth42Guard)
     @Get('/redirect')
+//    @Redirect('http://localhost:8080', 302)
     async getUserFrom42Intra(@Request() req) {
         return this.authService.login(req.user); //returns a JWT
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('/enable2FA')
+    async enable2FA(@Request() req) : Promise<string> {
+        return await this.authService.enable2FA(req.user.userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('/disable2FA')
+    async disable2FA(@Request() req) {
+        return await this.authService.disable2FA(req.userId);
     }
 
 }

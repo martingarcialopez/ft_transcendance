@@ -1,92 +1,62 @@
+import { T_Action } from "../../type/chat";
+import { E_ActionType } from "../../type/Enum";
 import { Dispatch } from "redux";
-import {
-  t_channel,
-  e_actionType,
-  t_ActionChanel,
-  t_ActionMsg,
-  t_msgToSend,
-} from "../constants/channelConstants";
 
-export const ActionCreatorChanelAdd = (amount: t_channel) => {
-  return (dispatch: Dispatch<t_ActionChanel>) => {
-    dispatch({
-      type: e_actionType.ADD,
-      payload: amount,
-    });
-  };
-};
+/*
+ * export const ac_addRoomName = (name: string) => {
+ *   return (dispatch: Dispatch<T_Action>) => {
+ *     dispatch({
+ *       type: E_ActionType.GET_ROOM_NAME,
+ *       payload: name,
+ *     });
+ *   };
+ * };
+ *
+ * export const ac_addRoomId = (id: number) => {
+ *   return (dispatch: Dispatch<T_Action>) => {
+ *     dispatch({
+ *       type: E_ActionType.GET_ROOM_ID,
+ *       payload: id,
+ *     });
+ *   };
+ * };
+ *
+ * export const ac_contentMsg = (content: string) => {
+ *   return (dispatch: Dispatch<T_Action>) => {
+ *     dispatch({
+ *       type: E_ActionType.ADD_CONTENT_MSG,
+ *       payload: content,
+ *     });
+ *   };
+ * }; */
 
-export const ActionCreatorMsgReceived = (newMsg: string[]) => {
-  return (dispatch: Dispatch<t_ActionMsg>) => {
+/**
+ * all functions concern  action when user selected a user/group at the left bars
+ * each action do something like  update or add a proprietie to the  object T_msg
+ */
+export const ac_getIdRoomMsg = (id: number) => {
+  return (dispatch: Dispatch<T_Action>) => {
     dispatch({
-      type: e_actionType.MSG_RECEIVED,
-      payload: newMsg,
-    });
-  };
-};
-
-export const ActionCreatorMsgIdchannelDsl = (name: number) => {
-  return (dispatch: Dispatch<t_ActionMsg>) => {
-    dispatch({
-      type: e_actionType.SET_ID_CHANNEL,
-      payload: name,
-    });
-  };
-};
-
-export const ActionCreatorMsgContent = (contentMsg: string) => {
-  return (dispatch: Dispatch<t_ActionMsg>) => {
-    dispatch({
-      type: e_actionType.MSG_TO_SEND,
-      payload: contentMsg,
-    });
-  };
-};
-
-export const ActionCreatorInfo = (name: string) => {
-  return (dispatch: Dispatch<t_ActionMsg>) => {
-    dispatch({
-      type: e_actionType.NAME_OF_CURRENT_CHANNEL,
-      payload: name,
-    });
-  };
-};
-
-export const ActionCreatorIdChannel = (id: number) => {
-  return (dispatch: Dispatch<t_ActionMsg>) => {
-    dispatch({
-      type: e_actionType.SET_ID_CHANNEL,
+      type: E_ActionType.GET_ROOM_ID,
       payload: id,
     });
   };
 };
 
-export const ActionCreatorNameChannel = (name: string) => {
-  return (dispatch: Dispatch<t_ActionMsg>) => {
+export const ac_getNameRoomMsg = (name: string) => {
+  return (dispatch: Dispatch<T_Action>) => {
     dispatch({
-      type: e_actionType.SET_NAME_CHANNEL,
+      type: E_ActionType.GET_ROOM_NAME,
       payload: name,
     });
   };
 };
 
-export const ActionCreatorNewChannel = (newChannel: t_channel[]) => {
-  return (dispatch: Dispatch<t_ActionChanel>) => {
+export const ac_getContentMsg = (content: string) => {
+  return (dispatch: Dispatch<T_Action>) => {
     dispatch({
-      type: e_actionType.CREATE_NEW_CHANNEL,
-      payload: newChannel,
-    });
-  };
-};
-
-/**
- *add new t_msgToSend into the arrayMsg it like like [...t_msgToSend, newMsg]
- */
-export const ActionCreatorAddNewMsg = (newMsg: t_msgToSend) => {
-  return (dispatch: Dispatch<t_ActionMsg>) => {
-    dispatch({
-      type: e_actionType.ADD_NEW_MSG,
-      payload: newMsg,
+      type: E_ActionType.GET_CONTENT_MSG,
+      payload: content,
     });
   };
 };
