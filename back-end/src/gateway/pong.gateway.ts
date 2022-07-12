@@ -42,8 +42,8 @@ export class PongGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   handleDisconnect(client: Socket) {
     console.log(`Client with id: ${client.id} disconnected!`);
-    // this.pongService.handleDisconnect();
 
+    this.pongService.handleDisconnect(client);
 
     // search wich user have the correspondant client.id, and end the current game or remove from matchmaking
 
@@ -65,14 +65,18 @@ export class PongGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	}
 
-
-  @SubscribeMessage('createCustomGame')
-  async createCustomGame(client: Socket, data: createCustomGameDto) {
-
-      const roomId: string = await this.pongService.createCustomGame(client, data.userId, data.difficulty, data.maxScore);
-
-      this.server.to(client.id).emit('customGameId', roomId);
+  @SubscribeMessage('iDontWannaPlayAnymore')
+  iDontWannaPlayAnymore(socket: Socket, userId: number) {
+    this.pongService.iDontWannaPlayAnymore(socket, userId);
   }
+
+  // @SubscribeMessage('createCustomGame')
+  // async createCustomGame(client: Socket, data: createCustomGameDto) {
+
+  //     const roomId: string = await this.pongService.createCustomGame(client, data.userId, data.difficulty, data.maxScore);
+
+  //     this.server.to(client.id).emit('customGameId', roomId);
+  // }
 
 	@SubscribeMessage('joinPongRoom')
 	async join(socket: Socket, data: joinPongRoomDto): Promise<void> {

@@ -231,10 +231,15 @@ export class UserService {
             throw new NotFoundException();
 
         const games = await this.GameHistoryRepository.find(
-            { where : [{ leftPlayer: username }, { rightPlayer: username }/*, {winner: typeorm.Not(typeorm.IsNull()) }*/] } );
+            {
+                where : 
+                [
+                    { leftPlayer: username, winner: typeorm.Not(typeorm.IsNull()) },
+                    { rightPlayer: username, winner: typeorm.Not(typeorm.IsNull()) }
+                ]
+            });
 
         return games;
-
     }
 
 
@@ -297,6 +302,9 @@ export class UserService {
         };
 
         this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
+
+        console.log(`returning...`)
+        console.log(response)
 
         return response;
 

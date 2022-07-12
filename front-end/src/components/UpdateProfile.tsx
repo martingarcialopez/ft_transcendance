@@ -17,27 +17,30 @@ export const UpdateProfile = ({ userInfo }: any) => {
     const { id } = useParams();
     const [displayImg, setDisplayImg] = useState(true)
     const [profileImg, setProfileImg] = useState('')
+    // const [profileImgType, setProfileImgType] = useState('')
     const dispatch = useDispatch()
 
     const [isValidFileFormat, setIsValidFileFormat] = useState(true);
 
     const onFileChange = (e: any) => {
-        if (e.target.files[0].type !== 'image/png') {
-            alert('[Warning] Only PNG files are supported.');
-            setIsValidFileFormat(false);
-        }
-        else {
-            setIsValidFileFormat(true);
-            setProfileImg(e.target.files[0].type)
-            console.log("FilesUploadComponent e.target.files[0] :", e.target.files[0])
-        }
+		if (e.target.files[0].type !== 'image/png') {
+			alert('[Warning] Only PNG files are supported.');
+			setIsValidFileFormat(false);
+		}
+		else {
+			setIsValidFileFormat(true);
+            console.log(e.target.files[0]);
+			setProfileImg(e.target.files[0])
+			console.log("FilesUploadComponent e.target.files[0] :", e.target.files[0])
+		}
     }
 
     const uploadImage = () => {
-        const formData = new FormData()
-        formData.append('file', profileImg)
-        console.log("FilesUploadComponent formData :", formData)
-        dispatch(uploadImageAction(formData, userInfo.access_token));
+        // const formData = new FormData()
+        // formData.append('file', profileImg)
+        // console.log("FilesUploadComponent formData :", formData)
+        console.log (`in UpdateProfile, profileImg is ${profileImg}`)
+        dispatch(uploadImageAction(userInfo, profileImg, userInfo.access_token));
         setDisplayImg(true)
         setOpen(false);
     }
@@ -64,7 +67,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
         }
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
-            dispatch(updateAction(firstname, lastname, username, userInfo.id, userInfo.access_token, userInfo.friends))
+            dispatch(updateAction(firstname, lastname, username, userInfo.id, userInfo.avatar, userInfo.status, userInfo.access_token, userInfo.friends))
             setStatusError(true);
             setSnackbars(true);
         }

@@ -19,12 +19,14 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function update(firstname: any, lastname: any, username: any, id: any, access_token: any, friends: any) {
+export function update(firstname: any, lastname: any, username: any, id: any, avatar: any, status: any, access_token: any, friends: any) {
     const postData = {
         firstname,
         lastname,
         username,
         friends,
+        avatar,
+        status
     };
 
     return axios.post(
@@ -47,11 +49,20 @@ export function enable2FA(access_token: any) {
 }
 
 export function uploadImage(image: any, access_token: any) {
+
+    const formData = new FormData();
+    formData.append('name', 'file');
+    formData.append('filename', image.filename)
+    formData.append('file', image)
+
     return axios.post(
         `${URL_test}/user/uploadProfileImage`,
-        image,
+        formData,
         {
-            headers: { 'Authorization': `Bearer ${access_token}` }
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'content-type': 'multipart/form-data'
+            }
         }
     );
 }

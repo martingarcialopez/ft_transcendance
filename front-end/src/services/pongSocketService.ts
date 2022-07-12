@@ -6,7 +6,15 @@ class pongSocketServiceImplementation {
     private connection: Socket | null;
 
     constructor() {
+
         this.connection = null;
+
+            const storage = localStorage.getItem('userInfo')
+            if (!storage)
+                return;
+            const user = JSON.parse(storage);
+            user.status = 'online';
+            localStorage.setItem('userInfo', JSON.stringify(user));
     }
 
     connect() {
