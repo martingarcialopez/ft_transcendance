@@ -31,7 +31,8 @@ export const MyProfileScreen = () => {
     return <h1>Loading...</h1>;
   }
 
-  console.log("userInfo MyProfile:", userInfo)
+  console.log("MyProfile userInfo:", userInfo)
+  console.log("MyProfile allMatch:", allMatch)
 
   return (
     <div>

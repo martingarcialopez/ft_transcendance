@@ -20,7 +20,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
     // const [profileImgType, setProfileImgType] = useState('')
     const dispatch = useDispatch()
 
-	const [isValidFileFormat, setIsValidFileFormat] = useState(true);
+    const [isValidFileFormat, setIsValidFileFormat] = useState(true);
 
     const onFileChange = (e: any) => {
 		if (e.target.files[0].type !== 'image/png') {
@@ -42,6 +42,7 @@ export const UpdateProfile = ({ userInfo }: any) => {
         console.log (`in UpdateProfile, profileImg is ${profileImg}`)
         dispatch(uploadImageAction(profileImg, userInfo.access_token));
         setDisplayImg(true)
+        setOpen(false);
     }
     // const ref_default_img = "/game/test/test_42.jpg"
     // const ref_default_img = "/shared/avatar/mgarcia-.png"
@@ -60,10 +61,10 @@ export const UpdateProfile = ({ userInfo }: any) => {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-		if (isValidFileFormat === false) {
-			alert('[ERROR] Invalid file format. Only PNG is supported.');
-			return ;
-		}
+        if (isValidFileFormat === false) {
+            alert('[ERROR] Invalid file format. Only PNG is supported.');
+            return;
+        }
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
             dispatch(updateAction(firstname, lastname, username, userInfo.id, userInfo.access_token, userInfo.friends))
@@ -116,14 +117,18 @@ export const UpdateProfile = ({ userInfo }: any) => {
                             <input type="file" onChange={onFileChange} accept=".png" />
                         </div>
                         <div className="form-group">
-                <button className="btn btn-primary" onClick={() => {
-					if (isValidFileFormat === false) {
-						alert('[ERROR] Invalid file format. Only PNG is supported.');
-					}
-					else {
-						uploadImage()
-					}
-				}}>Upload</button>
+                            <button className="btn btn-primary"
+                                onClick={() => {
+                                    if (isValidFileFormat === false) {
+                                        alert('[ERROR] Invalid file format. Only PNG is supported.');
+                                    }
+                                    else {
+                                        uploadImage()
+                                    }
+                                }}
+                            >
+                                Upload
+                            </button>
                         </div>
                     </div>
                     :
