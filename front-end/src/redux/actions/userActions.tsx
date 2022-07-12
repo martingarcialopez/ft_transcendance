@@ -117,6 +117,16 @@ export function uploadImageAction(image: any, access_token: any) {
         console.log(response.data)
         console.log("uploadImageAction data filename qui fct :")
         console.log(response.data.filename)
+
+        const storage = localStorage.getItem('userInfo');
+        if (storage) {
+            const user = JSON.parse(storage);
+            console.log(`previous avatar was ${user.avatar}`)
+            user.avatar = response.data.filename;
+            console.log(`new avatar is ${response.data.filename}`)
+            localStorage.setItem('userInfo', JSON.stringify(user));
+        }
+
         dispatch(uploadImageActionConfirmedAction(response.data.filename));
       })
       .catch((error) => {
