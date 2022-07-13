@@ -64,20 +64,12 @@ export function Chat(props: any) {
 	useEffect(() => {
 		props.appSocket.emit("F_getMessages", currRoomId);
 	}, [currRoomId, props.appSocket]);
-	/* ------------------------------- */
-	/*         Messages                */
-	/* ------------------------------- */
+
 	const [messages, setMessages] = useState<Map<number, any[]>>();
 
-	/* ------------------------------- */
-	/*       Send Messages Bar         */
-	/* ------------------------------- */
 	const [messageBarValues, setMessageBarValue] =
 		useState<Map<number, string>>();
 
-	/* ------------------------------- */
-	/*       SOCKET.IO listeners       */
-	/* ------------------------------- */
 	useEffect(() => {
 
 		if (
@@ -138,7 +130,7 @@ export function Chat(props: any) {
 		setMessages={setMessages}
 		{...props}
 			/>
-			<SendMessageBar
+		<SendMessageBar
 		currRoomId={currRoomId}
 		roomsList={rooms}
 		messages={messages}
