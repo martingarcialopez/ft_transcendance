@@ -52,18 +52,17 @@ export function MessagePanel(props: any) {
 
               <div id="column-message">
                 <div id="name-date-message">
-                  <a href="user-username">{currentUser.username}</a>
-                  <a href="message-date">{message.createdDate}</a>
+                  <div>{currentUser.username}</div>
+                  <div>{message.createdDate}</div>
                 </div>
                 <div id="message-send">
-                  <a href="message-content">{message.content}</a>
+                  <div>{message.content}</div>
                 </div>
               </div>
             </div>
             <div id="risco">
               <hr />
-              <a href="-------------------"> ------------------- </a>
-              <hr />
+          	  <hr />
             </div>
             <div ref={messagesEndRef} />
           </div>
@@ -76,12 +75,12 @@ export function MessagePanel(props: any) {
     <div id="mao-messages-panel">
       <div id="profile">
         <img src={currentRoom.image} alt="" />
-        <a href="room-name" >{currentRoom.name}</a>
+        <div>{currentRoom.name}</div>
       </div>
 
       <div id="risco">
         <hr />
-        <a href="welcome-message"> Lets the chat begin </a>
+        <div> Lets the chat begin </div>
         <hr />
       </div>
 

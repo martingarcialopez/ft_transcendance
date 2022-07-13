@@ -30,9 +30,9 @@ export function ParticipantContextMenu(props: any) {
         <img src={props.currentUser.avatar} alt="" />
         <div id="column-message">
           <div id="message-send">
-            <a href="message-send" >
+            <div>
               {props.currentUser.username} {userRole} {isMute}
-            </a>
+            </div>
           </div>
         </div>
       </div>

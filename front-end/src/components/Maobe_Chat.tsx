@@ -62,6 +62,7 @@ export function Chat(props: any) {
 				let sendMessageBarValues = new Map<number, string>();
 				receivedRooms.map((room: I_Room, i: any) => {
 					sendMessageBarValues.set(room.id, "");
+					return null;
 				});
 				setMessageBarValue(sendMessageBarValues);
 			}
@@ -69,6 +70,7 @@ export function Chat(props: any) {
 			let sendMessageBarValues = new Map<number, string>();
 			receivedRooms.map((room: I_Room, i: any) => {
 				sendMessageBarValues.set(room.id, "");
+				return null;
 			});
 			setMessageBarValue(sendMessageBarValues);
 		}
@@ -79,7 +81,7 @@ export function Chat(props: any) {
 	};
 	useEffect(() => {
 		props.appSocket.emit("F_getMessages", currRoomId);
-	}, [currRoomId]);
+	}, [currRoomId, props.appSocket]);
 
 	/* ------------------------------- */
 	/*      Participants actions       */
@@ -405,14 +407,11 @@ export function Chat(props: any) {
 				alert("Something went wrong during event 'F_getRooms'");
 			}
 		});
-	}, []);
-
-	useEffect(() => {
 		const interval = setInterval(() => {
 			props.appSocket.emit("F_getRooms", "");
 		}, 1500);
 		return () => clearInterval(interval);
-	}, []);
+	}, [props.appSocket]);
 
 	/* ------------------------------- */
 	/*         Component HTML          */
@@ -466,9 +465,10 @@ export function Chat(props: any) {
 				  messages={messages}
 				  />
 				<SendMessageBar
-				  currentRoomId={currRoomId}
+				  currRoomId={currRoomId}
 				  roomsList={rooms}
 				  messageBarValues={messageBarValues}
+				  setMessageBarValue={setMessageBarValue}
 				  {...props}
 				  />
 			  </div>

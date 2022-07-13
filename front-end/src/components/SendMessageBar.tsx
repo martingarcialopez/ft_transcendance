@@ -4,7 +4,7 @@ import gif from "../styles/assets/gif.svg";
 import plus from "../styles/assets/plus.svg";
 
 export function SendMessageBar(props: any) {
-	if (props.messageBarValues === undefined || props.currentRoomId === -1) {
+	if (props.messageBarValues === undefined || props.currRoomId === -1) {
     return <div></div>;
   }
 	const onChange_setMessageBarValue = (value: string) => {
@@ -40,7 +40,7 @@ export function SendMessageBar(props: any) {
 	};
 
   const currentRoom = props.roomsList.filter(
-    (obj: any) => obj.id === props.currentRoomId
+    (obj: any) => obj.id === props.currRoomId
   )[0];
   if (currentRoom === undefined) {
     return <div></div>;
@@ -58,9 +58,9 @@ export function SendMessageBar(props: any) {
     }
   }
 
-  const currentValueBis = props.messageBarValues.get(props.currentRoomId);
+  const currentValueBis = props.messageBarValues.get(props.currRoomId);
   return (
-    <div id="send-message" key={props.currentRoomId}>
+    <div id="send-message" key={props.currRoomId}>
       <img src={plus} alt="" />
       <form action="#" onSubmit={onSubmit_messageBar}>
         <input
