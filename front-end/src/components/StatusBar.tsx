@@ -9,7 +9,7 @@ export function StatusBar(props: any) {
         <img src={props.connectedUser.avatar} alt="ProfilePhoto" />
 
         <div id="name-id">
-          <a href="name-id"> {props.connectedUser.username}</a>
+          {props.connectedUser.username}
         </div>
 
         <div id="icons">
