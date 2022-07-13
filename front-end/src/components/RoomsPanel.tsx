@@ -5,6 +5,7 @@ import {
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/core.css";
 import settings from "../styles/assets/settings.svg";
+import { LeaveRoomButton } from "./LeaveRoomButton";
 
 function JoinRoomMenu(props: any) {
 	const ref = useRef(null);
@@ -335,22 +336,6 @@ function EditRoomMenu(props: any) {
         </FocusableItem>
 			</ControlledMenu>
 			</div>
-	);
-}
-
-function LeaveRoomButton(props: any) {
-	if (props.currRoom.owner === props.connectedUser.userId) {
-		return <div></div>;
-	}
-	return (
-		<button
-		  className="mao-btn-join-room"
-		  onClick={() => {
-			  props.onClick_leaveRoom(props.currRoom.id);
-		  }}
-		  >
-		  ❌
-		</button>
 	);
 }
 

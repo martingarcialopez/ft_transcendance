@@ -20,12 +20,6 @@ interface I_Room {
 }
 
 
-interface I_LeaveRoom {
-	userId: number;
-	roomId: number;
-}
-
-
 export function Chat(props: any) {
 	/* ------------------------------- */
 	/*        Get existing rooms       */
@@ -70,7 +64,6 @@ export function Chat(props: any) {
 	useEffect(() => {
 		props.appSocket.emit("F_getMessages", currRoomId);
 	}, [currRoomId, props.appSocket]);
-
 
 	/* ------------------------------- */
 	/*        Create new room          */
@@ -192,22 +185,7 @@ export function Chat(props: any) {
 		setMessageBarValue(newMessageBarValues);
 	};
 
-	const onClick_leaveRoom = (roomId: number) => {
-		props.appSocket.emit("F_leaveRoom", roomId, (isLeft: boolean) => {
-			if (isLeft !== true) {
-				alert("Something went wrong");
-			}
-		});
-	};
-	const leaveRoom_listener = (leaveRoom: I_LeaveRoom) => {
-		const tmp_newRooms = rooms.filter((obj) => obj.id !== leaveRoom.roomId);
-		if (tmp_newRooms.length > 0) {
-			setCurrRoomId(tmp_newRooms[0].id);
-		} else {
-			setCurrRoomId(-1);
-		}
-		setRooms(tmp_newRooms);
-	};
+
 
 	/* ------------------------------- */
 	/*          Update Room            */
@@ -329,9 +307,6 @@ export function Chat(props: any) {
 		if (props.appSocket._callbacks["joinRoom_listener"] === undefined) {
 			props.appSocket.on("B_joinRoom", joinRoom_listener);
 		}
-		if (props.appSocket._callbacks["leaveRoom_listener"] === undefined) {
-			props.appSocket.on("B_leaveRoom", leaveRoom_listener);
-		}
 		return () => {
 			props.appSocket.removeAllListeners("B_getRooms");
 			props.appSocket.removeAllListeners("B_createRoom");
@@ -340,7 +315,7 @@ export function Chat(props: any) {
 			props.appSocket.removeAllListeners("B_getRoomAvailableUsers");
 			props.appSocket.removeAllListeners("B_getDispoRooms");
 			props.appSocket.removeAllListeners("B_joinRoom");
-			props.appSocket.removeAllListeners("B_leaveRoom");
+
 		};
 	});
 
@@ -369,6 +344,8 @@ export function Chat(props: any) {
 		roomsList={rooms}
 		onClick={onClick_Room}
 		connectedUser={props.connectedUser}
+		setCurrRoomId={ setCurrRoomId }
+		setRooms={ setRooms }
 		roomsDispoToJoin={roomsDispoToJoin}
 		onClick_getRoomsDispoToJoin={onClick_getRoomsDispoToJoin}
 		onSubmit_joinRoom={onSubmit_joinRoom}
@@ -394,7 +371,7 @@ export function Chat(props: any) {
 		onClick_updateRoom={onClick_updateRoom}
 		roomAvailableUsers={roomAvailableUsers}
 		onChange_selectRoomParticipant={onChange_selectRoomParticipant}
-		onClick_leaveRoom={onClick_leaveRoom}
+		{...props}
 			/>
 			<StatusBar connectedUser={props.connectedUser} />
 			</div>
