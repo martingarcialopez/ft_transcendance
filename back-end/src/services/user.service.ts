@@ -116,13 +116,24 @@ export class UserService {
             throw new HttpException('user not found', HttpStatus.NOT_FOUND); // user does not exist
 
         if (user.avatar) {
-            const path = `/usr/src/app/public/shared/avatar/${user.login42}.png`;
+            const path = `/usr/src/app/public/shared/avatar/${user.username}.png`;
+            const path2 = `/usr/src/app/public/shared/avatar/${user.username}.jpg`;
+            const path3 = `/usr/src/app/public/shared/avatar/${user.username}.jpeg`;
             try {
                 unlinkSync(path); //file removed
+                unlinkSync(path2); //file removed
+                unlinkSync(path3); //file removed
             } catch (err) {
                 console.error(err);
             }
         }
+
+        await this.friendsRepository.delete({ member_username: user.username});
+        await this.friendsRepository.delete({ friend_username: user.username});
+
+        await this.GameHistoryRepository.delete( { leftPlayer: user.username} );
+        await this.GameHistoryRepository.delete( { rightPlayer: user.username} );
+
         await this.userRepository.delete(id);
     }
 
