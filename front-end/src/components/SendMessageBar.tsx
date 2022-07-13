@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import emote from "../styles/assets/emote.svg";
 import gift from "../styles/assets/gift.svg";
 import gif from "../styles/assets/gif.svg";

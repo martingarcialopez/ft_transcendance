@@ -1,6 +1,6 @@
 import {MenuItem,
 } from "@szhsin/react-menu";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 
 export function ParticipantSetAsAdminContextMenu(props: any) {
