@@ -19,18 +19,6 @@ interface I_Room {
 	participants: any[];
 }
 
-interface I_Messages {
-	roomId: number;
-	messages: I_Message[];
-}
-
-interface I_Message {
-	userId: number;
-	roomId: number;
-	content: string;
-	createdDate: string;
-	id: number;
-}
 
 interface I_LeaveRoom {
 	userId: number;
@@ -304,32 +292,6 @@ export function Chat(props: any) {
 	/*       SOCKET.IO listeners       */
 	/* ------------------------------- */
 	useEffect(() => {
-		const getMessages_listener = (newMessages: I_Messages) => {
-			const messageRoomId = newMessages.roomId;
-			let newVarValues = new Map(messages);
-			newVarValues.set(messageRoomId, newMessages.messages);
-			if (newVarValues !== messages) {
-				setMessages(newVarValues);
-			}
-		};
-		const createMessage_listener = (newMessageInfos: I_Message) => {
-			if (messages !== undefined) {
-				let intendedRoomMessages = messages.get(newMessageInfos.roomId);
-				const newMessage: any = {
-					userId: newMessageInfos.userId,
-					content: newMessageInfos.content,
-					createdDate: newMessageInfos.createdDate,
-				};
-				if (intendedRoomMessages !== undefined) {
-					intendedRoomMessages.push(newMessage);
-				} else {
-					intendedRoomMessages = [newMessage];
-				}
-				let newVarValues = new Map(messages);
-				newVarValues.set(newMessageInfos.roomId, intendedRoomMessages);
-				setMessages(newVarValues);
-			}
-		};
 
 		if (
 			props.appSocket.__callbacks === undefined ||
@@ -339,12 +301,6 @@ export function Chat(props: any) {
 			if (rooms.length === 0) {
 				props.appSocket.emit("F_getRooms", "");
 			}
-		}
-		if (props.appSocket._callbacks["getMessages_listener"] === undefined) {
-			props.appSocket.on("B_getMessages", getMessages_listener);
-		}
-		if (props.appSocket._callbacks["createMessage_listener"] === undefined) {
-			props.appSocket.on("B_createMessage", createMessage_listener);
 		}
 		if (props.appSocket._callbacks["createRoom_listener"] === undefined) {
 			props.appSocket.on("B_createRoom", createRoom_listener);
@@ -378,8 +334,6 @@ export function Chat(props: any) {
 		}
 		return () => {
 			props.appSocket.removeAllListeners("B_getRooms");
-			props.appSocket.removeAllListeners("B_getMessages");
-			props.appSocket.removeAllListeners("B_createMessage");
 			props.appSocket.removeAllListeners("B_createRoom");
 			props.appSocket.removeAllListeners("B_updateRoom");
 			props.appSocket.removeAllListeners("B_getAvailableUsers");
@@ -452,10 +406,14 @@ export function Chat(props: any) {
 		roomsList={rooms}
 		currRoomId={currRoomId}
 		messages={messages}
+		setMessages={setMessages}
+		{...props}
 			/>
 			<SendMessageBar
 		currRoomId={currRoomId}
 		roomsList={rooms}
+		messages={messages}
+		setMessages={setMessages}
 		messageBarValues={messageBarValues}
 		setMessageBarValue={setMessageBarValue}
 		{...props}
