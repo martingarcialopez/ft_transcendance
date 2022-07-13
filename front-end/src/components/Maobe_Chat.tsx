@@ -83,13 +83,6 @@ export function Chat(props: any) {
 		props.appSocket.emit("F_getMessages", currRoomId);
 	}, [currRoomId, props.appSocket]);
 
-	/* ------------------------------- */
-	/*      Participants actions       */
-	/* ------------------------------- */
-
-	const setAsAdmin_listener = () => {
-		props.appSocket.emit("F_getRooms", "");
-	};
 
 	/* ------------------------------- */
 	/*        Create new room          */
@@ -242,7 +235,7 @@ export function Chat(props: any) {
 
 	const [roomAvailableUsers, setRoomAvailableUsers] = useState<any[]>([]);
 	const [selectedNewRoomParticipants, setSelectedNewRoomParticipants] =
-		  useState<any[]>([]);
+		useState<any[]>([]);
 	const onChange_selectRoomParticipant = (e: any, user: any) => {
 		if (e.currentTarget.checked) {
 			let newParticipants = selectedNewRoomParticipants.slice();
@@ -305,7 +298,7 @@ export function Chat(props: any) {
 	/*       Send Messages Bar         */
 	/* ------------------------------- */
 	const [messageBarValues, setMessageBarValue] =
-		  useState<Map<number, string>>();
+		useState<Map<number, string>>();
 
 	/* ------------------------------- */
 	/*       SOCKET.IO listeners       */
@@ -383,9 +376,6 @@ export function Chat(props: any) {
 		if (props.appSocket._callbacks["leaveRoom_listener"] === undefined) {
 			props.appSocket.on("B_leaveRoom", leaveRoom_listener);
 		}
-		if (props.appSocket._callbacks["setAsAdmin_listener"] === undefined) {
-			props.appSocket.on("B_setAsAdmin", setAsAdmin_listener);
-		}
 		return () => {
 			props.appSocket.removeAllListeners("B_getRooms");
 			props.appSocket.removeAllListeners("B_getMessages");
@@ -397,7 +387,6 @@ export function Chat(props: any) {
 			props.appSocket.removeAllListeners("B_getDispoRooms");
 			props.appSocket.removeAllListeners("B_joinRoom");
 			props.appSocket.removeAllListeners("B_leaveRoom");
-			props.appSocket.removeAllListeners("B_setAsAdmin");
 		};
 	});
 
@@ -418,74 +407,75 @@ export function Chat(props: any) {
 	/* ------------------------------- */
 	return (
 		<div>
-		  <div className="container">
+			<div className="container">
 			<ChannelPanel />
 
 			<div id="middle-box">
-			  <RoomsPanel
-				roomsList={rooms}
-				onClick={onClick_Room}
-				connectedUser={props.connectedUser}
-				roomsDispoToJoin={roomsDispoToJoin}
-				onClick_getRoomsDispoToJoin={onClick_getRoomsDispoToJoin}
-				onSubmit_joinRoom={onSubmit_joinRoom}
-				onSubmit_createRoom={onSubmit_createRoom}
-				newRoomName={newRoomName}
-				setNewRoomName={setNewRoomName}
-				typeRoom={typeRoom}
-				roomImage={roomImage}
-				setRoomImage={setRoomImage}
-				setTypeRoom={setTypeRoom}
-				password={passWord}
-				setPassword={setPassword}
-				availableUsers={availableUsers}
-				onClick_getAvailableUsers={onClick_getAvailableUsers}
-				onChange_selectParticipant={onChange_selectParticipant}
-				updateRoomName={updateRoomName}
-				setUpdateRoomName={setUpdateRoomName}
-				updateTypeRoom={updateTypeRoom}
-				setUpdateTypeRoom={setUpdateTypeRoom}
-				updatePassWord={updatePassWord}
-				setUpdatePassword={setUpdatePassword}
-				onSubmit_updateRoom={onSubmit_updateRoom}
-				onClick_updateRoom={onClick_updateRoom}
-				roomAvailableUsers={roomAvailableUsers}
-				onChange_selectRoomParticipant={onChange_selectRoomParticipant}
-				onClick_leaveRoom={onClick_leaveRoom}
-				/>
-			  <StatusBar connectedUser={props.connectedUser} />
+			<RoomsPanel
+		roomsList={rooms}
+		onClick={onClick_Room}
+		connectedUser={props.connectedUser}
+		roomsDispoToJoin={roomsDispoToJoin}
+		onClick_getRoomsDispoToJoin={onClick_getRoomsDispoToJoin}
+		onSubmit_joinRoom={onSubmit_joinRoom}
+		onSubmit_createRoom={onSubmit_createRoom}
+		newRoomName={newRoomName}
+		setNewRoomName={setNewRoomName}
+		typeRoom={typeRoom}
+		roomImage={roomImage}
+		setRoomImage={setRoomImage}
+		setTypeRoom={setTypeRoom}
+		password={passWord}
+		setPassword={setPassword}
+		availableUsers={availableUsers}
+		onClick_getAvailableUsers={onClick_getAvailableUsers}
+		onChange_selectParticipant={onChange_selectParticipant}
+		updateRoomName={updateRoomName}
+		setUpdateRoomName={setUpdateRoomName}
+		updateTypeRoom={updateTypeRoom}
+		setUpdateTypeRoom={setUpdateTypeRoom}
+		updatePassWord={updatePassWord}
+		setUpdatePassword={setUpdatePassword}
+		onSubmit_updateRoom={onSubmit_updateRoom}
+		onClick_updateRoom={onClick_updateRoom}
+		roomAvailableUsers={roomAvailableUsers}
+		onChange_selectRoomParticipant={onChange_selectRoomParticipant}
+		onClick_leaveRoom={onClick_leaveRoom}
+			/>
+			<StatusBar connectedUser={props.connectedUser} />
 			</div>
 
 			<div id="main">
-			  <RoomHeaderBar roomsList={rooms} currRoomId={currRoomId} />
-			  <div className="content">
-				<MessagePanel
-				  roomsList={rooms}
-				  currRoomId={currRoomId}
-				  messages={messages}
-				  />
-				<SendMessageBar
-				  currRoomId={currRoomId}
-				  roomsList={rooms}
-				  messageBarValues={messageBarValues}
-				  setMessageBarValue={setMessageBarValue}
-				  {...props}
-				  />
-			  </div>
+			<RoomHeaderBar roomsList={rooms} currRoomId={currRoomId} />
+			<div className="content">
+			<MessagePanel
+		roomsList={rooms}
+		currRoomId={currRoomId}
+		messages={messages}
+			/>
+			<SendMessageBar
+		currRoomId={currRoomId}
+		roomsList={rooms}
+		messageBarValues={messageBarValues}
+		setMessageBarValue={setMessageBarValue}
+		{...props}
+			/>
+			</div>
 			</div>
 			<div id="main">
-			  <div className="content">
-				<ParticipantsPanel
-				  roomsList={rooms}
-				  currRoomId={currRoomId}
-				  connectedUser={props.connectedUser}
-				  setCurrRoomId={setCurrRoomId}
-				  messages={messages}
-				  setMessages={setMessages}
-				  />
-			  </div>
+			<div className="content">
+			<ParticipantsPanel
+		roomsList={rooms}
+		currRoomId={currRoomId}
+		connectedUser={props.connectedUser}
+		setCurrRoomId={setCurrRoomId}
+		messages={messages}
+		setMessages={setMessages}
+		{...props}
+			/>
 			</div>
-		  </div>
-		</div>
+			</div>
+			</div>
+			</div>
 	);
 }

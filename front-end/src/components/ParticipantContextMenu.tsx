@@ -43,7 +43,7 @@ export function ParticipantContextMenu(props: any) {
         onClose={() => toggleMenu(false)}
       >
         <ParticipantBasicContextMenu {...props} />
-        <ParticipantSetAsAdminContextMenu {...props} />
+        <ParticipantSetAsAdminContextMenu{...props} />
         <ParticipantAdminContextMenu {...props} />
  </ControlledMenu>
     </div>
