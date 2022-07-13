@@ -116,7 +116,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
                                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                                         variant="dot"
                                     >
-                                        <Avatar>
+                                        <Avatar src={item.avatar}>
                                             {item.username}
                                         </Avatar>
                                     </StyledBadgeGreen>
@@ -128,7 +128,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
                                             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                                             variant="dot"
                                         >
-                                            <Avatar>
+                                            <Avatar src={item.avatar}>
                                                 {item.username}
                                             </Avatar>
                                         </StyledBadgeRed>
@@ -138,7 +138,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
                                             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                                             variant="dot"
                                         >
-                                            <Avatar>
+                                            <Avatar src={item.avatar}>
                                                 {item.username}
                                             </Avatar>
                                         </StyledBadgeGrey>
