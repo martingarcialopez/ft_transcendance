@@ -16,6 +16,7 @@ import { friendsStatusDto } from 'src/dtos/out/friendsStatus.dto';
 import * as typeorm from "typeorm";
 import { type } from 'os';
 import { allUsersDto } from 'src/dtos/out/allUsers.dto';
+import { Matchmaking } from 'src/models/matchmaking.entity';
 
 @Injectable()
 export class UserService {
@@ -26,7 +27,9 @@ export class UserService {
         @InjectRepository(Relationship)
         private friendsRepository: Repository<Relationship>,
         @InjectRepository(GameHistory)
-        private GameHistoryRepository: Repository<GameHistory>
+        private GameHistoryRepository: Repository<GameHistory>,
+        @InjectRepository(Matchmaking)
+        private MatchmakingRepository: Repository<Matchmaking>
     ) { }
 
     async getAllUsers() {
@@ -133,6 +136,8 @@ export class UserService {
 
         await this.GameHistoryRepository.delete( { leftPlayer: user.username} );
         await this.GameHistoryRepository.delete( { rightPlayer: user.username} );
+
+        await this.MatchmakingRepository.delete( { userId: user.id } );
 
         await this.userRepository.delete(id);
     }
