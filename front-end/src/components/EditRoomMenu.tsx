@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import {
-  ControlledMenu,
-  FocusableItem,
+	ControlledMenu,
+	FocusableItem,
 } from "@szhsin/react-menu";
 import settings from "../styles/assets/settings.svg";
 
@@ -17,7 +17,7 @@ export function EditRoomMenu(props: any) {
 	const ref = useRef(null);
 	const [isOpen, setOpen] = useState(false);
 
-		const [updateRoomName, setUpdateRoomName] = useState("");
+	const [updateRoomName, setUpdateRoomName] = useState("");
 	const [updateTypeRoom, setUpdateTypeRoom] = useState("public");
 	const [updatePassWord, setUpdatePassword] = useState("");
 	const onClick_updateRoom = (currRoom: I_Room) => {
@@ -27,7 +27,7 @@ export function EditRoomMenu(props: any) {
 	};
 	const [roomAvailableUsers, setRoomAvailableUsers] = useState<any[]>([]);
 	const [selectedNewRoomParticipants, setSelectedNewRoomParticipants] =
-		useState<any[]>([]);
+		  useState<any[]>([]);
 	const onChange_selectRoomParticipant = (e: any, user: any) => {
 		if (e.currentTarget.checked) {
 			let newParticipants = selectedNewRoomParticipants.slice();
@@ -87,7 +87,7 @@ export function EditRoomMenu(props: any) {
 		}
 		if (
 			props.appSocket._callbacks !== undefined &&
-			props.appSocket._callbacks["getRoomAvailableUsers_listener"] === undefined
+				props.appSocket._callbacks["getRoomAvailableUsers_listener"] === undefined
 		) {
 			props.appSocket.on(
 				"B_getRoomAvailableUsers",
@@ -116,10 +116,10 @@ export function EditRoomMenu(props: any) {
 		Html_AvailableUser = roomAvailableUsers.map((user: any, i: any) => {
 			return (
 				<div key={i} id="room-participants">
-				  <input
-					id="room-participants-input"
-					type="checkbox"
-					onChange={(e) => onChange_selectRoomParticipant(e, user)}
+					<input
+						id="room-participants-input"
+						type="checkbox"
+						onChange={(e) => onChange_selectRoomParticipant(e, user)}
 					/>
 					<img alt="User avatar" src={user.avatar} />
 					<label>{user.username}</label>
@@ -129,101 +129,101 @@ export function EditRoomMenu(props: any) {
 	}
 
 	return (
-		<div>
-		  <div
-			ref={ref}
-			className="mao-btn-join-room"
-			onClick={() => {
-				setOpen(true);
-				onClick_updateRoom(props.currRoom);
-			}}
+		<div id="edit-room-button">
+			<div
+				ref={ref}
+				className="mao-btn-edit-room"
+				onClick={() => {
+					setOpen(true);
+					onClick_updateRoom(props.currRoom);
+				}}
 			>
-			<img alt="room settings" src={settings} />
-		  </div>
-
-		  <ControlledMenu
-			menuClassName="nope"
-			state={isOpen ? "open" : "closed"}
-			anchorRef={ref}
-			onClose={() => setOpen(false)}
-			>
-			{/* ---------- */}
-			<label> Room Name </label>
-			<FocusableItem>
-			  {({ ref }: any) => (
-				  <input
-					ref={ref}
-					className="mao-menu-input"
-					required
-					type="text"
-					placeholder="Name your new room"
-					value={updateRoomName}
-					onChange={(e) => setUpdateRoomName(e.target.value)}
-					/>
-			  )}
-        </FocusableItem>
-			<hr />
-
-        {/* ---------- */}
-			<label> Room Type </label>
-			<FocusableItem>
-			{({ ref }: any) => (
-				<select
-				  value={updateTypeRoom}
-				  onChange={(e) => {
-					  setUpdateTypeRoom(e.target.value);
-				  }}
-				  required
-				  >
-				  <option>public</option>
-				  <option>private</option>
-				</select>
-			)}
-        </FocusableItem>
-			<hr />
-
-        {/* ---------- */}
-			<label> Password </label>
-			<FocusableItem>
-			{({ ref }: any) => (
-				<input
-				  className="mao-menu-input"
-				  ref={ref}
-				  type="password"
-				  placeholder="Room password"
-				  value={updatePassWord}
-				  onChange={(e) => setUpdatePassword(e.target.value)}
-				  />
-			)}
-        </FocusableItem>
-			<hr />
-
-        {/* ---------- */}
-			<label> Participants </label>
-			<FocusableItem>
-			{({ ref }: any) => (
-				<div ref={ref} className="room-participants-mgt">
-				  {Html_AvailableUser}
-				</div>
-			)}
-        </FocusableItem>
-			<hr />
-
-        {/* ---------- */}
-			<FocusableItem>
-			{({ ref }: any) => (
-				<button
-				  onClick={() => {
-					  onSubmit_updateRoom();
-					  setOpen(false);
-				  }}
-				  >
-				  {" "}
-				  Update Room{" "}
-				</button>
-			)}
-        </FocusableItem>
-			</ControlledMenu>
+				<img  id="edit-room-icon" alt="room settings" src={settings} />
 			</div>
+
+			<ControlledMenu
+				id="edit-room-menu"
+				state={isOpen ? "open" : "closed"}
+				anchorRef={ref}
+				onClose={() => setOpen(false)}
+			>
+				{/* ---------- */}
+				<label> Room Name </label>
+				<FocusableItem>
+					{({ ref }: any) => (
+						<input
+							ref={ref}
+							required
+							type="text"
+							placeholder="Name your new room"
+							value={updateRoomName}
+							onChange={(e) => setUpdateRoomName(e.target.value)}
+						/>
+					)}
+				</FocusableItem>
+				<hr />
+
+				{/* ---------- */}
+				<label> Room Type </label>
+				<FocusableItem>
+					{({ ref }: any) => (
+						<select
+							value={updateTypeRoom}
+							onChange={(e) => {
+								setUpdateTypeRoom(e.target.value);
+							}}
+							required
+							className="mao-select"
+						>
+							<option>public</option>
+							<option>private</option>
+						</select>
+					)}
+				</FocusableItem>
+				<hr />
+
+				{/* ---------- */}
+				<label> Password </label>
+				<FocusableItem>
+					{({ ref }: any) => (
+						<input
+							ref={ref}
+							type="password"
+							placeholder="Room password"
+							value={updatePassWord}
+							onChange={(e) => setUpdatePassword(e.target.value)}
+						/>
+					)}
+				</FocusableItem>
+				<hr />
+
+				{/* ---------- */}
+				<label> Participants </label>
+				<FocusableItem>
+					{({ ref }: any) => (
+						<div ref={ref} className="room-participants-mgt">
+							{Html_AvailableUser}
+						</div>
+					)}
+				</FocusableItem>
+				<hr />
+
+				{/* ---------- */}
+				<FocusableItem>
+					{({ ref }: any) => (
+						<button
+							onClick={() => {
+								onSubmit_updateRoom();
+								setOpen(false);
+							}}
+							className="mao-button"
+						>
+							{" "}
+							Update Room{" "}
+						</button>
+					)}
+				</FocusableItem>
+			</ControlledMenu>
+		</div>
 	);
 }

@@ -101,7 +101,6 @@ export function SendMessageBar(props: any) {
   const currentValueBis = props.messageBarValues.get(props.currRoomId);
   return (
     <div id="send-message" key={props.currRoomId}>
-      <img src={plus} alt="" />
       <form action="#" onSubmit={onSubmit_messageBar}>
         <input
           type="text"
@@ -114,9 +113,6 @@ export function SendMessageBar(props: any) {
           }}
         />
       </form>
-      <img src={gift} alt="" />
-      <img src={gif} alt="" />
-      <img src={emote} alt="" />
     </div>
   );
 }

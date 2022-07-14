@@ -68,7 +68,7 @@ export function Chat(props: any) {
 	const [messages, setMessages] = useState<Map<number, any[]>>();
 
 	const [messageBarValues, setMessageBarValue] =
-		useState<Map<number, string>>();
+		  useState<Map<number, string>>();
 
 	useEffect(() => {
 
@@ -102,59 +102,57 @@ export function Chat(props: any) {
 	/*         Component HTML          */
 	/* ------------------------------- */
 	return (
-		<div>
-			<div className="container">
+		<div className="maobe-container">
 			<ChannelPanel />
 
 			<div id="middle-box">
-			<RoomsPanel
-		roomsList={rooms}
-		onClick={onClick_Room}
-		currRoomId={currRoomId}
-		connectedUser={props.connectedUser}
-		setCurrRoomId={ setCurrRoomId }
-		setRooms={ setRooms }
-		setMessageBarValue={setMessageBarValue}
-		{...props}
-			/>
-			<StatusBar connectedUser={props.connectedUser} />
+				<RoomsPanel
+					roomsList={rooms}
+					onClick={onClick_Room}
+					currRoomId={currRoomId}
+					connectedUser={props.connectedUser}
+					setCurrRoomId={ setCurrRoomId }
+					setRooms={ setRooms }
+					setMessageBarValue={setMessageBarValue}
+					{...props}
+				/>
+				<StatusBar connectedUser={props.connectedUser} />
 			</div>
 
 			<div id="main">
-			<RoomHeaderBar roomsList={rooms} currRoomId={currRoomId} />
-			<div className="content">
-			<MessagePanel
-		roomsList={rooms}
-		currRoomId={currRoomId}
-		messages={messages}
-		setMessages={setMessages}
-		{...props}
-			/>
-		<SendMessageBar
-		currRoomId={currRoomId}
-		roomsList={rooms}
-		messages={messages}
-		setMessages={setMessages}
-		messageBarValues={messageBarValues}
-		setMessageBarValue={setMessageBarValue}
-		{...props}
-			/>
+				<RoomHeaderBar roomsList={rooms} currRoomId={currRoomId} />
+				<div id="sub-main">
+					<div className="content">
+						<MessagePanel
+							roomsList={rooms}
+							currRoomId={currRoomId}
+							messages={messages}
+							setMessages={setMessages}
+							{...props}
+						/>
+						<SendMessageBar
+							currRoomId={currRoomId}
+							roomsList={rooms}
+							messages={messages}
+							setMessages={setMessages}
+							messageBarValues={messageBarValues}
+							setMessageBarValue={setMessageBarValue}
+							{...props}
+						/>
+					</div>
+					<div id="participant-panel">
+						<ParticipantsPanel
+							roomsList={rooms}
+							currRoomId={currRoomId}
+							connectedUser={props.connectedUser}
+							setCurrRoomId={setCurrRoomId}
+							messages={messages}
+							setMessages={setMessages}
+							{...props}
+						/>
+					</div>
+				</div>
 			</div>
-			</div>
-			<div id="main">
-			<div className="content">
-			<ParticipantsPanel
-		roomsList={rooms}
-		currRoomId={currRoomId}
-		connectedUser={props.connectedUser}
-		setCurrRoomId={setCurrRoomId}
-		messages={messages}
-		setMessages={setMessages}
-		{...props}
-			/>
-			</div>
-			</div>
-			</div>
-			</div>
+		</div>
 	);
 }
