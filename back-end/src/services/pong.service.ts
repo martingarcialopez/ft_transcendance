@@ -12,7 +12,6 @@ import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { GameEntity } from '../models/game.entity';
 import { UserService } from './user.service';
 import { GameHistory } from 'src/models/gamehistory.entity';
-import { first, throwError } from 'rxjs';
 import { User } from 'src/models/user.entity';
 import * as typeorm from "typeorm";
 
