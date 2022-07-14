@@ -74,7 +74,7 @@ body{
 /* MIDDLE BOX  */
 #middle-box{
     height: inherit;
-    width: 250px;
+    width: 25vh;
     background-color: #2F3136;
     display: flex;
     flex-direction: column;
