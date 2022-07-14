@@ -24,9 +24,9 @@ export function MessagePanel(props: any) {
 		});
 	};
 
-	useEffect(() => {
-		scrollToBottom();
-	}, [props.messages]);
+	// useEffect(() => {
+	// 	scrollToBottom();
+	// }, [props.messages]);
 
 
 	useEffect(() => {
@@ -42,9 +42,9 @@ export function MessagePanel(props: any) {
 			props.appSocket.on("B_getMessages", getMessages_listener);
 		}
 		return () => {
-						props.appSocket.removeAllListeners("B_getMessages");
+			props.appSocket.removeAllListeners("B_getMessages");
 		};
-		});
+	});
 
 
 	if (
@@ -78,26 +78,25 @@ export function MessagePanel(props: any) {
 					return <div key={i}></div>;
 				}
 				return (
-					<div key={i}>
+					<div id="pre-messages" key={i}>
 						<div id="messages">
-						<img src={currentUser.avatar} alt="" />
+							<img src={currentUser.avatar} alt="" />
 
-						<div id="column-message">
-						<div id="name-date-message">
-						<div>{currentUser.username}</div>
-						<div>{message.createdDate}</div>
-						</div>
-						<div id="message-send">
-						<div>{message.content}</div>
-						</div>
-						</div>
+							<div id="column-message">
+								<div id="name-date-message">
+									<div>{currentUser.username}</div>
+									<div>{message.createdDate}</div>
+								</div>
+								<div id="message-send">
+									<div>{message.content}</div>
+								</div>
+							</div>
 						</div>
 						<div id="risco">
-						<hr />
-          				<hr />
+          					<hr />
 						</div>
 						<div ref={messagesEndRef} />
-						</div>
+					</div>
 				);
 			});
 		}
@@ -106,14 +105,14 @@ export function MessagePanel(props: any) {
 	return (
 		<div id="mao-messages-panel">
 			<div id="profile">
-			<img src={currentRoom.image} alt="" />
-			<div>{currentRoom.name}</div>
+				<img src={currentRoom.image} alt="" />
+				<div>{currentRoom.name}</div>
 			</div>
 
 			<div id="risco">
-			<hr />
-			<div> Lets the chat begin </div>
-			<hr />
+				<hr />
+				<div id="room-greating"> Lets the chat begin </div>
+				<hr />
 			</div>
 
 			{Html_messages}
