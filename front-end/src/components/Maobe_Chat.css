@@ -521,6 +521,7 @@ body{
     position: absolute;
 	bottom: 0;
 	width: 129vh;
+		width: 40vw;	
 	padding: 2vh;
 }
 
