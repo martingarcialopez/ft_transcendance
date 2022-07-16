@@ -35,27 +35,10 @@ export function ParticipantsPanel(props: any) {
   return (
     <div>
       <div id="profile">
-        <img src="" alt="" />
-        <a href="Participants">Participants</a>
+        <h3 id="participant-title">Participants</h3>
       </div>
 
       {Html_participants}
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
     </div>
   );
 }

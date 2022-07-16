@@ -6,9 +6,10 @@ import { UserService } from '../services/user.service';
 import { User } from '../models/user.entity';
 import { Relationship } from 'src/models/friends.entity';
 import { GameHistory } from 'src/models/gamehistory.entity';
+import { Matchmaking } from 'src/models/matchmaking.entity';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Message, User, Relationship, GameHistory]), ],
+	imports: [TypeOrmModule.forFeature([Message, User, Relationship, GameHistory, Matchmaking]), ],
 	providers: [MessageService, UserService],
   exports: [MessageService],
 })

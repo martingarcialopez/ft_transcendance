@@ -26,13 +26,13 @@ export function ParticipantContextMenu(props: any) {
         toggleMenu(true);
       }}
     >
-      <div id="messages">
+      <div id="edit-room-participant">
         <img src={props.currentUser.avatar} alt="" />
         <div id="column-message">
           <div id="message-send">
-            <a href="message-send" >
+            <div>
               {props.currentUser.username} {userRole} {isMute}
-            </a>
+            </div>
           </div>
         </div>
       </div>
@@ -40,10 +40,11 @@ export function ParticipantContextMenu(props: any) {
       <ControlledMenu
         {...menuProps}
         anchorPoint={anchorPoint}
-        onClose={() => toggleMenu(false)}
+          onClose={() => toggleMenu(false)}
+		  className="participant-context-menu"
       >
         <ParticipantBasicContextMenu {...props} />
-        <ParticipantSetAsAdminContextMenu {...props} />
+        <ParticipantSetAsAdminContextMenu{...props} />
         <ParticipantAdminContextMenu {...props} />
  </ControlledMenu>
     </div>
