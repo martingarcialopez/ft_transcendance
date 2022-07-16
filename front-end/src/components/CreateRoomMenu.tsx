@@ -25,6 +25,7 @@ export function CreateRoomMenu(props: any) {
 		props.appSocket.emit("F_getAvailableUsers", true);
 	};
 	const getAvailableUsers_listener = (userList: any) => {
+		console.log('RECEIVED: ', userList);
 		setAvailableUsers(userList);
 	};
 	const [selectedNewParticipants, setSelectedNewParticipants] = useState<any[]>(
@@ -110,12 +111,12 @@ export function CreateRoomMenu(props: any) {
 	});
 
 
-			let Html_AvailableUser: any = <div></div>;
+	let Html_AvailableUser: any = <div></div>;
 
-	if (props.availableUsers !== undefined && props.availableUsers.length > 0) {
+	if (availableUsers !== undefined && availableUsers.length > 0) {
 		Html_AvailableUser = availableUsers.map((user: any, i: any) => {
 			return (
-				<div key={i} id="messages">
+				<div key={i} id="create-room-participant">
 				  <input
 					type="checkbox"
 					onChange={(e) => onChange_selectParticipant(e, user)}
@@ -128,7 +129,7 @@ export function CreateRoomMenu(props: any) {
 	}
 
 	return (
-		<div>
+		<div id="create-room-menu">
 		  <button
 			ref={ref}
 			className="mao-btn-add-room"
@@ -136,7 +137,7 @@ export function CreateRoomMenu(props: any) {
 				setOpen(true);
 				onClick_getAvailableUsers();
 			}}
-			></button>
+			>➕</button>
 
 		  <ControlledMenu
 			state={isOpen ? "open" : "closed"}
@@ -185,7 +186,8 @@ export function CreateRoomMenu(props: any) {
 				  onChange={(e) => {
 					  setTypeRoom(e.target.value);
 				  }}
-				  required
+					required
+					className="mao-select"
 				  >
 				  <option>public</option>
 				  <option>private</option>
@@ -227,7 +229,8 @@ export function CreateRoomMenu(props: any) {
 				  onClick={() => {
 					  onSubmit_createRoom();
 					  setOpen(false);
-				  }}
+					}}
+					className="mao-button"
 				  >
 				  {" "}
 				  Create Room{" "}

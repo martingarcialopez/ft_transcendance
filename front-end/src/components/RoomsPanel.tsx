@@ -16,7 +16,7 @@ export function RoomsPanel(props: any) {
 			  }}
 			  >
 			  <img alt="room logo" src={room.image} />
-			  <div>{room.name}</div>
+			  <div id="room-names">{room.name}</div>
 			  <EditRoomMenu currRoom={room} {...props} />
 			  <LeaveRoomButton currRoom={room} {...props} />
 			</div>
