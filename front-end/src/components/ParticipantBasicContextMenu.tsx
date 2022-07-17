@@ -64,7 +64,6 @@ export function ParticipantBasicContextMenu(props: any) {
                 password: "",
                 users: [{ id: userId }],
             };
-            console.log('emitting F_CREATEROOM BEEETCH');
             props.appSocket.emit("F_createRoom", newPmRoom, (isCreated: boolean) => {
                 if (isCreated !== true) {
                     alert("Something went wrong");
