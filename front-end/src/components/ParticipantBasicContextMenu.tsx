@@ -41,11 +41,11 @@ export function ParticipantBasicContextMenu(props: any) {
 
 	const onClick_directMessage = (userId: number, username: string) => {
         let roomFounded = false;
-        props.rooms.forEach((room :any) => {
+        props.roomsList.forEach((room :any) => {
             if (roomFounded === true) {
                 return;
             }
-            if (room.participants.length === 2) {
+            if (room.participants.length === 2 && room.name.substr(0, 3) === "PM ") {
                 const userMatch = room.participants.filter(
                     (obj: any) => obj.userId === userId
                 );
@@ -55,6 +55,7 @@ export function ParticipantBasicContextMenu(props: any) {
                 }
             }
 	});
+        console.log(`roomFound is ${roomFounded}`)
         if (roomFounded === false) {
             const newPmRoom = {
                 name: `PM ${username}`,
@@ -63,6 +64,7 @@ export function ParticipantBasicContextMenu(props: any) {
                 password: "",
                 users: [{ id: userId }],
             };
+            console.log('emitting F_CREATEROOM BEEETCH');
             props.appSocket.emit("F_createRoom", newPmRoom, (isCreated: boolean) => {
                 if (isCreated !== true) {
                     alert("Something went wrong");
@@ -92,7 +94,7 @@ export function ParticipantBasicContextMenu(props: any) {
       >
         Access {props.currentUser.username} profile
       </MenuItem>
-	  <hr />
+	    <hr />
 
       {/* ----- Direct Message ----- */}
       <MenuItem
@@ -106,6 +108,14 @@ export function ParticipantBasicContextMenu(props: any) {
          Send Message {props.currentUser.username}
       </MenuItem>
       <hr />
+
+        { /* ----- Invitation to a Game ----- */}
+
+      <MenuItem
+        // onClick={ () => onClick_invitation()}
+        > Invite to a game
+        </MenuItem>
+
     </div>
   );
 }
