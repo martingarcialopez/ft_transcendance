@@ -37,24 +37,16 @@ export const ResponsiveDialog = () => {
           {"Pong Rules"}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <Typography gutterBottom>
-              This game is an online Pong where two players are going to
-              do a match.
-            </Typography>
-            <Typography gutterBottom>
-              You have to send the ball to the opponent until he can send
-              it back. If the ball touch your side, your opponent win the
-              point.
-            </Typography>
-            <Typography gutterBottom>
-              The winner is the first player arrived at 3 points.
-            </Typography>
-          </DialogContentText>
+          This game is an online Pong where two players are going to
+          do a match.
+          You have to send the ball to the opponent until he can send
+          it back. If the ball touch your side, your opponent win the
+          point.
+          The winner is the first player arrived at 3 points.
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} autoFocus>
-             I get it !
+            I get it !
           </Button>
         </DialogActions>
       </Dialog>

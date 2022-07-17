@@ -54,7 +54,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
     }, [])
 
     const handleClick = (friend: any) => {
-        if (friend.status !== "online" && friend.status !== "offline") {
+        if (friend.status !== "online" && friend.status !== "looking" && friend.status !== "offline") {
             if (userInfo) {
                 navigate("/pong", { state: { spectator: friend.status } })
             }
@@ -110,13 +110,13 @@ export const ListFriends = ({ userPageInfo }: any) => {
                     <ListItem key={item.username}>
                         <Button onClick={() => handleClick(item)} >
                             <ListItemAvatar>
-                                {item.status === "online" ?
+                                {item.status === "online" || item.status === "looking" ?
                                     <StyledBadgeGreen
                                         overlap="circular"
                                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                                         variant="dot"
                                     >
-                                        <Avatar>
+                                        <Avatar src={item.avatar}>
                                             {item.username}
                                         </Avatar>
                                     </StyledBadgeGreen>
@@ -128,7 +128,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
                                             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                                             variant="dot"
                                         >
-                                            <Avatar>
+                                            <Avatar src={item.avatar}>
                                                 {item.username}
                                             </Avatar>
                                         </StyledBadgeRed>
@@ -138,7 +138,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
                                             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                                             variant="dot"
                                         >
-                                            <Avatar>
+                                            <Avatar src={item.avatar}>
                                                 {item.username}
                                             </Avatar>
                                         </StyledBadgeGrey>

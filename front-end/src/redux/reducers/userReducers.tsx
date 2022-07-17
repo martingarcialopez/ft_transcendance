@@ -49,6 +49,7 @@ export interface Player {
 
 export interface Friend {
   username?: string;
+  avatar?: string;
   status?: string;
 }
 
@@ -79,7 +80,7 @@ export interface UserState {
 
 export interface AllMatchState {
   MatchInfo?: MatchInfo[];
-  Players?: Player[]
+  Players?: Player[];
 }
 
 interface Action {
@@ -94,11 +95,11 @@ export const allMatchReducer = (state: AllMatchState = {}, action: Action) => {
         ...state,
         MatchInfo: action.payload,
       };
-      case GET_ALL_PLAYERS_ACTION:
-        return {
-          ...state,
-          Players: action.payload,
-        };
+    case GET_ALL_PLAYERS_ACTION:
+      return {
+        ...state,
+        Players: action.payload,
+      };
     default:
       return state;
   }

@@ -16,6 +16,7 @@ import { friendsStatusDto } from 'src/dtos/out/friendsStatus.dto';
 import * as typeorm from "typeorm";
 import { type } from 'os';
 import { allUsersDto } from 'src/dtos/out/allUsers.dto';
+import { Matchmaking } from 'src/models/matchmaking.entity';
 
 @Injectable()
 export class UserService {
@@ -26,7 +27,9 @@ export class UserService {
         @InjectRepository(Relationship)
         private friendsRepository: Repository<Relationship>,
         @InjectRepository(GameHistory)
-        private GameHistoryRepository: Repository<GameHistory>
+        private GameHistoryRepository: Repository<GameHistory>,
+        @InjectRepository(Matchmaking)
+        private MatchmakingRepository: Repository<Matchmaking>
     ) { }
 
     async getAllUsers() {
@@ -116,13 +119,29 @@ export class UserService {
             throw new HttpException('user not found', HttpStatus.NOT_FOUND); // user does not exist
 
         if (user.avatar) {
-            const path = `/usr/src/app/public/shared/avatar/${user.login42}.png`;
-            try {
-                unlinkSync(path); //file removed
-            } catch (err) {
-                console.error(err);
-            }
+
+        const unlinkAsync = promisify(fs.unlink)
+
+        const files: string[] = fs.readdirSync("public/shared/avatar");
+
+        files.forEach(file => {
+            const filename = file.split('.').slice(0, -1).join('.');
+            if (filename === user.username)
+                unlinkAsync(`public/shared/avatar/${file}`);
+        });
+
+
+
         }
+
+        await this.friendsRepository.delete({ member_username: user.username});
+        await this.friendsRepository.delete({ friend_username: user.username});
+
+        await this.GameHistoryRepository.delete( { leftPlayer: user.username} );
+        await this.GameHistoryRepository.delete( { rightPlayer: user.username} );
+
+        await this.MatchmakingRepository.delete( { userId: user.id } );
+
         await this.userRepository.delete(id);
     }
 
@@ -210,12 +229,13 @@ export class UserService {
 
         for (const user of allUsernames) {
 
-            const userStatus = await this.userRepository.find( { select: ["status"], where: { username: user } } );
+            const dbUser = await this.userRepository.findOne( { username: user } );
 
             let tmp: friendsStatusDto = new friendsStatusDto();
 
             tmp.username = user;
-            tmp.status = userStatus[0].status;
+            tmp.status = dbUser.status;
+            tmp.avatar = dbUser.avatar
             friendsStatus.push(tmp);
         }
 
