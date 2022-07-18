@@ -17,7 +17,7 @@ import { UserState } from "../redux/reducers/userReducers";
 import { MouseEvent, SyntheticEvent, useState } from "react";
 import { logoutAction } from "../redux/actions/userActions";
 
-const pages = ["Home", "Room", "Pong", "Leaderboard", "Maobe_Chat"];
+const pages = ["Home", "Pong", "Leaderboard", "Maobe_Chat"];
 const settings = ["Profile", "Account", "Logout"];
 
 const ResponsiveAppBar = () => {
@@ -67,48 +67,46 @@ const ResponsiveAppBar = () => {
           >
             PONG
           </Typography>
-          {!userInfo ? null
-            : (
-              <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="inherit"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                  sx={{
-                    display: { xs: "block", md: "none" },
-                  }}
-                >
-                  {pages.map((page) =>
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Link key={page} to={`/${page.toLowerCase()}`}>
-                        <Typography textAlign="center">{page}</Typography>
-                      </Link>
-                    </MenuItem>
-                  )
-                  }
-                </Menu>
-              </Box>
-            )}
+          {!userInfo ? null : (
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {pages.map((page) => (
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Link key={page} to={`/${page.toLowerCase()}`}>
+                      <Typography textAlign="center">{page}</Typography>
+                    </Link>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          )}
 
           <Typography
             variant="h6"
@@ -161,11 +159,15 @@ const ResponsiveAppBar = () => {
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     {setting !== "Logout" ? (
                       <Link key={setting} to={setting.toLowerCase()}>
-                        <Typography key={setting} textAlign="center">{setting}</Typography>
+                        <Typography key={setting} textAlign="center">
+                          {setting}
+                        </Typography>
                       </Link>
                     ) : (
                       <Link key={setting} onClick={logoutHandler} to={"/home"}>
-                        <Typography key={"/home"} textAlign="center">{setting}</Typography>
+                        <Typography key={"/home"} textAlign="center">
+                          {setting}
+                        </Typography>
                       </Link>
                     )}
                   </MenuItem>
