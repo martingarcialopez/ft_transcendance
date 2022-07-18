@@ -1,5 +1,6 @@
 import { MenuItem, } from "@szhsin/react-menu";
 import { useNavigate } from "react-router-dom";
+import { URL_test } from "../constants/url";
 
 export function ParticipantBasicContextMenu(props: any) {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ export function ParticipantBasicContextMenu(props: any) {
             if (roomFounded === true) {
                 return;
             }
-            if (room.participants.length === 2 && room.name.substr(0, 3) === "PM ") {
+            if (room.participants.length === 2) {
                 const userMatch = room.participants.filter(
                     (obj: any) => obj.userId === userId
                 );
@@ -71,6 +72,57 @@ export function ParticipantBasicContextMenu(props: any) {
             });
         }
     };
+
+  const onClick_invitation = (userId: number, username: string) => {
+
+        let roomFounded = false;
+        props.roomsList.forEach((room :any) => {
+            if (roomFounded === true) {
+                return;
+            }
+            if (room.name.substr(0, 3) === "PM ") {
+                const userMatch = room.participants.filter(
+                    (obj: any) => obj.userId === userId
+                );
+                if (userMatch.length === 1) {
+                    props.setCurrRoomId(room.id);
+                    roomFounded = true;
+                }
+            }
+	});
+        console.log(`roomFound is ${roomFounded}`)
+        if (roomFounded === false) {
+            const newPmRoom = {
+                name: `PM ${username}`,
+                image: "",
+                typeRoom: "private",
+                password: "",
+                users: [{ id: userId }],
+            };
+            props.appSocket.emit("F_createRoom", newPmRoom, (isCreated: boolean) => {
+                if (isCreated !== true) {
+                    alert("Something went wrong");
+                }
+            });
+        }
+
+
+		let messageToCreate = {
+			roomId: props.currRoomId,
+			content: `<a href="http://localhost:8080/pong/joingame?id=gameid">join pong game</a>`
+		};
+
+		props.appSocket.emit(
+			"F_createMessage",
+			messageToCreate,
+			// (isOk: boolean) => {
+			// 	if (isOk) {
+			// 		onChange_setMessageBarValue("");
+			// 	}
+			// }
+		);
+
+  }
 
 
   return (
@@ -111,9 +163,10 @@ export function ParticipantBasicContextMenu(props: any) {
         { /* ----- Invitation to a Game ----- */}
 
       <MenuItem
-        // onClick={ () => onClick_invitation()}
+        onClick={ () => onClick_invitation(props.currentUser.userId, props.currentUser.username)}
         > Invite to a game
         </MenuItem>
+      <hr />
 
     </div>
   );

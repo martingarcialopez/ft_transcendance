@@ -64,7 +64,7 @@ export class PongService {
 
 		this.pongRepository.delete({ userId: user.id });
 
-		await new Promise(r => setTimeout(r, 50000));
+		await new Promise(r => setTimeout(r, 5000));
 
 		user = await this.userService.getUser(user.username);
 		if (user && user.socketId) {
@@ -89,7 +89,7 @@ export class PongService {
 
 			move.id = uuidv4();
 			move.move = 0;
-			move.player = game.leftPlayer === user.username ? 'leftPlayer' : 'rightPlayer';
+			move.player = game.leftPlayer === user.username ? 'rightPlayer' : 'leftPlayer';
 			move.room = game.roomId;
 
 			this.registerMove(move);
