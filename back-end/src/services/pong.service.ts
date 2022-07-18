@@ -67,7 +67,7 @@ export class PongService {
 		await new Promise(r => setTimeout(r, 50000));
 
 		user = await this.userService.getUser(user.username);
-		if (!user || !user.socketId) {
+		if (user && user.socketId) {
 
 			const game: GameHistory = await this.gameHistoryRepository.findOne({ 
 				where: [ 
@@ -153,18 +153,20 @@ export class PongService {
 		}
 	}
 
-	async createCustomGame(client: Socket, userId: string, difficulty: string, maxScore: number) : Promise<string> {
+	async createCustomGame(userId: string, difficulty: string, maxScore: number) : Promise<string> {
+
+		// const user: User = await this.userService.getUserById(userId);
+		// if (!user)
+		// 	throw new NotFoundException();
 
 		const game: GameHistory = new GameHistory();
 
 		game.roomId = uuidv4();
 		game.difficulty = difficulty;
 		game.maxScore = maxScore;
-		game.leftPlayer = (await this.userService.getUserById(userId.toString())).username;
+		// game.leftPlayer = user.username;
 
 		await this.gameHistoryRepository.save(game);
-
-		client.join(game.roomId);
 
 		return game.id;
 
@@ -184,7 +186,17 @@ export class PongService {
 			// console.log(`emiting ->GamePLayersName, ${game.leftPlayer}, ${game.rightPlayer}<- to spectator`);
 			console.log(`joining client to the socket room ${roomId}`);
 
-		} else {
+		} else if (roomSize == 0) {
+
+			const firstPlayer: User = await this.userService.getUserById(userId);
+			if (!firstPlayer)
+				throw new NotFoundException();
+
+			game.leftPlayer = firstPlayer.username;
+
+			client.join(roomId);
+
+		} else if (roomSize == 1) {
 
 			const firstPlayer: User = await this.userService.getUser(game.leftPlayer);
 			if (!firstPlayer)
@@ -193,7 +205,6 @@ export class PongService {
 			const secondPlayer: User = await this.userService.getUserById(userId);
 			if (!secondPlayer)
 				throw new NotFoundException();
-			
 
 			game.rightPlayer = secondPlayer.username;
 
