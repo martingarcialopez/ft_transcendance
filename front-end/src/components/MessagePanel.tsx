@@ -87,9 +87,9 @@ export function MessagePanel(props: any) {
 									<div>{currentUser.username}</div>
 									<div>{message.createdDate}</div>
 								</div>
-								<div id="message-send">
-									<div>{message.content}</div>
-								</div>
+								<div id="message-send" dangerouslySetInnerHTML={{__html: message.content}} />
+									{/* <div>{message.content}</div> */}
+								{/* </div> */}
 							</div>
 						</div>
 						<div id="risco">
