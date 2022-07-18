@@ -1,5 +1,6 @@
 import "../styles/leaderboardStyles.css";
 import { useNavigate } from "react-router-dom";
+
 import { GetUserInfo } from "../components/GetUserInfo";
 
 export const LeaderboardProfiles = ({ Leaderboard }: any) => {
