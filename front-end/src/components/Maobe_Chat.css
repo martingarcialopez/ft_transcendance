@@ -817,3 +817,7 @@ body{
     display: none;
 }
 }
+
+.to-Hidden{
+		display: none;
+}

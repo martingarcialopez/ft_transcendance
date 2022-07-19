@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+
 import emote from "../styles/assets/emote.svg";
 import gift from "../styles/assets/gift.svg";
 import gif from "../styles/assets/gif.svg";
@@ -100,7 +101,7 @@ export function SendMessageBar(props: any) {
   const currentValueBis = props.messageBarValues.get(props.currRoomId);
   return (
     <div id="send-message" key={props.currRoomId}>
-	  <img src={plus} alt="" />
+      <img src={plus} alt="" className="to-Hidden" />
       <form action="#" onSubmit={onSubmit_messageBar}>
         <input
           type="text"
@@ -113,8 +114,9 @@ export function SendMessageBar(props: any) {
           }}
         />
       </form>
-	  <img src={gift} alt="" />																    <img src={gif} alt="" />
-      <img src={emote} alt="" />
+      <img src={gift} alt="" className="to-Hidden" />{" "}
+      <img src={gif} alt="" className="to-Hidden" />
+      <img src={emote} alt="" className="to-Hidden" />
     </div>
   );
 }
