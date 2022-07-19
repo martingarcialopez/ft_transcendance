@@ -75,8 +75,8 @@ export const Pong = () => {
     }, []);
 
     useEffect(() => {
-        console.log("888888 useLocation => state:", state)
         if (userInfo && state) {
+            console.log("888888 useLocation => state:", state)
             if (state && state.spectator) {
                 console.log("Pong socket.emit joinPongRoom ", userInfo.username, ", friend.status", state.spectator);
                 if (socket)
@@ -89,6 +89,17 @@ export const Pong = () => {
             // setOpponent('test')
         }
     }, [socket, state]);
+
+    // useEffect(() => {
+    //     if (userInfo && state) {
+    //         if (state && state.joingame) {
+    //             console.log("Pong socket.emit joinPongRoom ", userInfo.id, ", in room", state.joingame);
+    //             if (socket)
+    //                 socket.emit('joinPongRoom', { userId: userInfo.id, roomId: state.joingame });
+    //             setRoomId(state.joingame);
+    //         }
+    //     }
+    // }, [socket, state]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -150,7 +161,7 @@ export const Pong = () => {
     socket.on('gameOver', (winnerPlayer: string) => {
         console.log("socket.on gameOver");
         console.log("winnerPlayer :", winnerPlayer)
-        if (winnerPlayer === "leftplayer")
+        if (winnerPlayer === "leftPlayer")
             setWinner(leftPlayer);
         else
             setWinner(rightPlayer);

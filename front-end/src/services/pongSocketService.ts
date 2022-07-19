@@ -22,16 +22,22 @@ class pongSocketServiceImplementation {
         if (!this.connection) {
 
             this.connection = socketio(`${URL_test}`, { path: '/pongSocketServer' });
+            if (this.connection)
+                console.log('successfully connected to the socket server');
+            else
+                console.log('something went wrong when connecting to the socket server');
 
             const storage = localStorage.getItem('userInfo')
             if (!storage)
-                return null;
+                return this.connection;
 
             const user = JSON.parse(storage);
 
             this.connection.emit('setSocketId', user.username);
 
-            console.log(`OPENING A CONNECTION FOR USER ${user.username} with socketId ${this.connection.id}`)
+            console.log(`OPENING A CONNECTION FOR USER ${user.username} with socketId ${this.connection.id}... this.connection is ${this.connection}`)
+
+            return this.connection;
 
         } else {
 

@@ -55,6 +55,7 @@ export class PongService {
 		return updatedUser.socketId;
 	}
 
+
 	async handleDisconnect(client: Socket) {
 
 		let user: User = await this.userRepository.findOne( { socketId: client.id } );
@@ -64,37 +65,37 @@ export class PongService {
 
 		this.pongRepository.delete({ userId: user.id });
 
-		await new Promise(r => setTimeout(r, 5000));
+		// await new Promise(r => setTimeout(r, 5000));
 
-		user = await this.userService.getUser(user.username);
-		if (user && user.socketId) {
+		// user = await this.userService.getUser(user.username);
+		// if (user && user.socketId) {
 
-			const game: GameHistory = await this.gameHistoryRepository.findOne({ 
-				where: [ 
-					{ winner: typeorm.IsNull(), leftPlayer: user.username },
-					{ winner: typeorm.IsNull(), rightPlayer: user.username}
-				],
-				order: { id: 'DESC' }
-			});
+		// 	const game: GameHistory = await this.gameHistoryRepository.findOne({ 
+		// 		where: [ 
+		// 			{ winner: typeorm.IsNull(), leftPlayer: user.username },
+		// 			{ winner: typeorm.IsNull(), rightPlayer: user.username}
+		// 		],
+		// 		order: { id: 'DESC' }
+		// 	});
 
-			class Game implements GameEntity {
+		// 	class Game implements GameEntity {
 
-				id: string;
-				move: number;
-				player: string;
-				room: string;
-			}
+		// 		id: string;
+		// 		move: number;
+		// 		player: string;
+		// 		room: string;
+		// 	}
 
-			let move: Game = new Game();
+		// 	let move: Game = new Game();
 
-			move.id = uuidv4();
-			move.move = 0;
-			move.player = game.leftPlayer === user.username ? 'rightPlayer' : 'leftPlayer';
-			move.room = game.roomId;
+		// 	move.id = uuidv4();
+		// 	move.move = 0;
+		// 	move.player = game.leftPlayer === user.username ? 'rightPlayer' : 'leftPlayer';
+		// 	move.room = game.roomId;
 
-			this.registerMove(move);
+		// 	this.registerMove(move);
 
-		} // give up game - destroy custom game room ?
+		// } // give up game - destroy custom game room ?
 
 
 	}
@@ -174,19 +175,33 @@ export class PongService {
 
 	async joinPongRoom(client: Socket, server: Server, userId: string, roomId: string) {
 
-		const roomSize = server.sockets.adapter.rooms.get(roomId).size;
-		const game: GameHistory = await this.gameHistoryRepository.findOne( { where: { roomId: roomId } } );
+		// console.log ('IN JOIN PONG ROOM BEBEEEEEE');
 
-		console.log (`room size is ${roomSize}`)
+		// await new Promise(r => setTimeout(r, 10));
 
-		if (roomSize >= 2) {
+		const room = server.sockets.adapter.rooms.get(roomId);
+		const roomSize: number = room ? room.size : 0;
 
-			// client.emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
-			client.join(roomId);
-			// console.log(`emiting ->GamePLayersName, ${game.leftPlayer}, ${game.rightPlayer}<- to spectator`);
-			console.log(`joining client to the socket room ${roomId}`);
+		let game: GameHistory = await this.gameHistoryRepository.findOne( { where: { roomId: roomId } } );
 
-		} else if (roomSize == 0) {
+		if (game && game.winner) {
+
+			console.log('someone arrived to a finished game !')
+
+			let state: State = initGameState('normal', game.leftPlayer, game.rightPlayer, roomId);
+			client.emit('gameState', state);
+			client.emit('gameOver', game.winner === game.leftPlayer ? 'leftPlayer' : 'rightPlayer');
+			return ;
+		}
+
+		if (!game) {
+			game = new GameHistory();
+
+			game.roomId = roomId;
+			game.difficulty = 'normal';
+			game.maxScore = 5;
+
+			// console.log('player 1 arrived !')
 
 			const firstPlayer: User = await this.userService.getUserById(userId);
 			if (!firstPlayer)
@@ -194,9 +209,25 @@ export class PongService {
 
 			game.leftPlayer = firstPlayer.username;
 
+			await this.gameHistoryRepository.save(game);
+
 			client.join(roomId);
 
-		} else if (roomSize == 1) {
+			let state: State = initGameState('normal', firstPlayer.username, 'waiting for the opponent to join the room ...', roomId);
+
+			client.emit('gameState', state);
+		}
+
+		else if (game.rightPlayer) {
+
+			client.join(roomId);
+			console.log(`joining espectator to the socket room ${roomId}`);
+
+		} else {
+
+			// console.log('player 2 arrived !')
+
+			let game: GameHistory = await this.gameHistoryRepository.findOne( { where: { roomId: roomId } } );
 
 			const firstPlayer: User = await this.userService.getUser(game.leftPlayer);
 			if (!firstPlayer)
@@ -206,20 +237,22 @@ export class PongService {
 			if (!secondPlayer)
 				throw new NotFoundException();
 
+			if (game.leftPlayer === secondPlayer.username) {
+
+				let state: State = initGameState('normal', firstPlayer.username, 'waiting for the opponent to join the room ...', roomId);
+
+				client.join(roomId);
+				client.emit('gameState', state);
+				return;
+			}
 			game.rightPlayer = secondPlayer.username;
-
 			this.gameHistoryRepository.save(game);
-
-			// client.emit('GameInfo', 'rightPlayer');
-
-			client.join(roomId);
-
-			// server.to(roomId).emit('GamePlayersName', game.leftPlayer, game.rightPlayer);
 
 			let updatedUser = await this.userService.updateUser( { status: game.id }, firstPlayer.id.toString());
 			updatedUser = await this.userService.updateUser( { status: game.id }, secondPlayer.id.toString());
 			
-			this.playGame(server, game.id, game.difficulty, firstPlayer.id, secondPlayer.id, game.maxScore);
+			client.join(roomId);
+			this.playGame(server, game.roomId, game.difficulty, firstPlayer.id, secondPlayer.id, game.maxScore);
 		}
 	}
 
@@ -244,9 +277,9 @@ export class PongService {
 			if (state.playerGiveUp || state.leftScore >= winningScore || state.rightScore >= winningScore) {
 
 				if (state.playerGiveUp === 'rightPlayer' || state.leftScore >= winningScore)
-					winner = 'leftplayer';
+					winner = 'leftPlayer';
 				else if (state.playerGiveUp === 'leftPlayer' || state.rightScore >= winningScore)
-					winner = 'rightplayer';
+					winner = 'rightPlayer';
 				console.log(`winner is ${winner}`)
 				socket.to(socketRoom).emit('gameOver', winner);
 				const move = this.gameService.getAll();
@@ -254,6 +287,7 @@ export class PongService {
 
 				const gameResult: GameHistory = (await this.gameHistoryRepository.find( { where : { roomId: socketRoom } } )).at(0) ;
 
+				// Solve the error w/out Internal Server Error plz
 				if (!gameResult)
 					throw new InternalServerErrorException();
 
@@ -319,6 +353,7 @@ export class PongService {
 		const created: GameEntity = this.gameService.create({ id: uuidv4(), ...move });
 	}
 }
+
 
 function initGameState(difficulty: string, player1: string, player2: string, roomId: string): State {
 

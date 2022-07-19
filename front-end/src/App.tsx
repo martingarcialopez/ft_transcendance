@@ -18,6 +18,7 @@ import { LeaderBoard } from "./screens/LeaderBoard";
 import { MaobeChat } from "./screens/MaobeChat";
 import { Twofa } from "./screens/Twofa";
 import { RedirectPage } from "./screens/RedirectPage";
+import { JoinPongRoom } from "./components/JoinPongRoom";
 
 const App = () => {
   const userLogin = useSelector<RootState, UserState>(
@@ -40,6 +41,7 @@ const App = () => {
   if (isAuthenticated) {
     routes = (
       <Routes>
+        <Route path="/joingame/:id" element={<JoinPongRoom />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/profile/:id" element={<OtherProfileScreen />} />
         <Route path="/profile" element={<MyProfileScreen />} />
