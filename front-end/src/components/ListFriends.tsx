@@ -43,15 +43,12 @@ export const ListFriends = ({ userPageInfo }: any) => {
     useEffect(() => {
         // console.log("11111 ListFriends userPageInfo = ", userPageInfo)
         // console.log("ListFriends userPageInfo.friends = ", userPageInfo.friends)
-        if (userPageInfo && userInfo) {
-            console.log("dispatch getFriendListStatusAction")
-            dispatch(getFriendListStatusAction(userInfo.access_token, userPageInfo.username, friendId))
-            // console.log("userLogin.friendInfo", userLogin.friendInfo)
-            // if (userLogin && userLogin.friendInfo && userLogin.friendInfo.username && userLogin.friendInfo.status) {
-            // }
-        }
-
-    }, [])
+        console.log("dispatch getFriendListStatusAction")
+        dispatch(getFriendListStatusAction(userInfo?.access_token, userPageInfo.username, friendId))
+        // console.log("userLogin.friendInfo", userLogin.friendInfo)
+        // if (userLogin && userLogin.friendInfo && userLogin.friendInfo.username && userLogin.friendInfo.status) {
+        // }
+    }, [dispatch, friendId, userInfo?.access_token, userPageInfo.username])
 
     const handleClick = (friend: any) => {
         if (friend.status !== "online" && friend.status !== "looking" && friend.status !== "offline") {
