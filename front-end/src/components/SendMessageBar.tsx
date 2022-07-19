@@ -5,79 +5,78 @@ import gif from "../styles/assets/gif.svg";
 import plus from "../styles/assets/plus.svg";
 
 interface I_Message {
-	userId: number;
-	roomId: number;
-	content: string;
-	createdDate: string;
-	id: number;
+  userId: number;
+  roomId: number;
+  content: string;
+  createdDate: string;
+  id: number;
 }
 
-
-
 export function SendMessageBar(props: any) {
-	useEffect(() => {
-		const createMessage_listener = (newMessageInfos: I_Message) => {
-			if (props.messages !== undefined) {
-				let intendedRoomMessages = props.messages.get(newMessageInfos.roomId);
-				const newMessage: any = {
-					userId: newMessageInfos.userId,
-					content: newMessageInfos.content,
-					createdDate: newMessageInfos.createdDate,
-				};
-				if (intendedRoomMessages !== undefined) {
-					intendedRoomMessages.push(newMessage);
-				} else {
-					intendedRoomMessages = [newMessage];
-				}
-				let newVarValues = new Map(props.messages);
-				newVarValues.set(newMessageInfos.roomId, intendedRoomMessages);
-				props.setMessages(newVarValues);
-			}
-		};
-		if (props.appSocket._callbacks !== undefined && props.appSocket._callbacks["createMessage_listener"] === undefined) {
-			props.appSocket.on("B_createMessage", createMessage_listener);
-		}
-		return () => {
-			props.appSocket.removeAllListeners("B_createMessage");
-		};
-	});
+  useEffect(() => {
+    const createMessage_listener = (newMessageInfos: I_Message) => {
+      if (props.messages !== undefined) {
+        let intendedRoomMessages = props.messages.get(newMessageInfos.roomId);
+        const newMessage: any = {
+          userId: newMessageInfos.userId,
+          content: newMessageInfos.content,
+          createdDate: newMessageInfos.createdDate,
+        };
+        if (intendedRoomMessages !== undefined) {
+          intendedRoomMessages.push(newMessage);
+        } else {
+          intendedRoomMessages = [newMessage];
+        }
+        let newVarValues = new Map(props.messages);
+        newVarValues.set(newMessageInfos.roomId, intendedRoomMessages);
+        props.setMessages(newVarValues);
+      }
+    };
+    if (
+      props.appSocket._callbacks !== undefined &&
+      props.appSocket._callbacks["createMessage_listener"] === undefined
+    ) {
+      props.appSocket.on("B_createMessage", createMessage_listener);
+    }
+    return () => {
+      props.appSocket.removeAllListeners("B_createMessage");
+    };
+  });
 
-
-
-	if (props.messageBarValues === undefined || props.currRoomId === -1) {
+  if (props.messageBarValues === undefined || props.currRoomId === -1) {
     return <div></div>;
   }
-	const onChange_setMessageBarValue = (value: string) => {
-		if (props.messageBarValues !== undefined) {
-			let newVarValues = new Map(props.messageBarValues);
-			newVarValues.set(props.currRoomId, value);
-			props.setMessageBarValue(newVarValues);
-		}
-	};
-	const onSubmit_messageBar = (e: any) => {
-		e.preventDefault();
-		if (props.messageBarValues === undefined) {
-			return;
-		}
+  const onChange_setMessageBarValue = (value: string) => {
+    if (props.messageBarValues !== undefined) {
+      let newVarValues = new Map(props.messageBarValues);
+      newVarValues.set(props.currRoomId, value);
+      props.setMessageBarValue(newVarValues);
+    }
+  };
+  const onSubmit_messageBar = (e: any) => {
+    e.preventDefault();
+    if (props.messageBarValues === undefined) {
+      return;
+    }
 
-		var tmp_content = props.messageBarValues.get(props.currRoomId);
-		if (tmp_content !== undefined && tmp_content.toUpperCase() === "MIAO")
-			tmp_content = "😻";
-		let messageToCreate = {
-			roomId: props.currRoomId,
-			content: tmp_content
-		};
+    var tmp_content = props.messageBarValues.get(props.currRoomId);
+    if (tmp_content !== undefined && tmp_content.toUpperCase() === "MIAO")
+      tmp_content = "😻";
+    let messageToCreate = {
+      roomId: props.currRoomId,
+      content: tmp_content,
+    };
 
-		props.appSocket.emit(
-			"F_createMessage",
-			messageToCreate,
-			(isOk: boolean) => {
-				if (isOk) {
-					onChange_setMessageBarValue("");
-				}
-			}
-		);
-	};
+    props.appSocket.emit(
+      "F_createMessage",
+      messageToCreate,
+      (isOk: boolean) => {
+        if (isOk) {
+          onChange_setMessageBarValue("");
+        }
+      }
+    );
+  };
 
   const currentRoom = props.roomsList.filter(
     (obj: any) => obj.id === props.currRoomId
