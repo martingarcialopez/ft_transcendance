@@ -4,13 +4,22 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne
 @Entity()
 export class GameHistory {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
 	id: string;
+
+    @Column()
+    roomId: string;
+
+    @Column()
+    difficulty: string;
+
+    @Column()
+    maxScore: number;
 
     @Column()
     leftPlayer: string;
 
-    @Column()
+    @Column( { nullable: true } )
     rightPlayer: string;
 
     @Column( { nullable: true } )
@@ -24,5 +33,6 @@ export class GameHistory {
 
     @Column( { nullable: true } )
     losser: string;
+
 
 }

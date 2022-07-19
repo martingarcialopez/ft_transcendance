@@ -3,6 +3,10 @@ import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { T_Room, T_Participant } from "../type/chat";
 import { CreateInvitation } from "./CreateInvitation";
+/* import { Pong } from "../screens/PongScreen"; */
+/* import { useHistory } from "react-router-dom"; */
+import { useNavigate } from "react-router-dom";
+
 type Props = {
   roomSelectedId: number;
 };
@@ -29,6 +33,18 @@ function PrintParticipants({ participant }: PropsParticipant) {
   );
 }
 
+export function AccepGame() {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <button className="accepte" onClick={() => navigate("/pong")}>
+        accept
+      </button>
+    </>
+  );
+}
+
 /**
  * this function represent the header with the avatar of  message recipients
  * item is user either a group
@@ -50,8 +66,7 @@ export function ChatHeader({ roomSelectedId }: Props) {
             </p>
           </div>
           <span className="settings-tray--right">
-            <CreateInvitation />
-            {/* <i className="material-icons" >cached</i> */}
+            <CreateInvitation roomSelectedId={roomSelectedId} />
           </span>
         </div>
       </div>

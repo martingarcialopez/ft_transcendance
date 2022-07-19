@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { URL_test } from '../../constants/url';
-import { loginConfirmedAction, logout } from '../actions/userActions';
 
 export function signUp(firstname: any, lastname: any, username: any, password: any) {
     const postData = {
@@ -20,12 +19,14 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
     );
 }
 
-export function update(firstname: any, lastname: any, username: any, id: any, access_token: any, friends: any) {
+export function update(firstname: any, lastname: any, username: any, id: any, avatar: any, status: any, access_token: any, friends: any) {
     const postData = {
         firstname,
         lastname,
         username,
         friends,
+        avatar,
+        status
     };
 
     return axios.post(
@@ -48,17 +49,36 @@ export function enable2FA(access_token: any) {
 }
 
 export function uploadImage(image: any, access_token: any) {
+
+    const formData = new FormData();
+    formData.append('name', 'file');
+    formData.append('filename', image.filename)
+    formData.append('file', image)
+
     return axios.post(
         `${URL_test}/user/uploadProfileImage`,
-        image,
+        formData,
         {
-            headers: { 'Authorization': `Bearer ${access_token}` }
+            headers: {
+                'Authorization': `Bearer ${access_token}`,
+                'content-type': 'multipart/form-data'
+            }
         }
     );
 }
 export function disable2FA(access_token: any) {
     return axios.post(
         `${URL_test}/auth/disable2FA`,
+        null,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
+
+export function logout(access_token: any) {
+    return axios.post(
+        `${URL_test}/auth/logout`,
         null,
         {
             headers: { 'Authorization': `Bearer ${access_token}` }
@@ -80,7 +100,8 @@ export function login(username: any, password: any, code: any) {
 }
 
 export function login42(code: any) {
-    return axios.post(
+    console.log(` GETTING ${URL_test}/auth/redirect${code}`);
+    return axios.get(
         `${URL_test}/auth/redirect${code}`,
     );
 }
@@ -106,13 +127,31 @@ export function getUserInfo(username: any, access_token: any) {
     });
 }
 
-export function getFriendList(access_token: any) {
-    console.log("getFriendList TOKEN :")
-    console.log(access_token)
+// export function getFriendList(access_token: any) {
+//     console.log("getFriendList TOKEN :")
+//     console.log(access_token)
+//     return axios({
+//         method: 'get',
+//         url: `${URL_test}/user/friends`,
+//         headers: { 'Authorization': `Bearer ${access_token}` }
+//     });
+// }
+
+export function getFriendListStatus(access_token: any, username: any) {
+    console.log("getFriendListStatus TOKEN :", access_token)
+    console.log("getFriendListStatus username :", username)
     return axios({
         method: 'get',
-        url: `${URL_test}/user/friends`,
+        url: `${URL_test}/user/friends/status/${username}`,
         headers: { 'Authorization': `Bearer ${access_token}` }
+    });
+}
+
+export function getAllPlayers() {
+    console.log("getAllPlayers :")
+    return axios({
+        method: 'get',
+        url: `${URL_test}/user/all`,
     });
 }
 
@@ -162,16 +201,24 @@ export function formatError(errorResponse: any) {
     console.log("Ceci est l err return dans la fct formatError :")
     console.log(errorResponse)
     switch (errorResponse) {
+        case 'Request failed with status code 401':
+            return 'Account doesn\'t exist';
         case 'Request failed with status code 418':
-            return 'Write the 6 digit code you\'re seen on Google Authenticator'
-        case 'EMAIL_EXISTS':
-            return 'Email already exists';
-        case 'EMAIL_NOT_FOUND':
-            return 'Email not found';
+            return 'Write the 6 digit code you\'re seen on Google Authenticator';
+        case 'username already in use':
+            return 'Pseudo already in use';
+        case 'username should not be empty':
+            return 'Pseudo should not be empty';
+        case 'username should not be empty,password should not be empty':
+            return 'Pseudo and password should not be empty';
+        case 'firstname should not be empty':
+            return 'Firstname should not be empty';
+        case 'lastname should not be empty':
+            return 'Lastname should not be empty';
+        case 'firstname should not be empty,lastname should not be empty,username should not be empty,password should not be empty':
+            return 'Fill all the informations to create your account';
         case 'INVALID_PASSWORD':
             return 'Invalid Password';
-        case 'USER_DISABLED':
-            return 'User Disabled';
         case 'ERR_BAD_REQUEST':
             return 'Username or password invalid';
         default:
@@ -192,32 +239,4 @@ export function saveTokenInLocalStorage(access_token: any, tokenDetails: any) {
     console.log("Dans saveToken apres expireDate add + tokenAdd token :", tokenDetails)
     console.log("Dans saveToken JSON mode :", JSON.stringify(tokenDetails))
     localStorage.setItem('userInfo', JSON.stringify(tokenDetails));
-}
-
-export function runLogoutTimer(dispatch: any, timer: any) {
-    setTimeout(() => {
-        dispatch(logout());
-    }, timer);
-}
-
-export function checkAutoLogin(dispatch: any) {
-    const tokenDetailsString = localStorage.getItem('userInfo');
-    let tokenDetails: any = '';
-    if (!tokenDetailsString) {
-        dispatch(logout());
-        return;
-    }
-
-    tokenDetails = JSON.parse(tokenDetailsString);
-    let expireDate = new Date(tokenDetails.expireDate);
-    let todaysDate = new Date();
-
-    if (todaysDate > expireDate) {
-        dispatch(logout());
-        return;
-    }
-    dispatch(loginConfirmedAction(tokenDetails));
-
-    const timer = expireDate.getTime() - todaysDate.getTime();
-    runLogoutTimer(dispatch, timer);
 }

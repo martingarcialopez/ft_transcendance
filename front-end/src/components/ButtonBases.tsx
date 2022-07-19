@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
-import { URL_back, URL_test } from '../constants/url';
 import { Image, ImageBackdrop, ImageButton, ImageMarked, ImageSrc } from './Button';
 
 const images = [
@@ -36,8 +35,8 @@ const ButtonBases = () => {
 
     else {
       const domain = "api.intra.42.fr/oauth/authorize";
-      const client_id = "cf72ee9e9567d932423b583e5629802719575881cc5a4ab8c883b5d153639c00";
-      const redirect_uri = `http://localhost:3000/auth/redirect`;
+      const client_id = "82931d5147b41888714cb6bb0eefb883af55984e31edb80157b9fa91b5d4dd15";
+      const redirect_uri = `http://localhost:8080/auth/redirect`;
       const scope = "public";
       //const state = "aswhidl";
       const response_type = "code";

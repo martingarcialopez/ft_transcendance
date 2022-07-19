@@ -1,5 +1,5 @@
 import { HttpStatus, HttpException, Injectable, NotFoundException, BadRequestException, HttpCode } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { RelationId, Repository } from 'typeorm';
 import { CreateUserDto } from '../dtos/in/CreateUser.dto';
 import { ParticipantDto } from '../dtos/in/participant.dto';
@@ -11,7 +11,12 @@ import * as bcrypt from 'bcrypt';
 import { GameHistory } from '../models/gamehistory.entity';
 import { Multer } from 'multer';
 import * as fs from "fs";
-import { promisify } from 'util';
+import { isNull, promisify } from 'util';
+import { friendsStatusDto } from 'src/dtos/out/friendsStatus.dto';
+import * as typeorm from "typeorm";
+import { type } from 'os';
+import { allUsersDto } from 'src/dtos/out/allUsers.dto';
+import { Matchmaking } from 'src/models/matchmaking.entity';
 
 @Injectable()
 export class UserService {
@@ -22,22 +27,28 @@ export class UserService {
         @InjectRepository(Relationship)
         private friendsRepository: Repository<Relationship>,
         @InjectRepository(GameHistory)
-        private GameHistoryRepository: Repository<GameHistory>
+        private GameHistoryRepository: Repository<GameHistory>,
+        @InjectRepository(Matchmaking)
+        private MatchmakingRepository: Repository<Matchmaking>
     ) { }
 
     async getAllUsers() {
 
         const all = await this.userRepository.find();
 
-        var allUsernames: Array<string> = [];
+        var allUsers: Array<allUsersDto> = [];
+
+        var userInfo: allUsersDto;
 
         for (const user of all) {
-            console.log(user.username);
-            allUsernames.push(user.username);
+            // console.log(`username is ${user.username} and avatar is ${user.avatar}`)
+            userInfo = new allUsersDto();
+            userInfo.username = user.username;
+            userInfo.avatar = user.avatar;
+            allUsers.push(userInfo);
         }
 
-        return allUsernames;
-
+        return allUsers;
     }
 
     async createUser(payload: CreateUserDto): Promise<any> {
@@ -60,7 +71,6 @@ export class UserService {
         user.password = hash;
 
         user.login42 = null;
-        user.isActive = false;
 
         const db_user: User = await this.userRepository.save(user);
         const { password, ...result } = db_user;
@@ -109,13 +119,29 @@ export class UserService {
             throw new HttpException('user not found', HttpStatus.NOT_FOUND); // user does not exist
 
         if (user.avatar) {
-            const path = `/usr/src/app/avatar/${user.login42}.png`;
-            try {
-                unlinkSync(path); //file removed
-            } catch (err) {
-                console.error(err);
-            }
+
+        const unlinkAsync = promisify(fs.unlink)
+
+        const files: string[] = fs.readdirSync("public/shared/avatar");
+
+        files.forEach(file => {
+            const filename = file.split('.').slice(0, -1).join('.');
+            if (filename === user.username)
+                unlinkAsync(`public/shared/avatar/${file}`);
+        });
+
+
+
         }
+
+        await this.friendsRepository.delete({ member_username: user.username});
+        await this.friendsRepository.delete({ friend_username: user.username});
+
+        await this.GameHistoryRepository.delete( { leftPlayer: user.username} );
+        await this.GameHistoryRepository.delete( { rightPlayer: user.username} );
+
+        await this.MatchmakingRepository.delete( { userId: user.id } );
+
         await this.userRepository.delete(id);
     }
 
@@ -170,7 +196,51 @@ export class UserService {
         if (!reponse)
             throw new NotFoundException();
 
-        return reponse;
+        var allUsernames: Array<string> = [];
+
+        for (const user of reponse) {
+            // console.log(user.friend_username);
+            allUsernames.push(user.friend_username);
+        }
+
+        return allUsernames;
+    }
+
+    async getUserFriendsStatus(username: string) {
+
+        const user: User = await this.getUser(username);
+
+        if (!user)
+            throw new NotFoundException();
+
+        const reponse = await this.friendsRepository.find({ where: { member_username: user.username } });
+
+        if (!reponse)
+            throw new NotFoundException();
+
+        var allUsernames: Array<string> = [];
+
+        for (const user of reponse) {
+            // console.log(user.friend_username);
+            allUsernames.push(user.friend_username);
+        }
+
+        let friendsStatus: Array<friendsStatusDto> = [];
+
+        for (const user of allUsernames) {
+
+            const dbUser = await this.userRepository.findOne( { username: user } );
+
+            let tmp: friendsStatusDto = new friendsStatusDto();
+
+            tmp.username = user;
+            tmp.status = dbUser.status;
+            tmp.avatar = dbUser.avatar
+            friendsStatus.push(tmp);
+        }
+
+        return friendsStatus;
+
     }
 
     async getUserGames(username: string) {
@@ -181,15 +251,21 @@ export class UserService {
             throw new NotFoundException();
 
         const games = await this.GameHistoryRepository.find(
-            { where : [{ leftPlayer: username }, { rightPlayer: username }] } );
+            {
+                where : 
+                [
+                    { leftPlayer: username, winner: typeorm.Not(typeorm.IsNull()) },
+                    { rightPlayer: username, winner: typeorm.Not(typeorm.IsNull()) }
+                ]
+            });
 
         return games;
-
     }
+
 
     async getAllGames() {
 
-        return await this.GameHistoryRepository.find();
+        return await this.GameHistoryRepository.find( { where : { winner: typeorm.Not(typeorm.IsNull()) } } );
     }
 
     async getBlockList(userId: number): Promise<number[]> | null {
@@ -221,7 +297,8 @@ export class UserService {
 
     uploadProfileImage(req, uploadedFile: Express.Multer.File) {
 
-        console.log(uploadedFile);
+        if (!uploadedFile || !uploadedFile.filename)
+            throw new BadRequestException();
 
         const unlinkAsync = promisify(fs.unlink)
 
@@ -237,7 +314,7 @@ export class UserService {
                 unlinkAsync(`public/shared/avatar/${file}`);
         });
 
-        console.log(files);
+        // console.log(files);
 
         const response = {
             originalname: uploadedFile.originalname,
@@ -246,7 +323,11 @@ export class UserService {
 
         this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
 
+        console.log(`returning...`)
+        console.log(response)
+
         return response;
+
     }
 
 }

@@ -455,3 +455,32 @@ request data
 ```
 void
 ```
+# createCustomGame
+
+
+## description
+```
+this event it send when you send a invitation to play pong
+```
+
+```
+request data
+{
+  userId: number,
+  difficulty: string,
+  maxScore:number
+};
+```
+
+
+## event send back && response data
+```
+printInvitation 
+```
+```
+request data
+{
+  userName: string,
+  roomId: number,
+};
+```

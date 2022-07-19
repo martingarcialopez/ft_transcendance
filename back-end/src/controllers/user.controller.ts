@@ -13,8 +13,8 @@ import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 
 const whitelist = [
     'image/png',
-    'image/jpeg',
-    'image/jpg'
+    // 'image/jpeg',
+    // 'image/jpg'
 ]
 
 @Controller('user')
@@ -39,6 +39,8 @@ export class UserController {
             }
         }))
     uploadProfileImage(@UploadedFile() uploadedFile: Express.Multer.File, @Request() req) {
+
+        console.log('in upload profile image');
 
         return this.userService.uploadProfileImage(req, uploadedFile);
     }
@@ -68,6 +70,12 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Get('/friends/status/:username')
+    getUserFriendsStatus(@Request() req, @Param('username') username: string) {
+        return this.userService.getUserFriendsStatus(username);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Post('/friends/:username')
     addFriend(@Request() req, @Param('username') username: string) {
         return this.userService.addFriend(req.user.userId, username);
@@ -79,7 +87,7 @@ export class UserController {
         return this.userService.deleteFriend(req.user.userId, username);
     }
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get('/:username')
     getUser(@Param('username') username: string): Promise<User> {
         console.log('in get user');

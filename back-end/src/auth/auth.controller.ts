@@ -15,6 +15,12 @@ export class AuthController {
         return this.authService.login(req.user); // returns a JWT
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Post('/logout')
+    async logout (@Request() req) {
+        this.authService.logout(req.user);
+    }
+
     @UseGuards(Oauth42Guard)
     @Get('/redirect')
 //    @Redirect('http://localhost:8080', 302)

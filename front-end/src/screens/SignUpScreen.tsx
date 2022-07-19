@@ -27,6 +27,7 @@ const SignUp = () => {
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({ firstname: '', lastname: '', username: "", password: "" });
   const [open, setOpen] = useState(true);
+  const [check, setCheck] = useState(false);
   const [errorFromBack, setErrorFromBack]: any = useState();
 
   const navigate = useNavigate();
@@ -72,8 +73,9 @@ const SignUp = () => {
     setOpen(true);
     if (!errors.firstname && !errors.lastname && !errors.password && !errors.username) {
       dispatch(signupAction(firstname, lastname, username, password, navigate))
-      setErrorFromBack()
-
+      setCheck(true)
+      setErrorFromBack(userLogin.errorMessage)
+      console.log("signUp userLogin.errorMessage:", userLogin.errorMessage);
       console.log("signUp :", {
         firstname: firstname,
         lastname: lastname,
@@ -96,9 +98,10 @@ const SignUp = () => {
   };
 
   useEffect(() => {
-    console.log("useEffect userLogin")
+    console.log("useEffect userLogin.errorMessage", userLogin.errorMessage)
     setErrorFromBack(userLogin.errorMessage)
-  }, [userLogin.errorMessage])
+    setCheck(false)
+  }, [userLogin, check])
 
   return (
     <ThemeProvider theme={theme}>

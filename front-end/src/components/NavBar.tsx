@@ -10,19 +10,20 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { UserState } from "../redux/reducers/userReducers";
 import { MouseEvent, SyntheticEvent, useState } from "react";
-import { logout } from "../redux/actions/userActions";
+import { logoutAction } from "../redux/actions/userActions";
 
-const pages = ["Home", "Chat", "Room", "Pong", "Leaderboard", "Maobe_Chat"];
+const pages = ["Home", "Pong", "Leaderboard", "Maobe_Chat"];
 const settings = ["Profile", "Account", "Logout"];
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -51,7 +52,7 @@ const ResponsiveAppBar = () => {
   const logoutHandler = async (e: SyntheticEvent) => {
     e.preventDefault();
     console.log("NavBar call logout function");
-    dispatch(logout());
+    dispatch(logoutAction(userInfo?.access_token, navigate));
   };
 
   return (
@@ -64,65 +65,61 @@ const ResponsiveAppBar = () => {
             component="div"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
-            LOGO
+            PONG
           </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page) =>
-                !userInfo ? (
-                  page === "Home" ? (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
-                  ) : null
-                ) : (
+          {!userInfo ? null : (
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {pages.map((page) => (
                   <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
+                    <Link key={page} to={`/${page.toLowerCase()}`}>
+                      <Typography textAlign="center">{page}</Typography>
+                    </Link>
                   </MenuItem>
-                )
-              )}
-            </Menu>
-          </Box>
+                ))}
+              </Menu>
+            </Box>
+          )}
+
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
-            LOGO
+            PONG Project
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) =>
               userInfo ? (
-                <Link key={page} to={page.toLowerCase()}>
+                <Link key={page} to={`/${page.toLowerCase()}`}>
                   <Button
                     key={page}
                     onClick={handleCloseNavMenu}
@@ -139,7 +136,7 @@ const ResponsiveAppBar = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt={userInfo.username} src={userInfo.avatar} />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -162,11 +159,15 @@ const ResponsiveAppBar = () => {
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     {setting !== "Logout" ? (
                       <Link key={setting} to={setting.toLowerCase()}>
-                        <Typography key={setting} textAlign="center">{setting}</Typography>
+                        <Typography key={setting} textAlign="center">
+                          {setting}
+                        </Typography>
                       </Link>
                     ) : (
                       <Link key={setting} onClick={logoutHandler} to={"/home"}>
-                        <Typography key={"/home"} textAlign="center">{setting}</Typography>
+                        <Typography key={"/home"} textAlign="center">
+                          {setting}
+                        </Typography>
                       </Link>
                     )}
                   </MenuItem>

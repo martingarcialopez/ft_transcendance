@@ -15,6 +15,9 @@ export type GameState = {
   rightPaddle: number;
   leftScore: number;
   rightScore: number;
+  roomId: string;
+  leftPlayer: string;
+  rightPlayer: string;
 };
 
 export type CanvasType = React.DetailedHTMLProps<
@@ -37,7 +40,7 @@ export type T_LeaderBoard = {
   name: string;
   username: string;
   score: number;
-  avatar: String;
+  avatar: string;
 };
 
 export type T_game = {

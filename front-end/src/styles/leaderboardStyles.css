@@ -61,10 +61,12 @@
 #LeaderProfile .flex .item {
     display: flex;
     align-items: center;
+		cursor: pointer;
 }
 
 #LeaderProfile .flex img {
-    width: 20%;
+    /* width: 20%; */
+		width: 10vw;
     border-radius: 50%;
 }
 

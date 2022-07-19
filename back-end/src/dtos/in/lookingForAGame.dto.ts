@@ -1,11 +1,14 @@
-import { IsNumber, IsString } from "class-validator";
+import { isNumber, IsNumber, IsString } from "class-validator";
 
 export class lookingForAGameDto{
 
-    // @IsNumber()
+    @IsNumber()
     userId: number;
 
-    // @IsString()
+    @IsString()
     difficulty: string;
+
+    @IsNumber()
+    maxScore: number;
 
 }
