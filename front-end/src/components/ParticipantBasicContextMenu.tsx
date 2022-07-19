@@ -1,6 +1,5 @@
 import { MenuItem } from "@szhsin/react-menu";
 import { useNavigate } from "react-router-dom";
-import { URL_test } from "../constants/url";
 import {v4} from 'uuid';
 
 export function ParticipantBasicContextMenu(props: any) {
@@ -92,7 +91,6 @@ export function ParticipantBasicContextMenu(props: any) {
   	    roomId: props.currRoomId,
   	  	content: `<a href="/joingame/${roomId}">join pong game</a>`
    	  };
-
       props.appSocket.emit("F_createMessage", messageToCreate);
     }
   };

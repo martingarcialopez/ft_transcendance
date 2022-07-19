@@ -1,15 +1,13 @@
 import { Box, CircularProgress, Grid } from "@mui/material";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState } from "../redux";
-import { login42Action } from "../redux/actions/userActions";
 import { UserState } from "../redux/reducers/userReducers";
 import pongSocketService from "../services/pongSocketService";
 
 export const JoinPongRoom = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
 
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
@@ -29,7 +27,8 @@ export const JoinPongRoom = () => {
         navigate("/pong")
         socket.emit('joinPongRoom', { userId: userInfo?.id, roomId: id });
         // navigate("/pong", { state: { joingame: id } })
-
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [navigate])
     
   return (
