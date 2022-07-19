@@ -27,6 +27,10 @@ __decorate([
 ], Matchmaking.prototype, "difficulty", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Matchmaking.prototype, "winningScore", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Matchmaking.prototype, "roomName", void 0);
 __decorate([

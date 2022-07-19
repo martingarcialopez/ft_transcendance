@@ -15,11 +15,12 @@ const user_service_1 = require("../services/user.service");
 const user_entity_1 = require("../models/user.entity");
 const friends_entity_1 = require("../models/friends.entity");
 const gamehistory_entity_1 = require("../models/gamehistory.entity");
+const matchmaking_entity_1 = require("../models/matchmaking.entity");
 let MessageModule = class MessageModule {
 };
 MessageModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([message_entity_1.Message, user_entity_1.User, friends_entity_1.Relationship, gamehistory_entity_1.GameHistory]),],
+        imports: [typeorm_1.TypeOrmModule.forFeature([message_entity_1.Message, user_entity_1.User, friends_entity_1.Relationship, gamehistory_entity_1.GameHistory, matchmaking_entity_1.Matchmaking]),],
         providers: [message_service_1.MessageService, user_service_1.UserService],
         exports: [message_service_1.MessageService],
     })

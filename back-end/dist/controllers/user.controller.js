@@ -23,14 +23,13 @@ const multer_1 = require("multer");
 const path_1 = require("path");
 const whitelist = [
     'image/png',
-    'image/jpeg',
-    'image/jpg'
 ];
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
     uploadProfileImage(uploadedFile, req) {
+        console.log('in upload profile image');
         return this.userService.uploadProfileImage(req, uploadedFile);
     }
     getAllUsers() {
@@ -46,6 +45,9 @@ let UserController = class UserController {
     }
     getUserFriends(req) {
         return this.userService.getUserFriends(req.user.userId);
+    }
+    getUserFriendsStatus(req, username) {
+        return this.userService.getUserFriendsStatus(username);
     }
     addFriend(req, username) {
         return this.userService.addFriend(req.user.userId, username);
@@ -124,6 +126,15 @@ __decorate([
 ], UserController.prototype, "getUserFriends", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('/friends/status/:username'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)('username')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "getUserFriendsStatus", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('/friends/:username'),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Param)('username')),
@@ -141,7 +152,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "deleteFriend", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('/:username'),
     __param(0, (0, common_1.Param)('username')),
     __metadata("design:type", Function),

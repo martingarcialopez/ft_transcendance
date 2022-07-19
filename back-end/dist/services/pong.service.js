@@ -21,61 +21,155 @@ const matchmaking_entity_1 = require("../models/matchmaking.entity");
 const in_memory_db_1 = require("@nestjs-addons/in-memory-db");
 const user_service_1 = require("./user.service");
 const gamehistory_entity_1 = require("../models/gamehistory.entity");
+const user_entity_1 = require("../models/user.entity");
+const typeorm = require("typeorm");
 let PongService = class PongService {
-    constructor(pongRepository, gameHistoryRepository, gameService, userService) {
+    constructor(pongRepository, gameHistoryRepository, userRepository, gameService, userService) {
         this.pongRepository = pongRepository;
         this.gameHistoryRepository = gameHistoryRepository;
+        this.userRepository = userRepository;
         this.gameService = gameService;
         this.userService = userService;
     }
-    async managePlayer(socket, server, userId, difficulty) {
-        let bbdd = await this.pongRepository.find({ "difficulty": difficulty });
+    async setSocketId(client, username) {
+        const user = await this.userService.getUser(username);
+        if (!user)
+            throw new common_1.NotFoundException();
+        const updatedUser = await this.userService.updateUser({ socketId: client.id }, user.id.toString());
+        const game = await this.gameHistoryRepository.findOne({
+            where: [
+                { winner: typeorm.IsNull(), leftPlayer: username },
+                { winner: typeorm.IsNull(), rightPlayer: username }
+            ],
+            order: { id: 'DESC' }
+        });
+        if (game) {
+            client.join(game.roomId);
+            console.log(`user joined room ${game.roomId}`);
+        }
+        console.log(`user ${username} got socket id ${client.id}`);
+        return updatedUser.socketId;
+    }
+    async handleDisconnect(client) {
+        let user = await this.userRepository.findOne({ socketId: client.id });
+        if (!user)
+            return;
+        user = await this.userService.updateUser({ socketId: null }, user.id.toString());
+        this.pongRepository.delete({ userId: user.id });
+        await new Promise(r => setTimeout(r, 5000));
+        user = await this.userService.getUser(user.username);
+        if (user && user.socketId) {
+            const game = await this.gameHistoryRepository.findOne({
+                where: [
+                    { winner: typeorm.IsNull(), leftPlayer: user.username },
+                    { winner: typeorm.IsNull(), rightPlayer: user.username }
+                ],
+                order: { id: 'DESC' }
+            });
+            class Game {
+            }
+            let move = new Game();
+            move.id = (0, uuid_1.v4)();
+            move.move = 0;
+            move.player = game.leftPlayer === user.username ? 'rightPlayer' : 'leftPlayer';
+            move.room = game.roomId;
+            this.registerMove(move);
+        }
+    }
+    async iDontWannaPlayAnymore(client, userId) {
+        this.pongRepository.delete({ userId: userId });
+    }
+    async managePlayer(socket, server, userId, difficulty, maxScore) {
+        let existingGame = await this.pongRepository.findOne({ userId: userId });
+        if (existingGame)
+            await this.pongRepository.delete({ userId: userId });
+        let bbdd = await this.pongRepository.find({ "difficulty": difficulty, "winningScore": maxScore });
         if (!bbdd.length) {
             const player = new matchmaking_entity_1.Matchmaking();
             player.userId = userId;
             player.difficulty = difficulty;
+            player.winningScore = maxScore;
             player.roomName = (0, uuid_1.v4)();
             await this.pongRepository.save(player);
             socket.join(player.roomName);
-            server.to(socket.id).emit('GameInfo', 'leftPlayer', player.roomName);
-            console.log(`first player arrived and joined room ${player.roomName}`);
         }
         else {
             let opponent = bbdd.at(0);
             this.pongRepository.delete({ userId: opponent.userId });
             socket.join(opponent.roomName);
-            server.to(socket.id).emit('GameInfo', 'rightPlayer', opponent.roomName);
-            console.log(`second player arrived and joined room ${opponent.roomName}`);
-            console.log(`GAME STARTED in room ${opponent.roomName}`);
+            server.to(socket.id).emit('GameInfo', 'rightPlayer');
             const gameResult = new gamehistory_entity_1.GameHistory();
-            console.log(`opponent id is ${opponent.userId}`);
-            console.log(`my user id is ${userId}`);
-            gameResult.id = opponent.roomName;
+            gameResult.roomId = opponent.roomName;
+            gameResult.difficulty = difficulty;
+            gameResult.maxScore = maxScore;
             gameResult.leftPlayer = (await this.userService.getUserById(opponent.userId.toString())).username;
             gameResult.rightPlayer = (await this.userService.getUserById(userId.toString())).username;
             this.gameHistoryRepository.save(gameResult);
-            server.to(opponent.roomName).emit("GamePlayerName", gameResult.leftPlayer, gameResult.rightPlayer);
-            console.log(`left player is ${gameResult.leftPlayer}`);
-            console.log(`right player is ${gameResult.rightPlayer}`);
-            this.playGame(server, opponent.roomName, difficulty);
+            server.to(opponent.roomName).emit("GamePlayersName", gameResult.leftPlayer, gameResult.rightPlayer);
+            let updatedUser = await this.userService.updateUser({ status: opponent.roomName }, opponent.userId.toString());
+            updatedUser = await this.userService.updateUser({ status: opponent.roomName }, userId.toString());
+            this.playGame(server, opponent.roomName, difficulty, opponent.userId, userId, maxScore);
         }
     }
-    async playGame(socket, socketRoom, difficulty) {
+    async createCustomGame(userId, difficulty, maxScore) {
+        const game = new gamehistory_entity_1.GameHistory();
+        game.roomId = (0, uuid_1.v4)();
+        game.difficulty = difficulty;
+        game.maxScore = maxScore;
+        await this.gameHistoryRepository.save(game);
+        return game.id;
+    }
+    async joinPongRoom(client, server, userId, roomId) {
+        const roomSize = server.sockets.adapter.rooms.get(roomId).size;
+        const game = await this.gameHistoryRepository.findOne({ where: { roomId: roomId } });
+        console.log(`room size is ${roomSize}`);
+        if (roomSize >= 2) {
+            client.join(roomId);
+            console.log(`joining client to the socket room ${roomId}`);
+        }
+        else if (roomSize == 0) {
+            const firstPlayer = await this.userService.getUserById(userId);
+            if (!firstPlayer)
+                throw new common_1.NotFoundException();
+            game.leftPlayer = firstPlayer.username;
+            client.join(roomId);
+        }
+        else if (roomSize == 1) {
+            const firstPlayer = await this.userService.getUser(game.leftPlayer);
+            if (!firstPlayer)
+                throw new common_1.NotFoundException();
+            const secondPlayer = await this.userService.getUserById(userId);
+            if (!secondPlayer)
+                throw new common_1.NotFoundException();
+            game.rightPlayer = secondPlayer.username;
+            this.gameHistoryRepository.save(game);
+            client.join(roomId);
+            let updatedUser = await this.userService.updateUser({ status: game.id }, firstPlayer.id.toString());
+            updatedUser = await this.userService.updateUser({ status: game.id }, secondPlayer.id.toString());
+            this.playGame(server, game.id, game.difficulty, firstPlayer.id, secondPlayer.id, game.maxScore);
+        }
+    }
+    async playGame(socket, socketRoom, difficulty, player1Id, player2Id, winningScore) {
         console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
-        let state = initGameState(difficulty);
+        const user1 = await this.userService.getUserById(player1Id.toString());
+        const user2 = await this.userService.getUserById(player2Id.toString());
+        if (!user1 || !user2)
+            throw new common_1.NotFoundException();
+        let state = initGameState(difficulty, user1.username, user2.username, socketRoom);
         let lastMove = 0;
         let winner;
         let paddleSpeed = 10;
         while (true) {
-            if (state.leftScore >= 3 || state.rightScore >= 3) {
-                if (state.leftScore >= 3)
+            if (state.playerGiveUp || state.leftScore >= winningScore || state.rightScore >= winningScore) {
+                if (state.playerGiveUp === 'rightPlayer' || state.leftScore >= winningScore)
                     winner = 'leftplayer';
-                else if (state.rightScore >= 3)
+                else if (state.playerGiveUp === 'leftPlayer' || state.rightScore >= winningScore)
                     winner = 'rightplayer';
+                console.log(`winner is ${winner}`);
                 socket.to(socketRoom).emit('gameOver', winner);
                 const move = this.gameService.getAll();
                 move.filter(elem => elem.room === socketRoom).forEach(elem => this.gameService.delete(elem.id));
-                const gameResult = (await this.gameHistoryRepository.find({ where: { id: socketRoom } })).at(0);
+                const gameResult = (await this.gameHistoryRepository.find({ where: { roomId: socketRoom } })).at(0);
                 if (!gameResult)
                     throw new common_1.InternalServerErrorException();
                 gameResult.leftPlayerScore = state.leftScore;
@@ -87,6 +181,8 @@ let PongService = class PongService {
                 const updateResult = await this.gameHistoryRepository.save(gameResult);
                 console.log('result is');
                 console.log(updateResult);
+                this.userService.updateUser({ status: "online" }, player1Id.toString());
+                this.userService.updateUser({ status: "online" }, player2Id.toString());
                 return;
             }
             const move = this.gameService.getAll();
@@ -94,7 +190,9 @@ let PongService = class PongService {
             let rightPlayerMove = 0;
             if (move.length > lastMove) {
                 for (let i = lastMove; i < move.length; i++) {
-                    if (move[i].player === "leftPlayer")
+                    if (move[i].move === 0)
+                        state.playerGiveUp = move[i].player;
+                    else if (move[i].player === "leftPlayer")
                         leftPlayerMove += move[i].move;
                     else if (move[i].player === "rightPlayer")
                         rightPlayerMove += move[i].move;
@@ -111,25 +209,22 @@ let PongService = class PongService {
         }
     }
     async registerMove(move) {
-        const created = this.gameService.create({
-            id: (0, uuid_1.v4)(),
-            room: move[1],
-            player: move[2],
-            move: move[3]
-        });
+        const created = this.gameService.create(Object.assign({ id: (0, uuid_1.v4)() }, move));
     }
 };
 PongService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(matchmaking_entity_1.Matchmaking)),
     __param(1, (0, typeorm_1.InjectRepository)(gamehistory_entity_1.GameHistory)),
+    __param(2, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         in_memory_db_1.InMemoryDBService,
         user_service_1.UserService])
 ], PongService);
 exports.PongService = PongService;
-function initGameState(difficulty) {
+function initGameState(difficulty, player1, player2, roomId) {
     var vel = 10;
     if (difficulty === "easy")
         vel = 5;
@@ -142,7 +237,11 @@ function initGameState(difficulty) {
         leftPaddle: board_y_size / 2,
         rightPaddle: board_y_size / 2,
         leftScore: 0,
-        rightScore: 0
+        rightScore: 0,
+        leftPlayer: player1,
+        rightPlayer: player2,
+        roomId: roomId,
+        playerGiveUp: ""
     });
 }
 function sleep(ms) {

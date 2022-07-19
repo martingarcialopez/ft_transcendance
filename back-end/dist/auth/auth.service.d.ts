@@ -9,6 +9,7 @@ export declare class AuthService {
     login(user: any): Promise<{
         access_token: string;
     }>;
+    logout(user: any): Promise<void>;
     updateSecret(code: string, id: string): Promise<void>;
     enable2FA(id: string): Promise<string>;
     disable2FA(id: string): Promise<void>;

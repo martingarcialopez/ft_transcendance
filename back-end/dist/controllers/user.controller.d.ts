@@ -10,10 +10,11 @@ export declare class UserController {
         originalname: string;
         filename: string;
     };
-    getAllUsers(): Promise<string[]>;
+    getAllUsers(): Promise<import("../dtos/out/allUsers.dto").allUsersDto[]>;
     createUser(body: CreateUserDto): Promise<any>;
     getCurrentUser(req: any): Promise<User>;
-    getUserFriends(req: any): Promise<import("../models/friends.entity").Relationship[]>;
+    getUserFriends(req: any): Promise<string[]>;
+    getUserFriendsStatus(req: any, username: string): Promise<import("../dtos/out/friendsStatus.dto").friendsStatusDto[]>;
     addFriend(req: any, username: string): Promise<void>;
     deleteFriend(req: any, username: string): Promise<void>;
     getUser(username: string): Promise<User>;

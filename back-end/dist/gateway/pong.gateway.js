@@ -12,19 +12,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PongGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
-const pong_dto_1 = require("../dtos/in/pong.dto");
 const pong_service_1 = require("../services/pong.service");
+const lookingForAGame_dto_1 = require("../dtos/in/lookingForAGame.dto");
+const joinPongRoom_dto_1 = require("../dtos/in/joinPongRoom.dto");
+const user_service_1 = require("../services/user.service");
 let PongGateway = class PongGateway {
-    constructor(pongService) {
+    constructor(pongService, userService) {
         this.pongService = pongService;
+        this.userService = userService;
+    }
+    afterInit(server) {
+        console.log('Pong socket server Initialized:');
+    }
+    handleConnection(client) {
+        console.log(`client with id: ${client.id} connected !`);
+    }
+    handleDisconnect(client) {
+        console.log(`Client with id: ${client.id} disconnected!`);
+        this.pongService.handleDisconnect(client);
+    }
+    async setSocketId(socket, username) {
+        console.log(`in set socket id, username is ${username}`);
+        return await this.pongService.setSocketId(socket, username);
     }
     async lookingForplay(socket, data) {
         console.log('lookingForAGame Gateway');
-        console.log(`uerId is ${data[0]} and difficulty is ${data[1]}`);
-        let value = await this.pongService.managePlayer(socket, this.server, data[0], data[1]);
+        console.log(`uerId is ${data.userId}, difficulty is ${data.difficulty} and maxScore is ${data.maxScore}`);
+        console.log(data);
+        let value = await this.pongService.managePlayer(socket, this.server, data.userId, data.difficulty, data.maxScore);
     }
-    async join(socket, pongDto) {
+    iDontWannaPlayAnymore(socket, userId) {
+        this.pongService.iDontWannaPlayAnymore(socket, userId);
+    }
+    async join(socket, data) {
         console.log('joinPongRoom Gateway');
+        console.log('in joinPongRoom Gateway');
+        console.log('data is');
+        console.log(data);
+        this.pongService.joinPongRoom(socket, this.server, data.userId, data.roomId);
     }
     async moveAction(socket, move) {
         await this.pongService.registerMove(move);
@@ -35,15 +60,27 @@ __decorate([
     __metadata("design:type", socket_io_1.Server)
 ], PongGateway.prototype, "server", void 0);
 __decorate([
+    (0, websockets_1.SubscribeMessage)('setSocketId'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
+    __metadata("design:returntype", Promise)
+], PongGateway.prototype, "setSocketId", null);
+__decorate([
     (0, websockets_1.SubscribeMessage)('lookingForAGame'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, lookingForAGame_dto_1.lookingForAGameDto]),
     __metadata("design:returntype", Promise)
 ], PongGateway.prototype, "lookingForplay", null);
 __decorate([
+    (0, websockets_1.SubscribeMessage)('iDontWannaPlayAnymore'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Number]),
+    __metadata("design:returntype", void 0)
+], PongGateway.prototype, "iDontWannaPlayAnymore", null);
+__decorate([
     (0, websockets_1.SubscribeMessage)('joinPongRoom'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, pong_dto_1.PongDto]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, joinPongRoom_dto_1.joinPongRoomDto]),
     __metadata("design:returntype", Promise)
 ], PongGateway.prototype, "join", null);
 __decorate([
@@ -53,12 +90,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PongGateway.prototype, "moveAction", null);
 PongGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({
-        cors: {
-            origin: '*',
-        },
-    }),
-    __metadata("design:paramtypes", [pong_service_1.PongService])
+    (0, websockets_1.WebSocketGateway)({ path: '/pongSocketServer', cors: { origin: '*' } }),
+    __metadata("design:paramtypes", [pong_service_1.PongService, user_service_1.UserService])
 ], PongGateway);
 exports.PongGateway = PongGateway;
 //# sourceMappingURL=pong.gateway.js.map

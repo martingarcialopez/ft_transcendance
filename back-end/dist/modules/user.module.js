@@ -14,11 +14,12 @@ const user_controller_1 = require("../controllers/user.controller");
 const user_entity_1 = require("../models/user.entity");
 const user_service_1 = require("../services/user.service");
 const gamehistory_entity_1 = require("../models/gamehistory.entity");
+const matchmaking_entity_1 = require("../models/matchmaking.entity");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, friends_entity_1.Relationship, gamehistory_entity_1.GameHistory])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, friends_entity_1.Relationship, gamehistory_entity_1.GameHistory, matchmaking_entity_1.Matchmaking])],
         controllers: [user_controller_1.UserController],
         providers: [user_service_1.UserService],
         exports: [user_service_1.UserService],

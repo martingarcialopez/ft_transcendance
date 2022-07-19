@@ -22,11 +22,11 @@ const user_service_1 = require("../services/user.service");
 let Oauth42Strategy = class Oauth42Strategy extends (0, passport_1.PassportStrategy)(passport_oauth2_1.Strategy, 'Oauth42') {
     constructor(httpService, authService, userService) {
         super({
-            authorizationURL: 'https://api.intra.42.fr/oauth/authorize?client_id=cf72ee9e9567d932423b583e5629802719575881cc5a4ab8c883b5d153639c00&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fredirect&response_type=code',
+            authorizationURL: 'https://api.intra.42.fr/oauth/authorize?client_id=82931d5147b41888714cb6bb0eefb883af55984e31edb80157b9fa91b5d4dd15&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fredirect&response_type=code',
             tokenURL: "https://api.intra.42.fr/oauth/token",
             clientID: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: `http://localhost:3000/auth/redirect`,
+            callbackURL: `http://localhost:8080/auth/redirect`,
             scope: "public"
         });
         this.httpService = httpService;
@@ -49,8 +49,8 @@ let Oauth42Strategy = class Oauth42Strategy extends (0, passport_1.PassportStrat
         user.lastname = last_name;
         user.password = null;
         user.twofa = false;
-        user.avatar = `/usr/src/app/public/shared/avatar/${login}.png`;
-        const writer = (0, fs_1.createWriteStream)(user.avatar, { flags: 'w' });
+        user.avatar = `/shared/avatar/${login}.png`;
+        const writer = (0, fs_1.createWriteStream)(`/usr/src/app/public${user.avatar}`, { flags: 'w' });
         const response = await this.httpService.axiosRef({
             url: image_url,
             method: 'GET',

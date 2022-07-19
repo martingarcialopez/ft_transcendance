@@ -1,1 +1,1 @@
-{"version":3,"file":"lookingForAGame.dto.js","sourceRoot":"","sources":["../../../src/dtos/in/lookingForAGame.dto.ts"],"names":[],"mappings":";;;AAEA,MAAa,kBAAkB;CAQ9B;AARD,gDAQC"}
+{"version":3,"file":"lookingForAGame.dto.js","sourceRoot":"","sources":["../../../src/dtos/in/lookingForAGame.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAA+D;AAE/D,MAAa,kBAAkB;CAW9B;AARG;IADC,IAAA,0BAAQ,GAAE;;kDACI;AAGf;IADC,IAAA,0BAAQ,GAAE;;sDACQ;AAGnB;IADC,IAAA,0BAAQ,GAAE;;oDACM;AATrB,gDAWC"}

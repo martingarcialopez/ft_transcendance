@@ -10,12 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
+const class_transformer_1 = require("class-transformer");
 const typeorm_1 = require("typeorm");
 const message_entity_1 = require("./message.entity");
 const participant_entity_1 = require("./participant.entity");
 let User = class User {
 };
 __decorate([
+    (0, class_transformer_1.Exclude)(),
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], User.prototype, "id", void 0);
@@ -36,6 +38,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "lastname", void 0);
 __decorate([
+    (0, class_transformer_1.Exclude)(),
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
@@ -44,6 +47,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "twofa", void 0);
 __decorate([
+    (0, class_transformer_1.Exclude)(),
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "secret", void 0);
@@ -52,9 +56,13 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "avatar", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: false }),
-    __metadata("design:type", Boolean)
-], User.prototype, "isActive", void 0);
+    (0, typeorm_1.Column)({ default: "offline" }),
+    __metadata("design:type", String)
+], User.prototype, "status", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "socketId", void 0);
 __decorate([
     (0, typeorm_1.Column)("int", { nullable: true, array: true, default: "{}" }),
     __metadata("design:type", Array)

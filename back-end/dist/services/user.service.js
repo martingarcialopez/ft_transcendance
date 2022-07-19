@@ -29,25 +29,32 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("../models/user.entity");
 const friends_entity_1 = require("../models/friends.entity");
-const fs_1 = require("fs");
 const bcrypt = require("bcrypt");
 const gamehistory_entity_1 = require("../models/gamehistory.entity");
 const fs = require("fs");
 const util_1 = require("util");
+const friendsStatus_dto_1 = require("../dtos/out/friendsStatus.dto");
+const typeorm = require("typeorm");
+const allUsers_dto_1 = require("../dtos/out/allUsers.dto");
+const matchmaking_entity_1 = require("../models/matchmaking.entity");
 let UserService = class UserService {
-    constructor(userRepository, friendsRepository, GameHistoryRepository) {
+    constructor(userRepository, friendsRepository, GameHistoryRepository, MatchmakingRepository) {
         this.userRepository = userRepository;
         this.friendsRepository = friendsRepository;
         this.GameHistoryRepository = GameHistoryRepository;
+        this.MatchmakingRepository = MatchmakingRepository;
     }
     async getAllUsers() {
         const all = await this.userRepository.find();
-        var allUsernames = [];
+        var allUsers = [];
+        var userInfo;
         for (const user of all) {
-            console.log(user.username);
-            allUsernames.push(user.username);
+            userInfo = new allUsers_dto_1.allUsersDto();
+            userInfo.username = user.username;
+            userInfo.avatar = user.avatar;
+            allUsers.push(userInfo);
         }
-        return allUsernames;
+        return allUsers;
     }
     async createUser(payload) {
         const existing_user = await this.userRepository.findOne({ username: payload.username });
@@ -63,7 +70,6 @@ let UserService = class UserService {
         const hash = await bcrypt.hash(payload.password, saltOrRounds);
         user.password = hash;
         user.login42 = null;
-        user.isActive = false;
         const db_user = await this.userRepository.save(user);
         const { password } = db_user, result = __rest(db_user, ["password"]);
         return result;
@@ -99,14 +105,19 @@ let UserService = class UserService {
         if (!user)
             throw new common_1.HttpException('user not found', common_1.HttpStatus.NOT_FOUND);
         if (user.avatar) {
-            const path = `/usr/src/app/avatar/${user.login42}.png`;
-            try {
-                (0, fs_1.unlinkSync)(path);
-            }
-            catch (err) {
-                console.error(err);
-            }
+            const unlinkAsync = (0, util_1.promisify)(fs.unlink);
+            const files = fs.readdirSync("public/shared/avatar");
+            files.forEach(file => {
+                const filename = file.split('.').slice(0, -1).join('.');
+                if (filename === user.username)
+                    unlinkAsync(`public/shared/avatar/${file}`);
+            });
         }
+        await this.friendsRepository.delete({ member_username: user.username });
+        await this.friendsRepository.delete({ friend_username: user.username });
+        await this.GameHistoryRepository.delete({ leftPlayer: user.username });
+        await this.GameHistoryRepository.delete({ rightPlayer: user.username });
+        await this.MatchmakingRepository.delete({ userId: user.id });
         await this.userRepository.delete(id);
     }
     async addFriend(userId, friendUsername) {
@@ -137,17 +148,48 @@ let UserService = class UserService {
         const reponse = await this.friendsRepository.find({ where: { member_username: user.username } });
         if (!reponse)
             throw new common_1.NotFoundException();
-        return reponse;
+        var allUsernames = [];
+        for (const user of reponse) {
+            allUsernames.push(user.friend_username);
+        }
+        return allUsernames;
+    }
+    async getUserFriendsStatus(username) {
+        const user = await this.getUser(username);
+        if (!user)
+            throw new common_1.NotFoundException();
+        const reponse = await this.friendsRepository.find({ where: { member_username: user.username } });
+        if (!reponse)
+            throw new common_1.NotFoundException();
+        var allUsernames = [];
+        for (const user of reponse) {
+            allUsernames.push(user.friend_username);
+        }
+        let friendsStatus = [];
+        for (const user of allUsernames) {
+            const dbUser = await this.userRepository.findOne({ username: user });
+            let tmp = new friendsStatus_dto_1.friendsStatusDto();
+            tmp.username = user;
+            tmp.status = dbUser.status;
+            tmp.avatar = dbUser.avatar;
+            friendsStatus.push(tmp);
+        }
+        return friendsStatus;
     }
     async getUserGames(username) {
         const user = await this.getUser(username);
         if (!user)
             throw new common_1.NotFoundException();
-        const games = await this.GameHistoryRepository.find({ where: [{ leftPlayer: username }, { rightPlayer: username }] });
+        const games = await this.GameHistoryRepository.find({
+            where: [
+                { leftPlayer: username, winner: typeorm.Not(typeorm.IsNull()) },
+                { rightPlayer: username, winner: typeorm.Not(typeorm.IsNull()) }
+            ]
+        });
         return games;
     }
     async getAllGames() {
-        return await this.GameHistoryRepository.find();
+        return await this.GameHistoryRepository.find({ where: { winner: typeorm.Not(typeorm.IsNull()) } });
     }
     async getBlockList(userId) {
         let user = await this.userRepository.createQueryBuilder("user")
@@ -174,7 +216,8 @@ let UserService = class UserService {
             .execute();
     }
     uploadProfileImage(req, uploadedFile) {
-        console.log(uploadedFile);
+        if (!uploadedFile || !uploadedFile.filename)
+            throw new common_1.BadRequestException();
         const unlinkAsync = (0, util_1.promisify)(fs.unlink);
         const files = fs.readdirSync("public/shared/avatar");
         const uploadedFileName = uploadedFile.filename.split('.').slice(0, -1).join('.');
@@ -185,12 +228,13 @@ let UserService = class UserService {
             if (filename === uploadedFileName && extension != uploadedFileExtension)
                 unlinkAsync(`public/shared/avatar/${file}`);
         });
-        console.log(files);
         const response = {
             originalname: uploadedFile.originalname,
             filename: `/shared/avatar/${uploadedFile.filename}`,
         };
         this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
+        console.log(`returning...`);
+        console.log(response);
         return response;
     }
 };
@@ -205,7 +249,9 @@ UserService = __decorate([
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __param(1, (0, typeorm_1.InjectRepository)(friends_entity_1.Relationship)),
     __param(2, (0, typeorm_1.InjectRepository)(gamehistory_entity_1.GameHistory)),
+    __param(3, (0, typeorm_1.InjectRepository)(matchmaking_entity_1.Matchmaking)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])
 ], UserService);

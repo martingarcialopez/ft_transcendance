@@ -14,15 +14,27 @@ const typeorm_1 = require("typeorm");
 let GameHistory = class GameHistory {
 };
 __decorate([
-    (0, typeorm_1.PrimaryColumn)(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", String)
 ], GameHistory.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], GameHistory.prototype, "leftPlayer", void 0);
+], GameHistory.prototype, "roomId", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], GameHistory.prototype, "difficulty", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], GameHistory.prototype, "maxScore", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], GameHistory.prototype, "leftPlayer", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], GameHistory.prototype, "rightPlayer", void 0);
 __decorate([

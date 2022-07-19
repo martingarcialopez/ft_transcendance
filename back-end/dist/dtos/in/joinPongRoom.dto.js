@@ -9,21 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lookingForAGameDto = void 0;
+exports.joinPongRoomDto = void 0;
 const class_validator_1 = require("class-validator");
-class lookingForAGameDto {
+class joinPongRoomDto {
 }
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], lookingForAGameDto.prototype, "userId", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], lookingForAGameDto.prototype, "difficulty", void 0);
+], joinPongRoomDto.prototype, "userId", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], lookingForAGameDto.prototype, "maxScore", void 0);
-exports.lookingForAGameDto = lookingForAGameDto;
-//# sourceMappingURL=lookingForAGame.dto.js.map
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], joinPongRoomDto.prototype, "roomId", void 0);
+exports.joinPongRoomDto = joinPongRoomDto;
+//# sourceMappingURL=joinPongRoom.dto.js.map

@@ -25,6 +25,9 @@ let AuthController = class AuthController {
     async login(req) {
         return this.authService.login(req.user);
     }
+    async logout(req) {
+        this.authService.logout(req.user);
+    }
     async getUserFrom42Intra(req) {
         return this.authService.login(req.user);
     }
@@ -43,6 +46,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('/logout'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 __decorate([
     (0, common_1.UseGuards)(oauth42_guard_1.Oauth42Guard),
     (0, common_1.Get)('/redirect'),

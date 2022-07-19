@@ -10,7 +10,8 @@ export declare class User {
     twofa: boolean;
     secret: string;
     avatar: string;
-    isActive: boolean;
+    status: string;
+    socketId: string;
     blockList: number[];
     messages: Message[];
     participants: Participant[];

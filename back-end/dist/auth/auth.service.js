@@ -53,10 +53,15 @@ let AuthService = class AuthService {
     }
     async login(user) {
         const db_user = await this.usersService.getUser(user.username);
+        this.usersService.updateUser({ "status": "online" }, db_user.id.toString());
         const payload = { username: user.username, sub: db_user.id };
         return {
             access_token: this.jwtService.sign(payload),
         };
+    }
+    async logout(user) {
+        const db_user = await this.usersService.getUser(user.username);
+        this.usersService.updateUser({ "status": "offline" }, db_user.id.toString());
     }
     async updateSecret(code, id) {
         this.usersService.updateUser({ "secret": code }, id);
