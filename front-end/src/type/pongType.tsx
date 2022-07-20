@@ -18,6 +18,11 @@ export type GameState = {
   roomId: string;
   leftPlayer: string;
   rightPlayer: string;
+  canvasWidth: number;
+  canvasHeight: number;
+  paddleWidth: number;    
+  paddleHeight: number;
+  ballRadius: number;
 };
 
 export type CanvasType = React.DetailedHTMLProps<
@@ -31,10 +36,6 @@ export enum Direction {
   UP,
   DOWN,
 }
-
-export const BALL_RADIUS = 10;
-export const PADDLE_WIDTH = 20;
-export const PADDLE_HEIGTH = 70;
 
 export type T_LeaderBoard = {
   name: string;

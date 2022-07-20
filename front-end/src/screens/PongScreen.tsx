@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { GameState, PADDLE_HEIGTH, PADDLE_WIDTH } from "../type/pongType";
+import { GameState } from "../type/pongType";
 import { Button, CircularProgress, Grid, TextField } from "@mui/material";
 import Canvas from "../components/Canvas";
 import "../styles/gameStyle.css";
@@ -12,11 +12,6 @@ import { useLocation } from "react-router-dom";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import pongSocketService from "../services/pongSocketService";
 import { updateAction } from "../redux/actions/userActions";
-
-const window_size = {
-    canvasWidth: 600,
-    canvasHeight: 300,
-};
 
 export const Pong = () => {
     let socket = pongSocketService.connect();
@@ -32,17 +27,22 @@ export const Pong = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [gameState, setGameState] = useState<GameState>({
         ballPos: {
-            x: window_size.canvasWidth / 2,
-            y: window_size.canvasHeight / 2,
+            x: 300,
+            y: 150,
         },
         ballVel: { x: 10, y: 10 },
-        leftPaddle: window_size.canvasHeight / 2,
-        rightPaddle: window_size.canvasHeight / 2,
+        leftPaddle: 150,
+        rightPaddle: 150,
         leftScore: 0,
         rightScore: 0,
         roomId: "",
         leftPlayer: "",
         rightPlayer: "",
+        canvasWidth: 600,
+        canvasHeight: 300,
+        paddleWidth: 20,
+        paddleHeight: 70,
+        ballRadius: 10,
     });
     const [id, setId] = useState(0);
     const [gameStarted, setGameStarted] = useState(false);
@@ -70,9 +70,9 @@ export const Pong = () => {
     }, [userInfo?.status]);
 
     useEffect(() => {
+        console.log("888888 useLocation => state:", state);
         if (userInfo?.username && state) {
             if (state && state.spectator) {
-                console.log("888888 useLocation => state:", state);
                 console.log(
                     "Pong socket.emit joinPongRoom ",
                     userInfo?.username,
@@ -92,17 +92,6 @@ export const Pong = () => {
             // setOpponent('test')
         }
     }, [socket, state, userInfo?.username]);
-
-    // useEffect(() => {
-    //     if (userInfo && state) {
-    //         if (state && state.joingame) {
-    //             console.log("Pong socket.emit joinPongRoom ", userInfo.id, ", in room", state.joingame);
-    //             if (socket)
-    //                 socket.emit('joinPongRoom', { userId: userInfo.id, roomId: state.joingame });
-    //             setRoomId(state.joingame);
-    //         }
-    //     }
-    // }, [socket, state]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -160,11 +149,9 @@ export const Pong = () => {
 
     socket.on("gameOver", (winnerPlayer: string) => {
         console.log("socket.on gameOver");
-        console.log("winnerPlayer :", winnerPlayer)
-        if (winnerPlayer === "leftPlayer")
-            setWinner(leftPlayer);
-        else
-            setWinner(rightPlayer);
+        console.log("winnerPlayer :", winnerPlayer);
+        if (winnerPlayer === "leftplayer") setWinner(leftPlayer);
+        else setWinner(rightPlayer);
         setGameStarted(false);
         setPlayerSide("");
         endGame();
@@ -203,18 +190,18 @@ export const Pong = () => {
         setGameStarted(false);
     }
 
-    // function giveUpPong() {
-    //     if (userInfo) {
-    //         console.log(
-    //             "giveUpPong socket.emit move ZERO roomId",
-    //             roomId,
-    //             "player:",
-    //             playerSide
-    //         );
-    //         if (socket)
-    //             socket.emit("move", { room: roomId, player: playerSide, move: 0 });
-    //     }
-    // }
+    function giveUpPong() {
+        if (userInfo) {
+            console.log(
+                "giveUpPong socket.emit move ZERO roomId",
+                roomId,
+                "player:",
+                playerSide
+            );
+            if (socket)
+                socket.emit("move", { room: roomId, player: playerSide, move: 0 });
+        }
+    }
 
     function handleClick() {
         if (userInfo) {
@@ -256,17 +243,22 @@ export const Pong = () => {
         socket?.removeAllListeners("GamePlayersName");
         setGameState({
             ballPos: {
-                x: window_size.canvasWidth / 2,
-                y: window_size.canvasHeight / 2,
+                x: gameState.canvasWidth / 2,
+                y: gameState.canvasHeight / 2,
             },
             ballVel: { x: 10, y: 10 },
-            leftPaddle: window_size.canvasHeight / 2,
-            rightPaddle: window_size.canvasHeight / 2,
+            leftPaddle: gameState.canvasHeight / 2,
+            rightPaddle: gameState.canvasHeight / 2,
             leftScore: 0,
             rightScore: 0,
             roomId: roomId,
             leftPlayer: leftPlayer,
             rightPlayer: rightPlayer,
+            canvasWidth: 600,
+            canvasHeight: 300,
+            paddleWidth: 20,
+            paddleHeight: 70,
+            ballRadius: 10
         });
     };
 
@@ -280,62 +272,36 @@ export const Pong = () => {
             if (winner === "leftplayer") img.src = "./game/left_win.jpeg";
             else img.src = "./game/right_win.jpeg";
 
-            ctx.drawImage(
-                img,
-                0,
-                0,
-                window_size.canvasWidth,
-                window_size.canvasHeight
-            );
+            ctx.drawImage(img, 0, 0, gameState.canvasWidth, gameState.canvasHeight);
         } else if (playerSide === "") {
             img.src = "./game/cyberpong.jpeg";
 
-            ctx.drawImage(
-                img,
-                0,
-                0,
-                window_size.canvasWidth,
-                window_size.canvasHeight
-            );
+            ctx.drawImage(img, 0, 0, gameState.canvasWidth, gameState.canvasHeight);
         } else {
             ctx.beginPath();
-            ctx.clearRect(0, 0, window_size.canvasWidth, window_size.canvasHeight);
+            ctx.clearRect(0, 0, gameState.canvasWidth, gameState.canvasHeight);
             ctx.closePath();
 
             ctx.fillStyle = colorBackground;
-            ctx.fillRect(0, 0, window_size.canvasWidth, window_size.canvasHeight);
+            ctx.fillRect(0, 0, gameState.canvasWidth, gameState.canvasHeight);
 
             ctx.fillStyle = colorBackground;
             ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 5, 0, 2 * Math.PI);
             ctx.fill();
 
             ctx.fillStyle = "black";
-            ctx.arc(gameState.ballPos.x, gameState.ballPos.y, 10, 0, 2 * Math.PI);
+            ctx.arc(gameState.ballPos.x, gameState.ballPos.y, gameState.ballRadius, 0, 2 * Math.PI);
             ctx.fill();
 
             ctx.fillStyle = "green";
-            ctx.fillRect(
-                0,
-                gameState.leftPaddle - PADDLE_HEIGTH / 2,
-                PADDLE_WIDTH,
-                PADDLE_HEIGTH
-            );
+            ctx.fillRect(0, gameState.leftPaddle - gameState.paddleHeight / 2, gameState.paddleWidth, gameState.paddleHeight);
 
             ctx.fillStyle = "red";
-            ctx.fillRect(
-                window_size.canvasWidth - PADDLE_WIDTH,
-                gameState.rightPaddle - PADDLE_HEIGTH / 2,
-                PADDLE_WIDTH,
-                PADDLE_HEIGTH
-            );
+            ctx.fillRect(gameState.canvasWidth - gameState.paddleWidth, gameState.rightPaddle - gameState.paddleHeight / 2, gameState.paddleWidth, gameState.paddleHeight);
 
             ctx.fillStyle = "black";
             ctx.font = "16px Palantino";
-            ctx.fillText(
-                gameState.rightScore.toString(),
-                window_size.canvasWidth - 100,
-                50
-            );
+            ctx.fillText(gameState.rightScore.toString(), gameState.canvasWidth - 100, 50);
 
             ctx.fillStyle = "black";
             ctx.fillText(gameState.leftScore.toString(), 100, 50);
@@ -424,8 +390,8 @@ export const Pong = () => {
                                     <Canvas
                                         ref={canvasRef}
                                         draw={drawGame}
-                                        width={window_size.canvasWidth}
-                                        height={window_size.canvasHeight}
+                                        width={gameState.canvasWidth}
+                                        height={gameState.canvasHeight}
                                     />
                                 </div>
                                 {playerSide ? (
@@ -459,7 +425,7 @@ export const Pong = () => {
                             justifyContent="center"
                             style={{ minHeight: "100vh" }}
                         >
-                            <CircularProgress size={window_size.canvasWidth / 6} />
+                            <CircularProgress size={gameState.canvasWidth / 6} />
                             <Grid item xs={3}>
                                 {searchOpponent}
                             </Grid>
@@ -478,15 +444,19 @@ export const Pong = () => {
                                 <Canvas
                                     ref={canvasRef}
                                     draw={drawGame}
-                                    width={window_size.canvasWidth}
-                                    height={window_size.canvasHeight}
+                                    width={gameState.canvasWidth}
+                                    height={gameState.canvasHeight}
                                 />
                             </div>
                             <ColumnGroupingTable
                                 leftPlayer={leftPlayer}
                                 rightPlayer={rightPlayer}
                             />
-                            {/* <Button onClick={giveUpPong}>Give up</Button> */}
+                            {state.spectator ?
+                                null
+                                :
+                                <Button onClick={giveUpPong}>Give up</Button>
+                            }
                         </div>
                     )}
                 </div>
