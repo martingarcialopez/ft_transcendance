@@ -189,7 +189,7 @@ export class PongService {
 			console.log('someone arrived to a finished game !')
 
 			let state: State = initGameState('normal', game.leftPlayer, game.rightPlayer, roomId);
-			client.emit('gameState', state);
+			// client.emit('gameState', state);
 			client.emit('gameOver', game.winner === game.leftPlayer ? 'leftPlayer' : 'rightPlayer');
 			return ;
 		}
