@@ -150,8 +150,10 @@ export const Pong = () => {
     socket.on("gameOver", (winnerPlayer: string) => {
         console.log("socket.on gameOver");
         console.log("winnerPlayer :", winnerPlayer);
-        if (winnerPlayer === "leftplayer") setWinner(leftPlayer);
-        else setWinner(rightPlayer);
+        if (winnerPlayer === "leftplayer")
+            setWinner(leftPlayer);
+        else
+            setWinner(rightPlayer);
         setGameStarted(false);
         setPlayerSide("");
         endGame();
@@ -382,6 +384,7 @@ export const Pong = () => {
                         {winner ? <div>Winner {winner}</div> : null}
                         <Grid item xs={6}>
                             <div>
+                                {winner ? <div>Winner : {winner}</div> : null}
                                 <div
                                     className="gamePong"
                                     tabIndex={0}
@@ -452,8 +455,11 @@ export const Pong = () => {
                                 leftPlayer={leftPlayer}
                                 rightPlayer={rightPlayer}
                             />
-                            {state.spectator ?
-                                null
+                            {state ?
+                                !state.spectator ?
+                                    <Button onClick={giveUpPong}>Give up</Button>
+                                    :
+                                    null
                                 :
                                 <Button onClick={giveUpPong}>Give up</Button>
                             }
