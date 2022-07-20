@@ -48,7 +48,6 @@ export function JoinRoomMenu(props: any) {
 		password: string,
 		isProtected: boolean
 	) => {
-		console.log(roomId, password, isProtected);
 		props.appSocket.emit(
 			"F_joinRoom",
 			{

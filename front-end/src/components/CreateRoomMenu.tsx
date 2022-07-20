@@ -25,20 +25,27 @@ export function CreateRoomMenu(props: any) {
 		props.appSocket.emit("F_getAvailableUsers", true);
 	};
 	const getAvailableUsers_listener = (userList: any) => {
-		console.log('RECEIVED: ', userList);
 		setAvailableUsers(userList);
 	};
+	const [checkedAvailableUsers, setCheckedAvailableUsers] = useState(new Map());
 	const [selectedNewParticipants, setSelectedNewParticipants] = useState<any[]>(
 		[]
 	);
 	const onChange_selectParticipant = (e: any, user: any) => {
+		let newParticipants;
 		if (e.currentTarget.checked) {
-			let newParticipants = selectedNewParticipants.slice();
+			if (checkedAvailableUsers !== undefined) {
+				checkedAvailableUsers.set(user.id, true);
+			}
+			newParticipants = selectedNewParticipants.slice();
 			newParticipants.push(user);
 			setSelectedNewParticipants(newParticipants);
 		} else {
-			let newParticipants = selectedNewParticipants.filter(
-				(obj) => obj.userId !== user.userId
+			if (checkedAvailableUsers !== undefined) {
+				checkedAvailableUsers.set(user.id, false);
+			}
+			newParticipants = selectedNewParticipants.filter(
+				(obj) => obj.id !== user.id
 			);
 			setSelectedNewParticipants(newParticipants);
 		}
@@ -56,7 +63,6 @@ export function CreateRoomMenu(props: any) {
 			password: password,
 			users: selectedNewParticipants,
 		};
-		console.log(RoomToCreate);
 		props.appSocket.emit("F_createRoom", RoomToCreate, (isCreated: boolean) => {
 			if (isCreated !== true) {
 				alert("Something went wrong");
@@ -66,6 +72,7 @@ export function CreateRoomMenu(props: any) {
 				setTypeRoom("public");
 				setPassword("");
 				setSelectedNewParticipants([]);
+				setCheckedAvailableUsers(new Map());
 			}
 		});
 	};
@@ -93,6 +100,8 @@ export function CreateRoomMenu(props: any) {
 		props.setMessageBarValue(newMessageBarValues);
 	};
 
+
+
 	useEffect(() => {
 		if (props.appSocket._callbacks !== undefined && props.appSocket._callbacks["createRoom_listener"] === undefined) {
 			props.appSocket.on("B_createRoom", createRoom_listener);
@@ -110,14 +119,19 @@ export function CreateRoomMenu(props: any) {
 		};
 	});
 
-
 	let Html_AvailableUser: any = <div></div>;
 
 	if (availableUsers !== undefined && availableUsers.length > 0) {
 		Html_AvailableUser = availableUsers.map((user: any, i: any) => {
+
+			let isChecked = false;
+			if (checkedAvailableUsers !== undefined) {
+				isChecked = checkedAvailableUsers.get(user.id) || false;
+			}
 			return (
 				<div key={i} id="create-room-participant">
 				  <input
+					checked={isChecked}
 					type="checkbox"
 					onChange={(e) => onChange_selectParticipant(e, user)}
 					/>
@@ -142,7 +156,10 @@ export function CreateRoomMenu(props: any) {
 		  <ControlledMenu
 			state={isOpen ? "open" : "closed"}
 			anchorRef={ref}
-			onClose={() => setOpen(false)}
+			onClose={() => {
+				setOpen(false);
+				setSelectedNewParticipants([]);
+			}}
 			>
 			{/* ---------- */}
 			<label> Room Name </label>
