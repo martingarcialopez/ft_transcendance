@@ -360,12 +360,17 @@ function initGameState(difficulty: string, player1: string, player2: string, roo
 	var vel: number = 10;
 
 	if (difficulty === "easy")
-		vel = 5;
+		paddle_size = 100;
 	else if (difficulty === "hard")
-		vel = 20;
+		paddle_size = 40;
 
 	return new State(
 		{
+			canvasWidth: board_x_size,
+			canvasHeight: board_y_size,
+			paddleWidth: paddle_width,
+			paddleHeight: paddle_size,
+			ballRadius: ball_radius,
 			initial_velocity: vel,
 			ballPos: new Point(board_x_size / 2, board_y_size / 2),
 			ballVel: new Point(vel, Math.floor(Math.random() * (vel + 1))),
@@ -425,6 +430,11 @@ class State {
 	leftPlayer: string;
 	rightPlayer: string
 	playerGiveUp: string;
+	canvasWidth: number;
+	canvasHeight: number;
+	paddleWidth: number;	
+	paddleHeight: number;
+	ballRadius: number;
 
 }
 
