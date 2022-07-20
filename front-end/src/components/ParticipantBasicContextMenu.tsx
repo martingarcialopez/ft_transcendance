@@ -11,7 +11,7 @@ export function ParticipantBasicContextMenu(props: any) {
   const onClick_block = (userId: number, roomId: number) => {
     props.appSocket.emit("F_blockUser", userId, (isBlocked: boolean) => {
       if (isBlocked === true) {
-        let newRooms = props.rooms.slice();
+        let newRooms = props.roomsList.slice();
         var index = newRooms.findIndex((obj: any) => obj.id === roomId);
         var unbaned_participants = newRooms[index].participants.filter(
           (obj: any) => obj.userId !== userId
