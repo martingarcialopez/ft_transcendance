@@ -43,6 +43,12 @@ body{
     transition: 0.3s;
 }
 
+#join-room-img {
+    width: 5vh;
+    border-radius: 50%;
+    padding: 5px;
+}
+
 #left-bars img:first-child{
     background-color: #7289DA;
     border-radius: 18px;
@@ -521,7 +527,7 @@ body{
     position: absolute;
 	bottom: 0;
 	width: 129vh;
-		width: 40vw;	
+		width: 40vw;
 	padding: 2vh;
 }
 
@@ -800,7 +806,7 @@ body{
     width: 129vh;
     width: 40vw;
     padding: 2vh;
-}	
+}
 
 	#mao-room-names {
 		color: #8A8E94;

@@ -75,9 +75,11 @@ export function ParticipantBasicContextMenu(props: any) {
         if (isCreated !== true) {
           alert("Something went wrong");
         } else {
-          props.roomList
-            .filter((room: any) => room.name === `PM ${username}`)
-            .forEach((room: any) => props.setCurrRoomId(room.id));
+			if (props.roomList !== undefined) {
+				props.roomList
+					.filter((room: any) => room.name === `PM ${username}`)
+					.forEach((room: any) => props.setCurrRoomId(room.id));
+			}
         }
       });
     }
