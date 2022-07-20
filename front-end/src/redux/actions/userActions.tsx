@@ -118,16 +118,16 @@ export function uploadImageAction(userInfo: any, image: any, access_token: any) 
         console.log("uploadImageAction data filename qui fct :")
         console.log(response.data.filename)
 
-        // const storage = localStorage.getItem('userInfo');
-        // if (storage) {
-        //     const user = JSON.parse(storage);
-        //     console.log(`previous avatar was ${user.avatar}`)
-        //     user.avatar = response.data.filename;
-        //     console.log(`new avatar is ${response.data.filename}`)
-        //     localStorage.setItem('userInfo', JSON.stringify(user));
-        // }
+        const storage = localStorage.getItem('userInfo');
+        if (storage) {
+            const user = JSON.parse(storage);
+            console.log(`previous avatar was ${user.avatar}`)
+            user.avatar = response.data.filename;
+            console.log(`new avatar is ${response.data.filename}`)
+            localStorage.setItem('userInfo', JSON.stringify(user));
+        }
 
-        dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, response.data.filename, userInfo.status, userInfo.access_token, userInfo.friends));
+        // dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, response.data.filename, userInfo.status, userInfo.access_token, userInfo.friends));
       })
       .catch((error) => {
         console.log("ceci est une error dans uploadImageAction :")
