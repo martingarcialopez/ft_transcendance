@@ -74,23 +74,21 @@ export function ParticipantBasicContextMenu(props: any) {
       props.appSocket.emit("F_createRoom", newPmRoom, (isCreated: boolean) => {
         if (isCreated !== true) {
           alert("Something went wrong");
-        } else {
-			if (props.roomList !== undefined) {
-				props.roomList
+        } else if (props.roomList) {
+          props.roomsList
 					.filter((room: any) => room.name === `PM ${username}`)
 					.forEach((room: any) => props.setCurrRoomId(room.id));
-			}
         }
       });
     }
 
     if (invitation) {
 
-      const roomId: string = v4();
+      const pongRoomId: string = v4();
 
   	  let messageToCreate = {
   	    roomId: props.currRoomId,
-  	  	content: `<a href="/joingame/${roomId}">join pong game</a>`
+  	  	content: `<a href="/joingame/${pongRoomId}">join pong game</a>`
    	  };
       props.appSocket.emit("F_createMessage", messageToCreate);
     }
