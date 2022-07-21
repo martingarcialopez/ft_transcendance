@@ -42,11 +42,7 @@ export function ParticipantBasicContextMenu(props: any) {
     });
   };
 
-  const onClick_directMessage = (
-    userId: number,
-    username: string,
-    invitation: boolean
-  ) => {
+  const onClick_directMessage = (userId: number, username: string, invitation: boolean) => {
     let roomFounded = false;
     props.roomsList.forEach((room: any) => {
       if (roomFounded === true) {
@@ -81,17 +77,17 @@ export function ParticipantBasicContextMenu(props: any) {
         }
       });
     }
+  };
 
-    if (invitation) {
+  const onClick_InvitationMessage = (userId: number, username: string, invitation: boolean) => {
 
-      const pongRoomId: string = v4();
+    const pongRoomId: string = v4();
 
-  	  let messageToCreate = {
-  	    roomId: props.currRoomId,
-  	  	content: `<a href="/joingame/${pongRoomId}">join pong game</a>`
-   	  };
-      props.appSocket.emit("F_createMessage", messageToCreate);
-    }
+    let messageToCreate = {
+      roomId: props.currRoomId,
+    	content: `<a href="/joingame/${pongRoomId}">join pong game</a>`
+    };
+    props.appSocket.emit("F_createMessage", messageToCreate);
   };
 
   return (
@@ -134,7 +130,7 @@ export function ParticipantBasicContextMenu(props: any) {
 
       <MenuItem
         onClick={() =>
-          onClick_directMessage(
+          onClick_InvitationMessage(
             props.currentUser.userId,
             props.currentUser.username,
             true
