@@ -267,23 +267,28 @@ export const Pong = () => {
     const drawGame = (ctx: CanvasRenderingContext2D) => {
         // console.log("drawGame gameState", gameState);
         // console.log("drawGame roomId", roomId);
-        var img = new Image();
+        var leftWinImg = new Image();
+        var rightWinImg = new Image();
+        var cyberpongImg = new Image();
+
+        leftWinImg.src = "./game/left_win.jpeg";
+        rightWinImg.src = "./game/right_win.jpeg";
+        cyberpongImg.src = "./game/cyberpong.jpeg";
+
         ctx.imageSmoothingEnabled = false;
         if (winner !== "") {
             console.log("drawGame winner:", winner);
-            if (winner === "leftplayer") img.src = "./game/left_win.jpeg";
-            else img.src = "./game/right_win.jpeg";
+            if (winner === "leftplayer")
+                ctx.drawImage(leftWinImg, 0, 0, gameState.canvasWidth, gameState.canvasHeight);
+            else
+                ctx.drawImage(rightWinImg, 0, 0, gameState.canvasWidth, gameState.canvasHeight);
 
-            ctx.drawImage(img, 0, 0, gameState.canvasWidth, gameState.canvasHeight);
         } else if (playerSide === "") {
-            img.src = "./game/cyberpong.jpeg";
-
-            ctx.drawImage(img, 0, 0, gameState.canvasWidth, gameState.canvasHeight);
+            ctx.drawImage(cyberpongImg, 0, 0, gameState.canvasWidth, gameState.canvasHeight);
         } else {
-            ctx.beginPath();
             ctx.clearRect(0, 0, gameState.canvasWidth, gameState.canvasHeight);
-            ctx.closePath();
 
+            ctx.beginPath();
             ctx.fillStyle = colorBackground;
             ctx.fillRect(0, 0, gameState.canvasWidth, gameState.canvasHeight);
 
@@ -293,6 +298,7 @@ export const Pong = () => {
 
             ctx.fillStyle = "black";
             ctx.arc(gameState.ballPos.x, gameState.ballPos.y, gameState.ballRadius, 0, 2 * Math.PI);
+
             ctx.fill();
 
             ctx.fillStyle = "green";
@@ -307,6 +313,7 @@ export const Pong = () => {
 
             ctx.fillStyle = "black";
             ctx.fillText(gameState.leftScore.toString(), 100, 50);
+            ctx.closePath();
 
             ctx.stroke();
         }
