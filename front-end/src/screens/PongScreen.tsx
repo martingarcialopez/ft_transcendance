@@ -393,7 +393,6 @@ export const Pong = () => {
                         {winner ? <div>Winner {winner}</div> : null}
                         <Grid item xs={6}>
                             <div>
-                                {winner ? <div>Winner : {winner}</div> : null}
                                 <div
                                     className="gamePong"
                                     tabIndex={0}
