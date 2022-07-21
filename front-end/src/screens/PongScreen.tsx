@@ -47,6 +47,7 @@ export const Pong = () => {
     const [id, setId] = useState(0);
     const [gameStarted, setGameStarted] = useState(false);
     const [winner, setWinner] = useState("");
+    const [winnerSide, setWinnerSide] = useState("")
     const userLogin = useSelector<RootState, UserState>(
         (state: RootState) => state.userLogin
     );
@@ -136,7 +137,7 @@ export const Pong = () => {
         }
         // console.log(args);
         // console.log(args[0]);
-        // console.log(args[0].ballPos);
+        console.log(`paddle height is ${args[0].paddleHeight}`);
         // console.log(args[0].ballPos.x);
         // console.log(args[0].ballPos.y);
         // console.log("gameState", gameState);
@@ -147,13 +148,14 @@ export const Pong = () => {
         // console.log("roomId", roomId);
     });
 
-    socket.on("gameOver", (winnerPlayer: string) => {
+    socket.on("gameOver", (...args) => {
         console.log("socket.on gameOver");
-        console.log("winnerPlayer :", winnerPlayer);
-        if (winnerPlayer === "leftplayer")
-            setWinner(leftPlayer);
+        console.log("winnerPlayer :", args[0]);
+        if (args[0] === "leftPlayer")
+            setWinnerSide("leftPlayer");
         else
-            setWinner(rightPlayer);
+            setWinnerSide("leftPlayer");
+        setWinner(args[1]);
         setGameStarted(false);
         setPlayerSide("");
         endGame();
@@ -276,9 +278,9 @@ export const Pong = () => {
         cyberpongImg.src = "./game/cyberpong.jpeg";
 
         ctx.imageSmoothingEnabled = false;
-        if (winner !== "") {
+        if (winnerSide !== "") {
             console.log("drawGame winner:", winner);
-            if (winner === "leftplayer")
+            if (winnerSide === "leftPlayer")
                 ctx.drawImage(leftWinImg, 0, 0, gameState.canvasWidth, gameState.canvasHeight);
             else
                 ctx.drawImage(rightWinImg, 0, 0, gameState.canvasWidth, gameState.canvasHeight);
