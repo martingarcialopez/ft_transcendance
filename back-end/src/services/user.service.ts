@@ -108,6 +108,14 @@ export class UserService {
             Object.assign(user, body);
         else
             throw new BadRequestException('Cannot overwrite user id');
+
+        
+        if (body.username) {
+            const userExist = await this.getUser(body.username);
+            if (userExist)
+                throw new BadRequestException('Username already exists');
+        }
+    
         return this.userRepository.save(user);
     }
 
