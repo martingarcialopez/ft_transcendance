@@ -94,6 +94,14 @@ export function enable2FAAction(access_token: any) {
         console.log(response)
         console.log("enable2FAAction data qui fct :")
         console.log(response.data)
+
+        const storage = localStorage.getItem('userInfo');
+        if (storage) {
+          const user = JSON.parse(storage);
+          user.twofa = true;
+          localStorage.setItem('userInfo', JSON.stringify(user));
+        }
+
         dispatch(enable2FAActionConfirmedAction(response.data));
         // navigate('/profile')
       })
@@ -120,11 +128,11 @@ export function uploadImageAction(userInfo: any, image: any, access_token: any) 
 
         const storage = localStorage.getItem('userInfo');
         if (storage) {
-            const user = JSON.parse(storage);
-            console.log(`previous avatar was ${user.avatar}`)
-            user.avatar = response.data.filename;
-            console.log(`new avatar is ${response.data.filename}`)
-            localStorage.setItem('userInfo', JSON.stringify(user));
+          const user = JSON.parse(storage);
+          console.log(`previous avatar was ${user.avatar}`)
+          user.avatar = response.data.filename;
+          console.log(`new avatar is ${response.data.filename}`)
+          localStorage.setItem('userInfo', JSON.stringify(user));
         }
 
         // dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, response.data.filename, userInfo.status, userInfo.access_token, userInfo.friends));
@@ -133,10 +141,10 @@ export function uploadImageAction(userInfo: any, image: any, access_token: any) 
         console.log("ceci est une error dans uploadImageAction :")
         console.log(error);
         const errorMessage = formatError(error.code);
-          console.log("ceci est une errorMessage return de formatError dans uploadImageAction :" + errorMessage)
-		  if (error.response.data.statusCode === 415) {
-			  alert('Only png images are supported.');
-		  }
+        console.log("ceci est une errorMessage return de formatError dans uploadImageAction :" + errorMessage)
+        if (error.response.data.statusCode === 415) {
+          alert('Only png images are supported.');
+        }
         dispatch(ActionFailed(errorMessage));
       });
   };
@@ -150,6 +158,14 @@ export function disable2FAAction(access_token: any) {
         console.log(response)
         console.log("disable2FAAction data qui fct :")
         console.log(response.data)
+
+        const storage = localStorage.getItem('userInfo');
+        if (storage) {
+          const user = JSON.parse(storage);
+          user.twofa = false;
+          localStorage.setItem('userInfo', JSON.stringify(user));
+        }
+
         dispatch(disable2FAActionConfirmedAction());
         // navigate('/profile')
       })

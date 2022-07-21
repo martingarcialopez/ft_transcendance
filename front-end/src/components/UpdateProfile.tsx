@@ -1,16 +1,19 @@
 import "../styles/profileContainerStyles.css";
 import { Button, Grid, TextField } from "@mui/material";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Box } from "@mui/system";
 import { updateAction, uploadImageAction } from "../redux/actions/userActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CustomizedSnackbars } from "./CustomizedSnackbars";
 import { useParams } from "react-router-dom";
+import { UserState } from "../redux/reducers/userReducers";
+import { RootState } from "../redux";
 
-export const UpdateProfile = ({ userInfo }: any) => {
-    const [firstname, setFirstname] = useState(userInfo.firstname)
-    const [lastname, setLastname] = useState(userInfo.lastname)
-    const [username, setUsername] = useState(userInfo.username)
+export const UpdateProfile = ({ userInfo }: UserState) => {
+    const [firstname, setFirstname] = useState(userInfo?.firstname)
+    const [lastname, setLastname] = useState(userInfo?.lastname)
+    const [username, setUsername] = useState(userInfo?.username)
+    const [oldUsername, setOldUsername] = useState(userInfo?.username)
     const [open, setOpen] = useState(false);
     const [snackbars, setSnackbars] = useState(false);
     const [statusError, setStatusError] = useState(false);
@@ -19,27 +22,42 @@ export const UpdateProfile = ({ userInfo }: any) => {
     const [profileImg, setProfileImg] = useState('')
     // const [profileImgType, setProfileImgType] = useState('')
     const dispatch = useDispatch()
-
     const [isValidFileFormat, setIsValidFileFormat] = useState(true);
+    const userLogin = useSelector<RootState, UserState>(
+        (state: RootState) => state.userLogin
+    )
+
+    useEffect(() => {
+        console.log("useEffect errorMessage: {", userLogin.errorMessage, "}")
+        if (userLogin.errorMessage) {
+            setStatusError(false);
+            setUsername(oldUsername)
+        } else {
+            setOldUsername(username);
+        }
+    }, [userLogin.errorMessage, oldUsername, username])
+
+    if (!userInfo)
+        return <h1>Loading...</h1>;
 
     const onFileChange = (e: any) => {
-		if (e.target.files[0].type !== 'image/png') {
-			alert('[Warning] Only PNG files are supported.');
-			setIsValidFileFormat(false);
-		}
-		else {
-			setIsValidFileFormat(true);
+        if (e.target.files[0].type !== 'image/png') {
+            alert('[Warning] Only PNG files are supported.');
+            setIsValidFileFormat(false);
+        }
+        else {
+            setIsValidFileFormat(true);
             console.log(e.target.files[0]);
-			setProfileImg(e.target.files[0])
-			console.log("FilesUploadComponent e.target.files[0] :", e.target.files[0])
-		}
+            setProfileImg(e.target.files[0])
+            console.log("FilesUploadComponent e.target.files[0] :", e.target.files[0])
+        }
     }
 
     const uploadImage = () => {
         // const formData = new FormData()
         // formData.append('file', profileImg)
         // console.log("FilesUploadComponent formData :", formData)
-        console.log (`in UpdateProfile, profileImg is ${profileImg}`)
+        console.log(`in UpdateProfile, profileImg is ${profileImg}`)
         dispatch(uploadImageAction(userInfo, profileImg, userInfo.access_token));
         setDisplayImg(true)
         setOpen(false);
@@ -68,11 +86,8 @@ export const UpdateProfile = ({ userInfo }: any) => {
         setOpen(false);
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
             dispatch(updateAction(firstname, lastname, username, userInfo.id, userInfo.avatar, userInfo.status, userInfo.access_token, userInfo.friends))
-            setStatusError(true);
             setSnackbars(true);
-        }
-        else {
-            setStatusError(false);
+            setStatusError(true);
         }
         setDisplayImg(true);
         console.log("UpdateProfile :", {
@@ -87,7 +102,8 @@ export const UpdateProfile = ({ userInfo }: any) => {
             {!open ?
                 <div>
                     {snackbars ?
-                        <CustomizedSnackbars status={statusError} />
+                    //  message={userLogin.errorMessage} 
+                        <CustomizedSnackbars status={statusError}/>
                         :
                         null
                     }
