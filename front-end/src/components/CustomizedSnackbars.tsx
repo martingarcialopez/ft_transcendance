@@ -10,7 +10,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export const CustomizedSnackbars = (Status: any, message: any) => {
+export const CustomizedSnackbars = (Status: any) => {
   const [open, setOpen] = useState(true);
   const status = Status?.status;
 
@@ -23,7 +23,7 @@ export const CustomizedSnackbars = (Status: any, message: any) => {
     setOpen(false);
   };
 
-  console.log("CustomizedSnackbars message :", message)
+  // console.log("CustomizedSnackbars message :", message)
 
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>
@@ -37,12 +37,7 @@ export const CustomizedSnackbars = (Status: any, message: any) => {
           :
           <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
             <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-              {!message ?
-                message
-                :
-                "There has been an error while updating your profile."
-              }
-
+              There has been an error while updating your profile.
             </Alert>
           </Snackbar>
       }
