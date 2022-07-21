@@ -15,6 +15,12 @@ import { GameHistory } from 'src/models/gamehistory.entity';
 import { User } from 'src/models/user.entity';
 import * as typeorm from "typeorm";
 
+var board_x_size: number = 600;
+var board_y_size: number = 300;
+var paddle_size: number = 70;
+var paddle_width: number = 20;
+var ball_radius: number = 10;
+
 @Injectable()
 export class PongService {
 	/*if needed*/
@@ -190,7 +196,7 @@ export class PongService {
 
 			let state: State = initGameState('normal', game.leftPlayer, game.rightPlayer, roomId);
 			// client.emit('gameState', state);
-			client.emit('gameOver', game.winner === game.leftPlayer ? 'leftPlayer' : 'rightPlayer');
+			client.emit('gameOver', game.winner === game.leftPlayer ? 'leftPlayer' : 'rightPlayer', game.winner === game.leftPlayer ? game.leftPlayer : game.rightPlayer);
 			return ;
 		}
 
@@ -281,7 +287,7 @@ export class PongService {
 				else if (state.playerGiveUp === 'leftPlayer' || state.rightScore >= winningScore)
 					winner = 'rightPlayer';
 				console.log(`winner is ${winner}`)
-				socket.to(socketRoom).emit('gameOver', winner);
+				socket.to(socketRoom).emit('gameOver', winner, winner === 'leftPlayer' ? state.leftPlayer : state.rightPlayer);
 				const move = this.gameService.getAll();
 				move.filter(elem => elem.room === socketRoom).forEach(elem => this.gameService.delete(elem.id));
 
@@ -359,10 +365,12 @@ function initGameState(difficulty: string, player1: string, player2: string, roo
 
 	var vel: number = 10;
 
-	if (difficulty === "easy")
+	if (difficulty === "Easy") {
 		paddle_size = 100;
-	else if (difficulty === "hard")
+	}
+	else if (difficulty === "Hard") {
 		paddle_size = 40;
+	}
 
 	return new State(
 		{
@@ -390,11 +398,7 @@ function sleep(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-var board_x_size: number = 600;
-var board_y_size: number = 300;
-var paddle_size: number = 70;
-var paddle_width: number = 20;
-var ball_radius: number = 10;
+
 
 
 class Point {
@@ -489,7 +493,9 @@ function updateBallPosition(current: State, next: State) {
 			// Ball also heads in the direction of player that have just scored
 			next.ballVel.x = current.initial_velocity;
 			// We randomize y component so that the ball will not move on a straight line
-			next.ballVel.y = Math.floor(Math.random() * (current.initial_velocity + 1));
+			do {
+				next.ballVel.y = Math.floor(Math.random() * (current.initial_velocity + 1));
+			} while (next.ballVel.y === 0)
 		}
 	}
 	else if (next.ballPos.x + ball_radius >= (board_x_size - paddle_width - 2)) { // exact same calculations on the other field
@@ -505,7 +511,9 @@ function updateBallPosition(current: State, next: State) {
 			next.ballPos.x = board_x_size / 2;
 			next.ballPos.y = board_y_size / 2;
 			next.ballVel.x = -current.initial_velocity;
-			next.ballVel.y = Math.floor(Math.random() * (current.initial_velocity + 1));
+			do {
+				next.ballVel.y = Math.floor(Math.random() * (current.initial_velocity + 1));
+			} while (next.ballVel.y === 0)
 		}
 	}
 }
