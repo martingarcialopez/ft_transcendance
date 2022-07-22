@@ -15,11 +15,11 @@ export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
     constructor(private httpService: HttpService, private authService: AuthService, private userService: UserService) {
         super({
 
-            authorizationURL: 'https://api.intra.42.fr/oauth/authorize?client_id=82931d5147b41888714cb6bb0eefb883af55984e31edb80157b9fa91b5d4dd15&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fredirect&response_type=code',
+            authorizationURL: `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=http%3A%2F%2F${process.env.SERVER_URL}%3A8080%2Fauth%2Fredirect&response_type=code`,
             tokenURL: "https://api.intra.42.fr/oauth/token",
             clientID: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: `http://localhost:8080/auth/redirect`,
+            callbackURL: `http://${process.env.SERVER_URL}:8080/auth/redirect`,
             scope: "public"
 
         });
@@ -39,10 +39,12 @@ export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
         if (existingUser)
             return existingUser; // If user already exists, we return user and validation ends here
 
+        const usernameExists: User = await this.userService.getUser(login);
+
         const user = new User();
 
         user.login42 = login;
-        user.username = login;
+        user.username = !usernameExists ? login: `${login}_2`;
         user.firstname = first_name;
         user.lastname = last_name;
         user.password = null;

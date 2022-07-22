@@ -51,9 +51,8 @@ export class AuthService {
   async logout(user) {
 
   const db_user: User = await this.usersService.getUser(user.username);
-  if (user)
+  if (db_user)
     this.usersService.updateUser( { "status": "offline" }, db_user.id.toString() );
-
   }
 
 async updateSecret(code: string, id: string) {
