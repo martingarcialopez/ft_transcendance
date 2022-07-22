@@ -7,14 +7,13 @@ import { login42Action } from "../redux/actions/userActions";
 export const RedirectPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
+  let code = window.location.href.slice(35, window.location.href.length);
 
   useEffect(() => {
     console.log("RedirectPage window.location.href", window.location.href)
-
-    let code = window.location.href.slice(35, window.location.href.length);
     console.log("RedirectPage code", code)
     dispatch(login42Action(code, navigate))
-  }, [dispatch, navigate])
+  }, [dispatch, navigate, code])
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, width: '100%' }}>
