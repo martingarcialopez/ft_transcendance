@@ -68,9 +68,8 @@ export function uploadImage(image: any, access_token: any) {
 }
 
 export function deleteAccount(access_token: any, id: number) {
-    return axios.post(
+    return axios.delete(
         `${URL_test}/user/${id}`,
-        null,
         {
             headers: { 'Authorization': `Bearer ${access_token}` }
         }
