@@ -126,6 +126,7 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
                                 <Button onClick={handleClickOpen} >
                                     Edit Profile
                                 </Button>
+                                <br />
                                 <Button onClick={handleClickDelete} >
                                     Delete Account
                                 </Button>
