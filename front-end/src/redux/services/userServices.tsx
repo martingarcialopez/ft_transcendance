@@ -66,6 +66,16 @@ export function uploadImage(image: any, access_token: any) {
         }
     );
 }
+
+export function deleteAccount(access_token: any, id: number) {
+    return axios.delete(
+        `${URL_test}/user/${id}`,
+        {
+            headers: { 'Authorization': `Bearer ${access_token}` }
+        }
+    );
+}
+
 export function disable2FA(access_token: any) {
     return axios.post(
         `${URL_test}/auth/disable2FA`,

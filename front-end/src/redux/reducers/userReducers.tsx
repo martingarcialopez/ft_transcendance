@@ -108,7 +108,7 @@ export const allMatchReducer = (state: AllMatchState = {}, action: Action) => {
 export const userLoginReducer = (
   state: UserState = {
     showLoading: false,
-    errorMessage: "",
+    errorMessage: undefined,
     successMessage: "",
     userInfo: {
       login42: "",
@@ -152,7 +152,7 @@ export const userLoginReducer = (
       return {
         ...state,
         showLoading: false,
-        errorMessage: "",
+        errorMessage: undefined,
         userInfo: { ...state.userInfo, twofa: true, code2FA: action.payload },
       };
     case GET_FRIENDS_LIST_FOR_FRIEND_ACTION:
@@ -163,7 +163,7 @@ export const userLoginReducer = (
       return {
         ...state,
         showLoading: false,
-        errorMessage: "",
+        errorMessage: undefined,
         friendInfo: { ...state.friendInfo, friends: action.payload },
       };
     case GET_FRIENDS_LIST_ACTION:
@@ -171,7 +171,7 @@ export const userLoginReducer = (
       return {
         ...state,
         showLoading: false,
-        errorMessage: "",
+        errorMessage: undefined,
         userInfo: { ...state.userInfo, friends: action.payload },
       };
     case GET_FRIEND_INFOS_ACTION:
@@ -180,18 +180,15 @@ export const userLoginReducer = (
         ...state,
         showLoading: false,
         friendInfo: action.payload,
-        errorMessage: "",
+        errorMessage: undefined,
         successMessage: "Get Friend Infos Successfully Completed",
       };
     case DISABLE_2FA_CONFIRMED_ACTION:
-      console.log(
-        "DISABLE_2FA_CONFIRMED_ACTION action.payload",
-        action.payload
-      );
+      // console.log("DISABLE_2FA_CONFIRMED_ACTION action.payload", action.payload);
       return {
         ...state,
         showLoading: false,
-        errorMessage: "",
+        errorMessage: undefined,
         successMessage: "Disable 2FA Successfully Send",
         userInfo: { ...state.userInfo, twofa: false, code2FA: "" },
       };
@@ -200,7 +197,7 @@ export const userLoginReducer = (
       return {
         ...state,
         showLoading: false,
-        errorMessage: "",
+        errorMessage: undefined,
         successMessage: "Image Successfully Upload",
       };
     case UPDATE_CONFIRMED_ACTION:
@@ -209,7 +206,7 @@ export const userLoginReducer = (
         ...state,
         showLoading: false,
         userInfo: action.payload,
-        errorMessage: "",
+        errorMessage: undefined,
         successMessage: "Profile Successfully Update",
       };
     case LOGIN_CONFIRMED_ACTION:
@@ -218,7 +215,7 @@ export const userLoginReducer = (
         ...state,
         showLoading: false,
         userInfo: action.payload,
-        errorMessage: "",
+        errorMessage: undefined,
         successMessage: "Login Successfully Completed",
       };
     case SIGNUP_CONFIRMED_ACTION:
@@ -227,7 +224,7 @@ export const userLoginReducer = (
         ...state,
         showLoading: false,
         userInfo: action.payload,
-        errorMessage: "",
+        errorMessage: undefined,
         successMessage: "Signup Successfully Completed",
       };
     case LOGIN_FAILED_ACTION:
@@ -238,19 +235,19 @@ export const userLoginReducer = (
         ...state,
         showLoading: false,
         errorMessage: action.payload,
-        successMessage: "",
+        successMessage: undefined,
       };
     case LOGOUT_ACTION:
       return {
         ...state,
         userInfo: action.payload,
-        errorMessage: "",
+        errorMessage: undefined,
         successMessage: "Logout Successfully Completed",
       };
     case CHANGE_PAGE_ACTION:
       return {
         ...state,
-        errorMessage: "",
+        errorMessage: undefined,
       };
     default:
       return state;
