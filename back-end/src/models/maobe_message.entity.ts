@@ -20,7 +20,10 @@ export class MaobeMessage {
 	@Column({nullable:true})
     createdDate: string;
 
-	@ManyToOne((type) => User, (user) => user.messages)
+	@ManyToOne((type) => User, (user) => user.messages, {
+      onDelete: 'CASCADE',
+      orphanedRowAction: "delete" // NEW
+    })
 	@JoinColumn({ name: 'userId' })
 	user: User;
 	@Column()

@@ -11,7 +11,10 @@ export class MaobeParticipant {
 	@Column("timestamptz", {nullable:true, default: '2019-06-29'})
 	mute_until: Date;
 
-	@ManyToOne((type) => User, (user) => user.participants)
+	@ManyToOne((type) => User, (user) => user.participants, {
+      onDelete: 'CASCADE',
+      orphanedRowAction: "delete" // NEW
+    })
 	@JoinColumn({ name: 'userId' })
     user: User;
 
