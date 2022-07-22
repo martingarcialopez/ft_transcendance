@@ -2,10 +2,10 @@ import "../styles/profileContainerStyles.css";
 import { Button, Grid, TextField } from "@mui/material";
 import { FormEvent, useEffect, useState } from "react";
 import { Box } from "@mui/system";
-import { updateAction, uploadImageAction } from "../redux/actions/userActions";
+import { deleteAccountAction, updateAction, uploadImageAction } from "../redux/actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomizedSnackbars } from "./CustomizedSnackbars";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { UserState } from "../redux/reducers/userReducers";
 import { RootState } from "../redux";
 
@@ -26,6 +26,7 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
     const userLogin = useSelector<RootState, UserState>(
         (state: RootState) => state.userLogin
     )
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log("useEffect errorMessage: {", userLogin.errorMessage, "}")
@@ -68,6 +69,11 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
     const handleClickOpen = () => {
         setOpen(true);
         setSnackbars(false);
+    };
+
+    const handleClickDelete = () => {
+        console.log("handleClickDelete")
+        dispatch(deleteAccountAction(userInfo.access_token, userInfo.id, navigate));
     };
 
     const changeImage = () => {
@@ -119,6 +125,9 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
                             <div>
                                 <Button onClick={handleClickOpen} >
                                     Edit Profile
+                                </Button>
+                                <Button onClick={handleClickDelete} >
+                                    Delete Account
                                 </Button>
                             </div>
                             :

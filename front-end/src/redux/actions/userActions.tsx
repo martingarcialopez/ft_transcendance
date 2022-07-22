@@ -18,7 +18,7 @@ import {
   GET_FRIENDS_LIST_FOR_FRIEND_ACTION,
   GET_ALL_PLAYERS_ACTION,
 } from '../constants/userConstants'
-import { addFriend, removeFriend, formatError, getInfo, getUserInfo, login, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42, logout, getFriendListStatus, getAllPlayers } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getInfo, getUserInfo, login, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42, logout, getFriendListStatus, getAllPlayers, deleteAccount } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -145,6 +145,26 @@ export function uploadImageAction(userInfo: any, image: any, access_token: any) 
         if (error.response.data.statusCode === 415) {
           alert('Only png images are supported.');
         }
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
+export function deleteAccountAction(access_token: any, id: number, navigate: NavigateFunction) {
+  return (dispatch: any) => {
+    deleteAccount(access_token, id)
+      .then((response) => {
+        console.log("deleteAccountAction qui fct :")
+        console.log(response)
+        console.log("deleteAccountAction data qui fct :")
+        console.log(response.data)
+        dispatch(logoutAction(access_token, navigate));
+      })
+      .catch((error) => {
+        console.log("ceci est une error dans deleteAccountAction :")
+        console.log(error);
+        const errorMessage = formatError(error.code);
+        console.log("ceci est une errorMessage return de formatError dans deleteAccountAction :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
   };
