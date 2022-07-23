@@ -126,7 +126,7 @@ export class MaobeChatGateway {
     async createParticipant(socket: Socket, dto: JoinRoomDto): Promise<boolean> {
 		const userId: number = Number(socket.handshake.headers.userid);
 		try {
-			await this.roomService.joinRoom(dto);
+			await this.roomService.joinRoom(userId, dto);
 			const info = await this.roomService.createParticipant({'userId': userId,
 													  'roomId': dto.roomId});
 			socket.emit('B_joinRoom', info);
@@ -153,8 +153,6 @@ export class MaobeChatGateway {
 
 	@SubscribeMessage('F_directMessage')
 	directMessage(socket: Socket, infos: any): boolean {
-		console.log(`directMessage ${infos}`);
-		console.log('i am here!!!!!')
 		return (true);
 	}
 

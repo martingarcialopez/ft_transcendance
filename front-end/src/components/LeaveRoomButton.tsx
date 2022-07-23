@@ -36,9 +36,6 @@ export function LeaveRoomButton(props: any) {
 			props.appSocket.removeAllListeners("B_leaveRoom");
 		};
 	});
-	if (props.currRoom.participants.length === 1) {
-	  return <div></div>;
-	}
 	return (
 		<button
 			className="mao-btn-join-room"
