@@ -19,7 +19,7 @@ export function LeaveRoomButton(props: any) {
 		props.setRooms(tmp_newRooms);
 	};
 
-		const onClick_leaveRoom = (roomId: number) => {
+	const onClick_leaveRoom = (roomId: number) => {
 		props.appSocket.emit("F_leaveRoom", roomId, (isLeft: boolean) => {
 			if (isLeft !== true) {
 				alert("Something went wrong");
@@ -28,26 +28,25 @@ export function LeaveRoomButton(props: any) {
 	};
 
 
-useEffect(() => {
-			if (props.appSocket._callbacks["leaveRoom_listener"] === undefined) {
+	useEffect(() => {
+		if (props.appSocket._callbacks["leaveRoom_listener"] === undefined) {
 			props.appSocket.on("B_leaveRoom", leaveRoom_listener);
 		}
 		return () => {
 			props.appSocket.removeAllListeners("B_leaveRoom");
 		};
 	});
-
-  if (props.currRoom.owner === props.connectedUser.userId) {
-    return <div></div>;
-  }
-  return (
-    <button
-      className="mao-btn-join-room"
-      onClick={() => {
-        onClick_leaveRoom(props.currRoom.id);
-      }}
-    >
-      ❌
-    </button>
-  );
+	if (props.currRoom.participants.length === 1) {
+	  return <div></div>;
+	}
+	return (
+		<button
+			className="mao-btn-join-room"
+			onClick={() => {
+				onClick_leaveRoom(props.currRoom.id);
+			}}
+		>
+			❌
+		</button>
+	);
 }
