@@ -481,11 +481,13 @@ export class MaobeRoomService {
 		let owner = await this.get_Room_Owner(roomId);
 		if (body.userId === owner){
 			let participants = await this.participantService.getParticipant(roomId);
+			let new_ownerID;
 			if (participants.length >= 1){
+				new_ownerID = participants[0]['participant_userId'];
 			await this.roomRepository
 				.createQueryBuilder()
 				.update(MaobeRoom)
-				.set({ owner: participants[0]['participant_userId'] })
+				.set({ owner: new_ownerID })
 				.where("id = :id", { id: body.roomId })
 				.execute();
 			}
@@ -503,7 +505,6 @@ export class MaobeRoomService {
         .select(["room.owner"])
         .where("room.id = :room_Id", { room_Id: roomId })
         .getOne();
-		console.log('in get_RoomOwner ', room , room.owner);
 		return room.owner;
 	}
 
