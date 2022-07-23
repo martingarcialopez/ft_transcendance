@@ -44,7 +44,7 @@ COPY public.maobe_room (id, name, "typeRoom", is_protected, password, image, own
 5	Work room	private	f	\N	https://media1.giphy.com/media/xTkcExjXuOJj69fVv2/giphy-downsized-large.gif	3	{3,5}	{}
 1	💰 lovers 🤑	public	f	\N	https://cdn1.iconfinder.com/data/icons/shopping-e-commerce-2-2/128/Cash_Payment-256.png	10	{10,5}	{}
 13	Linux Admins	public	f	\N	https://cdn1.iconfinder.com/data/icons/christmas-avatar-3/64/16-penguin-wildlife-bird-christmas-animal-512.png	10	{10}	{}
-14	Windows support	public	f	\N	https://cdn1.iconfinder.com/data/icons/logotypes/32/windows-512.png	10	{10,2}	{}
+14	Windows 	public	f	\N	https://cdn1.iconfinder.com/data/icons/logotypes/32/windows-512.png	10	{10,2}	{}
 15	🐶 corner	public	f	\N	https://cdn1.iconfinder.com/data/icons/dog-supplies-flat/64/dog-02-256.png	7	{7}	{}
 \.
 
