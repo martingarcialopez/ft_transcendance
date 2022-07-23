@@ -77,8 +77,6 @@ export class MaobeRoomService {
 			if (managedIndex.indexOf(obj.MaobeRoom_id) === -1) {
 				managedIndex.push(obj.MaobeRoom_id);
 
-
-
 				const users = rooms.filter((obj2: any) => obj2.MaobeRoom_id === obj.MaobeRoom_id);
 				const tmp_participants: any[] = [];
 
@@ -113,7 +111,7 @@ export class MaobeRoomService {
 
 
 
-	async joinRoom(dto: JoinRoomDto): Promise<void> {
+	async joinRoom(userId: number, dto: JoinRoomDto): Promise<void> {
 		if (dto.isProtected === true){
 			const room_info = await this.roomRepository.createQueryBuilder("room")
 				.select(["room.password"])
@@ -125,6 +123,17 @@ export class MaobeRoomService {
 				throw 'password is wrong';
 			}
 		}
+		if ((await this.get_Room_Owner(dto.roomId)) === -2)
+		{
+				await this.roomRepository
+					.createQueryBuilder()
+					.update(MaobeRoom)
+					.set({ owner: userId })
+					.where("id = :id", { id: dto.roomId })
+					.execute();
+			}
+
+
 	}
 
 	/*
@@ -427,14 +436,12 @@ export class MaobeRoomService {
 			.select("participant.roomId")
 			.where("participant.userId = :id", { id: userId })
 			.getMany();
-
 		let joined_roomsIds = [];
 		joined_rooms.forEach((obj) => {
 			joined_roomsIds.push(obj.roomId);
 		})
 		 if (joined_roomsIds.length === 0)
 		 	 joined_roomsIds.push(-1);
-
 		var rooms = await this.roomRepository.createQueryBuilder("room")
 			.leftJoin("room.participants", "participant")
 			.where("room.typeRoom = :typeRoom", {typeRoom: 'public'})
@@ -481,8 +488,8 @@ export class MaobeRoomService {
 		let owner = await this.get_Room_Owner(roomId);
 		if (body.userId === owner){
 			let participants = await this.participantService.getParticipant(roomId);
-			let new_ownerID;
-			if (participants.length >= 1){
+			let new_ownerID = -2;
+			if (participants.length >= 1)
 				new_ownerID = participants[0]['participant_userId'];
 			await this.roomRepository
 				.createQueryBuilder()
@@ -490,7 +497,7 @@ export class MaobeRoomService {
 				.set({ owner: new_ownerID })
 				.where("id = :id", { id: body.roomId })
 				.execute();
-			}
+
 		}
 	}
 
