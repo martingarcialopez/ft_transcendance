@@ -399,17 +399,6 @@ export class MaobeRoomService {
 /****get a list of userId block the user*****/
 	async Blocklist_to_user(userId: number) : Promise<number[]> {
 		let block_list: number[] = [];
-		// let rooms: MaobeRoom[] = await this.roomRepository.createQueryBuilder("room")
-		// 	.select(["room.owner"])
-		// 	.getMany();
-		// for(var i = 0; i<rooms.length; i++) {
-		// 	if (rooms[i].owner !== userId){
-		// 		let owner_block_list: number[] = await this.userService.getBlockList(rooms[i].owner);
-		// 		console.log('owner_block_list:', owner_block_list);
-		// 		if (owner_block_list.includes(userId))
-		// 			block_list.push(rooms[i].owner);
-		// 	}
-		// }
 		let users = await this.userRepository.createQueryBuilder("user")
 			.select(["user.id"])
 			.getMany();
@@ -485,6 +474,22 @@ export class MaobeRoomService {
             .set({ banList: banList })
             .where("id = :id", { id: roomId })
             .execute();
+	}
+
+	async OwnerLeaveRoom(body: ParticipantDto) : Promise<void> {
+		let roomId : number = body.roomId;
+		let owner = await this.get_Room_Owner(roomId);
+		if (body.userId === owner){
+			let participants = await this.participantService.getParticipant(roomId);
+			if (participants.length >= 1){
+			await this.roomRepository
+				.createQueryBuilder()
+				.update(MaobeRoom)
+				.set({ owner: participants[0]['participant_userId'] })
+				.where("id = :id", { id: body.roomId })
+				.execute();
+			}
+		}
 	}
 
 	/*----------------------------FUNCTION-----------------------*/
