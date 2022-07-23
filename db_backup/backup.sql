@@ -2,6 +2,10 @@
 -- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: root
 --
 
+ALTER SEQUENCE "maobe_message_id_seq"  RESTART WITH 100;
+ALTER SEQUENCE "maobe_participant_id_seq"  RESTART WITH 100;
+ALTER SEQUENCE "maobe_room_id_seq"  RESTART WITH 100;
+
 COPY public."user" (id, login42, username, firstname, lastname, password, twofa, secret, avatar, status, "socketId", "blockList") FROM stdin;
 4	\N	Klara	Klara	doggy	$2b$10$OsKkX4moC1bFtrRQZXhHEO1hWggamaVdIA/YFakv6nmjNFTLN.EMO	f	\N	/shared/avatar/Klara.png	offline	\N	{}
 6	\N	Meilv	Meilv	bao	$2b$10$bCz4QNfdURoayq2Pvvuz2.yCKxpAQxQEeZb6z0qQNzveFI47uj82W	f	\N	/shared/avatar/Meilv.png	offline	\N	{}
