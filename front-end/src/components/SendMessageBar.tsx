@@ -108,7 +108,8 @@ export function SendMessageBar(props: any) {
           disabled={isLocked}
           value={currentValueBis}
           placeholder={placeholder_val}
-          required
+			required
+			maxLength={100}
           onChange={(e) => {
             onChange_setMessageBarValue(e.target.value);
           }}
