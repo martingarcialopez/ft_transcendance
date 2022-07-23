@@ -39,6 +39,7 @@ export function LeaveRoomButton(props: any) {
 	return (
 		<button
 			className="mao-btn-join-room"
+			id="mao-leave-button"
 			onClick={() => {
 				onClick_leaveRoom(props.currRoom.id);
 			}}

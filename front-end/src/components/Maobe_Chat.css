@@ -229,6 +229,11 @@ body{
     border-radius: 50%;
 }
 
+#mao-leave-button {
+	font-size: 0.65rem;
+	padding-left: 1vh;
+}
+
 #name-id{
     display: flex;
     flex-direction: column;
