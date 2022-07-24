@@ -112,7 +112,7 @@ export class UserService {
         
         if (body.username) {
             const userExist = await this.getUser(body.username);
-            if (userExist)
+            if (userExist && userExist.username != user.username)
                 throw new BadRequestException('Username already exists');
         }
     
