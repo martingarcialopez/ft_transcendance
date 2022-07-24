@@ -79,6 +79,7 @@ export class UserService {
 
     async create42User(user: User): Promise<User> {
 
+        console.log('in create 42 User');
         return await this.userRepository.save(user);
     }
 
