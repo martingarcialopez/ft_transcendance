@@ -15,11 +15,11 @@ export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
     constructor(private httpService: HttpService, private authService: AuthService, private userService: UserService) {
         super({
 
-            authorizationURL: `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=http%3A%2F%2F${process.env.SERVER_URL}%3A8080%2Fauth%2Fredirect&response_type=code`,
+            authorizationURL: "https://api.intra.42.fr/oauth/authorize?client_id=82931d5147b41888714cb6bb0eefb883af55984e31edb80157b9fa91b5d4dd15&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fredirect&response_type=code",
             tokenURL: "https://api.intra.42.fr/oauth/token",
             clientID: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: `http://${process.env.SERVER_URL}:8080/auth/redirect`,
+            callbackURL: `http://localhost:8080/auth/redirect`,
             scope: "public"
 
         });
@@ -27,17 +27,26 @@ export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
 
     async validate(accessToken: string, refreshToken: string/*, user: User*/) {
 
-        const { data } = await lastValueFrom(this.httpService.get('https://api.intra.42.fr/v2/me', {
+        console.log(`We did it !! 42 token is ${accessToken}. refresh token: ${refreshToken}`)
+
+        // const { data } = await lastValueFrom(this.httpService.get('https://api.intra.42.fr/v2/me', {
+        //     headers: { Authorization: `Bearer ${accessToken}` },
+        // }))
+
+        const { data } = await this.httpService.axiosRef.get('https://api.intra.42.fr/v2/me', {
             headers: { Authorization: `Bearer ${accessToken}` },
-        }))
+        });
+
         const { login, first_name, last_name, image_url } = data;
 
         console.log(`login: ${login}, firstname: ${first_name}, lastname: ${last_name}, photo: ${image_url}`)
 
         const existingUser : User = await this.authService.validate42User(login);
 
-        if (existingUser)
+        if (existingUser) {
+            console.log('USER ALREADY EXIST !')
             return existingUser; // If user already exists, we return user and validation ends here
+        }
 
         const usernameExists: User = await this.userService.getUser(login);
 
