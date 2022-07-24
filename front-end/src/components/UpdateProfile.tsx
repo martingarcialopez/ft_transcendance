@@ -16,7 +16,7 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
     const [oldUsername, setOldUsername] = useState(userInfo?.username)
     const [open, setOpen] = useState(false);
     const [snackbars, setSnackbars] = useState(false);
-    const [statusError, setStatusError] = useState(false);
+    const [message, setMessage] = useState("Your profile has been successfully updated!");
     const { id } = useParams();
     const [displayImg, setDisplayImg] = useState(true)
     const [profileImg, setProfileImg] = useState('')
@@ -31,7 +31,7 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
     useEffect(() => {
         console.log("useEffect errorMessage: {", userLogin.errorMessage, "}")
         if (userLogin.errorMessage) {
-            setStatusError(false);
+            setMessage("There has been an error while updating your profile.");
             setUsername(oldUsername)
         } else {
             setOldUsername(username);
@@ -73,6 +73,9 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
 
     const handleClickDelete = () => {
         console.log("handleClickDelete")
+        setOpen(true);
+        setSnackbars(true);
+        setMessage("Your account has been successfully delete.");
         dispatch(deleteAccountAction(userInfo.access_token, userInfo.id, navigate));
     };
 
@@ -93,7 +96,7 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
         if (userInfo && firstname !== '' && lastname !== '' && username !== '') {
             dispatch(updateAction(firstname, lastname, username, userInfo.id, userInfo.avatar, userInfo.status, userInfo.access_token, userInfo.friends))
             setSnackbars(true);
-            setStatusError(true);
+            setMessage("Your profile has been successfully updated!");
         }
         setDisplayImg(true);
         console.log("UpdateProfile :", {
@@ -108,8 +111,8 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
             {!open ?
                 <div>
                     {snackbars ?
-                    //  message={userLogin.errorMessage} 
-                        <CustomizedSnackbars status={statusError}/>
+                        //  message={userLogin.errorMessage} 
+                        <CustomizedSnackbars status={message} />
                         :
                         null
                     }

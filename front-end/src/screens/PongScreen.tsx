@@ -216,18 +216,13 @@ export const Pong = () => {
                     difficulty: difficulty,
                     maxScore: parseInt(but),
                 });
-            dispatch(
-                updateAction(
-                    userInfo.firstname,
-                    userInfo.lastname,
-                    userInfo.username,
-                    userInfo.id,
-                    userInfo.avatar,
-                    "looking",
-                    userInfo.access_token,
-                    userInfo.friends
-                )
-            );
+            console.log("localStorage user.status update");
+            const storage = localStorage.getItem('userInfo');
+            if (storage) {
+                const user = JSON.parse(storage);
+                user.status = "looking";
+                localStorage.setItem('userInfo', JSON.stringify(user));
+            }
         }
 
         // console.log("HANDKE CKUC")

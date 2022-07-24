@@ -27,20 +27,18 @@ export const CustomizedSnackbars = (Status: any) => {
 
   return (
     <Stack spacing={2} sx={{ width: '100%' }}>
-      {
-        status ?
-          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-              Your profile has been successfully updated!
-            </Alert>
-          </Snackbar>
-          :
-          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        {
+          status === "There has been an error while updating your profile." ?
             <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-              There has been an error while updating your profile.
+              {status}
             </Alert>
-          </Snackbar>
-      }
+            :
+            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+              {status}
+            </Alert>
+        }
+      </Snackbar>
     </Stack>
   );
 }

@@ -40,6 +40,9 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
 
 export function updateAction(firstname: any, lastname: any, username: any, id: any, avatar: any, status: any, access_token: any, friends: any) {
   return (dispatch: any) => {
+    console.log("updateAction username:", username)
+    console.log("updateAction friends:", friends)
+    
     update(firstname, lastname, username, id, avatar, status, access_token, friends)
       .then((response) => {
         console.log("updateAction response : ")
