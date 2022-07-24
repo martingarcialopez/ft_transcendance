@@ -37,7 +37,7 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Post('/disable2FA')
     async disable2FA(@Request() req) {
-        return await this.authService.disable2FA(req.userId);
+        return await this.authService.disable2FA(req.user.userId);
     }
 
 }
