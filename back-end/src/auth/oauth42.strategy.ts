@@ -76,6 +76,8 @@ export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
             writer.on('error', reject);
         });
 
+        console.log('after all 42 requests, still alive bby');
+        
         return this.userService.create42User(user);
     }
 }
