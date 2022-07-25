@@ -19,6 +19,7 @@ import { MaobeChat } from "./screens/MaobeChat";
 import { Twofa } from "./screens/Twofa";
 import { RedirectPage } from "./screens/RedirectPage";
 import { JoinPongRoom } from "./components/JoinPongRoom";
+import SuccessAuth from "./screens/SuccessAuth";
 
 const App = () => {
   const userLogin = useSelector<RootState, UserState>(
@@ -33,6 +34,7 @@ const App = () => {
       <Route path="/login" element={<SignIn />} />
       <Route path="/home" element={<HomeScreen />} />
       <Route path="/auth/redirect" element={<RedirectPage />} />
+      <Route path="/auth/success/:param1" element={<SuccessAuth />} />
       <Route path="/" element={<HomeScreen />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
