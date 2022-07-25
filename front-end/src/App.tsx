@@ -34,7 +34,7 @@ const App = () => {
       <Route path="/login" element={<SignIn />} />
       <Route path="/home" element={<HomeScreen />} />
       <Route path="/auth/redirect" element={<RedirectPage />} />
-      <Route path="/auth/success/:param1" element={<SuccessAuth />} />
+      <Route path="/auth/success/:id" element={<SuccessAuth />} />
       <Route path="/" element={<HomeScreen />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
