@@ -53,7 +53,7 @@ const SignIn = () => {
     }
     else if (userLogin.errorMessage === 'Write the 6 digit code you\'re seen on Google Authenticator') {
       setNeedCode(true)
-      setErrorFromBack("Please enter your Google Authentification code")
+      setErrorFromBack("Write the 6 digit code you\'re seen on Google Authenticator")
     }
     else
       setErrorFromBack(userLogin.errorMessage)
@@ -134,7 +134,7 @@ const SignIn = () => {
             <Collapse in={open}>
               <Alert
                 variant="outlined"
-                severity={userLogin.errorMessage === 'Write the 6 digit code you\'re seen on Google Authenticator' ? errorFromBack === "Google Authentification code incorrect" ? "error" : "info" : "info"}
+                severity={errorFromBack === 'Write the 6 digit code you\'re seen on Google Authenticator' ? "info" : "error"}
                 action={
                   <IconButton
                     aria-label="close"
