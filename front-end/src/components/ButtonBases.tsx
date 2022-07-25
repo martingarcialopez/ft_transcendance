@@ -35,14 +35,15 @@ const ButtonBases = () => {
 
     else {
 
-      const response = await fetch("https://api.intra.42.fr/oauth/authorize?client_id=82931d5147b41888714cb6bb0eefb883af55984e31edb80157b9fa91b5d4dd15&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fredirect&response_type=code"
-        , { redirect: "manual" }
-      // )
+      const response = await fetch(//"https://api.intra.42.fr/oauth/authorize?client_id=82931d5147b41888714cb6bb0eefb883af55984e31edb80157b9fa91b5d4dd15&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fredirect&response_type=code"
+      "https://api.intra.42.fr/oauth/authorize?client_id=82931d5147b41888714cb6bb0eefb883af55984e31edb80157b9fa91b5d4dd15&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fredirect&response_type=code"
+      , { redirect: "manual"}
       // , {
-      //   mode: 'cors',
+      //   mode: 'no-cors',
       //   headers: {
       //     'Access-Control-Allow-Origin':'*'
-      //   }}
+      //   }
+      // }
         );
       console.log('here we are')
       window.location.replace(response.url);
