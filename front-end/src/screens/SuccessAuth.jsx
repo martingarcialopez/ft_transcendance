@@ -10,6 +10,7 @@ const SuccessAuth = () => {
 
   useEffect(() => {
     dispatch(getInfoAction(id, navigate))
+    navigate('/home');
   }, [dispatch, navigate]);
 
   return (
