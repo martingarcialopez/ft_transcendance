@@ -18,7 +18,7 @@ import {
   GET_FRIENDS_LIST_FOR_FRIEND_ACTION,
   GET_ALL_PLAYERS_ACTION,
 } from '../constants/userConstants'
-import { addFriend, removeFriend, formatError, getInfo, getUserInfo, login, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42, logout, getFriendListStatus, getAllPlayers } from '../services/userServices';
+import { addFriend, removeFriend, formatError, getInfo, getUserInfo, login, saveTokenInLocalStorage, signUp, update, getAllGames, getAllPlayerGames, enable2FA, disable2FA, uploadImage, login42, logout, getFriendListStatus, getAllPlayers, deleteAccount } from '../services/userServices';
 
 export function signupAction(firstname: any, lastname: any, username: any, password: any, navigate: any) {
   return (dispatch: any) => {
@@ -40,6 +40,9 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
 
 export function updateAction(firstname: any, lastname: any, username: any, id: any, avatar: any, status: any, access_token: any, friends: any) {
   return (dispatch: any) => {
+    console.log("updateAction username:", username)
+    console.log("updateAction friends:", friends)
+    
     update(firstname, lastname, username, id, avatar, status, access_token, friends)
       .then((response) => {
         console.log("updateAction response : ")
@@ -94,6 +97,14 @@ export function enable2FAAction(access_token: any) {
         console.log(response)
         console.log("enable2FAAction data qui fct :")
         console.log(response.data)
+
+        const storage = localStorage.getItem('userInfo');
+        if (storage) {
+          const user = JSON.parse(storage);
+          user.twofa = true;
+          localStorage.setItem('userInfo', JSON.stringify(user));
+        }
+
         dispatch(enable2FAActionConfirmedAction(response.data));
         // navigate('/profile')
       })
@@ -118,25 +129,45 @@ export function uploadImageAction(userInfo: any, image: any, access_token: any) 
         console.log("uploadImageAction data filename qui fct :")
         console.log(response.data.filename)
 
-        // const storage = localStorage.getItem('userInfo');
-        // if (storage) {
-        //     const user = JSON.parse(storage);
-        //     console.log(`previous avatar was ${user.avatar}`)
-        //     user.avatar = response.data.filename;
-        //     console.log(`new avatar is ${response.data.filename}`)
-        //     localStorage.setItem('userInfo', JSON.stringify(user));
-        // }
+        const storage = localStorage.getItem('userInfo');
+        if (storage) {
+          const user = JSON.parse(storage);
+          console.log(`previous avatar was ${user.avatar}`)
+          user.avatar = response.data.filename;
+          console.log(`new avatar is ${response.data.filename}`)
+          localStorage.setItem('userInfo', JSON.stringify(user));
+        }
 
-        dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, response.data.filename, userInfo.status, userInfo.access_token, userInfo.friends));
+        // dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, response.data.filename, userInfo.status, userInfo.access_token, userInfo.friends));
       })
       .catch((error) => {
         console.log("ceci est une error dans uploadImageAction :")
         console.log(error);
         const errorMessage = formatError(error.code);
-          console.log("ceci est une errorMessage return de formatError dans uploadImageAction :" + errorMessage)
-		  if (error.response.data.statusCode === 415) {
-			  alert('Only png images are supported.');
-		  }
+        console.log("ceci est une errorMessage return de formatError dans uploadImageAction :" + errorMessage)
+        if (error.response.data.statusCode === 415) {
+          alert('Only png images are supported.');
+        }
+        dispatch(ActionFailed(errorMessage));
+      });
+  };
+}
+
+export function deleteAccountAction(access_token: any, id: number, navigate: NavigateFunction) {
+  return (dispatch: any) => {
+    deleteAccount(access_token, id)
+      .then((response) => {
+        console.log("deleteAccountAction qui fct :")
+        console.log(response)
+        console.log("deleteAccountAction data qui fct :")
+        console.log(response.data)
+        dispatch(logoutAction(access_token, navigate));
+      })
+      .catch((error) => {
+        console.log("ceci est une error dans deleteAccountAction :")
+        console.log(error);
+        const errorMessage = formatError(error.code);
+        console.log("ceci est une errorMessage return de formatError dans deleteAccountAction :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
   };
@@ -150,6 +181,14 @@ export function disable2FAAction(access_token: any) {
         console.log(response)
         console.log("disable2FAAction data qui fct :")
         console.log(response.data)
+
+        const storage = localStorage.getItem('userInfo');
+        if (storage) {
+          const user = JSON.parse(storage);
+          user.twofa = false;
+          localStorage.setItem('userInfo', JSON.stringify(user));
+        }
+
         dispatch(disable2FAActionConfirmedAction());
         // navigate('/profile')
       })

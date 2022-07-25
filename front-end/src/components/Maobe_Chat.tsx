@@ -146,6 +146,7 @@ export function Chat(props: any) {
 							currRoomId={currRoomId}
 							connectedUser={props.connectedUser}
 							setCurrRoomId={setCurrRoomId}
+							setRooms={ setRooms }
 							messages={messages}
 							setMessages={setMessages}
 							{...props}

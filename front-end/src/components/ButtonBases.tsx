@@ -34,23 +34,18 @@ const ButtonBases = () => {
       navigate('/login');
 
     else {
-      const domain = "api.intra.42.fr/oauth/authorize";
-      const client_id = "82931d5147b41888714cb6bb0eefb883af55984e31edb80157b9fa91b5d4dd15";
-      const redirect_uri = `http://localhost:8080/auth/redirect`;
-      const scope = "public";
-      //const state = "aswhidl";
-      const response_type = "code";
 
-      const response = await fetch(
-        `https://${domain}?` +
-        `client_id=${client_id}&` +
-        `redirect_uri=${redirect_uri}&` +
-        `response_type=${response_type}&` +
-        `scope=${scope}&` //+
-        /*`state=${state}&`*/, {
-        redirect: "manual"
-      }
-      );
+      const response = await fetch(//"https://api.intra.42.fr/oauth/authorize?client_id=82931d5147b41888714cb6bb0eefb883af55984e31edb80157b9fa91b5d4dd15&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fredirect&response_type=code"
+      "https://api.intra.42.fr/oauth/authorize?client_id=82931d5147b41888714cb6bb0eefb883af55984e31edb80157b9fa91b5d4dd15&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fredirect&response_type=code"
+      , { redirect: "manual"}
+      // , {
+      //   mode: 'no-cors',
+      //   headers: {
+      //     'Access-Control-Allow-Origin':'*'
+      //   }
+      // }
+        );
+      console.log('here we are')
       window.location.replace(response.url);
     }
 

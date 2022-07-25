@@ -27,6 +27,7 @@ const SignIn = () => {
   const [code, setCode] = useState("");
   const [errors, setErrors] = useState({ username: "", password: "" });
   const [needCode, setNeedCode] = useState(false);
+  const [needCodeTry, setNeedCodeTry] = useState(0);
   const [open, setOpen] = useState(true);
   const [errorFromBack, setErrorFromBack]: any = useState();
 
@@ -45,12 +46,18 @@ const SignIn = () => {
   }, [userInfo, navigate])
 
   useEffect(() => {
-    console.log("signin userInfo :")
-    if (userLogin.errorMessage === 'Write the 6 digit code you\'re seen on Google Authenticator') {
+    // console.log("useEffect userLogin.errorMessage needCode", needCode, " errorFromBack:", errorFromBack, " userLogin.errorMessage:", userLogin.errorMessage)
+    if (needCode === true) {
+      if (needCodeTry > 0)
+        setErrorFromBack("Google Authentification code incorrect")
+    }
+    else if (userLogin.errorMessage === 'Write the 6 digit code you\'re seen on Google Authenticator') {
       setNeedCode(true)
       setErrorFromBack("Please enter your Google Authentification code")
     }
-  }, [userLogin.errorMessage])
+    else
+      setErrorFromBack(userLogin.errorMessage)
+  }, [userLogin.errorMessage, needCode, needCodeTry])
 
   const validate = () => {
     let temp = { ...errors }
@@ -76,6 +83,8 @@ const SignIn = () => {
 
     validate();
     setOpen(true);
+    if (needCode === true)
+      setNeedCodeTry(needCodeTry + 1)
     if (!errors.password && !errors.username) {
       dispatch(loginAction(username, password, code, navigate))
 
@@ -96,11 +105,6 @@ const SignIn = () => {
     // console.log("sign fin de handle")
     // console.log(store.getState())
   };
-
-  useEffect(() => {
-    console.log("useEffect userLogin")
-    setErrorFromBack(userLogin.errorMessage)
-  }, [userLogin.errorMessage])
 
   useEffect(() => {
     if (!errors.password && !errors.username && !userLogin.errorMessage)
@@ -130,7 +134,7 @@ const SignIn = () => {
             <Collapse in={open}>
               <Alert
                 variant="outlined"
-                severity={userLogin.errorMessage === 'Write the 6 digit code you\'re seen on Google Authenticator' ? "info" : "error"}
+                severity={userLogin.errorMessage === 'Write the 6 digit code you\'re seen on Google Authenticator' ? errorFromBack === "Google Authentification code incorrect" ? "error" : "info" : "info"}
                 action={
                   <IconButton
                     aria-label="close"

@@ -23,9 +23,10 @@ export class AuthController {
 
     @UseGuards(Oauth42Guard)
     @Get('/redirect')
-//    @Redirect('http://localhost:8080', 302)
+    @Redirect('http://localhost:8080/auth/success', 302)
     async getUserFrom42Intra(@Request() req) {
-        return this.authService.login(req.user); //returns a JWT
+        const response = await this.authService.login(req.user); //returns a JWT
+        return { url: `http://localhost:8080/auth/success/${response.access_token}` }
     }
 
     @UseGuards(JwtAuthGuard)
@@ -37,8 +38,8 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Post('/disable2FA')
     async disable2FA(@Request() req) {
-        return await this.authService.disable2FA(req.userId);
+        return await this.authService.disable2FA(req.user.userId);
     }
 
-}
 
+}

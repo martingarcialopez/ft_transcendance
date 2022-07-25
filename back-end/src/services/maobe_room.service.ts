@@ -77,8 +77,6 @@ export class MaobeRoomService {
 			if (managedIndex.indexOf(obj.MaobeRoom_id) === -1) {
 				managedIndex.push(obj.MaobeRoom_id);
 
-
-
 				const users = rooms.filter((obj2: any) => obj2.MaobeRoom_id === obj.MaobeRoom_id);
 				const tmp_participants: any[] = [];
 
@@ -113,7 +111,7 @@ export class MaobeRoomService {
 
 
 
-	async joinRoom(dto: JoinRoomDto): Promise<void> {
+	async joinRoom(userId: number, dto: JoinRoomDto): Promise<void> {
 		if (dto.isProtected === true){
 			const room_info = await this.roomRepository.createQueryBuilder("room")
 				.select(["room.password"])
@@ -125,6 +123,17 @@ export class MaobeRoomService {
 				throw 'password is wrong';
 			}
 		}
+		if ((await this.get_Room_Owner(dto.roomId)) === -2)
+		{
+				await this.roomRepository
+					.createQueryBuilder()
+					.update(MaobeRoom)
+					.set({ owner: userId })
+					.where("id = :id", { id: dto.roomId })
+					.execute();
+			}
+
+
 	}
 
 	/*
@@ -399,17 +408,6 @@ export class MaobeRoomService {
 /****get a list of userId block the user*****/
 	async Blocklist_to_user(userId: number) : Promise<number[]> {
 		let block_list: number[] = [];
-		// let rooms: MaobeRoom[] = await this.roomRepository.createQueryBuilder("room")
-		// 	.select(["room.owner"])
-		// 	.getMany();
-		// for(var i = 0; i<rooms.length; i++) {
-		// 	if (rooms[i].owner !== userId){
-		// 		let owner_block_list: number[] = await this.userService.getBlockList(rooms[i].owner);
-		// 		console.log('owner_block_list:', owner_block_list);
-		// 		if (owner_block_list.includes(userId))
-		// 			block_list.push(rooms[i].owner);
-		// 	}
-		// }
 		let users = await this.userRepository.createQueryBuilder("user")
 			.select(["user.id"])
 			.getMany();
@@ -438,14 +436,12 @@ export class MaobeRoomService {
 			.select("participant.roomId")
 			.where("participant.userId = :id", { id: userId })
 			.getMany();
-
 		let joined_roomsIds = [];
 		joined_rooms.forEach((obj) => {
 			joined_roomsIds.push(obj.roomId);
 		})
 		 if (joined_roomsIds.length === 0)
 		 	 joined_roomsIds.push(-1);
-
 		var rooms = await this.roomRepository.createQueryBuilder("room")
 			.leftJoin("room.participants", "participant")
 			.where("room.typeRoom = :typeRoom", {typeRoom: 'public'})
@@ -487,6 +483,24 @@ export class MaobeRoomService {
             .execute();
 	}
 
+	async OwnerLeaveRoom(body: ParticipantDto) : Promise<void> {
+		let roomId : number = body.roomId;
+		let owner = await this.get_Room_Owner(roomId);
+		if (body.userId === owner){
+			let participants = await this.participantService.getParticipant(roomId);
+			let new_ownerID = -2;
+			if (participants.length >= 1)
+				new_ownerID = participants[0]['participant_userId'];
+			await this.roomRepository
+				.createQueryBuilder()
+				.update(MaobeRoom)
+				.set({ owner: new_ownerID })
+				.where("id = :id", { id: body.roomId })
+				.execute();
+
+		}
+	}
+
 	/*----------------------------FUNCTION-----------------------*/
 
 	async findOne(id: number): Promise<MaobeRoom> {
@@ -498,7 +512,6 @@ export class MaobeRoomService {
         .select(["room.owner"])
         .where("room.id = :room_Id", { room_Id: roomId })
         .getOne();
-		console.log('in get_RoomOwner ', room , room.owner);
 		return room.owner;
 	}
 

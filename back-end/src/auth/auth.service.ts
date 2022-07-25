@@ -29,9 +29,6 @@ export class AuthService {
 
     const user = await this.usersService.getUserBy42Login(login42);
 
-    console.log(`user is`);
-    console.log(user);
-
     if (user && user.login42 === login42) {
       const { password, ...result } = user;
       return result;
@@ -42,7 +39,7 @@ export class AuthService {
   async login(user) {
   const db_user: User = await this.usersService.getUser(user.username);
   this.usersService.updateUser( { "status": "online" }, db_user.id.toString() );
-  const payload = { username: user.username, sub: db_user.id/*, sub: user.userId*/ };
+  const payload = { username: db_user.username, sub: db_user.id/*, sub: user.userId*/ };
     return {
       access_token: this.jwtService.sign(payload),
     };
@@ -51,8 +48,8 @@ export class AuthService {
   async logout(user) {
 
   const db_user: User = await this.usersService.getUser(user.username);
-  this.usersService.updateUser( { "status": "offline" }, db_user.id.toString() );
-
+  if (db_user)
+    this.usersService.updateUser( { "status": "offline" }, db_user.id.toString() );
   }
 
 async updateSecret(code: string, id: string) {
@@ -96,7 +93,7 @@ async disable2FA(id: string) {
   if (!user)
     throw new NotFoundException();
 
-  this.usersService.updateUser( { twofa: false }, id);
+  this.usersService.updateUser( { twofa: false, secret: null }, id);
 
 }
 

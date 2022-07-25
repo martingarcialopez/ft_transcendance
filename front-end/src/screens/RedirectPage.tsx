@@ -10,10 +10,8 @@ export const RedirectPage = () => {
 
   useEffect(() => {
     console.log("RedirectPage window.location.href", window.location.href)
-
-    let code = window.location.href.slice(35, window.location.href.length);
-    console.log("RedirectPage code", code)
-    dispatch(login42Action(code, navigate))
+    // console.log("RedirectPage code", code)
+    dispatch(login42Action(window.location.href.slice(35, window.location.href.length), navigate))
   }, [dispatch, navigate])
 
   return (

@@ -79,6 +79,7 @@ export class UserService {
 
     async create42User(user: User): Promise<User> {
 
+        console.log('in create 42 User');
         return await this.userRepository.save(user);
     }
 
@@ -108,6 +109,14 @@ export class UserService {
             Object.assign(user, body);
         else
             throw new BadRequestException('Cannot overwrite user id');
+
+        
+        if (body.username) {
+            const userExist = await this.getUser(body.username);
+            if (userExist && userExist.username != user.username)
+                throw new BadRequestException('Username already exists');
+        }
+    
         return this.userRepository.save(user);
     }
 

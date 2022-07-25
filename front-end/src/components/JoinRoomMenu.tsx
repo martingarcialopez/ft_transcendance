@@ -48,7 +48,6 @@ export function JoinRoomMenu(props: any) {
 		password: string,
 		isProtected: boolean
 	) => {
-		console.log(roomId, password, isProtected);
 		props.appSocket.emit(
 			"F_joinRoom",
 			{
@@ -103,11 +102,11 @@ export function JoinRoomMenu(props: any) {
 					}}
 					>
 					<div>
-					  <img alt="Room" src={room.image} />
+					  <img id="join-room-img" alt="Room" src={room.image} />
 					  <label>{room.name}</label>
 					</div>
 					{Html_password}
-					<button>JOIN</button>
+					<button className="mao-button">JOIN</button>
 					<hr />
 				  </form>
 				</div>

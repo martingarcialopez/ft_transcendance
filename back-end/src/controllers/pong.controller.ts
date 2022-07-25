@@ -7,10 +7,12 @@ export class PongController {
 
     constructor(private pongService: PongService) {}
 
-    // @Post('/createCustomGame')
-    // createCustomGame(@Body() data: createCustomGameDto) : Promise<string> {
+    @Post('/createCustomGame')
+    createCustomGame(@Body() data: createCustomGameDto) : Promise<string> {
 
-    //     return this.pongService.createCustomGame(data.userId, data.difficulty, data.maxScore);
-    // }
+        return this.pongService.createCustomGame(data.userId, data.difficulty, data.maxScore);
+    }
+
+
 
 }

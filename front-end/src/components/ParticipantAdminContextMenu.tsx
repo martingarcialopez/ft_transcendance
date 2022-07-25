@@ -44,7 +44,7 @@ export function ParticipantAdminContextMenu(props: any) {
             },
             (isBanned: boolean) => {
                 if (isBanned === true) {
-                    let newRooms = props.rooms.slice();
+                    let newRooms = props.roomsList.slice();
                     var index = newRooms.findIndex((obj: any) => obj.id === roomId);
                     var unbaned_participants = newRooms[index].participants.filter(
          				(obj: any) => obj.userId !== userId
@@ -67,7 +67,7 @@ export function ParticipantAdminContextMenu(props: any) {
             },
             (isMuted: boolean) => {
                 if (isMuted === true) {
-                    let newRooms = props.rooms.slice();
+                    let newRooms = props.roomsList.slice();
                     var index = newRooms.findIndex((obj: any) => obj.id === roomId);
                     var user_index = newRooms[index].participants.findIndex(
                         (obj: any) => obj.userId === userId

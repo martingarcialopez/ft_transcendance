@@ -31,8 +31,6 @@ export class MaobeParticipantService {
 **/
 	async getParticipant(id: number): Promise<MaobeParticipant[]>
     {
-		console.log('HERE in the service of getParticipant room id is ', id);
-        // let value =  await this.participantRepository.find({id});
 		const value = await this.participantRepository.createQueryBuilder("participant")
 			.select(["participant.userId"])
 			.where("participant.roomId = :room_Id", { room_Id: id })

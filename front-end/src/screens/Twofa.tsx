@@ -16,31 +16,19 @@ export const Twofa = () => {
   )
   console.log("Twofa UserLogin :", userLogin);
 
-  if (!userLogin) {
-    navigate("/home")
-  }
-
   const { userInfo }: UserState = userLogin;
   console.log("Twofa userInfo:", userInfo)
 
-  if (userInfo && userInfo.twofa === false) {
-    navigate('/profile');
-  }
-
   useEffect(() => {
     console.log("Twofa useEffect setImg")
-    if (userInfo?.code2FA && img === "")
+    if (userInfo?.code2FA)
       setImg(userInfo?.code2FA);
-  }, [userInfo?.code2FA, img])
+  }, [userInfo?.code2FA])
 
   useEffect(() => {
     console.log("Twofa useEffect done")
-    if (img === "") {
-      dispatch(enable2FAAction(userInfo?.access_token))
-      if (userInfo?.code2FA)
-        setImg(userInfo?.code2FA);
-    }
-  }, [userInfo, img, dispatch])
+    dispatch(enable2FAAction(userInfo?.access_token))
+  }, [userInfo?.access_token, dispatch])
 
   if (userLogin.showLoading) {
     return <h1>Loading...</h1>;

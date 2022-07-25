@@ -61,6 +61,7 @@
 #LeaderProfile .flex .item {
     display: flex;
     align-items: center;
+		cursor: pointer;
 }
 
 #LeaderProfile .flex img {
