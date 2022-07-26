@@ -14,19 +14,14 @@ export const Twofa = () => {
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
   )
-  console.log("Twofa UserLogin :", userLogin);
-
   const { userInfo }: UserState = userLogin;
-  console.log("Twofa userInfo:", userInfo)
 
   useEffect(() => {
-    console.log("Twofa useEffect setImg")
     if (userInfo?.code2FA)
       setImg(userInfo?.code2FA);
   }, [userInfo?.code2FA])
 
   useEffect(() => {
-    console.log("Twofa useEffect done")
     dispatch(enable2FAAction(userInfo?.access_token))
   }, [userInfo?.access_token, dispatch])
 

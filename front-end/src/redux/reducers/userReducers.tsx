@@ -155,10 +155,6 @@ export const userLoginReducer = (
         userInfo: { ...state.userInfo, twofa: true, code2FA: action.payload },
       };
     case GET_FRIENDS_LIST_FOR_FRIEND_ACTION:
-      console.log(
-        "GET_FRIENDS_LIST_FOR_FRIEND_ACTION action.payload",
-        action.payload
-      );
       return {
         ...state,
         showLoading: false,
@@ -166,7 +162,6 @@ export const userLoginReducer = (
         friendInfo: { ...state.friendInfo, friends: action.payload },
       };
     case GET_FRIENDS_LIST_ACTION:
-      console.log("GET_FRIENDS_LIST_ACTION action.payload", action.payload);
       return {
         ...state,
         showLoading: false,
@@ -174,7 +169,6 @@ export const userLoginReducer = (
         userInfo: { ...state.userInfo, friends: action.payload },
       };
     case GET_FRIEND_INFOS_ACTION:
-      console.log("GET_FRIEND_INFOS_ACTION action.payload", action.payload);
       return {
         ...state,
         showLoading: false,
@@ -183,7 +177,6 @@ export const userLoginReducer = (
         successMessage: "Get Friend Infos Successfully Completed",
       };
     case DISABLE_2FA_CONFIRMED_ACTION:
-      // console.log("DISABLE_2FA_CONFIRMED_ACTION action.payload", action.payload);
       return {
         ...state,
         showLoading: false,
@@ -192,7 +185,6 @@ export const userLoginReducer = (
         userInfo: { ...state.userInfo, twofa: false, code2FA: "" },
       };
     case UPLOAD_IMAGE_CONFIRMED_ACTION:
-      console.log("UPLOAD_IMAGE_CONFIRMED_ACTION action.payload");
       return {
         ...state,
         showLoading: false,
@@ -200,7 +192,6 @@ export const userLoginReducer = (
         successMessage: "Image Successfully Upload",
       };
     case UPDATE_CONFIRMED_ACTION:
-      console.log("UPDATE_CONFIRMED_ACTION action.payload", action.payload);
       return {
         ...state,
         showLoading: false,
@@ -209,7 +200,6 @@ export const userLoginReducer = (
         successMessage: "Profile Successfully Update",
       };
     case LOGIN_CONFIRMED_ACTION:
-      console.log("LOGIN_CONFIRMED_ACTION action.payload", action.payload);
       return {
         ...state,
         showLoading: false,
@@ -218,7 +208,6 @@ export const userLoginReducer = (
         successMessage: "Login Successfully Completed",
       };
     case SIGNUP_CONFIRMED_ACTION:
-      console.log("SIGNUP_CONFIRMED_ACTION action.payload", action.payload);
       return {
         ...state,
         showLoading: false,
@@ -229,7 +218,6 @@ export const userLoginReducer = (
     case LOGIN_FAILED_ACTION:
     case SIGNUP_FAILED_ACTION:
     case UPDATE_FAILED_ACTION:
-      console.log("SIGNUP_FAILED_ACTION action.payload", action.payload);
       return {
         ...state,
         showLoading: false,

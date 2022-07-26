@@ -18,7 +18,6 @@ export const MyProfileScreen = () => {
   const allMatch = useSelector<RootState, AllMatchState>(
     (state: RootState) => state.allMatch
   )
-  console.log("Profile UserLogin :", userLogin);
   const { userInfo }: UserState = userLogin;
 
   useEffect(() => {
@@ -30,9 +29,6 @@ export const MyProfileScreen = () => {
   if (!userLogin) {
     return <h1>Loading...</h1>;
   }
-
-  console.log("MyProfile userInfo:", userInfo)
-  console.log("MyProfile allMatch:", allMatch)
 
   return (
     <div>

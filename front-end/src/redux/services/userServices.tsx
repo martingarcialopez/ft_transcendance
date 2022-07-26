@@ -11,8 +11,6 @@ export function signUp(firstname: any, lastname: any, username: any, password: a
         returnSecureToken: true,
         twofa: false
     };
-    console.log("postData", postData)
-
     return axios.post(
         `${URL_test}/user/sign-up`,
         postData,
@@ -110,15 +108,12 @@ export function login(username: any, password: any, code: any) {
 }
 
 export function login42(code: any) {
-    console.log(` GETTING ${URL_test}/auth/redirect${code}`);
     return axios.get(
         `${URL_test}/auth/redirect${code}`,
     );
 }
 
 export function getInfo(access_token: any) {
-    console.log("getInfo TOKEN :")
-    console.log(access_token)
     return axios({
         method: 'get',
         url: `${URL_test}/user/current`,
@@ -127,9 +122,6 @@ export function getInfo(access_token: any) {
 }
 
 export function getUserInfo(username: any, access_token: any) {
-    console.log("getUserInfo TOKEN :")
-    console.log(access_token)
-    console.log("getUserInfo USERNAME :", username)
     return axios({
         method: 'get',
         url: `${URL_test}/user/${username}`,
@@ -137,19 +129,7 @@ export function getUserInfo(username: any, access_token: any) {
     });
 }
 
-// export function getFriendList(access_token: any) {
-//     console.log("getFriendList TOKEN :")
-//     console.log(access_token)
-//     return axios({
-//         method: 'get',
-//         url: `${URL_test}/user/friends`,
-//         headers: { 'Authorization': `Bearer ${access_token}` }
-//     });
-// }
-
 export function getFriendListStatus(access_token: any, username: any) {
-    console.log("getFriendListStatus TOKEN :", access_token)
-    console.log("getFriendListStatus username :", username)
     return axios({
         method: 'get',
         url: `${URL_test}/user/friends/status/${username}`,
@@ -158,7 +138,6 @@ export function getFriendListStatus(access_token: any, username: any) {
 }
 
 export function getAllPlayers() {
-    console.log("getAllPlayers :")
     return axios({
         method: 'get',
         url: `${URL_test}/user/all`,
@@ -166,7 +145,6 @@ export function getAllPlayers() {
 }
 
 export function getAllGames() {
-    console.log("getAllGames :")
     return axios({
         method: 'get',
         url: `${URL_test}/user/games/all`,
@@ -174,8 +152,6 @@ export function getAllGames() {
 }
 
 export function getAllPlayerGames(username: any) {
-    console.log("getAllPlayerGames USERNAME :")
-    console.log(username)
     return axios({
         method: 'get',
         url: `${URL_test}/user/games/${username}`,
@@ -183,9 +159,6 @@ export function getAllPlayerGames(username: any) {
 }
 
 export function addFriend(username: any, access_token: any) {
-    console.log("addFriend TOKEN :", access_token)
-    console.log("addFriend USERNAME :", username)
-    console.log("addFriend URL_test :", URL_test)
     return axios.post(
         `${URL_test}/user/friends/${username}`,
         username,
@@ -196,8 +169,6 @@ export function addFriend(username: any, access_token: any) {
 }
 
 export function removeFriend(username: any, access_token: any) {
-    console.log("removeFriend TOKEN :", access_token)
-    console.log("removeFriend USERNAME :", username)
     return axios.delete(
         `${URL_test}/user/friends/${username}`,
         {
@@ -208,8 +179,6 @@ export function removeFriend(username: any, access_token: any) {
 
 export function formatError(errorResponse: any) {
     // TODO: FAIRE TOUTES LES ERRORS POUR LES CONNECTER CORRECTEMENT
-    console.log("Ceci est l err return dans la fct formatError :")
-    console.log(errorResponse)
     switch (errorResponse) {
         case 'Request failed with status code 401':
             return 'Account doesn\'t exist';
@@ -237,16 +206,9 @@ export function formatError(errorResponse: any) {
 }
 
 export function saveTokenInLocalStorage(access_token: any, tokenDetails: any) {
-    console.log("Dans saveToken le token :")
-    console.log(tokenDetails)
-    console.log("Dans saveToken le token expiresIn :")
-    console.log(tokenDetails.expiresIn)
-    // tokenDetails.expiresIn
     tokenDetails.access_token = access_token;
     tokenDetails.expireDate = new Date(
         new Date().getTime() + 5000000000 * 1000,
     );
-    console.log("Dans saveToken apres expireDate add + tokenAdd token :", tokenDetails)
-    console.log("Dans saveToken JSON mode :", JSON.stringify(tokenDetails))
     localStorage.setItem('userInfo', JSON.stringify(tokenDetails));
 }

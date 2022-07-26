@@ -59,27 +59,17 @@ export const Pong = () => {
     const { state }: any = useLocation();
     const dispatch = useDispatch();
 
-    // console.log("Pong useLocation => state:", state)
     socket = pongSocketService.connect();
 
     useEffect(() => {
-        console.log("333333 userInfo.status", userInfo?.status);
-
         if (userInfo?.status === "looking") {
             setGameStarted(true);
         }
     }, [userInfo?.status]);
 
     useEffect(() => {
-        console.log("888888 useLocation => state:", state);
         if (userInfo?.username && state) {
             if (state && state.spectator) {
-                console.log(
-                    "Pong socket.emit joinPongRoom ",
-                    userInfo?.username,
-                    ", friend.status",
-                    state.spectator
-                );
                 if (socket)
                     socket.emit("joinPongRoom", {
                         userId: userInfo?.username,
@@ -116,9 +106,6 @@ export const Pong = () => {
     }
 
     socket.on("gameState", (...args) => {
-        // console.log("receive_socket_info gameState ...args", ...args);
-
-        // console.log("socket.on gameState");
         setGameState(args[0]);
         setGameStarted(true);
         setRightPlayer(args[0].rightPlayer);
@@ -135,22 +122,9 @@ export const Pong = () => {
                 }
             }
         }
-        // console.log(args);
-        // console.log(args[0]);
-        console.log(`paddle height is ${args[0].paddleHeight}`);
-        // console.log(args[0].ballPos.x);
-        // console.log(args[0].ballPos.y);
-        // console.log("gameState", gameState);
-        // console.log("playerSide", playerSide);
-        // console.log("opponent", opponent);
-        // console.log("args[0].roomId", args[0].roomId);
-        // console.log("gameState.roomId", gameState.roomId);
-        // console.log("roomId", roomId);
     });
 
     socket.on("gameOver", (...args) => {
-        console.log("socket.on gameOver");
-        console.log("winnerPlayer :", args[0]);
         if (args[0] === "leftPlayer")
             setWinnerSide("leftPlayer");
         else
@@ -162,25 +136,12 @@ export const Pong = () => {
     });
 
     const onKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        console.log("onKeyDownHandler event code :", event.code);
         switch (event.code) {
             case "KeyS" || "ArrowDown":
-                console.log(
-                    "socket.emit -1 playerSide :",
-                    playerSide,
-                    "roomId:",
-                    roomId
-                );
                 socket?.emit("move", { room: roomId, player: playerSide, move: 1 });
                 setId(id + 1);
                 break;
             case "KeyW" || "ArrowUp":
-                console.log(
-                    "socket.emit +1 playerSide :",
-                    playerSide,
-                    "roomId:",
-                    roomId
-                );
                 socket?.emit("move", { room: roomId, player: playerSide, move: -1 });
                 setId(id + 1);
                 break;
@@ -196,12 +157,6 @@ export const Pong = () => {
 
     function giveUpPong() {
         if (userInfo) {
-            console.log(
-                "giveUpPong socket.emit move ZERO roomId",
-                roomId,
-                "player:",
-                playerSide
-            );
             if (socket)
                 socket.emit("move", { room: roomId, player: playerSide, move: 0 });
         }
@@ -209,7 +164,6 @@ export const Pong = () => {
 
     function handleClick() {
         if (userInfo) {
-            console.log("socket.emit lookingForAGame / userInfo.id: ", userInfo.id);
             if (socket)
                 socket.emit("lookingForAGame", {
                     userId: userInfo.id,

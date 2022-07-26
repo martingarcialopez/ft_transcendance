@@ -36,11 +36,12 @@ export const ResponsiveDialog = () => {
         </DialogTitle>
         <DialogContent>
           This game is an online Pong where two players are going to
-          do a match.
+          do a match. <br />
           You have to send the ball to the opponent until he can send
           it back. If the ball touch your side, your opponent win the
-          point.
-          The winner is the first player arrived at 3 points.
+          point. <br />
+          The winner is the first player arrived at 3 points. <br />
+          The keys to move the paddle are Z and S.
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} autoFocus>

@@ -38,8 +38,6 @@ const SignUp = () => {
   const { userInfo } = userLogin
 
   useEffect(() => {
-    console.log("signup userInfo :")
-    console.log(userInfo);
     if (userInfo !== undefined && userInfo.firstname) {
       navigate('/home');
     }
@@ -75,30 +73,10 @@ const SignUp = () => {
       dispatch(signupAction(firstname, lastname, username, password, navigate))
       setCheck(true)
       setErrorFromBack(userLogin.errorMessage)
-      console.log("signUp userLogin.errorMessage:", userLogin.errorMessage);
-      console.log("signUp :", {
-        firstname: firstname,
-        lastname: lastname,
-        username: username,
-        password: password,
-      });
-    }
-    else {
-      console.log("sign up voici les errors", {
-        Errorfirstname: errors.firstname,
-        Errorlastname: errors.lastname,
-        Errorusername: errors.username,
-        Errorpassword: errors.password,
-        firstname: firstname,
-        lastname: lastname,
-        username: username,
-        password: password,
-      });
     }
   };
 
   useEffect(() => {
-    console.log("useEffect userLogin.errorMessage", userLogin.errorMessage)
     setErrorFromBack(userLogin.errorMessage)
     setCheck(false)
   }, [userLogin, check])

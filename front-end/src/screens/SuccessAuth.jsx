@@ -8,8 +8,6 @@ const SuccessAuth = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log("SuccessAuth id", id);
-
   useEffect(() => {
     dispatch(getInfoAction(id, navigate))
   }, [dispatch, navigate, id]);

@@ -15,7 +15,6 @@ export const OtherProfileScreen = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  console.log("OtherProfileScreen id:", id);
   //   const userLogin = //Function from Martin to have all user informations
   const userLogin = useSelector<RootState, UserState>(
     (state: RootState) => state.userLogin
@@ -23,7 +22,6 @@ export const OtherProfileScreen = () => {
   const allMatch = useSelector<RootState, AllMatchState>(
     (state: RootState) => state.allMatch
   );
-  console.log("OtherProfileScreen userLogin:", userLogin);
 
   const { userInfo } = userLogin;
 
@@ -40,8 +38,6 @@ export const OtherProfileScreen = () => {
   if (!friendInfo) {
     return <h1>Loading...</h1>;
   }
-
-  console.log("OtherProfileScreen allMatch", allMatch);
 
   return (
     <div className="backgroundProfile">

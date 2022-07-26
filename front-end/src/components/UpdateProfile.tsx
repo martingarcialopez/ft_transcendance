@@ -52,15 +52,10 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
     }
 
     const uploadImage = () => {
-        // const formData = new FormData()
-        // formData.append('file', profileImg)
-        // console.log("FilesUploadComponent formData :", formData)
         dispatch(uploadImageAction(userInfo, profileImg, userInfo.access_token));
         setDisplayImg(true)
         setOpen(false);
     }
-    // const ref_default_img = "/game/test/test_42.jpg"
-    // const ref_default_img = "/shared/avatar/mgarcia-.png"
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -94,7 +89,6 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
             setMessage("Your profile has been successfully updated!");
         }
         setDisplayImg(true);
-        // console.log("UpdateProfile :", {firstname: firstname, lastname: lastname, username: username,});
     }
 
     return (

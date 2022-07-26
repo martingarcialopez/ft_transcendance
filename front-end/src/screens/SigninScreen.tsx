@@ -38,15 +38,12 @@ const SignIn = () => {
   )
   const { userInfo } = userLogin
   useEffect(() => {
-    console.log("signin userInfo :")
-    console.log(userInfo);
     if (userInfo !== undefined && userInfo.firstname) {
       navigate('/home');
     }
   }, [userInfo, navigate])
 
   useEffect(() => {
-    // console.log("useEffect userLogin.errorMessage needCode", needCode, " errorFromBack:", errorFromBack, " userLogin.errorMessage:", userLogin.errorMessage)
     if (needCode === true) {
       if (needCodeTry > 0)
         setErrorFromBack("Google Authentification code incorrect")
@@ -87,23 +84,7 @@ const SignIn = () => {
       setNeedCodeTry(needCodeTry + 1)
     if (!errors.password && !errors.username) {
       dispatch(loginAction(username, password, code, navigate))
-
-      console.log("signin TOUT MARCHE SUPER BIEN", {
-        username: username,
-        password: password,
-        code: code,
-      });
     }
-    else {
-      console.log("sign in voici les errors", {
-        Errorusername: errors.username,
-        Errorpassword: errors.password,
-        username: username,
-        password: password,
-      });
-    }
-    // console.log("sign fin de handle")
-    // console.log(store.getState())
   };
 
   useEffect(() => {

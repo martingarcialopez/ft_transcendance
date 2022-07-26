@@ -20,8 +20,6 @@ export const ListFriends = ({ userPageInfo }: any) => {
     const userLogin = useSelector<RootState, UserState>(
         (state: RootState) => state.userLogin
     )
-    // console.log("ListFriends userPageInfo.friends.length:", userPageInfo.friends.length);
-
 
     const { userInfo } = userLogin;
 
@@ -38,12 +36,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
     }, [userInfo, userPageInfo])
 
     useEffect(() => {
-        // console.log("11111 ListFriends userPageInfo = ", userPageInfo)
-        // console.log("ListFriends userPageInfo.friends = ", userPageInfo.friends)
         dispatch(getFriendListStatusAction(userInfo?.access_token, userPageInfo.username, friendId))
-        // console.log("userLogin.friendInfo", userLogin.friendInfo)
-        // if (userLogin && userLogin.friendInfo && userLogin.friendInfo.username && userLogin.friendInfo.status) {
-        // }
     }, [dispatch, friendId, userInfo?.access_token, userPageInfo.username])
 
     const handleClick = (friend: any) => {
@@ -57,8 +50,6 @@ export const ListFriends = ({ userPageInfo }: any) => {
         }
     }
 
-    //Faire un check si la personne est déjà en amis changer par RETIRER DE CES AMIS.
-
     if (!userLogin || !userLogin.userInfo)
         return <h1>Loading...</h1>;
 
@@ -67,20 +58,15 @@ export const ListFriends = ({ userPageInfo }: any) => {
             dispatch(addFriendAction(userPageInfo.username, userInfo))
             setButtonFriend("REMOVE FRIEND")
         }
-        // console.log("userInfo.friends :", userInfo.friends)
-        // && userInfo.friends && userInfo.friends.find(friend => friend === userInfo.username)
         else if (userInfo) {
             dispatch(removeFriendAction(userPageInfo.username, userInfo.access_token))
             setButtonFriend("ADD FRIEND")
         }
-        // console.log("ADD FRIEND")
     }
 
     return (
         <div>
-            {/* <p className="userDescription">{userLogin.userInfo.description}</p> */}
             <RiGroupLine className="followerIcon" />
-            {/* <b>{userLogin.userInfo.followers}</b> */}
             <b>{!userPageInfo.friends ? 0 : userPageInfo.friends.length} friends -
                 {id ?
                     <Button onClick={AddFriend} >{buttonFriend}</Button>

@@ -45,8 +45,6 @@ const ResponsiveAppBar = () => {
     (state: RootState) => state.userLogin
   );
 
-  /* console.log("NavBar userLogin INFO");
-   * console.log(userLogin); */
   const userInfo = userLogin.userInfo;
 
   const logoutHandler = async (e: SyntheticEvent) => {
