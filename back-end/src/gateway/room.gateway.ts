@@ -89,9 +89,7 @@ export class RoomGateway
 	@SubscribeMessage('updateRoomPw')
 	async updateRoomPw(socket: Socket, body: RoomPwDto): Promise<void> {
 		// const body: RoomPwDto = {'userName':'string', 'roomId':22, 'password': '999'};
-		console.log('in updateRoomPw ', body);
 		let res = await this.roomService.updateRoomPw(body);
-		console.log(res);
 		//		this.server.emit('UpdatePwRes', res);
 		socket.emit('UpdatePwRes', res);
 		//NEED TO SEND TO FRONT AN EVENT
@@ -101,7 +99,6 @@ export class RoomGateway
 	@SubscribeMessage('deleteRoomPw')
 	async deleteRoomPw(socket: Socket, body: RoomPwDto): Promise<void> {
 		//		const body: RoomPwDto = {'userId': 3, 'roomId':21, 'password': ''};
-		console.log('deleteRoomPw', body);
 		let res = await this.roomService.deleteRoomPw(body);
 		//-----SEND TO FRONT---
 		socket.emit('deletePWRes', res);
@@ -111,7 +108,6 @@ export class RoomGateway
 	async manageAdmin(@Body() body: UpdateAdminDto): Promise<void> {
 //	async manageAdmin(): Promise<void> {
 		// const body: UpdateAdminDto = {'userId':3, 'roomId':22, 'login': 's', 'toAdd': false};
-		console.log("in gw ManageAdmin ", body);
 		await this.roomService.manageAdmin(body);
 	}
 
@@ -127,9 +123,7 @@ export class RoomGateway
 	async getMessage(socket: Socket, body: ParticipantDto) : Promise<void>{
 //		const body: any = {roomId:1, userId:3};
 		//	const info = await this.roomService.getUserBlockList_and_message_history();
-		console.log('in gw getMessage ', body);
 		const info = await this.messageService.getRoomMessage(body);
-		console.log('in gate way, info is', info);
 		socket.emit('msgToClient', info);
 		// the user join to the room
 		socket.join(body.roomId.toString());
@@ -144,7 +138,6 @@ export class RoomGateway
 
 	@SubscribeMessage('leaveRoom')
 	async leaveRoom(@Body() body: ParticipantDto) {
-        console.log('leaveRoom in room gw ', body);
 		await this.roomService.AdminleaveRoom(body);
         await this.participantService.leaveRoom(body);
     }
@@ -158,13 +151,11 @@ export class RoomGateway
 
 	@SubscribeMessage('banUser')
 	async banUser(socket: Socket, body: BanUserDto) : Promise<ReturnStatusDto> {
-		console.log('-----------', body, '-----------');
 		try {
 			await this.roomService.banUser(body);
 		}
 		catch(e)
 		{
-			console.log('------------&&&&&----------', e);
 			return {status: 'KO', msg: 'Something went wrong'};
 		}
 		return {status: 'OK',

@@ -43,8 +43,6 @@ export class UserController {
         }))
     uploadProfileImage(@UploadedFile() uploadedFile: Express.Multer.File, @Request() req) {
 
-        console.log('in upload profile image');
-
         return this.userService.uploadProfileImage(req, uploadedFile);
     }
 
@@ -55,14 +53,12 @@ export class UserController {
 
     @Post('/sign-up')
     createUser(@Body() body: CreateUserDto): Promise<any> {
-        console.log(body);
         return this.userService.createUser(body);
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('/current')
     getCurrentUser(@Request() req) {
-        console.log(req.user.userId);
         return this.userService.getUserById(req.user.userId);
     }
 
@@ -93,7 +89,6 @@ export class UserController {
     // @UseGuards(JwtAuthGuard)
     @Get('/:username')
     getUser(@Param('username') username: string): Promise<User> {
-        console.log('in get user');
         return this.userService.getUser(username);
     }
 
