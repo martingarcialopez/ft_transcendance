@@ -53,10 +53,7 @@ export class PongService {
 		
 		if (game) {
 			client.join(game.roomId);
-			console.log(`user joined room ${game.roomId}`);
 		}
-
-		console.log(`user ${username} got socket id ${client.id}`);
 
 		return updatedUser.socketId;
 	}
@@ -181,18 +178,12 @@ export class PongService {
 
 	async joinPongRoom(client: Socket, server: Server, userId: string, roomId: string) {
 
-		// console.log ('IN JOIN PONG ROOM BEBEEEEEE');
-
-		// await new Promise(r => setTimeout(r, 10));
-
 		const room = server.sockets.adapter.rooms.get(roomId);
 		const roomSize: number = room ? room.size : 0;
 
 		let game: GameHistory = await this.gameHistoryRepository.findOne( { where: { roomId: roomId } } );
 
 		if (game && game.winner) {
-
-			console.log('someone arrived to a finished game !')
 
 			let state: State = initGameState('normal', game.leftPlayer, game.rightPlayer, roomId);
 			// client.emit('gameState', state);
@@ -206,8 +197,6 @@ export class PongService {
 			game.roomId = roomId;
 			game.difficulty = 'normal';
 			game.maxScore = 5;
-
-			// console.log('player 1 arrived !')
 
 			const firstPlayer: User = await this.userService.getUserById(userId);
 			if (!firstPlayer)
@@ -227,11 +216,8 @@ export class PongService {
 		else if (game.rightPlayer) {
 
 			client.join(roomId);
-			console.log(`joining espectator to the socket room ${roomId}`);
 
 		} else {
-
-			// console.log('player 2 arrived !')
 
 			let game: GameHistory = await this.gameHistoryRepository.findOne( { where: { roomId: roomId } } );
 
@@ -265,8 +251,6 @@ export class PongService {
 
 	async playGame(socket: Server, socketRoom: string, difficulty: string, player1Id: number, player2Id: number, winningScore: number) {
 
-		console.log(`playGame :.>.>: GAME STARTED IN ROOM ${socketRoom}`);
-
 		const user1: User = await this.userService.getUserById(player1Id.toString());
 		const user2: User = await this.userService.getUserById(player2Id.toString());
 		if (!user1 || !user2)
@@ -286,29 +270,21 @@ export class PongService {
 					winner = 'leftPlayer';
 				else if (state.playerGiveUp === 'leftPlayer' || state.rightScore >= winningScore)
 					winner = 'rightPlayer';
-				console.log(`winner is ${winner}`)
 				socket.to(socketRoom).emit('gameOver', winner, winner === 'leftPlayer' ? state.leftPlayer : state.rightPlayer);
 				const move = this.gameService.getAll();
 				move.filter(elem => elem.room === socketRoom).forEach(elem => this.gameService.delete(elem.id));
 
-				const gameResult: GameHistory = (await this.gameHistoryRepository.find( { where : { roomId: socketRoom } } )).at(0) ;
+				const gameResult: GameHistory = (await this.gameHistoryRepository.findOne( { where : { roomId: socketRoom } } )) ;
 
-				// Solve the error w/out Internal Server Error plz
 				if (!gameResult)
-					throw new InternalServerErrorException();
+					throw new NotFoundException();
 
 				gameResult.leftPlayerScore = state.leftScore;
 				gameResult.rightPlayerScore = state.rightScore;
-				gameResult.winner = (winner === 'rightplayer') ? gameResult.rightPlayer : gameResult.leftPlayer ;
-				gameResult.losser = (winner === 'rightplayer') ? gameResult.leftPlayer : gameResult.rightPlayer ;
-
-				console.log("saving this");
-				console.log(gameResult);
+				gameResult.winner = (winner === 'rightPlayer') ? gameResult.rightPlayer : gameResult.leftPlayer ;
+				gameResult.losser = (winner === 'rightPlayer') ? gameResult.leftPlayer : gameResult.rightPlayer ;
 
 				const updateResult = await this.gameHistoryRepository.save(gameResult);
-
-				console.log('result is');
-				console.log(updateResult);
 
 				this.userService.updateUser( { status: "online" }, player1Id.toString());
 				this.userService.updateUser( { status: "online" }, player2Id.toString());
@@ -316,10 +292,7 @@ export class PongService {
 				return ;
 			}
 
-			// const move : GameEntity[] = this.gameService.query((record) => record.room === socketRoom);
 			const move : GameEntity[] = this.gameService.getAll();
-
-			//console.log(move);
 
 			let leftPlayerMove = 0;
 			let rightPlayerMove = 0;
@@ -341,10 +314,7 @@ export class PongService {
 
 			state = nextState(state, leftPlayerMove * paddleSpeed, rightPlayerMove * paddleSpeed);
 
-			//socket.emit('gameState', state);
 			socket.to(socketRoom).emit('gameState', state);
-
-			// console.log(state);
 
 			if (prevTotalScore != state.leftScore + state.rightScore)
 				await sleep(400);

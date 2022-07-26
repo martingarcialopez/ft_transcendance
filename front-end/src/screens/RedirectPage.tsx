@@ -11,8 +11,11 @@ export const RedirectPage = () => {
   useEffect(() => {
     console.log("RedirectPage window.location.href", window.location.href)
     // console.log("RedirectPage code", code)
+    console.log('AAAAAAAAAAAAAAAAAAAAAA')
+    console.log('AAAAAAAAAAAAAAAAAAAAAA')
+    console.log('AAAAAAAAAAAAAAAAAAAAAA')
     dispatch(login42Action(window.location.href.slice(35, window.location.href.length), navigate))
-  }, [dispatch, navigate])
+  }, [])
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, width: '100%' }}>

@@ -50,8 +50,6 @@ export const ProfilePage = ({ userInfo }: any) => {
         dispatch(getAllPlayerGamesAction(userInfo.username))
     }, [dispatch, userInfo])
 
-    console.log("ProfilePage allMatch", allMatch)
-
     return (
         <div className="backgroundProfile">
             <div className="profileHeader">

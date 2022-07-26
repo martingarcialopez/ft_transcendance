@@ -4,9 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { GetUserInfo } from "../components/GetUserInfo";
 
 export const LeaderboardProfiles = ({ Leaderboard }: any) => {
-  console.log("LeaderboardProfiles Leaderboard", Leaderboard);
   const Item = (data: any) => {
-    console.log("LeaderboardProfiles data", data);
 
     // const Leaderboard =
     //     {

@@ -33,7 +33,6 @@ function ChangePassWord({ userId, roomId }: T_Props) {
         onSubmit={handleSubmit((data) => {
           E_UpdatePwd(userId, roomId, data.pwd);
           setDisplay("inline");
-          console.log("update");
         })}
       >
         <input

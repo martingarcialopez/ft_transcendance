@@ -33,7 +33,6 @@ export function LeftBar({ setRoomSelectedId }: Props) {
               className="friend-drawer friend-drawer--onhover"
               onClick={(e) => {
                 E_GetMessage(userInfo.id, item.id);
-                console.log("selected room:", item.name, "id:", item.id);
                 objInfoMsg.roomId = item.id;
                 objInfoMsg.fromId = userInfo.id;
                 objInfoMsg.fromName = item.name;

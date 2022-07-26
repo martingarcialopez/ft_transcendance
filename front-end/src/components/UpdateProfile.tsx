@@ -29,7 +29,6 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log("useEffect errorMessage: {", userLogin.errorMessage, "}")
         if (userLogin.errorMessage) {
             setMessage("There has been an error while updating your profile.");
             setUsername(oldUsername)
@@ -48,9 +47,7 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
         }
         else {
             setIsValidFileFormat(true);
-            console.log(e.target.files[0]);
             setProfileImg(e.target.files[0])
-            console.log("FilesUploadComponent e.target.files[0] :", e.target.files[0])
         }
     }
 
@@ -58,7 +55,6 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
         // const formData = new FormData()
         // formData.append('file', profileImg)
         // console.log("FilesUploadComponent formData :", formData)
-        console.log(`in UpdateProfile, profileImg is ${profileImg}`)
         dispatch(uploadImageAction(userInfo, profileImg, userInfo.access_token));
         setDisplayImg(true)
         setOpen(false);
@@ -72,7 +68,6 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
     };
 
     const handleClickDelete = () => {
-        console.log("handleClickDelete")
         setOpen(true);
         setSnackbars(true);
         setMessage("Your account has been successfully delete.");
@@ -99,11 +94,7 @@ export const UpdateProfile = ({ userInfo }: UserState) => {
             setMessage("Your profile has been successfully updated!");
         }
         setDisplayImg(true);
-        console.log("UpdateProfile :", {
-            firstname: firstname,
-            lastname: lastname,
-            username: username,
-        });
+        // console.log("UpdateProfile :", {firstname: firstname, lastname: lastname, username: username,});
     }
 
     return (

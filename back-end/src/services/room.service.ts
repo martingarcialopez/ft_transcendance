@@ -41,8 +41,6 @@ export class RoomService {
 	** :return (RoomSnippetDto) dto contains new channel id and its name
 	*/	async createRoom(roomDto: RoomDto): Promise<RoomSnippetDto>
 	{
-		// console.log('throw err after');
-
         const new_room = new Room();
 		new_room.name = roomDto.name;
 		new_room.typeRoom = roomDto.typeRoom;
@@ -83,7 +81,6 @@ export class RoomService {
             .leftJoinAndSelect("participant.user", "user")
 			.where("room.id = :room_Id", { room_Id: room_Id })
 			.getOne();
-		console.log('here in getRoom', p, 'and type of p is ', typeof p);
 		return p;
 	}
 
@@ -107,7 +104,6 @@ export class RoomService {
 	}
 
 	async joinRoom(joinRoomDto: JoinRoomDto): Promise<boolean> {
-		console.log('joinRoomDto: ', joinRoomDto);
 
 		const typeRoom: string = joinRoomDto.typeRoom;
 		const userId : number = joinRoomDto.userId;
@@ -124,15 +120,12 @@ export class RoomService {
 		}
 		else if (typeRoom == 'private')
 		{
-			console.log('enter in private room', roomId, userId);
 			let is_admin = await this.userIsAdmin(roomId, userId);
 
-			console.log('is_admin? ', is_admin);
 			if (is_admin == false)
 				return false;
 			const login: string = joinRoomDto.login;
 			const invitee_info = await this.userId_fromLogin(login);
-			console.log('login', login);
 //			console.log('invitee_info is ', invitee_info);
 			if (invitee_info == undefined)
 				return false;
@@ -163,7 +156,7 @@ export class RoomService {
 	}
 
 	async updateRoomPw(body: RoomPwDto): Promise<boolean> {
-		console.log(body);
+
 		let admin = await this.roomRepository.createQueryBuilder("room")
             .select(["room.owner"])
             .where("room.id = :room_Id", { room_Id: body.roomId })

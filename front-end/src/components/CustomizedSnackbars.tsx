@@ -14,7 +14,6 @@ export const CustomizedSnackbars = (Status: any) => {
   const [open, setOpen] = useState(true);
   const status = Status?.status;
 
-  console.log("CustomizedSnackbars status", status)
   const handleClose = (event?: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;

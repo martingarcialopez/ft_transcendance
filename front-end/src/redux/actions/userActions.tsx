@@ -24,15 +24,10 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
   return (dispatch: any) => {
     signUp(firstname, lastname, username, password)
       .then((response) => {
-        console.log("signupAction response : ")
-        console.log(response)
         dispatch(loginAction(username, password, null, navigate))
       })
       .catch((error) => {
-        console.log("ceci est une error dans signupAction error.response.data.message:", error.response.data.message)
-        console.log("error :", error);
         const errorMessage = formatError(error.response.data.message.toString());
-        console.log("ceci est une errorMessage return de formatError dans signupAction :" + errorMessage)
         dispatch(signupFailedAction(errorMessage));
       });
   };
@@ -40,23 +35,16 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
 
 export function updateAction(firstname: any, lastname: any, username: any, id: any, avatar: any, status: any, access_token: any, friends: any) {
   return (dispatch: any) => {
-    console.log("updateAction username:", username)
-    console.log("updateAction friends:", friends)
     
     update(firstname, lastname, username, id, avatar, status, access_token, friends)
       .then((response) => {
-        console.log("updateAction response : ")
-        console.log(response)
         saveTokenInLocalStorage(access_token, response.data);
         dispatch(updateConfirmedAction(response.data))
         //maybe use loginConfirmedAction ?
       })
       .catch((error) => {
-        console.log("ceci est une error dans signupAction :")
-        console.log(error);
         const errorMessage = formatError(error.code);
         //Check l erreur pour expliquer que les infos sont pas update.
-        console.log("ceci est une errorMessage return de formatError dans signupAction :" + errorMessage)
         dispatch(updateFailedAction(errorMessage));
       });
   };
@@ -66,8 +54,6 @@ export function getInfoAction(access_token: any, navigate: NavigateFunction) {
   return (dispatch: any) => {
     getInfo(access_token)
       .then((response) => {
-        console.log("getInfoAction access_token:", access_token)
-        console.log("getInfoAction response:", response)
         saveTokenInLocalStorage(access_token, response.data);
         // tokenDetails.expiresIn
         runLogoutTimer(
@@ -76,10 +62,6 @@ export function getInfoAction(access_token: any, navigate: NavigateFunction) {
           access_token,
           navigate
         );
-        console.log("signupAction response : ")
-        console.log(response)
-        console.log("signupAction response data : ")
-        console.log(response.data)
         dispatch(loginConfirmedAction(response.data));
       })
       .catch((error) => {
@@ -93,10 +75,6 @@ export function enable2FAAction(access_token: any) {
   return (dispatch: any) => {
     enable2FA(access_token)
       .then((response) => {
-        console.log("enable2FAAction qui fct :")
-        console.log(response)
-        console.log("enable2FAAction data qui fct :")
-        console.log(response.data)
 
         const storage = localStorage.getItem('userInfo');
         if (storage) {
@@ -109,10 +87,7 @@ export function enable2FAAction(access_token: any) {
         // navigate('/profile')
       })
       .catch((error) => {
-        console.log("ceci est une error dans enable2FAAction :")
-        console.log(error);
         const errorMessage = formatError(error.code);
-        console.log("ceci est une errorMessage return de formatError dans enable2FAAction :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
   };
@@ -122,29 +97,18 @@ export function uploadImageAction(userInfo: any, image: any, access_token: any) 
   return (dispatch: any) => {
     uploadImage(image, access_token)
       .then((response) => {
-        console.log("uploadImageAction qui fct :")
-        console.log(response)
-        console.log("uploadImageAction data qui fct :")
-        console.log(response.data)
-        console.log("uploadImageAction data filename qui fct :")
-        console.log(response.data.filename)
 
         const storage = localStorage.getItem('userInfo');
         if (storage) {
           const user = JSON.parse(storage);
-          console.log(`previous avatar was ${user.avatar}`)
           user.avatar = response.data.filename;
-          console.log(`new avatar is ${response.data.filename}`)
           localStorage.setItem('userInfo', JSON.stringify(user));
         }
 
         // dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, response.data.filename, userInfo.status, userInfo.access_token, userInfo.friends));
       })
       .catch((error) => {
-        console.log("ceci est une error dans uploadImageAction :")
-        console.log(error);
         const errorMessage = formatError(error.code);
-        console.log("ceci est une errorMessage return de formatError dans uploadImageAction :" + errorMessage)
         if (error.response.data.statusCode === 415) {
           alert('Only png images are supported.');
         }
@@ -157,17 +121,10 @@ export function deleteAccountAction(access_token: any, id: number, navigate: Nav
   return (dispatch: any) => {
     deleteAccount(access_token, id)
       .then((response) => {
-        console.log("deleteAccountAction qui fct :")
-        console.log(response)
-        console.log("deleteAccountAction data qui fct :")
-        console.log(response.data)
         dispatch(logoutAction(access_token, navigate));
       })
       .catch((error) => {
-        console.log("ceci est une error dans deleteAccountAction :")
-        console.log(error);
         const errorMessage = formatError(error.code);
-        console.log("ceci est une errorMessage return de formatError dans deleteAccountAction :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
   };
@@ -177,10 +134,6 @@ export function disable2FAAction(access_token: any) {
   return (dispatch: any) => {
     disable2FA(access_token)
       .then((response) => {
-        console.log("disable2FAAction qui fct :")
-        console.log(response)
-        console.log("disable2FAAction data qui fct :")
-        console.log(response.data)
 
         const storage = localStorage.getItem('userInfo');
         if (storage) {
@@ -193,10 +146,7 @@ export function disable2FAAction(access_token: any) {
         // navigate('/profile')
       })
       .catch((error) => {
-        console.log("ceci est une error dans disable2FAAction :")
-        console.log(error);
         const errorMessage = formatError(error.code);
-        console.log("ceci est une errorMessage return de formatError dans disable2FAAction :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
   };
@@ -219,7 +169,6 @@ export function getAllPlayersAction() {
   return (dispatch: any) => {
     getAllPlayers()
       .then((response) => {
-        console.log("getAllPlayersAction response", response)
         dispatch(getAllPlayersSuccess(response.data));
       })
       .catch((error) => {
@@ -233,7 +182,6 @@ export function getAllGamesAction() {
   return (dispatch: any) => {
     getAllGames()
       .then((response) => {
-        console.log("getAllGamesAction response", response)
         dispatch(getAllMatch(response.data));
       })
       .catch((error) => {
@@ -247,7 +195,6 @@ export function getAllPlayerGamesAction(username: any) {
   return (dispatch: any) => {
     getAllPlayerGames(username)
       .then((response) => {
-        console.log("getAllPlayerGamesAction response", response)
         dispatch(getAllMatch(response.data));
       })
       .catch((error) => {
@@ -258,17 +205,13 @@ export function getAllPlayerGamesAction(username: any) {
 }
 
 export function getFriendListStatusAction(access_token: any, username: any, friend: boolean) {
-  console.log("getFriendListStatusAction access_token", access_token)
-  console.log("getFriendListStatusAction username", username)
   return (dispatch: any) => {
     getFriendListStatus(access_token, username)
       .then((response) => {
         if (friend) {
-          console.log("getFriendListStatusAction response => getFriendListStatusConfirmedAction", response)
           dispatch(getFriendListStatusConfirmedAction(response.data));
         }
         else {
-          console.log("getFriendListStatusAction response => getFriendListStatusForFriendConfirmedAction", response)
           dispatch(getFriendListStatusForFriendConfirmedAction(response.data));
         }
       })
@@ -283,7 +226,6 @@ export function getFriendListAction(userInfo: any) {
   return (dispatch: any) => {
     getFriendListStatus(userInfo.access_token, userInfo.username)
       .then((response) => {
-        console.log("getFriendListAction response", response)
         dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, userInfo.avatar, userInfo.status, userInfo.access_token, response.data));
         // dispatch(getFriendListConfirmedAction(response.data));
       })
@@ -296,11 +238,8 @@ export function getFriendListAction(userInfo: any) {
 
 export function addFriendAction(username: any, userInfo: any) {
   return (dispatch: any) => {
-    console.log("addFriendAction username", username)
-    console.log("addFriendAction userInfo", userInfo)
     addFriend(username, userInfo.access_token)
       .then((response) => {
-        console.log("addFriendAction response", response)
         dispatch(getFriendListAction(userInfo));
       })
       .catch((error) => {
@@ -326,10 +265,6 @@ export function logoutAction(access_token: any, navigate: NavigateFunction) {
   return (dispatch: any) => {
     logout(access_token)
       .then((response) => {
-        console.log("logoutAction qui fct :")
-        console.log(response)
-        console.log("logoutAction data qui fct :")
-        console.log(response.data)
         dispatch(logoutSuccess());
         navigate('/home')
       })
@@ -341,50 +276,28 @@ export function logoutAction(access_token: any, navigate: NavigateFunction) {
 }
 
 export function loginAction(username: any, password: any, code: any, navigate: NavigateFunction) {
-  console.log("loginAction username", username)
-  console.log("loginAction password", password)
-  console.log("loginAction code", code)
   return (dispatch: any) => {
     login(username, password, code)
       .then((response) => {
-        console.log("loginAction qui fct :")
-        console.log(response)
-        console.log("loginAction data qui fct :")
-        console.log(response.data)
-        console.log("loginAction data access qui fct :")
-        console.log(response.data.access_token)
         dispatch(getInfoAction(response.data.access_token, navigate));
         navigate('/home')
       })
       .catch((error) => {
-        console.log("ceci est une error dans loginAction :")
-        console.log(error);
         const errorMessage = formatError(error.message);
-        console.log("ceci est une errorMessage return de formatError dans loginAction :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
   };
 }
 
 export function login42Action(code: any, navigate: NavigateFunction) {
-  console.log("login42Action code", code)
   return (dispatch: any) => {
     login42(code)
       .then((response) => {
-        console.log("login42Action qui fct :")
-        console.log(response)
-        console.log("login42Action data qui fct :")
-        console.log(response.data)
-        console.log("login42Action data access qui fct :")
-        console.log(response.data.access_token)
         dispatch(getInfoAction(response.data.access_token, navigate));
         navigate('/home')
       })
       .catch((error) => {
-        console.log("ceci est une error dans login42Action :")
-        console.log(error);
         const errorMessage = formatError(error.message);
-        console.log("ceci est une errorMessage return de formatError dans login42Action :" + errorMessage)
         dispatch(ActionFailed(errorMessage));
       });
   };
@@ -475,7 +388,6 @@ export function getFriendInfosAction(data: any) {
 }
 
 export function uploadImageActionConfirmedAction(data: any) {
-  console.log("uploadImageActionConfirmedAction data", data)
   return {
     type: UPLOAD_IMAGE_CONFIRMED_ACTION,
     payload: data,
@@ -517,7 +429,6 @@ export function confirmedSignupAction(payload: any) {
 }
 
 export function signupFailedAction(message: any) {
-  console.log("signupFailedAction message:", message)
   return {
     type: SIGNUP_FAILED_ACTION,
     payload: message,
