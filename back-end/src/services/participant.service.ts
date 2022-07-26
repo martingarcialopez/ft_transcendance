@@ -49,13 +49,11 @@ export class ParticipantService {
 **/
 	async getParticipant(id: number): Promise<Participant[]>
     {
-		console.log('HERE in the service of getParticipant room id is ', id);
         // let value =  await this.participantRepository.find({id});
 		const value = await this.participantRepository.createQueryBuilder("participant")
 			.select(["participant.userId"])
 			.where("participant.roomId = :room_Id", { room_Id: id })
 			.getRawMany();
-		console.log(value);
 		return value;
     }
 
@@ -63,13 +61,11 @@ export class ParticipantService {
 	async leaveRoom(participantDto: ParticipantDto) : Promise<void> {
 		let userId : number = participantDto.userId;
 		let roomId : number = participantDto.roomId;
-		console.log('participantDto ', participantDto, userId, roomId);
 		const id = await this.participantRepository
             .createQueryBuilder("participant")
 			.select(["participant.id"])
 			.where("participant.userId = :userId AND participant.roomId = :roomId", { userId: userId, roomId: roomId })
             .getOne();
-		console.log('id is', id);
 		if (id != undefined)
 			await this.participantRepository.delete(id);
 	}

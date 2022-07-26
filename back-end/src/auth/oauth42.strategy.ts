@@ -27,24 +27,15 @@ export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
 
     async validate(accessToken: string, refreshToken: string/*, user: User*/) {
 
-        console.log(`We did it !! 42 token is ${accessToken}. refresh token: ${refreshToken}`)
-
-        // const { data } = await lastValueFrom(this.httpService.get('https://api.intra.42.fr/v2/me', {
-        //     headers: { Authorization: `Bearer ${accessToken}` },
-        // }))
-
         const { data } = await this.httpService.axiosRef.get('https://api.intra.42.fr/v2/me', {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         const { login, first_name, last_name, image_url } = data;
 
-        console.log(`login: ${login}, firstname: ${first_name}, lastname: ${last_name}, photo: ${image_url}`)
-
         const existingUser : User = await this.authService.validate42User(login);
 
         if (existingUser) {
-            console.log('USER ALREADY EXIST !')
             return existingUser; // If user already exists, we return user and validation ends here
         }
 
@@ -76,8 +67,6 @@ export class Oauth42Strategy extends PassportStrategy(Strategy, 'Oauth42') {
             writer.on('error', reject);
         });
 
-        console.log('after all 42 requests, still alive bby');
-        
         return this.userService.create42User(user);
     }
 }

@@ -35,7 +35,6 @@ export class MaobeParticipantService {
 			.select(["participant.userId"])
 			.where("participant.roomId = :room_Id", { room_Id: id })
 			.getRawMany();
-		console.log(value);
 		return value;
     }
 

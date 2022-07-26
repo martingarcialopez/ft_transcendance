@@ -43,7 +43,6 @@ export class MessageGateway {
   @Bind(MessageBody(), ConnectedSocket()) // useful?
   @SubscribeMessage('createMessage')
 	async createMessage(@Body() message: MessageDto): Promise<void> {
-		console.log('in message gw ', message);
 	    var value = await this.messageService.createMessage(message);
 
 		/*Send message_id to front

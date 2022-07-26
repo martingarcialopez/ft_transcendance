@@ -54,7 +54,6 @@ export function AddParticipant({ room }: T_PropsRoomArray) {
         className="frm-add-room"
         onSubmit={handleSubmit((data) => {
           const targetRoom = findId(room, data.roomName);
-          console.log("targetRoom:", targetRoom);
           const info = SetInfoUserRoom(
             userInfo.id,
             targetRoom.id,

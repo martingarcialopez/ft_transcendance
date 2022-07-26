@@ -197,13 +197,11 @@ export class RoomService {
 		if (room['typeRoom'] == 'protected')
 			room['typeRoom'] = 'public';
 		await this.roomRepository.save(room);
-		console.log('here room', room);
 		//TEST IS WORKING?
 		room =  await this.roomRepository.createQueryBuilder("room")
 //			.select(["room.password"])
             .where("room.id = :room_Id", { room_Id: body.roomId })
             .getOne();
-		console.log('NOW room', room);
 		return true;
 	}
 
@@ -217,13 +215,11 @@ export class RoomService {
             .select(["room.owner"])
             .where("room.id = :room_Id", { room_Id: roomId })
         .getOne();
-		console.log('in get_RoomAdmins ', room , room.owner);
 		return room.owner;
 	}
 
 	async userIsAdmin(roomId: number, userId: number) : Promise<boolean> {
 		let admins = await this.get_RoomAdmins(roomId);
-		console.log('admins is here ', admins, admins.indexOf(userId));
 		//return false;
 		return await admins.indexOf(userId) != -1;
 	}
@@ -259,7 +255,6 @@ export class RoomService {
 	}
 
 	async AdminleaveRoom(body: ParticipantDto): Promise<void> {
-		console.log('AdminleaveRoom');
         let is_already_admin = await this.userIsAdmin(body.roomId, body.userId);
         let admins = await this.get_RoomAdmins(body.roomId);
         //remove this admin
@@ -267,7 +262,6 @@ export class RoomService {
         {
             var index = admins.indexOf(body.userId);
             admins.splice(index, 1);
-		console.log('delete admin');
         await this.roomRepository
             .createQueryBuilder()
             .update(Room)
@@ -283,13 +277,11 @@ export class RoomService {
 			.where("room.name = :roomName", { roomName: roomName })
             .getOne();
 
-		console.log('here room ', room);
 		return room.id;
 
 	}
 
 	async IsRoomName_Unique(roomName: string): Promise<boolean> {
-		console.log(roomName);
 		let names: any = await this.roomRepository.createQueryBuilder("room")
 			.select("room.id")
 			.where("room.name = :room_name", { room_name: roomName })
@@ -311,7 +303,6 @@ export class RoomService {
 
 	async userId_fromLogin(login : string) : Promise<User | undefined> {
 
-		console.log('login', login);
 		const user_info = await this.userRepository.createQueryBuilder("user")
 			.select(["user.id"])
 			.where("user.login42 = :login", { login: login })
@@ -325,7 +316,6 @@ export class RoomService {
             .select(["room.banList"])
         .where("room.id = :room_Id", { room_Id: roomId })
         .getOne();
-		console.log('in get_RoomAdmins ', room , room.owner);
 		return room.banList;
 	}
 

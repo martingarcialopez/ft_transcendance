@@ -60,7 +60,6 @@ export class MessageService {
 			.createQueryBuilder("message")
 			.where("message.roomId = :id and message.userId != all (:blockList)", { id: roomId, blockList: blockList })
             .getMany();
-		console.log(messages_in_room);
 		return messages_in_room;
 	}
 /*
