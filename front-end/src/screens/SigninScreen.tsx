@@ -53,7 +53,7 @@ const SignIn = () => {
     }
     else if (userLogin.errorMessage === 'Write the 6 digit code you\'re seen on Google Authenticator') {
       setNeedCode(true)
-      setErrorFromBack("Write the 6 digit code you\'re seen on Google Authenticator")
+      setErrorFromBack("Write the 6 digit code you're seen on Google Authenticator")
     }
     else
       setErrorFromBack(userLogin.errorMessage)
