@@ -2,7 +2,6 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './models/user.entity';
 import { UserModule } from './modules/user.module';
-import { OauthMiddleware } from './middleware/Oauth.middleware';
 import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from './auth/auth.module';
 
