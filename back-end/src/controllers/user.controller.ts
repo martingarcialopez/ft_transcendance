@@ -10,6 +10,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
+import { Serialize } from 'src/interceptors/SerializeInterceptor';
+import { UserDto } from 'src/dtos/out/userDto.dto';
 
 const whitelist = [
     'image/png',
@@ -17,6 +19,7 @@ const whitelist = [
     // 'image/jpg'
 ]
 
+@Serialize(UserDto)
 @Controller('user')
 export class UserController {
     constructor(private userService: UserService) { }
