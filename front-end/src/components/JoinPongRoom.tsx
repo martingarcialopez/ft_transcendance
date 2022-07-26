@@ -19,8 +19,16 @@ export const JoinPongRoom = () => {
   const socket = pongSocketService.connect();
 
     useEffect(() => {
+
+        console.log(`id is ${id} and user is ${userInfo?.username}`);
+        
+        console.log(`socket is ${socket}`);
+        console.log(socket);
         navigate("/pong")
         socket.emit('joinPongRoom', { userId: userInfo?.id, roomId: id });
+        // navigate("/pong", { state: { joingame: id } })
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [navigate])
     
   return (

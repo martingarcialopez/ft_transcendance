@@ -35,7 +35,6 @@ export function signupAction(firstname: any, lastname: any, username: any, passw
 
 export function updateAction(firstname: any, lastname: any, username: any, id: any, avatar: any, status: any, access_token: any, friends: any) {
   return (dispatch: any) => {
-    
     update(firstname, lastname, username, id, avatar, status, access_token, friends)
       .then((response) => {
         saveTokenInLocalStorage(access_token, response.data);
@@ -104,8 +103,6 @@ export function uploadImageAction(userInfo: any, image: any, access_token: any) 
           user.avatar = response.data.filename;
           localStorage.setItem('userInfo', JSON.stringify(user));
         }
-
-        // dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, response.data.filename, userInfo.status, userInfo.access_token, userInfo.friends));
       })
       .catch((error) => {
         const errorMessage = formatError(error.code);
@@ -226,7 +223,13 @@ export function getFriendListAction(userInfo: any) {
   return (dispatch: any) => {
     getFriendListStatus(userInfo.access_token, userInfo.username)
       .then((response) => {
-        dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, userInfo.avatar, userInfo.status, userInfo.access_token, response.data));
+        const storage = localStorage.getItem('userInfo');
+        if (storage) {
+          const user = JSON.parse(storage);
+          user.friends = response.data;
+          localStorage.setItem('userInfo', JSON.stringify(user));
+        }
+        // dispatch(updateAction(userInfo.firstname, userInfo.lastname, userInfo.username, userInfo.id, userInfo.avatar, userInfo.status, userInfo.access_token, response.data));
         // dispatch(getFriendListConfirmedAction(response.data));
       })
       .catch((error) => {
@@ -239,7 +242,7 @@ export function getFriendListAction(userInfo: any) {
 export function addFriendAction(username: any, userInfo: any) {
   return (dispatch: any) => {
     addFriend(username, userInfo.access_token)
-      .then((response) => {
+      .then(() => {
         dispatch(getFriendListAction(userInfo));
       })
       .catch((error) => {
@@ -249,11 +252,11 @@ export function addFriendAction(username: any, userInfo: any) {
   };
 }
 
-export function removeFriendAction(username: any, access_token: any) {
+export function removeFriendAction(username: any, userInfo: any) {
   return (dispatch: any) => {
-    removeFriend(username, access_token)
+    removeFriend(username, userInfo.access_token)
       .then(() => {
-        dispatch(getFriendListAction(access_token));
+        dispatch(getFriendListAction(userInfo));
       })
       .catch((error) => {
         const errorMessage = formatError(error.response.data);

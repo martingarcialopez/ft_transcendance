@@ -184,7 +184,6 @@ export const Pong = () => {
             );
         }
 
-        // console.log("HANDKE CKUC")
         setGameStarted(true);
         setWinner("");
         setLeftPlayer("");
@@ -192,9 +191,6 @@ export const Pong = () => {
     }
 
     const endGame = () => {
-        console.log(
-            "socket.removeAllListeners gameState gameOver GameInfo GamePlayersName"
-        );
         socket?.removeAllListeners("gameState");
         socket?.removeAllListeners("gameOver");
         socket?.removeAllListeners("GameInfo");
@@ -221,8 +217,6 @@ export const Pong = () => {
     };
 
     const drawGame = (ctx: CanvasRenderingContext2D) => {
-        // console.log("drawGame gameState", gameState);
-        // console.log("drawGame roomId", roomId);
         var leftWinImg = new Image();
         var rightWinImg = new Image();
         var cyberpongImg = new Image();
@@ -233,7 +227,6 @@ export const Pong = () => {
 
         ctx.imageSmoothingEnabled = false;
         if (winnerSide !== "") {
-            console.log("drawGame winner:", winner);
             if (winnerSide === "leftPlayer")
                 ctx.drawImage(leftWinImg, 0, 0, gameState.canvasWidth, gameState.canvasHeight);
             else

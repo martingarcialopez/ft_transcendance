@@ -10,7 +10,7 @@ export const RedirectPage = () => {
 
   useEffect(() => {
     dispatch(login42Action(window.location.href.slice(35, window.location.href.length), navigate))
-  }, [])
+  }, [dispatch, navigate])
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, width: '100%' }}>

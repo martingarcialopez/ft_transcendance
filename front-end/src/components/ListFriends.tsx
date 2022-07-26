@@ -24,9 +24,6 @@ export const ListFriends = ({ userPageInfo }: any) => {
     const { userInfo } = userLogin;
 
     useEffect(() => {
-        if (userInfo)
-        // if (userInfo)
-        //     getFriendInfosAction(userInfo.access_token)
         if (userInfo && userInfo.friends && userInfo.friends.find(friend => friend.username === userPageInfo.username)) {
             setButtonFriend("REMOVE FRIEND")
         }
@@ -59,7 +56,7 @@ export const ListFriends = ({ userPageInfo }: any) => {
             setButtonFriend("REMOVE FRIEND")
         }
         else if (userInfo) {
-            dispatch(removeFriendAction(userPageInfo.username, userInfo.access_token))
+            dispatch(removeFriendAction(userPageInfo.username, userInfo))
             setButtonFriend("ADD FRIEND")
         }
     }
