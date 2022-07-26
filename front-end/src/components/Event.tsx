@@ -8,13 +8,11 @@ const ENDPOINT = URL_test;
 export const socket = socketio(ENDPOINT); //connection to the server nestJs
 
 export function E_CreateParticipant(userName: number, roomId: number) {
-  console.log("send:\nuserName: ", userName, "\nroom id:", roomId);
   socket.emit("createParticipant", {
     userName: userName,
     roomId: roomId,
   });
   socket.on("participantId", (receive: { id: number }) => {
-    console.log("reponse createParticipant : ", receive);
   });
 }
 
@@ -68,7 +66,6 @@ export function E_CreateRoom(
     password: newRoom.password,
   });
   socket.on("idRoom", (receive: { id: number }) => {
-    console.log("reponse creationRoom 'idRoom': ", receive);
     newRoom.id = receive.id;
     /* newRoom.owner.push(creatorId);
      * updateRoomArray(newRoom); */
@@ -76,7 +73,6 @@ export function E_CreateRoom(
     setMsgError("none");
   });
   socket.on("exception", (receive: { status: string; message: string }) => {
-    console.log("reponse creation 'exception': ", receive);
     setMsgError("inline");
   });
 }
@@ -87,14 +83,11 @@ export function E_UpdatePwd(userId: number, roomId: number, pwd: string) {
     roomId: roomId,
     password: pwd,
   });
-  console.log("send event : updatePwd");
 }
 
 export function E_JoinRoom(info: T_AddUserRoom) {
   socket.emit("JoinRoom", info);
-  console.log("Event 'JoinRoom' :", info);
   socket.on("hasJoined", (receive: { state: boolean }) => {
-    console.log("reponse hasJoined Room : ", receive);
   });
 }
 
@@ -102,7 +95,6 @@ export function E_HasJoined(setMsgError: Function) {
   socket.on("hasJoined", (receive: { state: boolean }) => {
     if (receive.state === true) setMsgError("inline");
     else setMsgError("none");
-    console.log("reponse hasJoined Room : ", receive);
   });
 }
 
@@ -126,7 +118,6 @@ export function E_DeleteRoomPw(userId: number, roomId: number) {
     roomId: roomId,
   });
   socket.on("UpdatePwRes", (receive: { state: boolean }) => {
-    console.log("reponse UpdatePwRes : ", receive);
   });
 }
 
@@ -159,8 +150,6 @@ export function E_MsgtoChat(
 ) {
   socket.on("MsgtoChat", (received: T_MsgHistory) => {
     if (received.roomId === objInfoMsg.roomId) {
-      console.log("RoomId MsgtoChat:", received.roomId);
-      console.log("objInfoMsg.roomId:", objInfoMsg.roomId);
       setMsgOtherUsers([...msgOtherUsers, received]);
     }
   });

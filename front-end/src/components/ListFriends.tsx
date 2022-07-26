@@ -20,7 +20,6 @@ export const ListFriends = ({ userPageInfo }: any) => {
     const userLogin = useSelector<RootState, UserState>(
         (state: RootState) => state.userLogin
     )
-    console.log("ListFriends userLogin:", userLogin);
     // console.log("ListFriends userPageInfo.friends.length:", userPageInfo.friends.length);
 
 
@@ -28,8 +27,6 @@ export const ListFriends = ({ userPageInfo }: any) => {
 
     useEffect(() => {
         if (userInfo)
-            console.log("0000 ListFriends userInfo.friends = ", userInfo.friends)
-        console.log("ListFriends userPageInfo.username = ", userPageInfo.username)
         // if (userInfo)
         //     getFriendInfosAction(userInfo.access_token)
         if (userInfo && userInfo.friends && userInfo.friends.find(friend => friend.username === userPageInfo.username)) {
@@ -43,7 +40,6 @@ export const ListFriends = ({ userPageInfo }: any) => {
     useEffect(() => {
         // console.log("11111 ListFriends userPageInfo = ", userPageInfo)
         // console.log("ListFriends userPageInfo.friends = ", userPageInfo.friends)
-        console.log("dispatch getFriendListStatusAction")
         dispatch(getFriendListStatusAction(userInfo?.access_token, userPageInfo.username, friendId))
         // console.log("userLogin.friendInfo", userLogin.friendInfo)
         // if (userLogin && userLogin.friendInfo && userLogin.friendInfo.username && userLogin.friendInfo.status) {
@@ -57,7 +53,6 @@ export const ListFriends = ({ userPageInfo }: any) => {
             }
         }
         else {
-            console.log("id :", friend.username)
             navigate(`/profile/${friend.username}`)
         }
     }
@@ -68,19 +63,13 @@ export const ListFriends = ({ userPageInfo }: any) => {
         return <h1>Loading...</h1>;
 
     const AddFriend = () => {
-        console.log("ListFriends addFriend button clicked")
-        console.log("ListFriends AddFriend userInfo :", userInfo)
-        console.log("ListFriends AddFriend userPageInfo :", userPageInfo)
-        console.log("ListFriends AddFriend buttonFriend :", buttonFriend)
         if (userInfo && buttonFriend === "ADD FRIEND") {
-            console.log("case 111")
             dispatch(addFriendAction(userPageInfo.username, userInfo))
             setButtonFriend("REMOVE FRIEND")
         }
         // console.log("userInfo.friends :", userInfo.friends)
         // && userInfo.friends && userInfo.friends.find(friend => friend === userInfo.username)
         else if (userInfo) {
-            console.log("case 222")
             dispatch(removeFriendAction(userPageInfo.username, userInfo.access_token))
             setButtonFriend("ADD FRIEND")
         }

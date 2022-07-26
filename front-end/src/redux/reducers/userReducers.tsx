@@ -148,7 +148,6 @@ export const userLoginReducer = (
         showLoading: true,
       };
     case ENABLE_2FA_CONFIRMED_ACTION:
-      console.log("ENABLE_2FA_CONFIRMED_ACTION action.payload", action.payload);
       return {
         ...state,
         showLoading: false,

@@ -52,7 +52,7 @@ export class RoomGateway
 
 	@SubscribeMessage('createRoom')
 	async createRoom(socket: Socket, body: RoomDto): Promise<void> {
-		console.log('in the gateway of event createRoom');
+
 		const name_exist = await this.roomService.IsRoomName_Unique(body.name);
 		if (name_exist == false) {
 			socket.emit('exception', {
@@ -62,14 +62,13 @@ export class RoomGateway
 			return ;
 		}
 		const value = await this.roomService.createRoom(body);
-		console.log('return value of roomId is ', value);
 		socket.emit('idRoom', value); //sending to sender-client only
 	}
 
 	/*pour qu'un utilisateur puisse rejoindre une room deja existante*/
 	@SubscribeMessage('JoinRoom')
 	async JoinRoom(socket: Socket, body: JoinRoomDto): Promise<void> {
-		console.log('in gateway of JoinRoom', body);
+
 		const have_access = await this.roomService.joinRoom(body);
 		socket.emit('hasJoined', have_access);
 	}

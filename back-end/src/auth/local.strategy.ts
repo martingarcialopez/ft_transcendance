@@ -4,11 +4,6 @@ import { HttpCode, HttpException, HttpStatus, Injectable, Param, UnauthorizedExc
 import { AuthService } from './auth.service';
 import * as speakeasy from "speakeasy";
 
-function decode(data: Uint8Array): void {
-    console.log('stream is ');
-    console.log(data);
-  }
-
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
@@ -19,19 +14,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
     let code: string = req.body['code'];
 
-    console.log(code);
-
     const user = await this.authService.validateUser(username, password);
 
     if (!user) {
       throw new UnauthorizedException();
     }
 
-    console.log('yo yo');
-
     if (user.twofa === true) {
-
-      console.log(`code is ${code}`);
 
       const verified = speakeasy.totp.verify(
         {

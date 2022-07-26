@@ -31,38 +31,26 @@ export class PongGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @WebSocketServer() server: Server;
 
-  afterInit(server: Server) {
-    console.log('Pong socket server Initialized:');
-  }
+  afterInit(server: Server) {}
 
-  handleConnection(client: Socket) {
-    console.log(`client with id: ${client.id} connected !`);
-    
-  }
+  handleConnection(client: Socket) {}
 
 
   handleDisconnect(client: Socket) {
-    console.log(`Client with id: ${client.id} disconnected!`);
 
     this.pongService.handleDisconnect(client);
-
-    // search wich user have the correspondant client.id, and end the current game or remove from matchmaking
   }
 
   @SubscribeMessage('setSocketId')
   async setSocketId(socket: Socket, username: string) : Promise<string> {
-    console.log(`in set socket id, username is ${username}`)
 
     return await this.pongService.setSocketId(socket, username);
   }
 
 	@SubscribeMessage('lookingForAGame') 
     async lookingForplay(socket: Socket, data: lookingForAGameDto) : Promise<void> {
-		console.log('lookingForAGame Gateway');
-    console.log(`uerId is ${data.userId}, difficulty is ${data.difficulty} and maxScore is ${data.maxScore}`)
-    console.log(data);
-		let value = await this.pongService.managePlayer(socket, this.server, data.userId, data.difficulty, data.maxScore);
 
+		let value = await this.pongService.managePlayer(socket, this.server, data.userId, data.difficulty, data.maxScore);
 	}
 
   @SubscribeMessage('iDontWannaPlayAnymore')
@@ -79,12 +67,6 @@ export class PongGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('joinPongRoom')
 	async join(socket: Socket, data: joinPongRoomDto): Promise<void> {
-
-		console.log('joinPongRoom Gateway');
-
-    console.log('in joinPongRoom Gateway');
-    console.log('data is')
-    console.log(data);
 
     this.pongService.joinPongRoom(socket, this.server, data.userId, data.roomId);
     }

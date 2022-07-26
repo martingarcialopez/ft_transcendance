@@ -26,7 +26,6 @@ const ButtonBases = () => {
   const navigate = useNavigate();
 
   const login = async (image: String) => {
-    console.log(image);
     if (image === 'Sign up')
       navigate('/signup');
 
@@ -45,7 +44,6 @@ const ButtonBases = () => {
       //   }
       // }
         );
-      console.log('here we are')
       window.location.replace(response.url);
     }
 

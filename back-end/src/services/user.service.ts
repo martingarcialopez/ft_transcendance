@@ -79,7 +79,6 @@ export class UserService {
 
     async create42User(user: User): Promise<User> {
 
-        console.log('in create 42 User');
         return await this.userRepository.save(user);
     }
 
@@ -187,8 +186,6 @@ export class UserService {
         if (!user)
             throw new NotFoundException();
 
-        console.log(`deleting relation where user is ${user.username} and friend is ${friendUsername}`);
-
         await this.friendsRepository.delete({ member_username: user.username, friend_username: friendUsername });
 
     }
@@ -292,7 +289,6 @@ export class UserService {
         if (body.userId == body.blockUserId)
             return;
         let blockList: number[] | null = await this.getBlockList(body.userId);
-        console.log('blockList: ', blockList);
         if (blockList == null)// the user is invalid
             return;
         blockList.push(body.blockUserId);
@@ -323,8 +319,6 @@ export class UserService {
                 unlinkAsync(`public/shared/avatar/${file}`);
         });
 
-        // console.log(files);
-
         const response = {
             originalname: uploadedFile.originalname,
             filename: `/shared/avatar/${uploadedFile.filename}`,
@@ -332,11 +326,6 @@ export class UserService {
 
         this.updateUser({ avatar: `/shared/avatar/${uploadedFile.filename}` }, req.user.userId);
 
-        console.log(`returning...`)
-        console.log(response)
-
         return response;
-
     }
-
 }

@@ -23,9 +23,7 @@ export class AuthService {
     return null;
   }
 
-  async validate42User(/*username: string, */login42: string): Promise<any> {
-
-    console.log('in validate 42 user');
+  async validate42User(login42: string): Promise<any> {
 
     const user = await this.usersService.getUserBy42Login(login42);
 
@@ -64,14 +62,9 @@ async enable2FA(id: string) : Promise<string> {
   if (!user)
     throw new NotFoundException();
 
-  const updatedUser = await this.usersService.updateUser( { twofa: true }, id);
-
-  console.log('updated used is')
-  console.log(updatedUser);
-
   const secret = speakeasy.generateSecret({ name: "Amazing Pong" });
 
-  await this.usersService.updateUser( { "secret": secret.ascii}, id);
+  await this.usersService.updateUser( { twofa: true, secret: secret.ascii}, id);
 
   let qrPromise = new Promise<string>( (resolve, reject) => {
     qrcode.toDataURL(secret.otpauth_url, function(err, data) {

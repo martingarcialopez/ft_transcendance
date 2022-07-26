@@ -51,7 +51,6 @@ const ResponsiveAppBar = () => {
 
   const logoutHandler = async (e: SyntheticEvent) => {
     e.preventDefault();
-    console.log("NavBar call logout function");
     dispatch(logoutAction(userInfo?.access_token, navigate));
   };
 
