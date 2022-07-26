@@ -3,7 +3,7 @@ import { GameState } from "../type/pongType";
 import { Button, CircularProgress, Grid, TextField } from "@mui/material";
 import Canvas from "../components/Canvas";
 import "../styles/gameStyle.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux";
 import { UserState } from "../redux/reducers/userReducers";
 import { ColumnGroupingTable } from "../components/ColumnGroupingTable";
@@ -11,6 +11,7 @@ import { ResponsiveDialog } from "../components/ResponsiveDialog";
 import { useLocation } from "react-router-dom";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import pongSocketService from "../services/pongSocketService";
+import { updateAction } from "../redux/actions/userActions";
 
 export const Pong = () => {
     let socket = pongSocketService.connect();
@@ -56,6 +57,7 @@ export const Pong = () => {
     const [roomId, setRoomId] = useState("");
     const { userInfo }: UserState = userLogin;
     const { state }: any = useLocation();
+    const dispatch = useDispatch();
 
     // console.log("Pong useLocation => state:", state)
     socket = pongSocketService.connect();
@@ -214,13 +216,18 @@ export const Pong = () => {
                     difficulty: difficulty,
                     maxScore: parseInt(but),
                 });
-            console.log("localStorage user.status update");
-            const storage = localStorage.getItem('userInfo');
-            if (storage) {
-                const user = JSON.parse(storage);
-                user.status = "looking";
-                localStorage.setItem('userInfo', JSON.stringify(user));
-            }
+            dispatch(
+                updateAction(
+                    userInfo.firstname,
+                    userInfo.lastname,
+                    userInfo.username,
+                    userInfo.id,
+                    userInfo.avatar,
+                    "looking",
+                    userInfo.access_token,
+                    userInfo.friends
+                )
+            );
         }
 
         // console.log("HANDKE CKUC")
